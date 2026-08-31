@@ -1,10 +1,29 @@
-<div class="login-container  card">
+<div class="login-page">
+    <img class="q-icon" src="img_logoApae.png" alt="APAE Sorocaba">
+    <h1>APAE de Saúde</h1>
+    <p class="subtitle">Sistema de Gestão Integrada</p>
 
-  
-    <h1>GISA - Login</h1>
+    <div class="login-container container-login">
+        <h3>Acesso ao Sistema</h3>
+        <h6>Informe seu ID de cadastro e senha para continuar</h6>
 
-    <input type="email" [(ngModel)]="email" placeholder="E-mail" name="email">
-    <input type="password" [(ngModel)]="senha" placeholder="Senha" name="senha">
+        <label for="usuario">ID de Cadastro:</label>
+        <input type="text" [(ngModel)]="usuario" placeholder="Digite seu ID numérico" name="usuario" id="usuario">
 
-    <button (click)="fazerLogin()">Entrar</button>
+        <label for="senha">Sua Senha:</label>
+
+        <div class="senha-wrapper">
+            <input [type]="mostrarSenha ? 'text' : 'password'" [(ngModel)]="senha" placeholder="Digite sua senha"
+                name="senha" id="senha" minlength="8" required autocomplete="current-password">
+
+            <span class="toggle-senha" (click)="toggleSenha()">
+                {{ mostrarSenha ? '👁️' : '🙈' }}
+            </span>
+        </div>
+
+        <button (click)="fazerLogin()">Entrar</button>
+        <br>
+        <a class="esqueci-senha" (click)="esqueciSenha()">Esqueci a senha</a>
+    </div>
 </div>
+

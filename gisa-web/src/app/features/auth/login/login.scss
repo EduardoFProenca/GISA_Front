@@ -1,0 +1,135 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ebebeb;
+  padding: 2rem;
+}
+
+.q-icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid #7fc9e8;
+  background: white;
+  object-fit: contain;
+  padding: 8px;
+  margin-bottom: 1rem;
+}
+
+.login-page > h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
+  letter-spacing: 0.05em;
+}
+
+.login-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem 3rem;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+
+  h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 0.5rem 0;
+  }
+
+  h6 {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: #6b7280;
+    margin: 0 0 1.5rem 0;
+  }
+
+  label {
+    text-align: left;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 0.4rem;
+    margin-top: 1rem;
+  }
+
+  input {
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+
+    &:focus {
+      border-color: #7fc9e8;
+    }
+  }
+
+  button {
+    margin-top: 2rem;
+    padding: 0.85rem;
+    background-color: #1a1a2e;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #2c2c44;
+    }
+  }
+}
+
+
+.senha-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  input {
+    width: 100%;
+    padding-right: 2.5rem;
+  }
+
+  .toggle-senha {
+    position: absolute;
+    right: 0.9rem;
+    cursor: pointer;
+    font-size: 1.1rem;
+    user-select: none;
+  }
+}
+
+.esqueci-senha {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #4a90d9;
+  cursor: pointer;
+  text-decoration: none;
+  align-self: center; // se o pai for flex column, centraliza ele sozinho
+
+  &:hover {
+    text-decoration: underline;
+    color: #2c6fb8;
+  }
+}
