@@ -8,22 +8,24 @@
         <h6>Informe seu ID de cadastro e senha para continuar</h6>
 
         <label for="usuario">ID de Cadastro:</label>
-        <input type="text" [(ngModel)]="usuario" placeholder="Digite seu ID numérico" name="usuario" id="usuario">
+        <input type="text" [(ngModel)]="usuario" [class.input-erro]="erroUsuario" placeholder="Digite seu ID numérico"
+            name="usuario" id="usuario">
+        @if (erroUsuario) {
+        <span class="erro-msg">ID deve ter pelo menos 3 caracteres</span>
+        }
 
         <label for="senha">Sua Senha:</label>
-
         <div class="senha-wrapper">
-            <input [type]="mostrarSenha ? 'text' : 'password'" [(ngModel)]="senha" placeholder="Digite sua senha"
-                name="senha" id="senha" minlength="8" required autocomplete="current-password">
-
-            <span class="toggle-senha" (click)="toggleSenha()">
-                {{ mostrarSenha ? '👁️' : '🙈' }}
-            </span>
+            <input [type]="mostrarSenha ? 'text' : 'password'" [(ngModel)]="senha" [class.input-erro]="erroSenha"
+                placeholder="Digite sua senha" name="senha" id="senha">
+            <span class="toggle-senha" (click)="toggleSenha()">{{ mostrarSenha ? '🙈' : '👁️' }}</span>
         </div>
+        @if (erroSenha) {
+        <span class="erro-msg">Senha deve ter pelo menos 8 caracteres</span>
+        }
 
         <button (click)="fazerLogin()">Entrar</button>
         <br>
         <a class="esqueci-senha" (click)="esqueciSenha()">Esqueci a senha</a>
     </div>
 </div>
-

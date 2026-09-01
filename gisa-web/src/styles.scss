@@ -1,0 +1,55 @@
+//deve valer pro sistema inteiro
+
+
+// input-erro vai ser usado em inputs de qualquer tela do sistema
+///=========================================
+@keyframes balancar {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+
+.input-erro {
+  border: 2px solid #ff4d4d !important;
+  animation: balancar 0.3s ease-in-out;
+  background-color: #fff5f5;
+}
+///=====================================
+
+
+
+// botões 
+///========================================
+button {
+  color: rgb(255, 255, 255);
+  background: rgba(33, 50, 71, 0.733);
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: 0.3s;
+  transform: scale(0.95);
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    background: rgba(52, 68, 121, 0.253);
+    border: 1px solid rgb(255, 255, 255);
+  }
+
+  &:active {
+    transform: scale(0.9);
+    filter: brightness(1.5);
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.7);
+  }
+}
+///========================================
