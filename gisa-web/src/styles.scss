@@ -1,6 +1,10 @@
 //deve valer pro sistema inteiro
 
 
+body{
+  background: #f4f6f9;
+}
+
 // input-erro vai ser usado em inputs de qualquer tela do sistema
 ///=========================================
 @keyframes balancar {
@@ -25,7 +29,7 @@
 
 
 
-// botões 
+// botões
 ///========================================
 button {
   color: rgb(255, 255, 255);
@@ -53,3 +57,18 @@ button {
   }
 }
 ///========================================
+
+
+//header-inner
+.header-inner{
+  background-color: #ffffff;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
