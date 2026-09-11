@@ -1,1 +1,21 @@
-<p>header works!</p>
+<!-- header.component.html -->
+<header class="header-principal">
+  <div class="header-esquerda">
+    <div class="avatar">
+      @if (auth.usuarioAtual()?.fotoUrl) {
+        <img [src]="auth.usuarioAtual()!.fotoUrl" alt="Foto de perfil">
+      } @else {
+        <span>{{ auth.usuarioAtual()?.nomePreferido?.charAt(0) }}</span>
+      }
+    </div>
+    <div>
+      <strong>{{ tituloPortal }}</strong>
+      <p>{{ subtituloPortal }}</p>
+    </div>
+  </div>
+
+  <div class="header-direita">
+    <span class="notificacao">🔔</span>
+    <a (click)="auth.logout()">↪ Sair</a>
+  </div>
+</header>

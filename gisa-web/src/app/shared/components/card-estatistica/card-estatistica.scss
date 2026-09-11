@@ -1,0 +1,29 @@
+.card-stat {
+  background: white;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.icone {
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.valor {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-top: 0.6rem;
+}

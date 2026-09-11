@@ -1,0 +1,16 @@
+<div class="painel">
+  <h3>Gestão Rápida</h3>
+  <div class="grid-acoes">
+    @for (acao of acoes; track acao.rota) {
+     <a class="card-acao">  
+        <span class="icone">{{ acao.icone }}</span>
+        <div>
+          <strong>{{ acao.titulo }}</strong>
+          <p>{{ acao.descricao }}</p>
+        </div>
+      </a> 
+      
+    }
+  </div>
+
+</div>

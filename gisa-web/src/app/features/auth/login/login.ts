@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Auth } from '../../../core/auth/auth';
 
 @Component({
   selector: 'app-login',
@@ -12,6 +13,11 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   usuario: string = '';
   senha: string = '';
+  mostrarSenha: boolean = false;
+  erroUsuario: boolean = false;
+  erroSenha: boolean = false;
+
+  auth = inject(Auth);
 
   constructor(private router: Router) { }
 
@@ -22,25 +28,25 @@ export class LoginComponent {
     if (!usuarioValido) this.mostrarErro('usuario');
     if (!senhaValida) this.mostrarErro('senha');
 
-    if (!usuarioValido || !senhaValida) return; // para aqui se algum falhar
+    if (!usuarioValido || !senhaValida) return;
 
-    // ... segue com o login normalmente
+    this.auth.login({
+      id: '1',
+      nome: 'Maria Souza',
+      nomePreferido: 'Maria',
+      cargo: 'Administrador',
+      corPerfil: '#4a90d9'
+    });
+
+    this.router.navigate(['/administrador']);
   }
-
-
-  mostrarSenha: boolean = false;
 
   toggleSenha() {
     this.mostrarSenha = !this.mostrarSenha;
   }
 
   esqueciSenha() {
-
   }
-
-
-  erroUsuario: boolean = false;
-  erroSenha: boolean = false;
 
   private validarCampo(valor: string, tamanhoMinimo: number): boolean {
     const semEspacos = valor.replace(/\s+/g, '');
@@ -56,6 +62,4 @@ export class LoginComponent {
       else this.erroSenha = false;
     }, 1000);
   }
-
-
 }

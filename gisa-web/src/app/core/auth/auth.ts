@@ -1,4 +1,15 @@
-import { Service } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
+import { Usuario } from '../models/usuario.model';
 
-@Service()
-export class Auth {}
+@Injectable({ providedIn: 'root' })
+export class Auth {
+  usuarioAtual = signal<Usuario | null>(null);
+
+  login(usuario: Usuario) {
+    this.usuarioAtual.set(usuario);
+  }
+
+  logout() {
+    this.usuarioAtual.set(null);
+  }
+}

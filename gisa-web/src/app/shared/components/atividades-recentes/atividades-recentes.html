@@ -1,0 +1,11 @@
+<div class="painel">
+  <h3>Atividades Recentes</h3>
+  <ul>
+    @for (item of atividades; track item.descricao) {
+      <li>
+        <strong>{{ item.descricao }}</strong>
+        <span>{{ item.tempoAtras }}</span>
+      </li>
+    }
+  </ul>
+</div>
