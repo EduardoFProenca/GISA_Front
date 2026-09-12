@@ -30,13 +30,18 @@
   &:hover {
     border-color: #93c5fd;
     background: #f8fafc;
+    cursor: pointer;
   }
 
   .icone {
-    font-size: 1.3rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
     background: #f1f5f9;
-    padding: 0.5rem;
     border-radius: 8px;
+    color: #475569; // <- isso é importante: currentColor do SVG usa essa cor
   }
 
   strong {

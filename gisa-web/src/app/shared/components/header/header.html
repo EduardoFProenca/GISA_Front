@@ -1,11 +1,10 @@
-<!-- header.component.html -->
 <header class="header-principal">
   <div class="header-esquerda">
     <div class="avatar">
       @if (auth.usuarioAtual()?.fotoUrl) {
         <img [src]="auth.usuarioAtual()!.fotoUrl" alt="Foto de perfil">
       } @else {
-        <span>{{ auth.usuarioAtual()?.nomePreferido?.charAt(0) }}</span>
+        <span [innerHTML]="icones.pessoa"></span>
       }
     </div>
     <div>
@@ -15,7 +14,10 @@
   </div>
 
   <div class="header-direita">
-    <span class="notificacao">🔔</span>
-    <a (click)="auth.logout()">↪ Sair</a>
+    <span class="notificacao" [innerHTML]="icones.sino"></span>
+    <a (click)="auth.logout()">
+      <span [innerHTML]="icones.sair"></span>
+      Sair
+    </a>
   </div>
 </header>
