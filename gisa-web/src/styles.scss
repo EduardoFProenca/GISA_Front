@@ -83,6 +83,30 @@ button {
     box-shadow: 0 0 15px rgba(52, 152, 219, 0.7);
   }
 }
+
+// Botões estilo "card" (quick-btn / card-acao) não devem herdar o visual de botão sólido
+.quick-btn,
+.card-acao {
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+  border: none;
+  transform: none;
+  padding: 0;
+
+  &:hover {
+    transform: none;
+    box-shadow: none;
+    background: transparent;
+    border: none;
+  }
+
+  &:active {
+    transform: none;
+    filter: none;
+    box-shadow: none;
+  }
+}
 ///========================================
 
 

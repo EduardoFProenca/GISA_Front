@@ -28,12 +28,16 @@
   transition: 0.2s;
 
   &:hover {
-    border-color: #93c5fd;
-    background: #f8fafc;
+    border-color: #0891b2;
+    background: #0890b231;
     cursor: pointer;
+    .q-icon {
+      background: #0890b2;
+      color: #e5e7eb !important;
+    }
   }
 
-  .icone {
+  .q-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -41,7 +45,8 @@
     height: 32px;
     background: #f1f5f9;
     border-radius: 8px;
-    color: #475569; // <- isso é importante: currentColor do SVG usa essa cor
+    color: #475569 ;
+    flex-shrink: 0;
   }
 
   strong {

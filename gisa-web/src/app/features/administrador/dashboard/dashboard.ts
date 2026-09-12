@@ -15,15 +15,16 @@ import { ICONES } from '../../../shared/icons';
 })
 export class Dashboard {
   acoesRapidas: AcaoRapida[] = [
-  { titulo: 'Cadastrar Paciente', descricao: 'Novo registro no sistema', iconeSvg: ICONES.cadastrarPaciente, rota: '/administrador/pacientes/novo' },
-  { titulo: 'Cadastrar Profissional', descricao: 'Adicionar ao corpo clínico', iconeSvg: ICONES.cadastrarProfissional, rota: '/administrador/profissionais/novo' },
-  { titulo: 'Criação de Agenda', descricao: 'Configurar nova agenda', iconeSvg: ICONES.criacaoAgenda, rota: '/administrador/agenda-medico/nova' },
-  { titulo: 'Criar Consulta', descricao: 'Nova consulta no sistema', iconeSvg: ICONES.calendario, rota: '/administrador/consultas/nova' },
-  { titulo: 'Gestão de Consultas', descricao: 'Visualizar e gerenciar', iconeSvg: ICONES.gestaoConsultas, rota: '/administrador/consultas' },
-  { titulo: 'Gestão de Agenda', descricao: 'Visualizar e configurar', iconeSvg: ICONES.calendario, rota: '/administrador/agenda-medico' },
-  { titulo: 'Gestão de Pacientes', descricao: 'Ver todos os pacientes', iconeSvg: ICONES.gestaoPacientes, rota: '/administrador/pacientes' },
-  { titulo: 'Gestão de Profissionais', descricao: 'Ver corpo clínico', iconeSvg: ICONES.gestaoProfissionais, rota: '/administrador/medicos' },
-  { titulo: 'Controle de Agendamentos', descricao: 'Confirmar e remarcar', iconeSvg: ICONES.calendario, rota: '/administrador/agendamentos' },];
+    { titulo: 'Cadastrar Paciente', descricao: 'Novo registro no sistema', iconeSvg: ICONES.cadastrarPaciente, rota: '/administrador/pacientes/novo' },
+    { titulo: 'Cadastrar Profissional', descricao: 'Adicionar ao corpo clínico', iconeSvg: ICONES.cadastrarProfissional, rota: '/administrador/profissionais/novo' },
+    { titulo: 'Criação de Agenda', descricao: 'Configurar nova agenda', iconeSvg: ICONES.criacaoAgenda, rota: '/administrador/agenda-medico/nova' },
+    { titulo: 'Criar Consulta', descricao: 'Nova consulta no sistema', iconeSvg: ICONES.calendario, rota: '/administrador/consultas/nova' },
+    { titulo: 'Gestão de Consultas', descricao: 'Visualizar e gerenciar', iconeSvg: ICONES.gestaoConsultas, rota: '/administrador/consultas' },
+    { titulo: 'Gestão de Agenda', descricao: 'Visualizar e configurar', iconeSvg: ICONES.calendario, rota: '/administrador/agenda-medico' },
+    { titulo: 'Gestão de Pacientes', descricao: 'Ver todos os pacientes', iconeSvg: ICONES.gestaoPacientes, rota: '/administrador/pacientes' },
+    { titulo: 'Gestão de Profissionais', descricao: 'Ver corpo clínico', iconeSvg: ICONES.gestaoProfissionais, rota: '/administrador/medicos' },
+    { titulo: 'Controle de Agendamentos', descricao: 'Confirmar e remarcar', iconeSvg: ICONES.calendario, rota: '/administrador/agendamentos' },
+  ]; // <--- Quebra de linha aqui melhora a leitura
 
   atividadesRecentes: Atividade[] = [
     { descricao: 'Novo paciente cadastrado', tempoAtras: '10 min atrás' },

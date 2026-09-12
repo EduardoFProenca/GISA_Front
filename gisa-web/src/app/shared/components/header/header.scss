@@ -54,16 +54,16 @@
     font-size: 1.1rem;
   }
 
-  span, a {
-    cursor: pointer;
+  span,
+  a {
     font-size: 0.9rem;
     color: #475569;
     text-decoration: none;
     border-radius: 25%;
     padding: 10px 15px;
     &:hover {
-      color: #1a1a2e;
-      background-color: #94a3b821;
+      background: #0890b231;
+      cursor: pointer;
     }
   }
 }

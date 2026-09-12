@@ -14,9 +14,9 @@
   </div>
 
   <div class="header-direita">
-    <span class="notificacao" [innerHTML]="icones.sino"></span>
+    <span class="notificacao" [innerHTML]="sanitizarIcone(icones.sino)"></span>
     <a (click)="auth.logout()">
-      <span [innerHTML]="icones.sair"></span>
+      <span [innerHTML]="sanitizarIcone(icones.sair)"></span>
       Sair
     </a>
   </div>

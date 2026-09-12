@@ -1,6 +1,6 @@
-import { RouterLink } from '@angular/router';
 import { Component, Input } from '@angular/core';
-
+import { RouterLink } from '@angular/router';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 export interface AcaoRapida {
   titulo: string;
@@ -10,12 +10,17 @@ export interface AcaoRapida {
 }
 
 @Component({
-  imports: [RouterLink],
   selector: 'app-painel-acoes',
-  styleUrl: './painel-acoes.scss',
+  imports: [RouterLink],
   templateUrl: './painel-acoes.html',
+  styleUrl: './painel-acoes.scss'
 })
-
 export class PainelAcoesComponent {
   @Input() acoes: AcaoRapida[] = [];
+
+  constructor(private sanitizer: DomSanitizer) {}
+
+  sanitizarIcone(svg: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(svg);
+  }
 }

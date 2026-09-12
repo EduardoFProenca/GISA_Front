@@ -1,14 +1,14 @@
 <div class="painel">
   <h3>Gestão Rápida</h3>
   <div class="grid-acoes">
-  @for (acao of acoes; track acao.rota) {
-    <a class="card-acao" [routerLink]="acao.rota">
-      <span class="icone" [innerHTML]="acao.iconeSvg"></span>
-      <div>
-        <strong>{{ acao.titulo }}</strong>
-        <p>{{ acao.descricao }}</p>
-      </div>
-    </a>
-  }
-</div>
+    @for (acao of acoes; track acao.rota) {
+      <a class="card-acao" [routerLink]="acao.rota">
+       <div class="q-icon" [innerHTML]="sanitizarIcone(acao.iconeSvg)"></div>
+        <div>
+          <strong>{{ acao.titulo }}</strong>
+          <p>{{ acao.descricao }}</p>
+        </div>
+      </a>
+    }
+  </div>
 </div>
