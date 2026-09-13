@@ -1,9 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 export interface ItemMenu {
   label: string;
-  icone: string;
+  iconeSvg: string;
   rota: string;
 }
 
@@ -16,4 +17,10 @@ export interface ItemMenu {
 export class Menu {
   @Input() itens: ItemMenu[] = [];
   @Input() nomeUsuario: string = '';
+
+  constructor(private sanitizer: DomSanitizer) {}
+
+  sanitizarIcone(svg: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(svg);
+  }
 }

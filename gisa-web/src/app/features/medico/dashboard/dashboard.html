@@ -1,1 +1,20 @@
-<p>dashboard works!</p>
+<app-header tituloPortal="Eduardo F P" subtituloPortal="Portal do Médico" />
+<br>
+<div class="corpo">
+
+    <main class="conteudo">
+        <div class="stats-grid">
+            <app-card-estatistica titulo="Consultas Hoje" [valor]="6" [iconeSvg]="icones.calendario"
+                corIcone="#dbeafe" />
+            <app-card-estatistica titulo="Consultas Hoje" [valor]="6" [iconeSvg]="icones.calendario"
+                corIcone="#dbeafe" />
+            <app-card-estatistica titulo="Consultas Hoje" [valor]="6" [iconeSvg]="icones.calendario"
+                corIcone="#dbeafe" />
+        </div>
+
+        <div class="conteudo-principal">
+            <app-painel-acoes [acoes]="acoesRapidas" />
+            <app-atividades-recentes [atividades]="atividadesRecentes" />
+        </div>
+    </main>
+</div>

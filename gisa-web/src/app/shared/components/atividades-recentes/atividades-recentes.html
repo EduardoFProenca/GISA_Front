@@ -1,10 +1,26 @@
 <div class="painel">
-  <h3>Atividades Recentes</h3>
+  <h3>Atividades </h3>
   <ul>
     @for (item of atividades; track item.descricao) {
       <li>
-        <strong>{{ item.descricao }}</strong>
-        <span>{{ item.tempoAtras }}</span>
+        <div class="info">
+          <strong>{{ item.descricao }}</strong>
+          <span>{{ item.tempoAtras }}</span>
+        </div>
+
+        @if (item.acoes && item.acoes.length > 0) {
+          <div class="acoes-atividade">
+            @for (acao of item.acoes; track acao.label) {
+              <button (click)="acao.acao()" [title]="acao.label">
+                @if (acao.iconeSvg) {
+                  <span [innerHTML]="sanitizarIcone(acao.iconeSvg)"></span>
+                } @else {
+                  {{ acao.label }}
+                }
+              </button>
+            }
+          </div>
+        }
       </li>
     }
   </ul>

@@ -1,17 +1,30 @@
 import { Component, Input } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-@Component({
-  imports: [],
-  selector: 'app-atividades-recentes',
-  styleUrl: './atividades-recentes.scss',
-  templateUrl: './atividades-recentes.html',
-})
-
-export class AtividadesRecentes {
-  @Input() atividades: Atividade[] = [];
+export interface AcaoAtividade {
+  label: string;
+  iconeSvg?: string;
+  acao: () => void;
 }
 
 export interface Atividade {
   descricao: string;
   tempoAtras: string;
+  acoes?: AcaoAtividade[];
+}
+
+@Component({
+  selector: 'app-atividades-recentes',
+  imports: [],
+  templateUrl: './atividades-recentes.html',
+  styleUrl: './atividades-recentes.scss'
+})
+export class AtividadesRecentes {
+  @Input() atividades: Atividade[] = [];
+
+  constructor(private sanitizer: DomSanitizer) {}
+
+  sanitizarIcone(svg: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(svg);
+  }
 }

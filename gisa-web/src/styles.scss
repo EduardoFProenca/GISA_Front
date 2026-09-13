@@ -60,10 +60,10 @@ h6 {
 ///========================================
 button {
   color: rgb(255, 255, 255);
-  background: rgba(33, 50, 71, 0.733);
+  background: rgba(203, 217, 233, 0.733);
   padding: 10px 20px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(161, 203, 231, 0.1);
   text-align: center;
   font-size: 1.1rem;
   cursor: pointer;
@@ -73,7 +73,7 @@ button {
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    background: rgba(52, 68, 121, 0.253);
+    background: rgba(43, 106, 131, 0.308);
     border: 1px solid rgb(255, 255, 255);
   }
 

@@ -17,13 +17,19 @@ ul {
 }
 
 li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 0.85rem 0;
   border-bottom: 1px solid #f1f5f9;
+  gap: 0.75rem;
 
   &:last-child {
     border-bottom: none;
   }
+}
 
+.info {
   strong {
     display: block;
     font-size: 0.85rem;
@@ -33,5 +39,18 @@ li {
   span {
     font-size: 0.75rem;
     color: #94a3b8;
+  }
+}
+
+.acoes-atividade {
+  display: flex;
+  gap: 0.4rem;
+  flex-shrink: 0;
+
+  button {
+    font-size: 0.70rem;
+    padding: 1;
+    color: black;
+
   }
 }

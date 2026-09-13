@@ -35,6 +35,9 @@
       background: #0890b2;
       color: #e5e7eb !important;
     }
+    &:active {
+      background: #0891b2;
+    }
   }
 
   .q-icon {
@@ -45,7 +48,7 @@
     height: 32px;
     background: #f1f5f9;
     border-radius: 8px;
-    color: #475569 ;
+    color: #475569;
     flex-shrink: 0;
   }
 

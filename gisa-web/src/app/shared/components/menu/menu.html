@@ -7,7 +7,7 @@
     @for (item of itens; track item.rota) {
       <li>
         <a [routerLink]="item.rota" routerLinkActive="ativo">
-          <span class="menu-icone">{{ item.icone }}</span>
+          <span class="menu-icone" [innerHTML]="sanitizarIcone(item.iconeSvg)"></span>
           {{ item.label }}
         </a>
       </li>

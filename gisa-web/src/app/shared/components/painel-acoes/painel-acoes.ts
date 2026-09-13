@@ -11,7 +11,7 @@ export interface AcaoRapida {
 
 @Component({
   selector: 'app-painel-acoes',
-  imports: [RouterLink],
+  imports: [RouterLink, ],
   templateUrl: './painel-acoes.html',
   styleUrl: './painel-acoes.scss'
 })
