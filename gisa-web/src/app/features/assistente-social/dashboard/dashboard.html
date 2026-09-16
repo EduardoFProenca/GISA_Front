@@ -1,1 +1,18 @@
-<p>dashboard works!</p>
+<app-header tituloPortal="Portal do Assistente Social" subtituloPortal="APAE — Cidade do Sudeste" />
+
+<div class="corpo">
+  <br>
+
+  <main class="conteudo">
+    <div class="stats-grid">
+      <app-card-estatistica titulo="Casos Ativos" [valor]="27" [iconeSvg]="icones.gestaoPacientes" corIcone="#dbeafe" />
+      <app-card-estatistica titulo="PTS Atualizados" [valor]="9" [iconeSvg]="icones.gestaoAtividades" corIcone="#dcfce7" />
+      <app-card-estatistica titulo="Visitas do Mês" [valor]="15" [iconeSvg]="icones.calendario" corIcone="#fef3c7" />
+    </div>
+
+    <div class="conteudo-principal">
+      <app-painel-acoes [acoes]="acoesRapidas" />
+      <app-atividades-recentes [atividades]="atividadesRecentes" />
+    </div>
+  </main>
+</div>

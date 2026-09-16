@@ -1,1 +1,17 @@
-<p>dashboard works!</p>
+<app-header tituloPortal="Portal da Recepção" subtituloPortal="APAE — Cidade do Sudeste" />
+
+<div class="corpo">
+    <br>
+  <main class="conteudo">
+    <div class="stats-grid">
+      <app-card-estatistica titulo="Pacientes Hoje" [valor]="14" [iconeSvg]="icones.gestaoPacientes" corIcone="#dbeafe" />
+      <app-card-estatistica titulo="Presenças Confirmadas" [valor]="11" [iconeSvg]="icones.gestaoConsultas" corIcone="#dcfce7" />
+      <app-card-estatistica titulo="Recusas do Mês" [valor]="3" [iconeSvg]="icones.cadastrarPaciente" corIcone="#fef3c7" />
+    </div>
+
+    <div class="conteudo-principal">
+      <app-painel-acoes [acoes]="acoesRapidas" />
+      <app-atividades-recentes [atividades]="atividadesRecentes" />
+    </div>
+  </main>
+</div>
