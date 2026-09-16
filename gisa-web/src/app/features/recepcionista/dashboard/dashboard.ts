@@ -8,7 +8,7 @@ import { ICONES } from '../../../shared/icons';
 
 @Component({
   selector: 'app-dashboard-recepcionista',
-  imports: [CardEstatistica, PainelAcoesComponent, AtividadesRecentes, Header, Menu],
+  imports: [CardEstatistica, PainelAcoesComponent, AtividadesRecentes, Header],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
