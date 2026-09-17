@@ -7,6 +7,7 @@ import { Menu } from '../../../shared/components/menu/menu';
 import { ICONES } from '../../../shared/icons';
 
 
+
 @Component({
   selector: 'app-dashboard-administrador',
   imports: [CardEstatistica, PainelAcoesComponent, AtividadesRecentes, Header, Menu],
