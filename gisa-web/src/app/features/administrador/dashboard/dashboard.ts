@@ -8,12 +8,12 @@ import { ICONES } from '../../../shared/icons';
 
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-dashboard-administrador',
   imports: [CardEstatistica, PainelAcoesComponent, AtividadesRecentes, Header, Menu],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
-export class Dashboard {
+export class DashboardAdministrador {
   acoesRapidas: AcaoRapida[] = [
     { titulo: 'Cadastrar Paciente', descricao: 'Novo registro no sistema', iconeSvg: ICONES.cadastrarPaciente, rota: '/administrador/pacientes/novo' },
     { titulo: 'Cadastrar Profissional', descricao: 'Adicionar ao corpo clínico', iconeSvg: ICONES.cadastrarProfissional, rota: '/administrador/profissionais/novo' },
