@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+//import { Layout } from '../../../core/layout/layout';
 
 export interface ItemMenu {
   label: string;
@@ -17,6 +18,8 @@ export interface ItemMenu {
 export class Menu {
   @Input() itens: ItemMenu[] = [];
   @Input() nomeUsuario: string = '';
+
+  //layout = inject(Layout);
 
   constructor(private sanitizer: DomSanitizer) {}
 
