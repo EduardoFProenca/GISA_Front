@@ -1,0 +1,61 @@
+<div class="secao">
+  <h3>Informações Profissionais</h3>
+
+  <div class="linha-form">
+    <div class="campo">
+      <label for="especialidade">Especialidade *</label>
+      <input type="text" id="especialidade" name="especialidade" [(ngModel)]="especialidade" placeholder="Digite para buscar especialidades...">
+    </div>
+    <div class="campo">
+      <label for="registro">Registro Profissional *</label>
+      <input type="text" id="registro" name="registro" [(ngModel)]="registroProfissional" placeholder="Ex: CRM-SP 123456">
+    </div>
+  </div>
+
+  <div class="linha-form">
+    <div class="campo">
+      <label for="estadoRegistro">Estado do Registro</label>
+      <select id="estadoRegistro" name="estadoRegistro" [(ngModel)]="estadoRegistro">
+        <option value="" disabled selected>Selecione o estado</option>
+        <option value="SP">São Paulo</option>
+        <option value="RJ">Rio de Janeiro</option>
+        <option value="MG">Minas Gerais</option>
+      </select>
+    </div>
+    <div class="campo">
+      <label for="cargaHoraria">Carga Horária Semanal</label>
+      <input type="text" id="cargaHoraria" name="cargaHoraria" [(ngModel)]="cargaHoraria" placeholder="Ex: 40 horas">
+    </div>
+  </div>
+
+  <div class="linha-checkbox">
+    <span class="rotulo-secundario">Pessoa Jurídica (PJ)</span>
+    <label class="checkbox-inline">
+      <input type="checkbox" name="atuaComoPJ" [(ngModel)]="atuaComoPJ">
+      Profissional atua como PJ
+    </label>
+  </div>
+
+  @if (atuaComoPJ) {
+    <div class="linha-form bloco-pj">
+      <div class="campo">
+        <label for="cnpj">CNPJ *</label>
+        <input type="text" id="cnpj" name="cnpj" [(ngModel)]="cnpj" placeholder="00.000.000/0000-00">
+      </div>
+      <div class="campo">
+        <label for="razaoSocial">Razão Social *</label>
+        <input type="text" id="razaoSocial" name="razaoSocial" [(ngModel)]="razaoSocial" placeholder="Ex: Roberto Almeida Serviços Médicos LTDA">
+      </div>
+    </div>
+    <div class="linha-form">
+      <div class="campo">
+        <label for="nomeFantasia">Nome Fantasia</label>
+        <input type="text" id="nomeFantasia" name="nomeFantasia" [(ngModel)]="nomeFantasia" placeholder="Ex: Clínica Dr. Roberto">
+      </div>
+      <div class="campo">
+        <label for="inscricaoEstadual">Inscrição Estadual</label>
+        <input type="text" id="inscricaoEstadual" name="inscricaoEstadual" [(ngModel)]="inscricaoEstadual" placeholder="000.000.000.000">
+      </div>
+    </div>
+  }
+</div>

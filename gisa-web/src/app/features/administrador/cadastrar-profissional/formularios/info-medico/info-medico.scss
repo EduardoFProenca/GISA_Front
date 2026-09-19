@@ -1,0 +1,16 @@
+
+.bloco-pj {
+  margin-top: 1rem;
+  animation: expandir 0.2s ease-out;
+}
+
+@keyframes expandir {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
