@@ -1,13 +1,8 @@
-<!-- cadastrar-profissional.html -->
-<div class="pagina-cadastro">
-  <div class="topo-form">
-    <a class="voltar" routerLink="/administrador">← Voltar</a>
-    <div class="titulo-form">
-      <h2>Cadastrar Novo Profissional</h2>
-      <p>Adicionar ao corpo clínico</p>
-    </div>
-    <button class="salvar-btn">💾 Salvar Cadastro</button>
-  </div>
+<app-cabecalho-pagina
+  titulo="Cadastrar Profissional"
+  [mostrarSalvar]="true"
+  (salvar)="salvarCadastro()">
+</app-cabecalho-pagina>
 
   <div class="card-form">
     <app-dados-pessoais />
@@ -21,4 +16,3 @@
     <hr>
     <app-contato />
   </div>
-</div>

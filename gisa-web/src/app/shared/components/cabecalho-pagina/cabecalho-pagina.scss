@@ -1,0 +1,50 @@
+.cabecalho-pagina {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.cabecalho-esquerda {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-icone {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 6px;
+  color: #475569;
+
+  &:hover {
+    background: #0890b231;
+  }
+}
+
+.titulo-pagina {
+  font-size: 1rem;
+  color: #1a1a2e;
+  text-align: center;
+}
+
+.btn-salvar {
+  background: #0891b2;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+
+  &:hover {
+    background: #0e7490;
+  }
+}
