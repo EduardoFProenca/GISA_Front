@@ -1,17 +1,14 @@
-// cadastro-profissional.ts
-import { Component, signal } from '@angular/core';
-import { SelecaoTipo, TipoProfissional } from './selecao-tipo/selecao-tipo';
-import { DadosPessoais } from './formularios/dados-pessoais/dados-pessoais';
-import { Contato } from './formularios/contato/contato';
-import { InfoMedico } from './formularios/info-medico/info-medico';
-import { InfoAssistenteSocial } from './formularios/info-assistente-social/info-assistente-social';
+import { Component } from '@angular/core';
+import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
+import { Contato } from '../../../shared/components/contato/contato';
+import { InfoEspecialista } from './formularios/info-especialista/info-especialista';
+import { InfoUsuario } from './formularios/info-usuario/info-usuario';
+
 
 @Component({
-  selector: 'app-cadastro-profissional',
-  imports: [SelecaoTipo, DadosPessoais, Contato, InfoMedico, InfoAssistenteSocial],
+  selector: 'app-cadastrar-profissional',
+  imports: [DadosPessoais, Contato, InfoEspecialista, InfoUsuario],
   templateUrl: './cadastrar-profissional.html',
-   styleUrl: './cadastrar-profissional.scss',
+  styleUrl: './cadastrar-profissional.scss',
 })
-export class CadastroProfissional {
-  tipo = signal<TipoProfissional | null>(null);
-}
+export class CadastroProfissional {}

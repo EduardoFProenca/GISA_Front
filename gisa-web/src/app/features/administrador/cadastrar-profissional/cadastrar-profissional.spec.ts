@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CadastrarProfissional } from './cadastrar-profissional';
+import { CadastroProfissional } from './cadastrar-profissional';
 
-describe('CadastrarProfissional', () => {
-  let component: CadastrarProfissional;
-  let fixture: ComponentFixture<CadastrarProfissional>;
+describe('CadastroProfissional', () => {
+  let component: CadastroProfissional;
+  let fixture: ComponentFixture<CadastroProfissional>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CadastrarProfissional],
+      imports: [CadastroProfissional],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CadastrarProfissional);
+    fixture = TestBed.createComponent(CadastroProfissional);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

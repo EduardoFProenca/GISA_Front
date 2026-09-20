@@ -1,0 +1,42 @@
+<div class="secao">
+  <h3>Acesso ao Sistema</h3>
+
+  <div class="linha-form">
+    <div class="campo">
+      <label for="idGerado">ID de Acesso</label>
+      <div class="campo-copiavel">
+        <input type="text" id="idGerado" [value]="idGerado" readonly>
+        <button type="button" class="btn-copiar" (click)="copiarId()">
+          {{ idCopiado ? '✓ Copiado' : 'Copiar' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="campo">
+      <label for="senha">Senha Inicial *</label>
+      <input type="text" id="senha" name="senha" [(ngModel)]="senha" placeholder="Cole o ID gerado aqui">
+    </div>
+  </div>
+
+  <div class="campo">
+    <label for="perfil">Perfil *</label>
+    <select id="perfil" name="perfil" [(ngModel)]="perfil">
+      <option value="" disabled selected>Selecione o perfil</option>
+      @for (p of perfis; track p.valor) {
+        <option [value]="p.valor">{{ p.label }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="permissoes-secao">
+    <label>Permissões</label>
+    <div class="grid-permissoes">
+      @for (perm of permissoes; track perm.chave) {
+        <label class="checkbox-inline">
+          <input type="checkbox" [name]="perm.chave" [(ngModel)]="perm.marcado">
+          {{ perm.label }}
+        </label>
+      }
+    </div>
+  </div>
+</div>

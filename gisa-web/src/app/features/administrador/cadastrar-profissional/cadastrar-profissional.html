@@ -1,18 +1,24 @@
+<!-- cadastrar-profissional.html -->
 <div class="pagina-cadastro">
-
+  <div class="topo-form">
+    <a class="voltar" routerLink="/administrador">← Voltar</a>
+    <div class="titulo-form">
+      <h2>Cadastrar Novo Profissional</h2>
+      <p>Adicionar ao corpo clínico</p>
+    </div>
+    <button class="salvar-btn">💾 Salvar Cadastro</button>
+  </div>
 
   <div class="card-form">
-    
-
-    @if (!tipo()) {
-      <app-selecao-tipo (tipoSelecionado)="tipo.set($event)" />
-    } @else {
-      @switch (tipo()) {
-        @case ('medico') { <app-info-medico /> }
-        @case ('assistente-social') { <app-info-assistente-social /> }
-      }
-    }
-
-
+    <app-dados-pessoais />
+    <br>
+    <hr>
+    <app-info-usuario />
+    <br>
+    <hr>
+    <app-info-especialista />
+    <br>
+    <hr>
+    <app-contato />
   </div>
 </div>
