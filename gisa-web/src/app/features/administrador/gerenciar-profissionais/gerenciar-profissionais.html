@@ -1,0 +1,27 @@
+<app-cabecalho-pagina titulo="Gestão de Profissionais" textoAcao="Novo Profissional"
+    rotaAcao="/administrador/profissionais/novo" />
+
+<div class="pagina-profissionais">
+
+
+    <div class="stats-grid">
+        <app-card-estatistica titulo="Total de Profissionais" [valor]="todosProfissionais.length"
+            [iconeSvg]="icones.gestaoProfissionais" corIcone="#dbeafe" />
+        <app-card-estatistica titulo="Ativos" [valor]="3" [iconeSvg]="icones.gestaoConsultas" corIcone="#dcfce7" />
+        <app-card-estatistica titulo="Inativos" [valor]="1" [iconeSvg]="icones.cadastrarPaciente" corIcone="#fee2e2" />
+    </div>
+    <div class="painel-busca">
+        <div>
+            <app-busca-filtro placeholder="Buscar por nome ou especialidade..." [filtrosDisponiveis]="filtros"
+                (buscaAlterada)="aplicarBusca($event)" />
+        </div>
+        <br><br>
+        <div class="grid-profissionais">
+            @for (prof of profissionaisFiltrados; track prof.id) {
+            <app-card-profissional [profissional]="prof" />
+            } @empty {
+            <p class="vazio">Nenhum profissional encontrado.</p>
+            }
+        </div>
+    </div>
+</div>

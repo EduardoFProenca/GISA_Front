@@ -1,8 +1,11 @@
 import { Routes } from '@angular/router';
-import { DashboardAdministrador } from './features/administrador/dashboard/dashboard';
-import { CadastroProfissional } from './features/administrador/cadastrar-profissional/cadastrar-profissional';
+import { LoginComponent } from './features/auth/login/login';
 
 export const routes: Routes = [
-  { path: '', component: DashboardAdministrador }, // tela inicial
-  { path: 'administrador/profissionais/novo', component: CadastroProfissional },
+  { path: 'login', component: LoginComponent },
+  {
+    path: 'administrador',
+    loadChildren: () => import('./features/administrador/administrador.routes').then(m => m.administradorRoutes)
+  },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
 ];

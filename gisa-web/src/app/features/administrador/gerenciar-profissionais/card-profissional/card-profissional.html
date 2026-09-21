@@ -1,0 +1,20 @@
+<div class="card-prof">
+  <div class="avatar-prof">
+    {{ profissional.nome.charAt(0) }}
+  </div>
+
+  <div class="corpo-prof">
+    <div class="topo-prof">
+      <strong>{{ profissional.nome }}</strong>
+      <button type="button" class="btn-editar" title="Editar">
+        <span [innerHTML]="sanitizarIcone(icones.editar)"></span>
+      </button>
+    </div>
+    <p class="especialidade-prof">{{ profissional.especialidade }}</p>
+    <p class="registro-prof">CRM: {{ profissional.registro }}</p>
+
+    <span class="status-badge" [class.ativo]="profissional.ativo" [class.inativo]="!profissional.ativo">
+      {{ profissional.ativo ? 'Ativo' : 'Inativo' }}
+    </span>
+  </div>
+</div>

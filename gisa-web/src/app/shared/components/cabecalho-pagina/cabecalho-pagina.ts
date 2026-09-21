@@ -14,6 +14,8 @@ export class CabecalhoPagina {
 
   @Input() titulo: string = '';
   @Input() mostrarSalvar: boolean = false;
+  @Input() textoAcao: string = '';
+  @Input() rotaAcao: string = '';
   @Output() salvar = new EventEmitter<void>();
 
   voltar() {
@@ -22,5 +24,11 @@ export class CabecalhoPagina {
 
   aoClicarSalvar() {
     this.salvar.emit();
+  }
+
+  aoClicarAcao() {
+    if (this.rotaAcao) {
+      this.router.navigateByUrl(this.rotaAcao);
+    }
   }
 }

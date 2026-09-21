@@ -1,0 +1,27 @@
+<div class="busca-filtro">
+  <div class="campo-busca">
+    <span class="icone-busca" [innerHTML]="sanitizarIcone(icones.buscar)"></span>
+    <input
+      type="text"
+      [(ngModel)]="termo"
+      [placeholder]="placeholder"
+      (ngModelChange)="emitirMudanca()">
+  </div>
+
+  @if (filtrosDisponiveis.length > 0) {
+    <div class="filtros">
+      @for (filtro of filtrosDisponiveis; track filtro.chave) {
+        <select
+          [(ngModel)]="filtrosSelecionados[filtro.chave]"
+          (ngModelChange)="emitirMudanca()">
+          <option value="">{{ filtro.label }}</option>
+          @for (opcao of filtro.opcoes; track opcao.valor) {
+            <option [value]="opcao.valor">{{ opcao.label }}</option>
+          }
+        </select>
+      }
+    </div>
+  }
+
+  <span class="icone-filtro" [innerHTML]="sanitizarIcone(icones.filtro)" title="Filtros disponíveis"></span>
+</div>
