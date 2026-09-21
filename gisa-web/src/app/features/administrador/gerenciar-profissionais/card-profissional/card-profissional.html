@@ -1,4 +1,4 @@
-<div class="card-prof">
+<div class="card-prof" (click)="abrirDetalhe()">
   <div class="avatar-prof">
     {{ profissional.nome.charAt(0) }}
   </div>
@@ -6,7 +6,7 @@
   <div class="corpo-prof">
     <div class="topo-prof">
       <strong>{{ profissional.nome }}</strong>
-      <button type="button" class="btn-editar" title="Editar">
+      <button type="button" class="btn-editar" title="Editar" (click)="abrirEdicao($event)">
         <span [innerHTML]="sanitizarIcone(icones.editar)"></span>
       </button>
     </div>
