@@ -9,8 +9,7 @@ export const administradorRoutes: Routes = [
   { path: '', component: DashboardAdministrador },
   { path: 'profissionais/novo', component: CadastroProfissional },
   { path: 'profissionais/gerenciar', component: GerenciarProfissionais },
-  { path: 'profissionais/novo', component: CadastroProfissional },
-  { path: 'profissionais/:id', component: DetalheProfissional },        
-  { path: 'profissionais/:id/editar', component: CadastroProfissional }, 
+  { path: 'profissionais/:id', component: DetalheProfissional },
+  { path: 'profissionais/:id/editar', component: CadastroProfissional },
   { path: 'pacientes/novo', component: CadastrarPaciente },
 ];

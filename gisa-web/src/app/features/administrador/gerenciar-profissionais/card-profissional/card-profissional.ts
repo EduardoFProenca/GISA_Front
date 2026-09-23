@@ -6,9 +6,9 @@ import { ICONES } from '../../../../shared/icons';
 export interface ProfissionalCard {
   id: string;
   nome: string;
-  especialidade: string;
-  registro: string;
-  ativo: boolean;
+  cargo: string;
+  crm: string;
+  statusCadastro: string;
 }
 
 @Component({
@@ -17,6 +17,7 @@ export interface ProfissionalCard {
   templateUrl: './card-profissional.html',
   styleUrl: './card-profissional.scss',
 })
+
 export class CardProfissional {
   @Input() profissional!: ProfissionalCard;
   icones = ICONES;
@@ -34,7 +35,17 @@ export class CardProfissional {
   }
 
   abrirEdicao(event: Event) {
-    event.stopPropagation(); // impede que o clique "vaze" pro card e dispare abrirDetalhe() também
+    event.stopPropagation();
     this.router.navigateByUrl(`/administrador/profissionais/${this.profissional.id}/editar`);
   }
+
+  get classeStatus(): string {
+    return this.profissional.statusCadastro.toLowerCase();
+  }
+
+    todosProfissionais: ProfissionalCard[] = [
+    { id: '1', nome: 'Dr. Roberto Almeida', cargo: 'Médico', crm: 'CRM-SP 123456', statusCadastro: 'Ativo' },
+    { id: '2', nome: 'Dra. Ana Souza', cargo: 'Médico', crm: 'CRM-SP 654321', statusCadastro: 'Ativo' },
+    { id: '3', nome: 'Carlos Mendes', cargo: 'Assistente Social', crm: 'CREFITO-3 98765', statusCadastro: 'Inativo' },
+  ];
 }
