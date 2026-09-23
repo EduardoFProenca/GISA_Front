@@ -1,1 +1,12 @@
-<p>cadastrar-paciente works!</p>
+<app-cabecalho-pagina
+  titulo="Cadastrar Paciente"
+  [mostrarSalvar]="true"
+  (salvar)="salvarCadastro()">
+</app-cabecalho-pagina>
+
+<div class="card-form">
+  <app-dados-pessoais />
+  <br>
+  <hr>
+  <app-contato />
+</div>
