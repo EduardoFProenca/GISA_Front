@@ -10,11 +10,10 @@
         <span [innerHTML]="sanitizarIcone(icones.editar)"></span>
       </button>
     </div>
-    <p class="especialidade-prof">{{ profissional.especialidade }}</p>
-    <p class="registro-prof">CRM: {{ profissional.registro }}</p>
+    <p class="cargo-prof">{{ profissional.cargo }}</p>
+    <p class="crm-prof">CRM: {{ profissional.crm }}</p>
 
-    <span class="status-badge" [class.ativo]="profissional.ativo" [class.inativo]="!profissional.ativo">
-      {{ profissional.ativo ? 'Ativo' : 'Inativo' }}
+    <span class="status-badge" [class]="classeStatus">
+      {{ profissional.statusCadastro }}
     </span>
   </div>
-</div>

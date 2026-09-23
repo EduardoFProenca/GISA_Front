@@ -1,0 +1,44 @@
+.paginacao {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.5rem;
+}
+
+.btn-pagina {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 0.6rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 8px;
+  transform: none;
+
+  &:hover:not(:disabled) {
+    border-color: #93c5fd;
+    background: #eff6ff;
+    transform: none;
+    box-shadow: none;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &.ativo {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: white;
+  }
+
+  &:active {
+    transform: none;
+    filter: none;
+    box-shadow: none;
+  }
+}

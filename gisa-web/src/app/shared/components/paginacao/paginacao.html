@@ -1,0 +1,29 @@
+@if (totalPaginas > 1) {
+  <div class="paginacao">
+    <button
+      type="button"
+      class="btn-pagina"
+      [disabled]="paginaAtual === 1"
+      (click)="irPara(paginaAtual - 1)">
+      ‹
+    </button>
+
+    @for (p of paginas; track p) {
+      <button
+        type="button"
+        class="btn-pagina"
+        [class.ativo]="p === paginaAtual"
+        (click)="irPara(p)">
+        {{ p }}
+      </button>
+    }
+
+    <button
+      type="button"
+      class="btn-pagina"
+      [disabled]="paginaAtual === totalPaginas"
+      (click)="irPara(paginaAtual + 1)">
+      ›
+    </button>
+  </div>
+}
