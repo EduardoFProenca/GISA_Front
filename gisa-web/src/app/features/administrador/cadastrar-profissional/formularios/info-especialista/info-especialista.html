@@ -1,90 +1,93 @@
 <div class="secao">
-    <h3>Informações Profissionais</h3>
-
-    <!-- Especialidades (múltiplas) -->
-    <div class="lista-secao">
-        <label>Especialidade *</label>
-
-        @for (esp of especialidades; track $index) {
-        <div class="linha-lista">
-            <select name="especialidade-{{ $index }}" [(ngModel)]="especialidades[$index]">
-                <option value="" disabled selected>Selecione a especialidade</option>
-                @for (opcao of opcoesEspecialidade; track opcao.valor) {
-                <option [value]="opcao.valor">{{ opcao.label }}</option>
-                }
-            </select>
-            <button type="button" class="remover-item" (click)="removerEspecialidade($index)" title="Remover">✕</button>
-        </div>
-        }
-
-        <button type="button" class="add-item" (click)="adicionarEspecialidade()">+ Adicionar especialidade</button>
-    </div>
-
-    <div class="linha-form">
-        <div class="campo">
-            <label for="registro">Registro Profissional *</label>
-            <input type="text" id="registro" name="registro" [(ngModel)]="registroProfissional"
-                placeholder="Ex: CRM-SP 123456">
-        </div>
-        <div class="campo">
-            <label for="codigoCBO">Código (CBO) *</label>
-            <input type="text" id="codigoCBO" name="codigoCBO" [(ngModel)]="codigoCBO" placeholder="Ex: 2251-25">
-        </div>
-    </div>
-
-    <!-- Jornada de Trabalho -->
-    <div class="lista-secao">
-        <label>Jornada de Trabalho</label>
-
-        @for (jornada of jornadas; track $index) {
-        <div class="linha-jornada">
-            <select name="dia-{{ $index }}" [(ngModel)]="jornada.diaSemana">
-                <option value="" disabled selected>Dia</option>
-                @for (dia of diasSemana; track dia.valor) {
-                <option [value]="dia.valor">{{ dia.label }}</option>
-                }
-            </select>
-            <input type="time" name="inicio-{{ $index }}" [(ngModel)]="jornada.horaInicio">
-            <span class="separador">até</span>
-            <input type="time" name="termino-{{ $index }}" [(ngModel)]="jornada.horaTermino">
-            <button type="button" class="remover-item" (click)="removerJornada($index)" title="Remover">✕</button>
-        </div>
-        }
-
-        <button type="button" class="add-item" (click)="adicionarJornada()">+ Adicionar horário</button>
-    </div>
-    <br>
-    <div class="linha-checkbox">
-        <span class="rotulo-secundario">Pessoa Jurídica (PJ)</span>
+    <div class="cabecalho-checkbox">
+        <h3>Especialista</h3>
         <label class="checkbox-inline">
-            <input type="checkbox" name="atuaComoPJ" [(ngModel)]="atuaComoPJ">
-            Profissional atua como PJ
+            <input type="checkbox" name="ehEspecialista" [(ngModel)]="ehEspecialista">
+            É especialista
         </label>
     </div>
 
-    @if (atuaComoPJ) {
-    <div class="linha-form bloco-pj">
-        <div class="campo">
-            <label for="cnpj">CNPJ *</label>
-            <input type="text" id="cnpj" name="cnpj" [(ngModel)]="cnpj" placeholder="00.000.000/0000-00">
+    @if (ehEspecialista) {
+    <div class="conteudo-especialista">
+        <div class="lista-secao">
+            <label>Especialidade *</label>
+
+            @for (esp of especialidades; track $index) {
+            <div class="linha-lista">
+                <select name="especialidade-{{ $index }}" [(ngModel)]="especialidades[$index]">
+                    <option value="" disabled selected>Selecione a especialidade</option>
+                    @for (opcao of opcoesEspecialidade; track opcao.valor) {
+                    <option [value]="opcao.valor">{{ opcao.label }}</option>
+                    }
+                </select>
+                <button type="button" class="remover-item" (click)="removerEspecialidade($index)"
+                    title="Remover">✕</button>
+            </div>
+            }
+
+            <button type="button" class="add-item" (click)="adicionarEspecialidade()">+ Adicionar especialidade</button>
         </div>
+
         <div class="campo">
-            <label for="razaoSocial">Razão Social *</label>
-            <input type="text" id="razaoSocial" name="razaoSocial" [(ngModel)]="razaoSocial"
-                placeholder="Ex: Roberto Almeida Serviços Médicos LTDA">
+            <label for="registro">Registro Profissional (CRM) *</label>
+            <input type="text" id="registro" name="registro" [(ngModel)]="registroProfissional"
+                placeholder="Ex: CRM-SP 123456">
         </div>
-    </div>
-    <div class="linha-form">
-        <div class="campo">
-            <label for="nomeFantasia">Nome Fantasia</label>
-            <input type="text" id="nomeFantasia" name="nomeFantasia" [(ngModel)]="nomeFantasia"
-                placeholder="Ex: Clínica Dr. Roberto">
+
+        <div class="lista-secao">
+            <label>Jornada de Trabalho</label>
+
+            @for (jornada of jornadas; track $index) {
+            <div class="linha-jornada">
+                <select name="dia-{{ $index }}" [(ngModel)]="jornada.diaSemana">
+                    <option value="" disabled selected>Dia</option>
+                    @for (dia of diasSemana; track dia.valor) {
+                    <option [value]="dia.valor">{{ dia.label }}</option>
+                    }
+                </select>
+                <input type="time" name="inicio-{{ $index }}" [(ngModel)]="jornada.horaInicio">
+                <span class="separador">até</span>
+                <input type="time" name="termino-{{ $index }}" [(ngModel)]="jornada.horaTermino">
+                <button type="button" class="remover-item" (click)="removerJornada($index)" title="Remover">✕</button>
+            </div>
+            }
+
+            <button type="button" class="add-item" (click)="adicionarJornada()">+ Adicionar horário</button>
         </div>
-        <div class="campo">
-            <label for="inscricaoEstadual">Inscrição Estadual</label>
-            <input type="text" id="inscricaoEstadual" name="inscricaoEstadual" [(ngModel)]="inscricaoEstadual"
-                placeholder="000.000.000.000">
+        <br>
+        <div class="linha-checkbox">
+            <span class="rotulo-secundario">Pessoa Jurídica (PJ)</span>
+            <label class="checkbox-inline">
+                <input type="checkbox" name="atuaComoPJ" [(ngModel)]="atuaComoPJ">
+                Profissional atua como PJ
+            </label>
         </div>
+
+        @if (atuaComoPJ) {
+        <div class="linha-form bloco-pj">
+            <div class="campo">
+                <label for="cnpj">CNPJ *</label>
+                <input type="text" id="cnpj" name="cnpj" [(ngModel)]="cnpj" placeholder="00.000.000/0000-00">
+            </div>
+            <div class="campo">
+                <label for="razaoSocial">Razão Social *</label>
+                <input type="text" id="razaoSocial" name="razaoSocial" [(ngModel)]="razaoSocial"
+                    placeholder="Ex: Roberto Almeida Serviços Médicos LTDA">
+            </div>
+        </div>
+        <div class="linha-form">
+            <div class="campo">
+                <label for="nomeFantasia">Nome Fantasia</label>
+                <input type="text" id="nomeFantasia" name="nomeFantasia" [(ngModel)]="nomeFantasia"
+                    placeholder="Ex: Clínica Dr. Roberto">
+            </div>
+            <div class="campo">
+                <label for="inscricaoEstadual">Inscrição Estadual</label>
+                <input type="text" id="inscricaoEstadual" name="inscricaoEstadual" [(ngModel)]="inscricaoEstadual"
+                    placeholder="000.000.000.000">
+            </div>
+        </div>
+        }
     </div>
     }
 </div>

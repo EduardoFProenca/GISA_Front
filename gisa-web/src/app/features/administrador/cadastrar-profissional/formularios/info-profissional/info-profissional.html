@@ -1,0 +1,19 @@
+<div class="secao">
+  <h3>Profissional</h3>
+
+  <div class="linha-form">
+    <div class="campo">
+      <label for="cargo">Cargo *</label>
+      <select id="cargo" name="cargo" [(ngModel)]="cargo">
+        <option value="" disabled selected>Selecione o cargo</option>
+        @for (c of cargos; track c.valor) {
+          <option [value]="c.valor">{{ c.label }}</option>
+        }
+      </select>
+    </div>
+    <div class="campo">
+      <label for="codigoCBO">Código (CBO)</label>
+      <input type="text" id="codigoCBO" name="codigoCBO" [(ngModel)]="codigoCBO" placeholder="Ex: 2251-25">
+    </div>
+  </div>
+</div>

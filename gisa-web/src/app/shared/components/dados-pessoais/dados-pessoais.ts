@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
 export class DadosPessoais {
   nome: string = '';
   cpf: string = '';
-  rg: string = '';
+  email: string = '';
   dataNascimento: string = '';
   sexo: string = '';
   celular: string = '';

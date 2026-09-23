@@ -16,10 +16,13 @@ export interface Permissao {
   styleUrl: './info-usuario.scss',
 })
 export class InfoUsuario {
-  acessoAoSistema: boolean = false;
+  temAcessoSistema: boolean = false;
+
+  //idGerado: string = this.gerarId();
   senha: string = '';
   perfil: Perfil | '' = '';
   idCopiado: boolean = false;
+
 
   perfis: { valor: Perfil; label: string }[] = [
     { valor: 'ADMINISTRADOR', label: 'Administrador' },

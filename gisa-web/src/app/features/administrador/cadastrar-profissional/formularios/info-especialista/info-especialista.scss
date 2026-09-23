@@ -158,3 +158,24 @@
     box-shadow: none;
   }
 }
+
+.checkbox-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  cursor: pointer;
+
+  input[type='checkbox'] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #3b82f6;
+  }
+}
+
+.conteudo-especialista {
+  animation: expandir 0.25s ease-out;
+}

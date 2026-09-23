@@ -14,9 +14,10 @@ export interface Jornada {
   styleUrl: './info-especialista.scss',
 })
 export class InfoEspecialista {
+  ehEspecialista: boolean = false;
+
   registroProfissional: string = '';
-  codigoCBO: string = '';
-  tituloCBO: string = '';
+  estadoRegistro: string = '';
   atuaComoPJ: boolean = false;
 
   cnpj: string = '';
