@@ -1,1 +1,20 @@
-<p>info-responsavel works!</p>
+<div class="secao">
+  <h3>Dados do Responsável</h3>
+
+  <div class="linha-form">
+    <div class="campo">
+      <label>Grau de Parentesco</label>
+      <select [(ngModel)]="responsavel.grauParentesco">
+        <option value="" disabled selected>Selecione</option>
+        <option *ngFor="let p of parentescoOpcoes" [value]="p.value">
+          {{ p.label }}
+        </option>
+      </select>
+    </div>
+
+    <div class="campo">
+      <label>Ocupação / Profissão</label>
+      <input type="text" [(ngModel)]="responsavel.ocupacao" placeholder="Ex: Autônomo, Professor..." />
+    </div>
+  </div>
+</div>
