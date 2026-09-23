@@ -1,26 +1,26 @@
 <div class="secao">
+  <div class="cabecalho-checkbox">
     <h3>Acesso ao Sistema</h3>
-    <div class="linha-checkbox">
-        <label class="checkbox-inline">
-            <input type="checkbox" name="acessoAoSistema" [(ngModel)]="acessoAoSistema">
-            Acesso ao Sistema
-        </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" name="temAcessoSistema" [(ngModel)]="temAcessoSistema">
+      Terá acesso ao sistema
+    </label>
+  </div>
+
+  @if (temAcessoSistema) {
+    <div class="campo">
+      <label for="senha">Senha Inicial *</label>
+      <input type="text" id="senha" name="senha" [(ngModel)]="senha" placeholder="Senha">
     </div>
 
-    @if (acessoAoSistema) {
     <div class="campo">
-        <label for="senha">Senha Inicial *</label>
-        <input type="text" id="senha" name="senha" [(ngModel)]="senha" placeholder="Senha">
+      <label for="perfil">Perfil *</label>
+      <select id="perfil" name="perfil" [(ngModel)]="perfil">
+        <option value="" disabled selected>Selecione o perfil</option>
+        @for (p of perfis; track p.valor) {
+          <option [value]="p.valor">{{ p.label }}</option>
+        }
+      </select>
     </div>
-
-    <div class="campo">
-        <label for="perfil">Perfil *</label>
-        <select id="perfil" name="perfil" [(ngModel)]="perfil">
-            <option value="" disabled selected>Selecione o perfil</option>
-            @for (p of perfis; track p.valor) {
-            <option [value]="p.valor">{{ p.label }}</option>
-            }
-        </select>
-    </div>
-    }
+  }
 </div>
