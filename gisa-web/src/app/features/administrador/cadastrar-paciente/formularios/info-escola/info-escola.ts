@@ -16,7 +16,7 @@ export class InfoEscola {
 
   escola = {
     nome: '',
-    tipoEscola: 'PUBLICA',
+    tipoEscola: '',
     telefone: ''
   };
 }

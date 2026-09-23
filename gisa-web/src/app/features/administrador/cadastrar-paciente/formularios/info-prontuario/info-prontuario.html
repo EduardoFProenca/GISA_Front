@@ -1,1 +1,22 @@
-<p>info-prontuario works!</p>
+<div class="secao">
+  <h3>Prontuário Inicial</h3>
+
+  <div class="linha-form">
+    <div class="campo">
+      <label>Alergias</label>
+      <textarea [(ngModel)]="prontuario.alergias" placeholder="Descreva alergias a medicamentos ou alimentos..."></textarea>
+    </div>
+
+    <div class="campo">
+      <label>Comorbidades</label>
+      <textarea [(ngModel)]="prontuario.comorbidades" placeholder="Informe se há comorbidades diagnosticadas..."></textarea>
+    </div>
+  </div>
+
+  <div class="linha-form" style="margin-top: 0.5rem;">
+    <div class="campo">
+      <label>Condição de Mobilidade</label>
+      <input type="text" [(ngModel)]="prontuario.mobilidade" placeholder="Ex: Deambula sem apoio, Cadeira de rodas..." />
+    </div>
+  </div>
+</div>

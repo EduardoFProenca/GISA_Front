@@ -16,7 +16,7 @@ export class InfoPaciente {
   ];
 
   paciente = {
-    statusPaciente: 'MATRICULADO',
+    statusPaciente: '',
     convenio: false,
     dataCadastro: new Date().toISOString().substring(0, 10)
   };

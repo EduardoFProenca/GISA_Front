@@ -1,1 +1,29 @@
-<p>info-paciente works!</p>
+<div class="secao">
+  <h3>Informações do Paciente</h3>
+
+  <div class="linha-form">
+    <div class="campo">
+      <label>Status do Paciente</label>
+      <select [(ngModel)]="paciente.statusPaciente">
+        <option value="" disabled selected>Selecione</option>
+        <option *ngFor="let op of statusOpcoes" [value]="op.value">
+          {{ op.label }}
+        </option>
+      </select>
+    </div>
+
+    <div class="campo">
+      <label>Data de Cadastro</label>
+      <input type="date" [(ngModel)]="paciente.dataCadastro" />
+    </div>
+  </div>
+
+  <div class="linha-form" style="margin-top: 0.5rem;">
+    <div class="campo">
+      <label class="checkbox-inline">
+        <input type="checkbox" [(ngModel)]="paciente.convenio" />
+        Possui Convênio
+      </label>
+    </div>
+  </div>
+</div>

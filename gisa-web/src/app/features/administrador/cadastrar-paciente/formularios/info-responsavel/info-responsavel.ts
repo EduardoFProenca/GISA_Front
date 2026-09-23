@@ -19,6 +19,6 @@ export class InfoResponsavel {
 
   responsavel = {
     ocupacao: '',
-    grauParentesco: 'MAE'
+    grauParentesco: ''
   };
 }
