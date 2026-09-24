@@ -1,1 +1,34 @@
-<p>detalhe-profissional works!</p>
+<app-cabecalho-pagina
+  titulo="Detalhes do Profissional"
+  textoAcao="Editar"
+  [rotaAcao]="'/administrador/profissionais/' + id + '/editar'">
+</app-cabecalho-pagina>
+
+<div class="card-form">
+  <app-dados-pessoais
+    [dadosIniciais]="dadosPessoais"
+    [bloquearCpfSexoNascimento]="true"
+    [somenteLeitura]="true">
+  </app-dados-pessoais>
+  <br><hr>
+
+  <app-info-profissional [dadosIniciais]="infoProfissional" [somenteLeitura]="true"></app-info-profissional>
+  <br><hr>
+
+  <app-info-usuario [dadosIniciais]="infoUsuario" [somenteLeitura]="true"></app-info-usuario>
+  <br><hr>
+
+  <app-info-especialista [dadosIniciais]="infoEspecialista" [somenteLeitura]="true"></app-info-especialista>
+  <br><hr>
+
+  <app-contato [dadosIniciais]="contato" [somenteLeitura]="true"></app-contato>
+  <br><hr>
+
+  <div class="secao">
+    <h3>Situação do Profissional</h3>
+    <div class="campo">
+      <label for="status">Status</label>
+      <input type="text" id="status" [value]="status === 'ATIVO' ? 'Ativo' : 'Inativo'" disabled>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -7,7 +7,10 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './info-profissional.html',
   styleUrl: './info-profissional.scss',
 })
-export class InfoProfissional {
+export class InfoProfissional implements OnInit {
+  @Input() dadosIniciais?: Partial<InfoProfissional>;
+  @Input() somenteLeitura: boolean = false;
+
   cargo: string = '';
   codigoCBO: string = '';
 
@@ -17,4 +20,8 @@ export class InfoProfissional {
     { valor: 'RECEPCIONISTA', label: 'Recepcionista' },
     { valor: 'ASSISTENTE_SOCIAL', label: 'Assistente Social' },
   ];
+
+  ngOnInit() {
+    if (this.dadosIniciais) Object.assign(this, this.dadosIniciais);
+  }
 }

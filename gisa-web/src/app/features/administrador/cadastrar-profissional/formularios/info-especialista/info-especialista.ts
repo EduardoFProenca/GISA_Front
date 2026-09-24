@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 export interface Jornada {
@@ -13,13 +13,14 @@ export interface Jornada {
   templateUrl: './info-especialista.html',
   styleUrl: './info-especialista.scss',
 })
-export class InfoEspecialista {
-  ehEspecialista: boolean = false;
+export class InfoEspecialista implements OnInit {
+  @Input() dadosIniciais?: Partial<InfoEspecialista>;
+  @Input() somenteLeitura: boolean = false;
 
+  ehEspecialista: boolean = false;
   registroProfissional: string = '';
   estadoRegistro: string = '';
   atuaComoPJ: boolean = false;
-
   cnpj: string = '';
   razaoSocial: string = '';
   nomeFantasia: string = '';
@@ -38,16 +39,6 @@ export class InfoEspecialista {
 
   especialidades: string[] = [''];
 
-  adicionarEspecialidade() {
-    this.especialidades.push('');
-  }
-
-  removerEspecialidade(index: number) {
-    if (this.especialidades.length > 1) {
-      this.especialidades.splice(index, 1);
-    }
-  }
-
   diasSemana = [
     { valor: 1, label: 'Segunda' },
     { valor: 2, label: 'Terça' },
@@ -57,17 +48,29 @@ export class InfoEspecialista {
     { valor: 6, label: 'Sábado' },
   ];
 
-  jornadas: Jornada[] = [
-    { diaSemana: '', horaInicio: '', horaTermino: '' }
-  ];
+  jornadas: Jornada[] = [{ diaSemana: '', horaInicio: '', horaTermino: '' }];
+
+  ngOnInit() {
+    if (this.dadosIniciais) Object.assign(this, this.dadosIniciais);
+  }
+
+  adicionarEspecialidade() {
+    if (this.somenteLeitura) return;
+    this.especialidades.push('');
+  }
+
+  removerEspecialidade(index: number) {
+    if (this.somenteLeitura) return;
+    if (this.especialidades.length > 1) this.especialidades.splice(index, 1);
+  }
 
   adicionarJornada() {
+    if (this.somenteLeitura) return;
     this.jornadas.push({ diaSemana: '', horaInicio: '', horaTermino: '' });
   }
 
   removerJornada(index: number) {
-    if (this.jornadas.length > 1) {
-      this.jornadas.splice(index, 1);
-    }
+    if (this.somenteLeitura) return;
+    if (this.jornadas.length > 1) this.jornadas.splice(index, 1);
   }
 }

@@ -1,1 +1,13 @@
-<p>confirm-dialog works!</p>
+@if (aberto) {
+  <div class="overlay" (click)="aoCancelar()">
+    <div class="dialog" (click)="$event.stopPropagation()">
+      <h3>{{ titulo }}</h3>
+      <p>{{ mensagem }}</p>
+
+      <div class="dialog-acoes">
+        <button type="button" class="btn-cancelar" (click)="aoCancelar()">{{ textoCancelar }}</button>
+        <button type="button" class="btn-confirmar" (click)="aoConfirmar()">{{ textoConfirmar }}</button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,6 +1,16 @@
-// shared/components/dados-pessoais/dados-pessoais.ts
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+
+export interface DadosPessoaisValor {
+  nome: string;
+  cpf: string;
+  email: string;
+  dataNascimento: string;
+  sexo: string;
+  celular: string;
+  estadoCivil: string;
+  numCNS: string;
+}
 
 @Component({
   selector: 'app-dados-pessoais',
@@ -8,7 +18,11 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './dados-pessoais.html',
   styleUrl: './dados-pessoais.scss',
 })
-export class DadosPessoais {
+export class DadosPessoais implements OnInit {
+  @Input() dadosIniciais?: Partial<DadosPessoaisValor>;
+  @Input() bloquearCpfSexoNascimento: boolean = false;
+  @Input() somenteLeitura: boolean = false;
+
   nome: string = '';
   cpf: string = '';
   email: string = '';
@@ -17,4 +31,10 @@ export class DadosPessoais {
   celular: string = '';
   estadoCivil: string = '';
   numCNS: string = '';
+
+  ngOnInit() {
+    if (this.dadosIniciais) {
+      Object.assign(this, this.dadosIniciais);
+    }
+  }
 }

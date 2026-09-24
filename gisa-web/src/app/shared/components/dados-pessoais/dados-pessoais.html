@@ -1,33 +1,32 @@
-<!-- dados-pessoais.html -->
 <div class="secao">
   <h3>Dados Pessoais</h3>
 
   <div class="linha-form">
     <div class="campo campo-largo">
       <label for="nome">Nome Completo *</label>
-      <input type="text" id="nome" name="nome" [(ngModel)]="nome" placeholder="Ex: Roberto Almeida">
+      <input type="text" id="nome" name="nome" [(ngModel)]="nome" placeholder="Ex: Roberto Almeida" [disabled]="somenteLeitura">
     </div>
     <div class="campo">
       <label for="cpf">CPF *</label>
-      <input type="text" id="cpf" name="cpf" [(ngModel)]="cpf" placeholder="000.000.000-00">
+      <input type="text" id="cpf" name="cpf" [(ngModel)]="cpf" placeholder="000.000.000-00" [disabled]="somenteLeitura || bloquearCpfSexoNascimento">
     </div>
   </div>
 
   <div class="linha-form">
     <div class="campo">
       <label for="dataNascimento">Data de Nascimento</label>
-      <input type="date" id="dataNascimento" name="dataNascimento" [(ngModel)]="dataNascimento">
+      <input type="date" id="dataNascimento" name="dataNascimento" [(ngModel)]="dataNascimento" [disabled]="somenteLeitura || bloquearCpfSexoNascimento">
     </div>
     <div class="campo">
       <label for="email">Email</label>
-      <input type="text" id="email" name="email" [(ngModel)]="email" placeholder="profissional@email.com">
+      <input type="text" id="email" name="email" [(ngModel)]="email" placeholder="profissional@email.com" [disabled]="somenteLeitura">
     </div>
   </div>
 
   <div class="linha-tripla">
     <div class="campo">
       <label for="sexo">Sexo</label>
-      <select id="sexo" name="sexo" [(ngModel)]="sexo">
+      <select id="sexo" name="sexo" [(ngModel)]="sexo" [disabled]="somenteLeitura || bloquearCpfSexoNascimento">
         <option value="" disabled selected>Selecione</option>
         <option value="M">Masculino</option>
         <option value="F">Feminino</option>
@@ -35,7 +34,7 @@
     </div>
     <div class="campo">
       <label for="estadoCivil">Estado Civil</label>
-      <select id="estadoCivil" name="estadoCivil" [(ngModel)]="estadoCivil">
+      <select id="estadoCivil" name="estadoCivil" [(ngModel)]="estadoCivil" [disabled]="somenteLeitura">
         <option value="" disabled selected>Selecione</option>
         <option value="SOLTEIRO">Solteiro(a)</option>
         <option value="CASADO">Casado(a)</option>
@@ -46,12 +45,12 @@
     </div>
     <div class="campo">
       <label for="celular">Celular</label>
-      <input type="text" id="celular" name="celular" [(ngModel)]="celular" placeholder="(00) 00000-0000">
+      <input type="text" id="celular" name="celular" [(ngModel)]="celular" placeholder="(00) 00000-0000" [disabled]="somenteLeitura">
     </div>
   </div>
 
   <div class="campo">
     <label for="numCNS">Número CNS</label>
-    <input type="text" id="numCNS" name="numCNS" [(ngModel)]="numCNS" placeholder="000 0000 0000 0000">
+    <input type="text" id="numCNS" name="numCNS" [(ngModel)]="numCNS" placeholder="000 0000 0000 0000" [disabled]="somenteLeitura">
   </div>
 </div>

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { Layout } from '../../../core/layout/layout';
 
@@ -10,20 +11,27 @@ import { Layout } from '../../../core/layout/layout';
 })
 export class CabecalhoPagina {
   private router = inject(Router);
+  private location = inject(Location);
   layout = inject(Layout);
 
   @Input() titulo: string = '';
   @Input() mostrarSalvar: boolean = false;
+  @Input() mostrarCancelar: boolean = false;
   @Input() textoAcao: string = '';
   @Input() rotaAcao: string = '';
   @Output() salvar = new EventEmitter<void>();
+  @Output() cancelar = new EventEmitter<void>();
 
   voltar() {
-    this.router.navigateByUrl('/');
+    this.location.back();
   }
 
   aoClicarSalvar() {
     this.salvar.emit();
+  }
+
+  aoClicarCancelar() {
+    this.cancelar.emit();
   }
 
   aoClicarAcao() {

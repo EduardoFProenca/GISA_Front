@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -7,7 +7,10 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './contato.html',
   styleUrl: './contato.scss',
 })
-export class Contato {
+export class Contato implements OnInit {
+  @Input() dadosIniciais?: Partial<Contato>;
+  @Input() somenteLeitura: boolean = false;
+
   cep: string = '';
   endereco: string = '';
   numero: string = '';
@@ -15,4 +18,8 @@ export class Contato {
   bairro: string = '';
   cidade: string = '';
   uf: string = '';
+
+  ngOnInit() {
+    if (this.dadosIniciais) Object.assign(this, this.dadosIniciais);
+  }
 }
