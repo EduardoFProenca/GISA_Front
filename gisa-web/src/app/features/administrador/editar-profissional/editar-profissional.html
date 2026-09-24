@@ -1,53 +1,45 @@
-<app-cabecalho-pagina
-  titulo="Editar Profissional"
-  [mostrarSalvar]="true"
-  [mostrarCancelar]="true"
-  (salvar)="salvarEdicao()"
-  (cancelar)="cancelar()">
+<app-cabecalho-pagina titulo="Editar Profissional" [mostrarSalvar]="true" [mostrarCancelar]="true"
+    (salvar)="salvarEdicao()" (cancelar)="cancelar()">
 </app-cabecalho-pagina>
 
 <div class="card-form">
-  <app-dados-pessoais
-    [dadosIniciais]="dadosPessoais"
-    [bloquearCpfSexoNascimento]="true">
-  </app-dados-pessoais>
-  <br>
-  <hr>
-
-  <app-info-profissional [dadosIniciais]="infoProfissional"></app-info-profissional>
-  <br>
-  <hr>
-
-  <app-info-usuario [dadosIniciais]="infoUsuario"></app-info-usuario>
-  <br>
-  <hr>
-
-  <app-info-especialista [dadosIniciais]="infoEspecialista"></app-info-especialista>
-  <br>
-  <hr>
-
-  <app-contato [dadosIniciais]="contato"></app-contato>
-  <br>
-  <hr>
-
-  <div class="secao">
-    <h3>Situação do Profissional</h3>
-    <div class="campo">
-      <label for="status">Status *</label>
-      <select id="status" name="status" [(ngModel)]="status">
-        <option value="ATIVO">Ativo</option>
-        <option value="INATIVO">Inativo</option>
-      </select>
+    <div class="secao">
+        <h3>Situação do Profissional</h3>
+        <div class="campo">
+            <label for="status">Status *</label>
+            <select id="status" name="status" [(ngModel)]="status">
+                <option value="ATIVO">Ativo</option>
+                <option value="INATIVO">Inativo</option>
+            </select>
+        </div>
     </div>
-  </div>
+    <br>
+    <hr>
+    <app-dados-pessoais [dadosIniciais]="dadosPessoais" [bloquearCpfSexoNascimento]="true">
+    </app-dados-pessoais>
+    <br>
+    <hr>
+
+    <app-info-profissional [dadosIniciais]="infoProfissional"></app-info-profissional>
+    <br>
+    <hr>
+
+    <app-info-usuario [dadosIniciais]="infoUsuario"></app-info-usuario>
+    <br>
+    <hr>
+
+    <app-info-especialista [dadosIniciais]="infoEspecialista"></app-info-especialista>
+    <br>
+    <hr>
+
+    <app-contato [dadosIniciais]="contato"></app-contato>
+    <br>
+    <hr>
+
+
 </div>
 
-<app-confirm-dialog
-  [aberto]="confirmarCancelamentoAberto"
-  titulo="Descartar alterações?"
-  mensagem="As alterações feitas nesta edição serão perdidas."
-  textoConfirmar="Descartar"
-  textoCancelar="Continuar editando"
-  (confirmar)="confirmarCancelamento()"
-  (cancelar)="fecharConfirmacao()">
+<app-confirm-dialog [aberto]="confirmarCancelamentoAberto" titulo="Descartar alterações?"
+    mensagem="As alterações feitas nesta edição serão perdidas." textoConfirmar="Descartar"
+    textoCancelar="Continuar editando" (confirmar)="confirmarCancelamento()" (cancelar)="fecharConfirmacao()">
 </app-confirm-dialog>

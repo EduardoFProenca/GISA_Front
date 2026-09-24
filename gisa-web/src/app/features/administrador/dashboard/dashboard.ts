@@ -25,7 +25,7 @@ export class DashboardAdministrador {
     { titulo: 'Gestão de Pacientes', descricao: 'Ver todos os pacientes', iconeSvg: ICONES.gestaoPacientes, rota: '/administrador/pacientes' },
     { titulo: 'Gestão de Profissionais', descricao: 'Ver corpo clínico', iconeSvg: ICONES.gestaoProfissionais, rota: '/administrador/profissionais/gerenciar' },
     { titulo: 'Controle de Agendamentos', descricao: 'Confirmar e remarcar', iconeSvg: ICONES.calendario, rota: '/administrador/agendamentos' },
-  ]; // <--- Quebra de linha aqui melhora a leitura
+  ];
 
   atividadesRecentes: Atividade[] = [
     { descricao: 'Novo paciente cadastrado', tempoAtras: '10 min atrás' },

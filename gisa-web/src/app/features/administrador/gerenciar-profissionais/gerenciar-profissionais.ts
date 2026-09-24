@@ -53,13 +53,13 @@ export class GerenciarProfissionais {
      { id: '1', nome: 'Dr. Roberto Almeida', cargo: 'Médico', crm: 'CRM-SP 123456', statusCadastro: 'Ativo' },
     { id: '2', nome: 'Dra. Ana Souza', cargo: 'Médico', crm: 'CRM-SP 654321', statusCadastro: 'Ativo' },
     { id: '3', nome: 'Carlos Mendes', cargo: 'Assistente Social', crm: 'CREFITO-3 98765', statusCadastro: 'Inativo' },
-    
+      { id: '3', nome: 'Carlos Mendes', cargo: 'Assistente Social', crm: 'CREFITO-3 98765', statusCadastro: 'Inativo' },
   ];
 
   profissionaisFiltrados: ProfissionalCard[] = [...this.todosProfissionais];
 
   paginaAtual: number = 1;
-  itensPorPagina: number = 6;
+  itensPorPagina: number = 9;
 
   get profissionaisPaginados(): ProfissionalCard[] {
     const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
