@@ -37,6 +37,12 @@ export interface Prontuario {
   mobilidade: string;
 }
 
+export interface Cid {
+  idCid?: number;
+  codigoCID: string;
+  descricao: string;
+}
+
 export interface Paciente {
   idCadastro?: number;
   // Dados de Pessoa / Contato
@@ -56,4 +62,6 @@ export interface Paciente {
   escola?: Escola;
   responsavel?: Responsavel;
   prontuario?: Prontuario;
+
+  cids?: Cid[];
 }

@@ -7,10 +7,11 @@ import { InfoPaciente } from './formularios/info-paciente/info-paciente';
 import { InfoEscola } from './formularios/info-escola/info-escola';
 import { InfoResponsavel } from './formularios/info-responsavel/info-responsavel';
 import { InfoProntuario } from './formularios/info-prontuario/info-prontuario';
+import { InfoCid } from './formularios/info-cid/info-cid';
 
 @Component({
   selector: 'app-cadastrar-paciente',
-  imports: [DadosPessoais, Contato, CabecalhoPagina, InfoPaciente, InfoEscola, InfoResponsavel, InfoProntuario],
+  imports: [DadosPessoais, Contato, CabecalhoPagina, InfoPaciente, InfoEscola, InfoResponsavel, InfoProntuario, InfoCid],
   styleUrl: './cadastrar-paciente.scss',
   templateUrl: './cadastrar-paciente.html',
 })

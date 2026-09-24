@@ -1,0 +1,40 @@
+<div class="secao">
+  <h3>Diagnóstico (CID)</h3>
+
+  <div class="linha-form">
+    <div class="campo">
+      <label>Código do CID / Diagnóstico</label>
+      <select [(ngModel)]="cidSelecionado.codigoCID">
+        <option value="" disabled selected>Selecione...</option>
+        <option *ngFor="let item of cidsOpcoes" [value]="item.codigoCID">
+          {{ item.codigoCID }} - {{ item.descricao }}
+        </option>
+      </select>
+    </div>
+
+    <div class="campo">
+      <label>Descrição / Observações Clínicas</label>
+      <div class="input-com-botao">
+        <input 
+          type="text" 
+          [(ngModel)]="cidSelecionado.descricao" 
+          placeholder="Ex: Detalhes ou observações" 
+        />
+        <button type="button" class="btn-adicionar" (click)="adicionarCid()">
+          + Adicionar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de CIDs Adicionados -->
+  <div class="cids-adicionados" *ngIf="listaCidsSelecionados.length > 0">
+    <label>CIDs Selecionados:</label>
+    <div class="tags-container">
+      <span class="tag-cid" *ngFor="let item of listaCidsSelecionados; let i = index">
+        <strong>{{ item.codigoCID }}</strong> - {{ item.descricao }}
+        <button type="button" class="btn-remover" (click)="removerCid(i)">✕</button>
+      </span>
+    </div>
+  </div>
+</div>
