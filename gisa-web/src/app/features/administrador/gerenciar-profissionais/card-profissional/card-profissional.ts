@@ -43,9 +43,4 @@ export class CardProfissional {
     return this.profissional.statusCadastro.toLowerCase();
   }
 
-    todosProfissionais: ProfissionalCard[] = [
-    { id: '1', nome: 'Dr. Roberto Almeida', cargo: 'Médico', crm: 'CRM-SP 123456', statusCadastro: 'Ativo' },
-    { id: '2', nome: 'Dra. Ana Souza', cargo: 'Médico', crm: 'CRM-SP 654321', statusCadastro: 'Ativo' },
-    { id: '3', nome: 'Carlos Mendes', cargo: 'Assistente Social', crm: 'CREFITO-3 98765', statusCadastro: 'Inativo' },
-  ];
 }
