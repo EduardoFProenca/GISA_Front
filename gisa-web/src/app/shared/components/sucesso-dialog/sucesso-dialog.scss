@@ -1,0 +1,79 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.dialog {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem 1.75rem 1.75rem;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  animation: aparecer 0.2s ease-out;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.icone-sucesso {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #16a34a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+  color: #1a1a2e;
+}
+
+p {
+  margin: 0 0 1.5rem;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.dialog-acoes {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.btn-secundario {
+  background: transparent;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  padding: 0.6rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+
+  &:hover { background: #f1f5f9; }
+}
+
+.btn-primario {
+  background: #16a34a;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+
+  &:hover { background: #15803d; }
+}

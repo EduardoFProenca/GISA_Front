@@ -1,10 +1,12 @@
 import { Component, ViewChild, inject, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
 import { Contato } from '../../../shared/components/contato/contato';
 import { InfoEspecialista } from './formularios/info-especialista/info-especialista';
 import { InfoUsuario } from './formularios/info-usuario/info-usuario';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { InfoProfissional } from './formularios/info-profissional/info-profissional';
+import { SucessoDialog } from '../../../shared/components/sucesso-dialog/sucesso-dialog';
 import { ProfissionalService } from '../../../services/profissional';
 import { EspecialidadeService } from '../../../services/especialidade';
 import { CargoService } from '../../../services/cargo';
@@ -16,12 +18,13 @@ import {
   DadosBaseProfissional,
   DadosEspecialista,
   DadosEspecialistaPJ,
-  Jornada
+  Jornada,
+  CadastroResponse
 } from '../../../core/models/profissional.model';
 
 @Component({
   selector: 'app-cadastrar-profissional',
-  imports: [DadosPessoais, Contato, InfoEspecialista, InfoUsuario, CabecalhoPagina, InfoProfissional],
+  imports: [DadosPessoais, Contato, InfoEspecialista, InfoUsuario, CabecalhoPagina, InfoProfissional, SucessoDialog],
   templateUrl: './cadastrar-profissional.html',
   styleUrl: './cadastrar-profissional.scss',
 })
@@ -36,9 +39,14 @@ export class CadastroProfissional implements OnInit {
   private especialidadeService = inject(EspecialidadeService);
   private cargoService = inject(CargoService);
   private perfilService = inject(PerfilService);
+  private router = inject(Router);
 
   salvando = false;
   erro = '';
+
+  dialogSucessoAberto = false;
+  nomeCadastrado = '';
+  idCadastrado: number | null = null;
 
   private cargos: Cargo[] = [];
   private perfis: Perfil[] = [];
@@ -49,8 +57,6 @@ export class CadastroProfissional implements OnInit {
   }
 
   private idCargoPorNome(nomeCargo: string): number {
-    // infoProfissional.cargos usa valores como 'ADMINISTRADOR', 'MEDICO' etc.;
-    // compara sem acento/case com o nome vindo de /api/cargos
     const alvo = nomeCargo.replace(/_/g, ' ').toLowerCase();
     const encontrado = this.cargos.find((c) => c.nome.toLowerCase() === alvo);
     return encontrado?.idCargo ?? this.cargos[0]?.idCargo ?? 0;
@@ -133,7 +139,6 @@ export class CadastroProfissional implements OnInit {
         : null;
 
       if (!this.infoEspecialista.ehEspecialista) {
-        // Profissional simples
         if (usuario) {
           this.profissionalService
             .cadastrarProfissionalComUsuario({ profissional: dadosBase, usuario })
@@ -144,7 +149,6 @@ export class CadastroProfissional implements OnInit {
         return;
       }
 
-      // Especialista
       const especialidadesIds = await this.mapearEspecialidadesIds();
       const dadosEspecialista: DadosEspecialista = {
         ...dadosBase,
@@ -188,14 +192,46 @@ export class CadastroProfissional implements OnInit {
 
   private handlersPadrao() {
     return {
-      next: () => {
+      next: (res: CadastroResponse) => {
         this.salvando = false;
-        // TODO: navegar para listagem de profissionais / exibir confirmação
+        this.nomeCadastrado = res?.nome || this.dadosPessoais.nome;
+        this.idCadastrado = res?.idCadastro ?? null;
+        this.dialogSucessoAberto = true;
       },
       error: (err: any) => {
         this.salvando = false;
         this.erro = err?.error?.message || 'Erro ao salvar cadastro.';
       },
     };
+  }
+
+  private limparFormulario() {
+    Object.assign(this.dadosPessoais, {
+      nome: '', cpf: '', email: '', dataNascimento: '', sexo: '', celular: '', estadoCivil: '', numCNS: ''
+    });
+    Object.assign(this.contato, {
+      cep: '', endereco: '', numero: '', complemento: '', bairro: '', cidade: '', uf: ''
+    });
+    this.infoProfissional.cargo = '';
+    this.infoUsuario.temAcessoSistema = false;
+    this.infoUsuario.senha = '';
+    this.infoUsuario.perfil = '';
+    this.infoEspecialista.ehEspecialista = false;
+    this.infoEspecialista.atuaComoPJ = false;
+    this.infoEspecialista.registroProfissional = '';
+    this.infoEspecialista.especialidades = [''];
+    this.infoEspecialista.jornadas = [{ diaSemana: '', horaInicio: '', horaTermino: '' }];
+  }
+
+  aoContinuarCadastrando() {
+    this.dialogSucessoAberto = false;
+    this.limparFormulario();
+  }
+
+  aoVerDetalhesCadastrado() {
+    this.dialogSucessoAberto = false;
+    if (this.idCadastrado != null) {
+      this.router.navigate(['/administrador/profissionais', this.idCadastrado]);
+    }
   }
 }

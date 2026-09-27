@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CardEstatistica } from '../../../shared/components/card-estatistica/card-estatistica';
 import { BuscaFiltro, OpcaoFiltro, EstadoBusca } from '../../../shared/components/busca-filtro/busca-filtro';
 import { CardProfissional, ProfissionalCard } from './card-profissional/card-profissional';
 import { ICONES } from '../../../shared/icons';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { Paginacao } from '../../../shared/components/paginacao/paginacao';
+import { ProfissionalService } from '../../../services/profissional';
+import { ProfissionalResumo } from '../../../core/models/profissional-resumo.model';
 
 @Component({
   selector: 'app-gerenciar-profissionais',
@@ -12,77 +14,72 @@ import { Paginacao } from '../../../shared/components/paginacao/paginacao';
   templateUrl: './gerenciar-profissionais.html',
   styleUrl: './gerenciar-profissionais.scss',
 })
-export class GerenciarProfissionais {
+export class GerenciarProfissionais implements OnInit {
+  private profissionalService = inject(ProfissionalService);
+
   icones = ICONES;
+  carregando = false;
+  erro = '';
 
-  filtros: OpcaoFiltro[] = [
-    {
-      chave: 'especialidade',
-      label: 'Especialidade',
-      opcoes: [
-        { valor: 'clinica-geral', label: 'Clínica Geral' },
-        { valor: 'pediatria', label: 'Pediatria' },
-        { valor: 'fisioterapia', label: 'Fisioterapia' },
-      ]
-    },
-    {
-      chave: 'perfil',
-      label: 'Perfil',
-      opcoes: [
-        { valor: 'MEDICO', label: 'Médico' },
-        { valor: 'ASSISTENTE_SOCIAL', label: 'Assistente Social' },
-      ]
-    },
-    {
-      chave: 'status',
-      label: 'Status',
-      opcoes: [
-        { valor: 'ativo', label: 'Ativo' },
-        { valor: 'inativo', label: 'Inativo' },
-      ]
-    },
-  ];
+  filtros: OpcaoFiltro[] = [];
 
-  todosProfissionais: ProfissionalCard[] = [
-    { id: '1', nome: 'Dr. Roberto Almeida', cargo: 'Médico', crm: 'CRM-SP 123456', statusCadastro: 'Ativo' },
-    { id: '2', nome: 'Dra. Ana Souza', cargo: 'Médico', crm: 'CRM-SP 654321', statusCadastro: 'Ativo' },
-    { id: '3', nome: 'Carlos Mendes', cargo: 'Assistente Social', crm: 'CREFITO-3 98765', statusCadastro: 'Inativo' },
-     { id: '1', nome: 'Dr. Roberto Almeida', cargo: 'Médico', crm: 'CRM-SP 123456', statusCadastro: 'Ativo' },
-    { id: '2', nome: 'Dra. Ana Souza', cargo: 'Médico', crm: 'CRM-SP 654321', statusCadastro: 'Ativo' },
-    { id: '3', nome: 'Carlos Mendes', cargo: 'Assistente Social', crm: 'CREFITO-3 98765', statusCadastro: 'Inativo' },
-     { id: '1', nome: 'Dr. Roberto Almeida', cargo: 'Médico', crm: 'CRM-SP 123456', statusCadastro: 'Ativo' },
-    { id: '2', nome: 'Dra. Ana Souza', cargo: 'Médico', crm: 'CRM-SP 654321', statusCadastro: 'Ativo' },
-    { id: '3', nome: 'Carlos Mendes', cargo: 'Assistente Social', crm: 'CREFITO-3 98765', statusCadastro: 'Inativo' },
-      { id: '3', nome: 'Carlos Mendes', cargo: 'Assistente Social', crm: 'CREFITO-3 98765', statusCadastro: 'Inativo' },
-  ];
+  profissionaisPaginados: ProfissionalCard[] = [];
+  termoBusca = '';
 
-  profissionaisFiltrados: ProfissionalCard[] = [...this.todosProfissionais];
+  totalElementos = 0;
 
   paginaAtual: number = 1;
   itensPorPagina: number = 9;
 
-  get profissionaisPaginados(): ProfissionalCard[] {
-    const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
-    return this.profissionaisFiltrados.slice(inicio, inicio + this.itensPorPagina);
+  ngOnInit() {
+    this.carregarPagina();
+  }
+
+  private carregarPagina() {
+    this.carregando = true;
+    this.erro = '';
+
+    // API usa paginação 0-indexed
+    this.profissionalService.listarPaginado(this.paginaAtual - 1, this.itensPorPagina).subscribe({
+      next: (res) => {
+        this.carregando = false;
+        this.totalElementos = res.totalElements;
+        this.profissionaisPaginados = res.content
+          .map((p) => this.paraCard(p))
+          .filter((p) => this.bateComFiltroLocal(p));
+      },
+      error: (err) => {
+        this.carregando = false;
+        this.erro = err?.error?.message || 'Não foi possível carregar os profissionais.';
+      },
+    });
+  }
+
+  private paraCard(p: ProfissionalResumo): ProfissionalCard {
+    return {
+      id: String(p.idProfissional),
+      nome: p.nome,
+      cargo: p.nomeCargo,
+      crm: p.registroConselho || '—',
+      statusCadastro: p.statusCadastro,
+    };
+  }
+
+  private bateComFiltroLocal(p: ProfissionalCard): boolean {
+    const bateTexto = !this.termoBusca ||
+      p.nome.toLowerCase().includes(this.termoBusca.toLowerCase()) ||
+      p.crm.toLowerCase().includes(this.termoBusca.toLowerCase());
+    return bateTexto;
   }
 
   mudarPagina(pagina: number) {
     this.paginaAtual = pagina;
+    this.carregarPagina();
   }
 
- aplicarBusca(estado: EstadoBusca) {
-  this.profissionaisFiltrados = this.todosProfissionais.filter(p => {
-    const bateTexto = !estado.termo ||
-      p.nome.toLowerCase().includes(estado.termo.toLowerCase()) ||
-      p.crm.toLowerCase().includes(estado.termo.toLowerCase());
-
-    const bateStatus = !estado.filtros['status'] ||
-      estado.filtros['status'].toLowerCase() === p.statusCadastro.toLowerCase();
-
-    return bateTexto && bateStatus;
-  });
-  this.paginaAtual = 1;
-}
-
-
+  aplicarBusca(estado: EstadoBusca) {
+    this.termoBusca = estado.termo;
+    this.paginaAtual = 1;
+    this.carregarPagina();
+  }
 }

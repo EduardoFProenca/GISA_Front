@@ -1,9 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
+import { SucessoDialog } from '../../../shared/components/sucesso-dialog/sucesso-dialog';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
 import { Contato } from '../../../shared/components/contato/contato';
 import { InfoProfissional } from '../cadastrar-profissional/formularios/info-profissional/info-profissional';
@@ -16,6 +17,7 @@ import { InfoEspecialista } from '../cadastrar-profissional/formularios/info-esp
     FormsModule,
     CabecalhoPagina,
     ConfirmDialog,
+    SucessoDialog,
     DadosPessoais,
     Contato,
     InfoProfissional,
@@ -27,12 +29,16 @@ import { InfoEspecialista } from '../cadastrar-profissional/formularios/info-esp
 })
 export class EditarProfissional implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private location = inject(Location);
 
   id: string = this.route.snapshot.paramMap.get('id') ?? '';
 
   status: 'ATIVO' | 'INATIVO' = 'ATIVO';
   confirmarCancelamentoAberto = false;
+
+  dialogSucessoAberto = false;
+  salvando = false;
 
   dadosPessoais: any = {};
   contato: any = {};
@@ -87,7 +93,24 @@ export class EditarProfissional implements OnInit {
   }
 
   salvarEdicao() {
-    // Kaua , é sua 
+    // TODO(Kauã): plugar aqui o PUT/PATCH real quando o endpoint de edição existir na API.
+    // Por enquanto simula sucesso local para não travar o fluxo de tela.
+    this.salvando = true;
+
+    setTimeout(() => {
+      this.salvando = false;
+      this.dialogSucessoAberto = true;
+    }, 5);
+  }
+
+  irParaGerenciarProfissionais() {
+    this.dialogSucessoAberto = false;
+    this.router.navigate(['/administrador/profissionais/gerenciar']);
+  }
+
+  irParaDetalhes() {
+    this.dialogSucessoAberto = false;
+    this.router.navigate(['/administrador/profissionais', this.id]);
   }
 
   cancelar() {

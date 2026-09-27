@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
@@ -11,11 +11,19 @@ import {
   EspecialistaPJComUsuario,
   CadastroResponse
 } from '../core/models/profissional.model';
+import { PaginaSpring, ProfissionalResumo } from '../core/models/profissional-resumo.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProfissionalService {
   private http = inject(HttpClient);
   private base = `${environment.apiUrl}`;
+
+  listarPaginado(pagina: number, tamanho: number = 9): Observable<PaginaSpring<ProfissionalResumo>> {
+    const params = new HttpParams()
+      .set('page', pagina)
+      .set('size', tamanho);
+    return this.http.get<PaginaSpring<ProfissionalResumo>>(`${this.base}/profissionais`, { params });
+  }
 
   cadastrarProfissional(dados: DadosBaseProfissional): Observable<CadastroResponse> {
     return this.http.post<CadastroResponse>(`${this.base}/profissionais`, dados);

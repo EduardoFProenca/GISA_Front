@@ -4,26 +4,31 @@
 <div class="pagina-profissionais">
 
     <div class="stats-grid">
-        <app-card-estatistica titulo="Total de Profissionais" [valor]="todosProfissionais.length"
+        <app-card-estatistica titulo="Total de Profissionais" [valor]="totalElementos"
             [iconeSvg]="icones.gestaoProfissionais" corIcone="#dbeafe" />
-        <app-card-estatistica titulo="Ativos" [valor]="3" [iconeSvg]="icones.gestaoConsultas" corIcone="#dcfce7" />
-        <app-card-estatistica titulo="Inativos" [valor]="1" [iconeSvg]="icones.cadastrarPaciente" corIcone="#fee2e2" />
     </div>
 
     <div class="painel-busca">
-        <app-busca-filtro placeholder="Buscar por nome ou especialidade..." [filtrosDisponiveis]="filtros"
+        <app-busca-filtro placeholder="Buscar por nome ou registro..." [filtrosDisponiveis]="filtros"
             (buscaAlterada)="aplicarBusca($event)" />
 
         <br><br>
+
+        @if (erro) {
+        <p class="vazio">{{ erro }}</p>
+        }
+
         <div class="grid-profissionais">
             @for (prof of profissionaisPaginados; track prof.id) {
             <app-card-profissional [profissional]="prof" />
             } @empty {
+            @if (!carregando && !erro) {
             <p class="vazio">Nenhum profissional encontrado.</p>
+            }
             }
         </div>
     </div>
-    <app-paginacao [totalItens]="profissionaisFiltrados.length" [itensPorPagina]="itensPorPagina"
+    <app-paginacao [totalItens]="totalElementos" [itensPorPagina]="itensPorPagina"
         [paginaAtual]="paginaAtual" (paginaAlterada)="mudarPagina($event)" />
 
 </div>

@@ -43,3 +43,13 @@
     mensagem="As alterações feitas nesta edição serão perdidas." textoConfirmar="Descartar"
     textoCancelar="Continuar editando" (confirmar)="confirmarCancelamento()" (cancelar)="fecharConfirmacao()">
 </app-confirm-dialog>
+
+<app-sucesso-dialog
+    [aberto]="dialogSucessoAberto"
+    titulo="Alterações salvas com sucesso!"
+    [mensagem]="'Os dados de ' + dadosPessoais.nome + ' foram atualizados.'"
+    textoPrimario="Ver Detalhes"
+    textoSecundario="Gestão de Profissionais"
+    (verDetalhes)="irParaDetalhes()"
+    (continuar)="irParaGerenciarProfissionais()">
+</app-sucesso-dialog>
