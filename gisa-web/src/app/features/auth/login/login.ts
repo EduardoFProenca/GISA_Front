@@ -16,6 +16,8 @@ export class LoginComponent {
   mostrarSenha: boolean = false;
   erroUsuario: boolean = false;
   erroSenha: boolean = false;
+  erroLogin: string = '';
+  carregando: boolean = false;
 
   auth = inject(Auth);
 
@@ -30,15 +32,19 @@ export class LoginComponent {
 
     if (!usuarioValido || !senhaValida) return;
 
-    this.auth.login({
-      id: '1',
-      nome: 'Maria Souza',
-      nomePreferido: 'Maria',
-      cargo: 'Administrador',
-      corPerfil: '#4a90d9'
-    });
+    this.erroLogin = '';
+    this.carregando = true;
 
-    this.router.navigate(['/administrador']);
+    this.auth.login({ cpf: this.usuario, senha: this.senha }).subscribe({
+      next: () => {
+        this.carregando = false;
+        this.router.navigate(['/administrador']);
+      },
+      error: (err) => {
+        this.carregando = false;
+        this.erroLogin = err?.error?.message || 'CPF ou senha inválidos.';
+      }
+    });
   }
 
   toggleSenha() {
