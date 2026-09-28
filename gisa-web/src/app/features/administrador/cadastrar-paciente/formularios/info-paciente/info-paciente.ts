@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { StatusPaciente } from '../../../../../core/models/paciente.model';
 
 @Component({
   imports: [CommonModule, FormsModule],
@@ -9,15 +10,8 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './info-paciente.html',
 })
 export class InfoPaciente {
-  statusOpcoes = [
-    { label: 'Matriculado', value: 'MATRICULADO' },
-    { label: 'Desligado', value: 'DESLIGADO' },
-    { label: 'Alta', value: 'ALTA' },
-  ];
-
-  paciente = {
-    statusPaciente: '',
+  pacienteData = {
     convenio: false,
-    dataCadastro: new Date().toISOString().substring(0, 10)
+    statusPaciente: 'MATRICULADO' as StatusPaciente
   };
 }

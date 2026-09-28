@@ -1,25 +1,25 @@
 <div class="secao">
   <h3>Informações Escolares</h3>
 
-  <div class="linha-tripla">
+  <div class="linha-form">
     <div class="campo">
       <label>Nome da Escola</label>
-      <input type="text" [(ngModel)]="escola.nome" placeholder="Digite o nome da escola" />
+      <input type="text" [(ngModel)]="escolaData.nome" placeholder="Nome da instituição" />
     </div>
 
     <div class="campo">
       <label>Tipo de Escola</label>
-      <select [(ngModel)]="escola.tipoEscola">
-        <option value="" disabled selected>Selecione</option>
-        <option *ngFor="let tipo of tiposEscola" [value]="tipo.value">
-          {{ tipo.label }}
+      <select [(ngModel)]="escolaData.tipoEscola">
+        <option value="" disabled selected>Selecione...</option>
+        <option *ngFor="let item of opcoesTipoEscola" [value]="item.value">
+          {{ item.label }}
         </option>
       </select>
     </div>
 
     <div class="campo">
       <label>Telefone da Escola</label>
-      <input type="text" [(ngModel)]="escola.telefone" placeholder="(00) 00000-0000" />
+      <input type="text" [(ngModel)]="escolaData.telefone" placeholder="(00) 0000-0000" />
     </div>
   </div>
 </div>

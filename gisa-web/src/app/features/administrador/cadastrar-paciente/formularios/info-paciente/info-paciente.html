@@ -1,29 +1,22 @@
 <div class="secao">
-  <h3>Informações do Paciente</h3>
+  <h3>Informações Administrativas do Paciente</h3>
 
   <div class="linha-form">
     <div class="campo">
-      <label>Status do Paciente</label>
-      <select [(ngModel)]="paciente.statusPaciente">
-        <option value="" disabled selected>Selecione</option>
-        <option *ngFor="let op of statusOpcoes" [value]="op.value">
-          {{ op.label }}
-        </option>
+      <label>Possui Convênio?</label>
+      <select [ngModel]="pacienteData.convenio ? 'true' : 'false'" (ngModelChange)="pacienteData.convenio = ($event === 'true')">
+        <option value="false">Não</option>
+        <option value="true">Sim</option>
       </select>
     </div>
 
     <div class="campo">
-      <label>Data de Cadastro</label>
-      <input type="date" [(ngModel)]="paciente.dataCadastro" />
-    </div>
-  </div>
-
-  <div class="linha-form" style="margin-top: 0.5rem;">
-    <div class="campo">
-      <label class="checkbox-inline">
-        <input type="checkbox" [(ngModel)]="paciente.convenio" />
-        Possui Convênio
-      </label>
+      <label>Status Inicial</label>
+      <select [(ngModel)]="pacienteData.statusPaciente">
+        <option value="MATRICULADO">Matriculado</option>
+        <option value="DESLIGADO">Desligado</option>
+        <option value="ALTA">Alta</option>
+      </select>
     </div>
   </div>
 </div>

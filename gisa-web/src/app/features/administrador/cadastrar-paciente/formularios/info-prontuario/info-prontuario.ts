@@ -9,9 +9,9 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './info-prontuario.html',
 })
 export class InfoProntuario {
-  prontuario = {
+  prontuarioData = {
     alergias: '',
-    comorbidades: '',
+    comorbidade: '',
     mobilidade: ''
   };
 }
