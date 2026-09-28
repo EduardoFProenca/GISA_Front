@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { map } from 'rxjs/operators';
 import {
   DadosBaseProfissional,
   DadosEspecialista,
@@ -48,4 +49,11 @@ export class ProfissionalService {
   cadastrarEspecialistaPJComUsuario(dados: EspecialistaPJComUsuario): Observable<CadastroResponse> {
     return this.http.post<CadastroResponse>(`${this.base}/especialistas/pj/com-usuario`, dados);
   }
+
+  listarEspecialistas(): Observable<ProfissionalResumo[]> {
+  const params = new HttpParams().set('page', 0).set('size', 1000);
+  return this.http
+    .get<PaginaSpring<ProfissionalResumo>>(`${this.base}/profissionais`, { params })
+    .pipe(map((p) => p.content.filter((x) => !!x.registroConselho && x.statusCadastro !== 'INATIVO')));
+}
 }

@@ -5,6 +5,8 @@ import { GerenciarProfissionais } from './gerenciar-profissionais/gerenciar-prof
 import { DetalheProfissional } from './detalhe-profissional/detalhe-profissional';
 import { CadastrarPaciente } from './cadastrar-paciente/cadastrar-paciente';
 import { EditarProfissional } from './editar-profissional/editar-profissional';
+import { CriarConsulta } from './criar-consulta/criar-consulta';
+
 
 
 export const administradorRoutes: Routes = [
@@ -14,4 +16,5 @@ export const administradorRoutes: Routes = [
   { path: 'profissionais/:id', component: DetalheProfissional },
   { path: 'profissionais/:id/editar', component: EditarProfissional },
   { path: 'pacientes/novo', component: CadastrarPaciente },
+  { path: 'consultas/nova', component: CriarConsulta },
 ];

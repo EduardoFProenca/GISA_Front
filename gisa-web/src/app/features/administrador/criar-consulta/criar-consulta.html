@@ -1,0 +1,92 @@
+<app-cabecalho-pagina
+  titulo="Criar Consulta"
+  [mostrarSalvar]="true"
+  (salvar)="salvarConsulta()">
+</app-cabecalho-pagina>
+
+<div class="card-form">
+  <p class="legenda-obrigatorio">Campos com <span class="obrigatorio">*</span> são obrigatórios.</p>
+
+  @if (erro()) {
+    <p class="erro-msg erro-geral">{{ erro() }}</p>
+  }
+
+  <div class="secao">
+    <h3>Informações da Consulta</h3>
+
+    <div class="linha-form">
+      <div class="campo">
+        <label for="paciente">Paciente <span class="obrigatorio">*</span></label>
+        <app-select-busca
+          [opcoes]="opcoesPacientes()"
+          [value]="idPaciente()"
+          (valueChange)="aoMudarPaciente($event)"
+          placeholder="Digite ou selecione o paciente"
+          semResultados="Nenhum paciente encontrado"
+          [comErro]="!!erros()['paciente']">
+        </app-select-busca>
+        @if (erros()['paciente']) { <span class="erro-msg">{{ erros()['paciente'] }}</span> }
+      </div>
+
+      <div class="campo">
+        <label for="especialista">Profissional <span class="obrigatorio">*</span></label>
+        <app-select-busca
+          [opcoes]="opcoesEspecialistas()"
+          [value]="idEspecialista()"
+          (valueChange)="aoMudarEspecialista($event)"
+          placeholder="Digite ou selecione o profissional"
+          semResultados="Nenhum profissional encontrado"
+          [comErro]="!!erros()['especialista']">
+        </app-select-busca>
+        @if (erros()['especialista']) { <span class="erro-msg">{{ erros()['especialista'] }}</span> }
+      </div>
+    </div>
+
+    <div class="linha-form">
+      <div class="campo">
+        <label for="modalidade">Modalidade de Atendimento <span class="obrigatorio">*</span></label>
+        <select id="modalidade" name="modalidade" [(ngModel)]="modalidade"
+          [class.input-erro]="erros()['modalidade']" (ngModelChange)="limparErro('modalidade')">
+          <option value="" disabled>Selecione o modalidade</option>
+          @for (m of modalidades; track m.valor) {
+            <option [value]="m.valor">{{ m.label }}</option>
+          }
+        </select>
+        @if (erros()['modalidade']) { <span class="erro-msg">{{ erros()['modalidade'] }}</span> }
+      </div>
+
+      <div class="campo">
+        <label for="data">Data <span class="obrigatorio">*</span></label>
+        <input type="date" id="data" name="data" [(ngModel)]="data"
+          [class.input-erro]="erros()['data']" (ngModelChange)="limparErro('data')">
+        @if (erros()['data']) { <span class="erro-msg">{{ erros()['data'] }}</span> }
+      </div>
+    </div>
+
+    <div class="linha-form">
+      <div class="campo">
+        <label for="horaInicio">Horário <span class="obrigatorio">*</span></label>
+        <input type="time" id="horaInicio" name="horaInicio" [(ngModel)]="horaInicio"
+          [class.input-erro]="erros()['horaInicio']" (ngModelChange)="limparErro('horaInicio')">
+        @if (erros()['horaInicio']) { <span class="erro-msg">{{ erros()['horaInicio'] }}</span> }
+      </div>
+
+      <div class="campo">
+        <label for="horaTermino">Horário de término <span class="obrigatorio">*</span></label>
+        <input type="time" id="horaTermino" name="horaTermino" [(ngModel)]="horaTermino"
+          [class.input-erro]="erros()['horaTermino']" (ngModelChange)="limparErro('horaTermino')">
+        @if (erros()['horaTermino']) { <span class="erro-msg">{{ erros()['horaTermino'] }}</span> }
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-sucesso-dialog
+  [aberto]="dialogSucessoAberto()"
+  titulo="Consulta criada com sucesso!"
+  mensagem="A consulta foi agendada no sistema."
+  textoPrimario="Voltar ao início"
+  textoSecundario="Criar outra consulta"
+  (verDetalhes)="aoVoltarInicio()"
+  (continuar)="aoCriarOutra()">
+</app-sucesso-dialog>

@@ -1,0 +1,44 @@
+.select-busca {
+  position: relative;
+  width: 100%;
+
+  &.disabled {
+    opacity: 0.6;
+  }
+}
+
+.lista-opcoes {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  margin: 0;
+  padding: 0.25rem 0;
+  list-style: none;
+
+  li {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+
+    &:hover {
+      background: #f1f5f9;
+    }
+  }
+
+  .sem-resultados {
+    color: #94a3b8;
+    cursor: default;
+
+    &:hover {
+      background: none;
+    }
+  }
+}
