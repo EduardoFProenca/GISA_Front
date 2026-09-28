@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ComErros } from '../com-erros';
 
 export interface DadosPessoaisValor {
   nome: string;
@@ -18,7 +19,7 @@ export interface DadosPessoaisValor {
   templateUrl: './dados-pessoais.html',
   styleUrl: './dados-pessoais.scss',
 })
-export class DadosPessoais implements OnInit {
+export class DadosPessoais extends ComErros implements OnInit {
   @Input() dadosIniciais?: Partial<DadosPessoaisValor>;
   @Input() bloquearCpfSexoNascimento: boolean = false;
   @Input() somenteLeitura: boolean = false;

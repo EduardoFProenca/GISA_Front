@@ -10,11 +10,13 @@
     @if (ehEspecialista) {
     <div class="conteudo-especialista">
         <div class="lista-secao">
-            <label>Especialidade *</label>
+            <label>Especialidade <span class="obrigatorio">*</span></label>
 
             @for (esp of especialidades; track $index) {
             <div class="linha-lista">
-                <select name="especialidade-{{ $index }}" [(ngModel)]="especialidades[$index]">
+                <select name="especialidade-{{ $index }}" [(ngModel)]="especialidades[$index]"
+                    [class.input-erro]="erros['especialidades'] && !especialidades[$index]"
+                    (change)="limparErro('especialidades')">
                     <option value="" disabled selected>Selecione a especialidade</option>
                     @for (opcao of opcoesEspecialidade; track opcao.valor) {
                     <option [value]="opcao.valor">{{ opcao.label }}</option>
@@ -24,33 +26,40 @@
                     title="Remover">✕</button>
             </div>
             }
+            @if (erros['especialidades']) { <span class="erro-msg">{{ erros['especialidades'] }}</span> }
 
             <button type="button" class="add-item" (click)="adicionarEspecialidade()">+ Adicionar especialidade</button>
         </div>
 
         <div class="campo">
-            <label for="registro">Registro Profissional (CRM) *</label>
+            <label for="registro">Registro Profissional (CRM) <span class="obrigatorio">*</span></label>
             <input type="text" id="registro" name="registro" [(ngModel)]="registroProfissional"
-                placeholder="Ex: CRM-SP 123456">
+                placeholder="Ex: CRM-SP 123456" [class.input-erro]="erros['registroProfissional']"
+                (input)="limparErro('registroProfissional')">
+            @if (erros['registroProfissional']) { <span class="erro-msg">{{ erros['registroProfissional'] }}</span> }
         </div>
 
         <div class="lista-secao">
-            <label>Jornada de Trabalho</label>
+            <label>Jornada de Trabalho <span class="obrigatorio">*</span></label>
 
             @for (jornada of jornadas; track $index) {
             <div class="linha-jornada">
-                <select name="dia-{{ $index }}" [(ngModel)]="jornada.diaSemana">
+                <select name="dia-{{ $index }}" [(ngModel)]="jornada.diaSemana"
+                    [class.input-erro]="erros['jornadas'] && !jornada.diaSemana" (change)="limparErro('jornadas')">
                     <option value="" disabled selected>Dia</option>
                     @for (dia of diasSemana; track dia.valor) {
                     <option [value]="dia.valor">{{ dia.label }}</option>
                     }
                 </select>
-                <input type="time" name="inicio-{{ $index }}" [(ngModel)]="jornada.horaInicio">
+                <input type="time" name="inicio-{{ $index }}" [(ngModel)]="jornada.horaInicio"
+                    [class.input-erro]="erros['jornadas'] && !jornada.horaInicio" (input)="limparErro('jornadas')">
                 <span class="separador">até</span>
-                <input type="time" name="termino-{{ $index }}" [(ngModel)]="jornada.horaTermino">
+                <input type="time" name="termino-{{ $index }}" [(ngModel)]="jornada.horaTermino"
+                    [class.input-erro]="erros['jornadas'] && !jornada.horaTermino" (input)="limparErro('jornadas')">
                 <button type="button" class="remover-item" (click)="removerJornada($index)" title="Remover">✕</button>
             </div>
             }
+            @if (erros['jornadas']) { <span class="erro-msg">{{ erros['jornadas'] }}</span> }
 
             <button type="button" class="add-item" (click)="adicionarJornada()">+ Adicionar horário</button>
         </div>
@@ -66,13 +75,17 @@
         @if (atuaComoPJ) {
         <div class="linha-form bloco-pj">
             <div class="campo">
-                <label for="cnpj">CNPJ *</label>
-                <input type="text" id="cnpj" name="cnpj" [(ngModel)]="cnpj" placeholder="00.000.000/0000-00">
+                <label for="cnpj">CNPJ <span class="obrigatorio">*</span></label>
+                <input type="text" id="cnpj" name="cnpj" [(ngModel)]="cnpj" placeholder="00.000.000/0000-00"
+                    [class.input-erro]="erros['cnpj']" (input)="limparErro('cnpj')">
+                @if (erros['cnpj']) { <span class="erro-msg">{{ erros['cnpj'] }}</span> }
             </div>
             <div class="campo">
-                <label for="razaoSocial">Razão Social *</label>
+                <label for="razaoSocial">Razão Social <span class="obrigatorio">*</span></label>
                 <input type="text" id="razaoSocial" name="razaoSocial" [(ngModel)]="razaoSocial"
-                    placeholder="Ex: Roberto Almeida Serviços Médicos LTDA">
+                    placeholder="Ex: Roberto Almeida Serviços Médicos LTDA" [class.input-erro]="erros['razaoSocial']"
+                    (input)="limparErro('razaoSocial')">
+                @if (erros['razaoSocial']) { <span class="erro-msg">{{ erros['razaoSocial'] }}</span> }
             </div>
         </div>
         <div class="linha-form">

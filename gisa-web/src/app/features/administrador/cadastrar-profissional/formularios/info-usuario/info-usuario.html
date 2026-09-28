@@ -9,18 +9,22 @@
 
   @if (temAcessoSistema) {
     <div class="campo">
-      <label for="senha">Senha Inicial *</label>
-      <input type="text" id="senha" name="senha" [(ngModel)]="senha" placeholder="Senha">
+      <label for="senha">Senha Inicial <span class="obrigatorio">*</span></label>
+      <input type="text" id="senha" name="senha" [(ngModel)]="senha" placeholder="Mínimo de 8 caracteres"
+        [class.input-erro]="erros['senha']" (input)="limparErro('senha')">
+      @if (erros['senha']) { <span class="erro-msg">{{ erros['senha'] }}</span> }
     </div>
 
     <div class="campo">
-      <label for="perfil">Perfil *</label>
-      <select id="perfil" name="perfil" [(ngModel)]="perfil">
+      <label for="perfil">Perfil <span class="obrigatorio">*</span></label>
+      <select id="perfil" name="perfil" [(ngModel)]="perfil" [class.input-erro]="erros['perfil']"
+        (change)="limparErro('perfil')">
         <option value="" disabled selected>Selecione o perfil</option>
         @for (p of perfis; track p.valor) {
           <option [value]="p.valor">{{ p.label }}</option>
         }
       </select>
+      @if (erros['perfil']) { <span class="erro-msg">{{ erros['perfil'] }}</span> }
     </div>
   }
 </div>

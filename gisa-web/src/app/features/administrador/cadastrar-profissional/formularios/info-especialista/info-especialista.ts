@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ComErros } from '../../../../../shared/components/com-erros';
 
 export interface Jornada {
   diaSemana: string;
@@ -13,7 +14,7 @@ export interface Jornada {
   templateUrl: './info-especialista.html',
   styleUrl: './info-especialista.scss',
 })
-export class InfoEspecialista implements OnInit {
+export class InfoEspecialista extends ComErros implements OnInit {
   @Input() dadosIniciais?: Partial<InfoEspecialista>;
   @Input() somenteLeitura: boolean = false;
 

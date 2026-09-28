@@ -5,6 +5,12 @@
 </app-cabecalho-pagina>
 
   <div class="card-form">
+    <p class="legenda-obrigatorio">Campos com <span class="obrigatorio">*</span> são obrigatórios.</p>
+
+    @if (erro) {
+    <p class="erro-msg erro-geral">{{ erro }}</p>
+    }
+
     <app-dados-pessoais />
     <br>
     <hr>
@@ -18,12 +24,7 @@
     <br>
     <hr>
     <app-contato />
-    
   </div>
-
-  @if (erro) {
-  <p class="erro-msg">{{ erro }}</p>
-  }
 
   <app-sucesso-dialog
     [aberto]="dialogSucessoAberto"

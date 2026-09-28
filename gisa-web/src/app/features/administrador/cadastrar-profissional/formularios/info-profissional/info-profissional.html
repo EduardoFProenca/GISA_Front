@@ -3,13 +3,15 @@
 
   <div class="linha-form">
     <div class="campo">
-      <label for="cargo">Cargo *</label>
-      <select id="cargo" name="cargo" [(ngModel)]="cargo">
+      <label for="cargo">Cargo <span class="obrigatorio">*</span></label>
+      <select id="cargo" name="cargo" [(ngModel)]="cargo" [class.input-erro]="erros['cargo']"
+        (change)="limparErro('cargo')">
         <option value="" disabled selected>Selecione o cargo</option>
         @for (c of cargos; track c.valor) {
           <option [value]="c.valor">{{ c.label }}</option>
         }
       </select>
+      @if (erros['cargo']) { <span class="erro-msg">{{ erros['cargo'] }}</span> }
     </div>
     <div class="campo">
       <label for="codigoCBO">Código (CBO)</label>

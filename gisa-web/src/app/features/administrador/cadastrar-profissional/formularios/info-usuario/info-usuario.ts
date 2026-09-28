@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ComErros } from '../../../../../shared/components/com-erros';
 
 export type Perfil = 'ADMINISTRADOR' | 'MEDICO' | 'RECEPCIONISTA' | 'ASSISTENTE_SOCIAL';
 
@@ -9,7 +10,7 @@ export type Perfil = 'ADMINISTRADOR' | 'MEDICO' | 'RECEPCIONISTA' | 'ASSISTENTE_
   templateUrl: './info-usuario.html',
   styleUrl: './info-usuario.scss',
 })
-export class InfoUsuario implements OnInit {
+export class InfoUsuario extends ComErros implements OnInit {
   @Input() dadosIniciais?: Partial<InfoUsuario>;
   @Input() somenteLeitura: boolean = false;
 

@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ComErros } from '../../../../../shared/components/com-erros';
 
 @Component({
   selector: 'app-info-profissional',
@@ -7,7 +8,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './info-profissional.html',
   styleUrl: './info-profissional.scss',
 })
-export class InfoProfissional implements OnInit {
+export class InfoProfissional extends ComErros implements OnInit {
   @Input() dadosIniciais?: Partial<InfoProfissional>;
   @Input() somenteLeitura: boolean = false;
 

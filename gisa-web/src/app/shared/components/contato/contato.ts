@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ComErros } from '../com-erros';
 
 @Component({
   selector: 'app-contato',
@@ -7,7 +8,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './contato.html',
   styleUrl: './contato.scss',
 })
-export class Contato implements OnInit {
+export class Contato extends ComErros implements OnInit {
   @Input() dadosIniciais?: Partial<Contato>;
   @Input() somenteLeitura: boolean = false;
 
