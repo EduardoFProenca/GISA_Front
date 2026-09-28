@@ -1,67 +1,68 @@
-export enum StatusPaciente {
-  DESLIGADO = 'DESLIGADO',
-  MATRICULADO = 'MATRICULADO',
-  ALTA = 'ALTA'
-}
+export type StatusPaciente = 'MATRICULADO' | 'DESLIGADO' | 'ALTA';
 
-export enum TipoEscola {
-  PUBLICA = 'PUBLICA',
-  PARTICULAR = 'PARTICULAR'
-}
+export type TipoEscola = 'PUBLICA' | 'PRIVADA';
 
-export enum GrauParentesco {
-  PAI = 'PAI',
-  MAE = 'MAE',
-  AVO = 'AVO',
-  TUTOR_LEGAL = 'TUTOR_LEGAL',
-  OUTRO = 'OUTRO'
-}
+export type GrauParentesco = 
+  | 'PAI' 
+  | 'MAE' 
+  | 'AVO' 
+  | 'TIO' 
+  | 'IRMAO' 
+  | 'TUTOR_LEGAL' 
+  | 'OUTRO';
 
-export interface Escola {
-  idEscola?: number;
-  nome: string;
-  tipoEscola: TipoEscola | string;
-  telefone: string;
-}
-
-export interface Responsavel {
-  idResponsavel?: number;
-  ocupacao: string;
-  grauParentesco: GrauParentesco | string;
-}
-
-export interface Prontuario {
-  idProntuario?: number;
-  alergias: string;
-  comorbidades: string;
-  mobilidade: string;
-}
-
+// Interface do CID (Relação Many-to-Many com Paciente)
 export interface Cid {
   idCid?: number;
   codigoCID: string;
   descricao: string;
 }
 
-export interface Paciente {
-  idCadastro?: number;
-  // Dados de Pessoa / Contato
-  cpf: string;
-  rg: string;
+// Interface da Escola (Relação 1-to-Many / 1-to-1)
+export interface Escola {
+  idEscola?: number;
   nome: string;
-  dataNascimento: string;
-  sexo: string;
-  celular: string;
-  
-  // Dados do Paciente
-  statusPaciente: StatusPaciente | string;
-  dataCadastro: string;
+  tipoEscola?: TipoEscola;
+  telefone?: string;
+}
+
+// Interface do Prontuário (Composição de 1-to-1)
+export interface Prontuario {
+  idProntuario?: number;
+  alergias?: string;
+  comorbidade?: string;
+  mobilidade?: string;
+}
+
+// Interface do Responsável
+export interface Responsavel {
+  idResponsavel?: number;
+  nome: string;
+  cpf: string;
+  telefone: string;
+  ocupacao?: string; // Atributo presente no diagrama
+}
+
+// Classe/Tabela de Associação do Vínculo entre Paciente e Responsável
+export interface VinculoResponsavel {
+  idVinculo?: number;
+  responsavel: Responsavel;
+  grauParentesco: GrauParentesco; // Grau de parentesco fica na relação
+}
+
+// Interface Principal do Paciente
+export interface Paciente {
+  idPaciente?: number;
+  nome: string;
+  cpf: string;
+  dataNascimento?: string;
+  statusPaciente: StatusPaciente;
   convenio: boolean;
-
-  // Relacionamentos
+  dataCadastro?: string;
+  
+  // Relacionamentos do Diagrama
+  vinculosResponsavel?: VinculoResponsavel[]; // Suporta múltiplos responsáveis
   escola?: Escola;
-  responsavel?: Responsavel;
   prontuario?: Prontuario;
-
-  cids?: Cid[];
+  cids?: Cid[];                               // Suporta múltiplos CIDs (* para 0..*)
 }
