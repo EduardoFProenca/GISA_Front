@@ -1,37 +1,77 @@
 <div class="secao">
-  <h3>Informações do Responsável</h3>
+  <div class="cabecalho-secao">
+    <h3>Informações do Responsável</h3>
+  </div>
 
-  <div class="linha-form">
-    <div class="campo">
-      <label>Nome do Responsável</label>
-      <input type="text" [(ngModel)]="responsavelData.nome" placeholder="Digite o nome completo" />
-    </div>
-
-    <div class="campo">
-      <label>CPF</label>
-      <input type="text" [(ngModel)]="responsavelData.cpf" placeholder="000.000.000-00" />
+  <!-- Caixinhas / Cards dos Responsáveis já Adicionados -->
+  <div class="container-cards" *ngIf="listaResponsaveis.length > 0">
+    <div class="card-responsavel" *ngFor="let resp of listaResponsaveis; let i = index">
+      <div class="info-principal">
+        <div class="nome-resp">{{ resp.nome }}</div>
+        <div class="detalhes-resp">
+          <span><strong>CPF:</strong> {{ resp.cpf }}</span> • 
+          <span><strong>Tel:</strong> {{ resp.telefone }}</span> • 
+          <span><strong>Parentesco:</strong> {{ resp.grauParentesco }}</span>
+          <span *ngIf="resp.ocupacao"> • <strong>Profissão:</strong> {{ resp.ocupacao }}</span>
+        </div>
+      </div>
+      <div class="acoes-card">
+        <button type="button" class="btn-editar" (click)="editarResponsavel(i)" title="Editar Responsável">✏️</button>
+        <button type="button" class="btn-remover" (click)="removerResponsavel(i)" title="Remover Responsável">✕</button>
+      </div>
     </div>
   </div>
 
-  <div class="linha-form">
-    <div class="campo">
-      <label>Telefone / WhatsApp</label>
-      <input type="text" [(ngModel)]="responsavelData.telefone" placeholder="(00) 00000-0000" />
+  <!-- Form de Preenchimento -->
+  <div class="formulario-card" *ngIf="exibindoFormulario">
+    <h4>{{ indexEdicao !== null ? 'Editar Responsável' : 'Cadastrar Novo Responsável' }}</h4>
+    
+    <div class="linha-form">
+      <div class="campo">
+        <label>Nome do Responsável *</label>
+        <input type="text" [(ngModel)]="novoResponsavel.nome" placeholder="Digite o nome completo" />
+      </div>
+
+      <div class="campo">
+        <label>CPF *</label>
+        <input type="text" [(ngModel)]="novoResponsavel.cpf" placeholder="000.000.000-00" />
+      </div>
     </div>
 
-    <div class="campo">
-      <label>Ocupação / Profissão</label>
-      <input type="text" [(ngModel)]="responsavelData.ocupacao" placeholder="Ex: Professor, Autônomo..." />
+    <div class="linha-form">
+      <div class="campo">
+        <label>Telefone / WhatsApp</label>
+        <input type="text" [(ngModel)]="novoResponsavel.telefone" placeholder="(00) 00000-0000" />
+      </div>
+
+      <div class="campo">
+        <label>Ocupação / Profissão</label>
+        <input type="text" [(ngModel)]="novoResponsavel.ocupacao" placeholder="Ex: Professor..." />
+      </div>
+
+      <div class="campo">
+        <label>Grau de Parentesco</label>
+        <select [(ngModel)]="novoResponsavel.grauParentesco">
+          <option value="" disabled selected>Selecione...</option>
+          <option *ngFor="let item of opcoesParentesco" [value]="item.value">
+            {{ item.label }}
+          </option>
+        </select>
+      </div>
     </div>
 
-    <div class="campo">
-      <label>Grau de Parentesco</label>
-      <select [(ngModel)]="responsavelData.grauParentesco">
-        <option value="" disabled selected>Selecione...</option>
-        <option *ngFor="let item of opcoesParentesco" [value]="item.value">
-          {{ item.label }}
-        </option>
-      </select>
+    <div class="acoes-form">
+      <button type="button" class="btn-secundario" (click)="cancelarEdicao()">Cancelar</button>
+      <button type="button" class="btn-confirmar" (click)="salvarResponsavel()">
+        {{ indexEdicao !== null ? 'Atualizar Responsável' : 'Confirmar Responsável' }}
+      </button>
     </div>
+  </div>
+
+  <!-- Botão para acionar a inclusão de um novo responsável -->
+  <div class="area-btn-add" *ngIf="!exibindoFormulario">
+    <button type="button" class="btn-add-responsavel" (click)="abrirFormulario()">
+      + Adicionar Responsável
+    </button>
   </div>
 </div>

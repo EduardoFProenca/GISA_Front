@@ -1,11 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-interface CidItem {
-  codigoCID: string;
-  descricao: string;
-}
+import { Cid } from '../../../../../core/models/paciente.model';
 
 @Component({
   selector: 'app-info-cid',
@@ -14,44 +10,29 @@ interface CidItem {
   styleUrl: './info-cid.scss'
 })
 export class InfoCid {
-  cidSelecionado = {
-    codigoCID: '',
-    descricao: ''
-  };
+  codigoInput: string = '';
+  descricaoInput: string = '';
 
-  listaCidsSelecionados: CidItem[] = [];
-
-  cidsOpcoes = [
-    { codigoCID: 'F84.0', descricao: 'Autismo Infantil' },
-    { codigoCID: 'G80.0', descricao: 'Paralisia Cerebral Espástica' },
-    { codigoCID: 'Q90', descricao: 'Síndrome de Down' },
-    { codigoCID: 'F80.1', descricao: 'Distúrbio Expressivo de Linguagem' }
-  ];
+  listaCids: Cid[] = [];
 
   adicionarCid() {
-    if (!this.cidSelecionado.codigoCID) return;
+    if (!this.codigoInput.trim() || !this.descricaoInput.trim()) return;
 
-    // Busca a opção selecionada para pegar a descrição oficial do CID
-    const opcao = this.cidsOpcoes.find(c => c.codigoCID === this.cidSelecionado.codigoCID);
-    const descricaoOficial = opcao ? opcao.descricao : '';
-    const observacaoDigitada = this.cidSelecionado.descricao.trim();
+    const novoCid: Cid = {
+      codigoCID: this.codigoInput.toUpperCase().trim(),
+      descricao: this.descricaoInput.trim()
+    };
 
-    // Se o usuário digitou uma observação, combina a descrição oficial + observação
-    let descricaoFinal = descricaoOficial;
-    if (observacaoDigitada) {
-      descricaoFinal = `${descricaoOficial} (${observacaoDigitada})`;
+    // Evita adicionar o mesmo código duplicado
+    const jaExiste = this.listaCids.some(c => c.codigoCID === novoCid.codigoCID);
+    if (!jaExiste) {
+      this.listaCids.push(novoCid);
+      this.codigoInput = '';
+      this.descricaoInput = '';
     }
-
-    this.listaCidsSelecionados.push({
-      codigoCID: this.cidSelecionado.codigoCID,
-      descricao: descricaoFinal
-    });
-
-    // Limpa os campos para a próxima seleção
-    this.cidSelecionado = { codigoCID: '', descricao: '' };
   }
 
   removerCid(index: number) {
-    this.listaCidsSelecionados.splice(index, 1);
+    this.listaCids.splice(index, 1);
   }
 }
