@@ -16,7 +16,13 @@
         </div>
       </div>
       <div class="acoes-card">
-        <button type="button" class="btn-editar" (click)="editarResponsavel(i)" title="Editar Responsável">✏️</button>
+        <button 
+          type="button" 
+          class="btn-editar" 
+          (click)="editarResponsavel(i)" 
+          title="Editar Responsável"
+          [innerHTML]="icones.editar"
+        ></button>
         <button type="button" class="btn-remover" (click)="removerResponsavel(i)" title="Remover Responsável">✕</button>
       </div>
     </div>

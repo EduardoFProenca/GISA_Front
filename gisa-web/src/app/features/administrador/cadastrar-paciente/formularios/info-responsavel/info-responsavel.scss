@@ -35,7 +35,8 @@
         gap: 0.5rem;
         align-items: center;
 
-        .btn-editar, .btn-remover {
+        .btn-editar,
+        .btn-remover {
           background: none;
           border: none;
           font-size: 1rem;
@@ -46,13 +47,30 @@
         }
 
         .btn-editar {
+          background: none;
+          border: none;
+          cursor: pointer;
+          padding: 0.35rem 0.5rem;
+          border-radius: 4px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          color: #475569;
+          transition: background 0.2s, color 0.2s;
+
           &:hover {
             background-color: #e0f2fe;
+            color: #0284c7;
+          }
+
+          svg {
+            stroke: currentColor;
           }
         }
 
         .btn-remover {
           color: #ef4444;
+
           &:hover {
             background-color: #fee2e2;
           }
@@ -90,7 +108,8 @@
           margin-bottom: 0.25rem;
         }
 
-        input, select {
+        input,
+        select {
           padding: 0.5rem;
           border: 1px solid #cbd5e1;
           border-radius: 6px;

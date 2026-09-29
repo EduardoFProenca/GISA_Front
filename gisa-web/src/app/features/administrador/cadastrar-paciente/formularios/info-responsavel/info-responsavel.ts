@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import type { GrauParentesco } from '../../../../../core/models/paciente.model';
+import { ICONES } from '../../../../../shared/icons';
 
 export interface ResponsavelItem {
   nome: string;
@@ -18,6 +19,8 @@ export interface ResponsavelItem {
   styleUrl: './info-responsavel.scss'
 })
 export class InfoResponsavel {
+  readonly icones = ICONES;
+
   exibindoFormulario: boolean = false;
   indexEdicao: number | null = null; // Guarda o índice do responsável sendo editado (null = novo)
 

@@ -22,7 +22,7 @@ export class DashboardAdministrador {
     { titulo: 'Criar Consulta', descricao: 'Nova consulta no sistema', iconeSvg: ICONES.calendario, rota: '/administrador/consultas/nova' },
     { titulo: 'Gestão de Consultas', descricao: 'Visualizar e gerenciar', iconeSvg: ICONES.gestaoConsultas, rota: '/administrador/consultas' },
     { titulo: 'Gestão de Agenda', descricao: 'Visualizar e configurar', iconeSvg: ICONES.calendario, rota: '/administrador/agenda-medico' },
-    { titulo: 'Gestão de Pacientes', descricao: 'Ver todos os pacientes', iconeSvg: ICONES.gestaoPacientes, rota: '/administrador/pacientes' },
+    { titulo: 'Gestão de Pacientes', descricao: 'Ver todos os pacientes', iconeSvg: ICONES.gestaoPacientes, rota: '/administrador/pacientes/gerenciar' },
     { titulo: 'Gestão de Profissionais', descricao: 'Ver corpo clínico', iconeSvg: ICONES.gestaoProfissionais, rota: '/administrador/profissionais/gerenciar' },
     { titulo: 'Controle de Agendamentos', descricao: 'Confirmar e remarcar', iconeSvg: ICONES.calendario, rota: '/administrador/agendamentos' },
   ];
