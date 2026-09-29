@@ -1,0 +1,22 @@
+<div class="card-prof" (click)="abrirDetalhe()">
+  <div class="avatar-prof">
+    {{ paciente.nome.charAt(0) }}
+  </div>
+
+  <div class="corpo-prof">
+    <div class="topo-prof">
+      <strong>{{ paciente.nome }}</strong>
+      <button type="button" class="btn-editar" title="Editar" (click)="abrirEdicao($event)">
+        <span [innerHTML]="sanitizarIcone(icones.editar)"></span>
+      </button>
+    </div>
+
+    <p class="cargo-prof">Idade: {{ idade }} anos | CPF: {{ paciente.cpf }}</p>
+    <p class="especialidade-prof">Resp: {{ nomeResponsavel }}</p>
+    <p class="registro-prof">CID: {{ cidPrincipal }}</p>
+
+    <span class="status-badge" [class]="classeStatus">
+      {{ paciente.statusPaciente || 'Ativo' }}
+    </span>
+  </div>
+</div>
