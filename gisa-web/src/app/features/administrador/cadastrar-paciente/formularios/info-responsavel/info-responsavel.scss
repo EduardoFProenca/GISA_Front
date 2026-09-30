@@ -1,29 +1,163 @@
 .secao {
-  margin-top: 1.5rem;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
 
-  h3 {
-    font-size: 1.1rem;
+  .container-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+
+    .card-responsavel {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1rem;
+
+      .nome-resp {
+        font-weight: 600;
+        color: #0f172a;
+        margin-bottom: 0.25rem;
+      }
+
+      .detalhes-resp {
+        font-size: 0.85rem;
+        color: #64748b;
+      }
+
+      .acoes-card {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+
+        .btn-editar,
+        .btn-remover {
+          background: none;
+          border: none;
+          font-size: 1rem;
+          cursor: pointer;
+          padding: 0.35rem 0.6rem;
+          border-radius: 4px;
+          transition: background 0.2s;
+        }
+
+        .btn-editar {
+          background: none;
+          border: none;
+          cursor: pointer;
+          padding: 0.35rem 0.5rem;
+          border-radius: 4px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          color: #475569;
+          transition: background 0.2s, color 0.2s;
+
+          &:hover {
+            background-color: #e0f2fe;
+            color: #0284c7;
+          }
+
+          svg {
+            stroke: currentColor;
+          }
+        }
+
+        .btn-remover {
+          color: #ef4444;
+
+          &:hover {
+            background-color: #fee2e2;
+          }
+        }
+      }
+    }
+  }
+
+  .formulario-card {
+    background: #f1f5f9;
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+
+    h4 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      color: #334155;
+    }
+
+    .linha-form {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+
+      .campo {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        label {
+          font-size: 0.85rem;
+          font-weight: 500;
+          color: #475569;
+          margin-bottom: 0.25rem;
+        }
+
+        input,
+        select {
+          padding: 0.5rem;
+          border: 1px solid #cbd5e1;
+          border-radius: 6px;
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    .acoes-form {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1rem;
+
+      button {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .btn-secundario {
+        background: white;
+        border: 1px solid #cbd5e1;
+        color: #475569;
+      }
+
+      .btn-confirmar {
+        background-color: #008eb0;
+        border: none;
+        color: white;
+      }
+    }
+  }
+
+  .btn-add-responsavel {
+    background-color: transparent;
+    border: 2px dashed #008eb0;
+    color: #008eb0;
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
     font-weight: 600;
-    color: #000;
-    text-align: left;
-    margin: 0 0 1.25rem 0;
-    padding-bottom: 0.6rem;
-    border-bottom: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background-color: #f0f9ff;
+    }
   }
-}
-
-.linha-form {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  margin-bottom: 1rem;
-
-  @media (max-width: 640px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.campo {
-  display: flex;
-  flex-direction: column;
 }

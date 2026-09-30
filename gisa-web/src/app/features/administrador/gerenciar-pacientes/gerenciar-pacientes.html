@@ -1,0 +1,39 @@
+<app-cabecalho-pagina 
+  titulo="Gestão de Pacientes" 
+  textoAcao="Novo Paciente"
+  rotaAcao="/administrador/pacientes/novo"
+/>
+
+<div class="pagina-profissionais">
+  <div class="stats-grid">
+    <app-card-estatistica 
+      titulo="Total de Pacientes" 
+      [valor]="totalElementos"
+      [iconeSvg]="icones.gestaoPacientes" 
+      corIcone="#dbeafe" 
+    />
+  </div>
+
+  <div class="painel-busca">
+    <app-busca-filtro 
+      placeholder="Buscar por nome ou CPF..." 
+      (buscaAlterada)="aplicarBusca($event.termo)" 
+    />
+
+    <br><br>
+
+    @if (erro) {
+      <p class="vazio">{{ erro }}</p>
+    }
+
+    <div class="grid-profissionais">
+      @for (paciente of pacientesFiltrados; track paciente.idPaciente) {
+        <app-card-paciente [paciente]="paciente" />
+      } @empty {
+        @if (!carregando && !erro) {
+          <p class="vazio">Nenhum paciente encontrado.</p>
+        }
+      }
+    </div>
+  </div>
+</div>

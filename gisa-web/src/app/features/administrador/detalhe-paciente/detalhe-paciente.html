@@ -1,0 +1,85 @@
+<app-cabecalho-pagina
+  titulo="Detalhes do Paciente"
+  textoAcao="Editar"
+  [rotaAcao]="'/administrador/pacientes/' + id + '/editar'"
+></app-cabecalho-pagina>
+
+<div class="card-form">
+  <!-- Status -->
+  <div class="secao">
+    <h3>Situação do Paciente</h3>
+    <div class="campo">
+      <label for="status">Status</label>
+      <input
+        type="text"
+        id="status"
+        [value]="status === 'MATRICULADO' ? 'Matriculado' : 'Inativo'"
+        disabled
+      />
+    </div>
+  </div>
+
+  <br><hr><br>
+
+  <!-- Dados Pessoais -->
+  <app-dados-pessoais
+    [dadosIniciais]="dadosPessoais"
+    [bloquearCpfSexoNascimento]="true"
+    [somenteLeitura]="true"
+  ></app-dados-pessoais>
+
+  <br><hr><br>
+
+  <!-- Informações do Responsável -->
+  <div class="secao">
+    <h3>Informações do Responsável</h3>
+    <div class="info-bloco">
+      <p><strong>Nome:</strong> {{ infoResponsavel.nome }}</p>
+      <p><strong>CPF:</strong> {{ infoResponsavel.cpf }}</p>
+      <p><strong>Telefone:</strong> {{ infoResponsavel.telefone }}</p>
+      <p><strong>Grau de Parentesco:</strong> {{ infoResponsavel.grauParentesco }}</p>
+    </div>
+  </div>
+
+  <br><hr><br>
+
+  <!-- Informações Escolares -->
+  <div class="secao">
+    <h3>Informações Escolares</h3>
+    <div class="info-bloco">
+      <p><strong>Escola:</strong> {{ infoEscola.nomeEscola }}</p>
+      <p><strong>Série:</strong> {{ infoEscola.serie }}</p>
+      <p><strong>Turno:</strong> {{ infoEscola.turno }}</p>
+    </div>
+  </div>
+
+  <br><hr><br>
+
+  <!-- Informações de CID -->
+  <div class="secao">
+    <h3>Diagnóstico / CID</h3>
+    <div class="info-bloco">
+      <p><strong>Código CID:</strong> {{ infoCid.codigoCID }}</p>
+      <p><strong>Descrição:</strong> {{ infoCid.descricao }}</p>
+    </div>
+  </div>
+
+  <br><hr><br>
+
+  <!-- Prontuário -->
+  <div class="secao">
+    <h3>Prontuário</h3>
+    <div class="info-bloco">
+      <p><strong>Número do Prontuário:</strong> {{ infoProntuario.numeroProntuario }}</p>
+      <p><strong>Observações:</strong> {{ infoProntuario.observacoes }}</p>
+    </div>
+  </div>
+
+  <br><hr><br>
+
+  <!-- Contato e Endereço -->
+  <app-contato
+    [dadosIniciais]="contato"
+    [somenteLeitura]="true"
+  ></app-contato>
+</div>
