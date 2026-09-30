@@ -100,3 +100,8 @@
   }
 }
 
+.acoes-prof {
+  display: flex;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}

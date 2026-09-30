@@ -1,0 +1,19 @@
+<app-cabecalho-pagina titulo="Histórico do Profissional"></app-cabecalho-pagina>
+
+<div class="card-form">
+  @if (carregando()) {
+    <p class="vazio">Carregando histórico...</p>
+  } @else if (eventos().length === 0) {
+    <p class="vazio">Nenhum evento registrado para este profissional.</p>
+  } @else {
+    <ul class="linha-tempo">
+      @for (evento of eventos(); track evento.data + evento.titulo) {
+        <li>
+          <span class="data-evento">{{ evento.data }}</span>
+          <strong>{{ evento.titulo }}</strong>
+          <p>{{ evento.descricao }}</p>
+        </li>
+      }
+    </ul>
+  }
+</div>

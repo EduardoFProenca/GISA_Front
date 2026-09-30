@@ -1,0 +1,27 @@
+<div class="card-prof" (click)="abrirDetalhe()">
+  <div class="avatar-prof">
+    {{ profissional.nome.charAt(0) }}
+  </div>
+
+  <div class="corpo-prof">
+    <div class="topo-prof">
+      <strong>{{ profissional.nome }}</strong>
+      <div class="acoes-prof">
+        <button type="button" class="btn-editar" title="Ver histórico" (click)="abrirHistorico($event)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/>
+          </svg>
+        </button>
+        <button type="button" class="btn-editar" title="Editar" (click)="abrirEdicao($event)">
+          <span [innerHTML]="sanitizarIcone(icones.editar)"></span>
+        </button>
+      </div>
+    </div>
+    <p class="cargo-prof">{{ profissional.cargo }}</p>
+    <p class="crm-prof">CRM: {{ profissional.crm }}</p>
+
+    <span class="status-badge" [class]="classeStatus">
+      {{ profissional.statusCadastro }}
+    </span>
+  </div>
+</div>

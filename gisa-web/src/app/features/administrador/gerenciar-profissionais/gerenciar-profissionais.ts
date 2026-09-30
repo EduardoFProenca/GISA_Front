@@ -1,8 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CardEstatistica } from '../../../shared/components/card-estatistica/card-estatistica';
 import { BuscaFiltro, OpcaoFiltro, EstadoBusca } from '../../../shared/components/busca-filtro/busca-filtro';
-import { CardProfissional, ProfissionalCard } from './card-profissional/card-profissional';
-import { ICONES } from '../../../shared/icons';
+import { CardProfissional, ProfissionalCard } from '../../../shared/components/card-profissional/card-profissional';import { ICONES } from '../../../shared/icons';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { Paginacao } from '../../../shared/components/paginacao/paginacao';
 import { ProfissionalService } from '../../../services/profissional';

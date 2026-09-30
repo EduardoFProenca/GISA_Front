@@ -1,7 +1,7 @@
 import { Component, Input, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ICONES } from '../../../../shared/icons';
+import { ICONES } from '../../icons';
 
 export interface ProfissionalCard {
   id: string;
@@ -17,7 +17,6 @@ export interface ProfissionalCard {
   templateUrl: './card-profissional.html',
   styleUrl: './card-profissional.scss',
 })
-
 export class CardProfissional {
   @Input() profissional!: ProfissionalCard;
   icones = ICONES;
@@ -39,8 +38,12 @@ export class CardProfissional {
     this.router.navigateByUrl(`/administrador/profissionais/${this.profissional.id}/editar`);
   }
 
+  abrirHistorico(event: Event) {
+    event.stopPropagation();
+    this.router.navigateByUrl(`/administrador/profissionais/${this.profissional.id}/historico`);
+  }
+
   get classeStatus(): string {
     return this.profissional.statusCadastro.toLowerCase();
   }
-
 }
