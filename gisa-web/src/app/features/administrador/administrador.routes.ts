@@ -5,7 +5,7 @@ import { GerenciarProfissionais } from './gerenciar-profissionais/gerenciar-prof
 import { DetalheProfissional } from './detalhe-profissional/detalhe-profissional';
 import { EditarProfissional } from './editar-profissional/editar-profissional';
 import { CriarConsulta } from './criar-consulta/criar-consulta';
-
+import { HistoricoProfissional } from './historico-profissional/historico-profissional';
 import { CadastrarPaciente } from './cadastrar-paciente/cadastrar-paciente';
 import { GerenciarPacientes } from './gerenciar-pacientes/gerenciar-pacientes';
 import { DetalhePaciente } from './detalhe-paciente/detalhe-paciente';
@@ -25,5 +25,6 @@ export const administradorRoutes: Routes = [
   { path: 'pacientes/novo', component: CadastrarPaciente },
   { path: 'pacientes/gerenciar', component: GerenciarPacientes },
   { path: 'pacientes/:id', component: DetalhePaciente },
-  { path: 'pacientes/:id/editar', component: EditarPaciente }
+  { path: 'pacientes/:id/editar', component: EditarPaciente },
+  { path: 'profissionais/:id/historico', component: HistoricoProfissional },
 ];
