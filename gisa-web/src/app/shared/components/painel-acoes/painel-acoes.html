@@ -1,5 +1,5 @@
 <div class="painel">
-  <h3>Gestão Rápida</h3>
+  <h3>{{ titulo }}</h3>
   <div class="grid-acoes">
     @for (acao of acoes; track acao.rota) {
       <a class="card-acao" [routerLink]="acao.rota">

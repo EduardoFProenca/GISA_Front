@@ -16,8 +16,9 @@ export interface AcaoRapida {
   styleUrl: './painel-acoes.scss'
 })
 export class PainelAcoesComponent {
+  @Input() titulo: string = 'Gestão Rápida';
   @Input() acoes: AcaoRapida[] = [];
-
+  
   constructor(private sanitizer: DomSanitizer) {}
 
   sanitizarIcone(svg: string): SafeHtml {

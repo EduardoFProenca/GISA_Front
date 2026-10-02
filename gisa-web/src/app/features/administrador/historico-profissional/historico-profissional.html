@@ -1,19 +1,47 @@
 <app-cabecalho-pagina titulo="Histórico do Profissional"></app-cabecalho-pagina>
 
 <div class="card-form">
-  @if (carregando()) {
-    <p class="vazio">Carregando histórico...</p>
-  } @else if (eventos().length === 0) {
-    <p class="vazio">Nenhum evento registrado para este profissional.</p>
+
+
+  <h3 class="titulo-secao-historico">Consultas Realizadas</h3>
+
+  <app-busca-filtro placeholder="Buscar por especialista, modalidade ou status..."
+    (buscaAlterada)="consultas.aplicarBusca($event)" />
+
+  <br><br>
+
+  @if (carregandoConsultas()) {
+  <p class="vazio">Carregando consultas...</p>
+  } @else if (consultas.itensFiltrados().length === 0) {
+  <p class="vazio">Nenhuma consulta encontrada para este profissional.</p>
   } @else {
-    <ul class="linha-tempo">
-      @for (evento of eventos(); track evento.data + evento.titulo) {
-        <li>
-          <span class="data-evento">{{ evento.data }}</span>
-          <strong>{{ evento.titulo }}</strong>
-          <p>{{ evento.descricao }}</p>
-        </li>
-      }
-    </ul>
+  <app-painel-acoes titulo="Consultas" [acoes]="consultas.acoesPaginadas()" />
+
+  <br>
+  <hr>
+  <br>
+
+  <h3 class="titulo-secao-historico">Eventos do Cadastro</h3>
+
+  <app-busca-filtro placeholder="Buscar por título ou descrição do evento..."
+    (buscaAlterada)="eventos.aplicarBusca($event)" />
+
+  <br><br>
+
+  @if (carregandoEventos()) {
+  <p class="vazio">Carregando eventos...</p>
+  } @else if (eventos.itensFiltrados().length === 0) {
+  <p class="vazio">Nenhum evento encontrado para este profissional.</p>
+  } @else {
+  <app-painel-acoes titulo="Linha do Tempo" [acoes]="eventos.acoesPaginadas()" />
+
+  <app-paginacao [totalItens]="eventos.itensFiltrados().length" [itensPorPagina]="eventos.itensPorPagina"
+    [paginaAtual]="eventos.paginaAtual()" (paginaAlterada)="eventos.mudarPagina($event)" />
+  }
+
+
+
+  <app-paginacao [totalItens]="consultas.itensFiltrados().length" [itensPorPagina]="consultas.itensPorPagina"
+    [paginaAtual]="consultas.paginaAtual()" (paginaAlterada)="consultas.mudarPagina($event)" />
   }
 </div>
