@@ -1,0 +1,16 @@
+<div class="card-prof">
+  <div class="avatar-prof">
+    {{ consulta.nomePaciente.charAt(0) }}
+  </div>
+
+  <div class="corpo-prof">
+    <div class="topo-prof">
+      <strong>{{ consulta.nomePaciente }}</strong>
+      <span class="status-badge" [class]="classeStatus">
+        {{ consulta.status }}
+      </span>
+    </div>
+    <p class="especialidade-prof">com {{ consulta.nomeEspecialista }}</p>
+    <p class="registro-prof">{{ dataFormatada }} · {{ consulta.modalidade }}</p>
+  </div>
+</div>

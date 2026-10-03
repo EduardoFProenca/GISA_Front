@@ -1,0 +1,41 @@
+<app-cabecalho-pagina titulo="Gestão de Consultas" textoAcao="Nova Consulta"
+  rotaAcao="/administrador/consultas/nova" />
+
+<div class="pagina-profissionais">
+
+  <div class="stats-grid">
+    <app-card-estatistica titulo="Total de Consultas" [valor]="totalElementos()"
+      [iconeSvg]="icones.gestaoConsultas" corIcone="#dbeafe" />
+    <app-card-estatistica titulo="Agendadas" [valor]="totalAgendadas()"
+      [iconeSvg]="icones.calendario" corIcone="#dbeafe" />
+    <app-card-estatistica titulo="Concluídas" [valor]="totalConcluidas()"
+      [iconeSvg]="icones.estrela" corIcone="#dcfce7" />
+    <app-card-estatistica titulo="Canceladas" [valor]="totalCanceladas()"
+      [iconeSvg]="icones.sino" corIcone="#fee2e2" />
+  </div>
+
+  <div class="painel-busca">
+    <app-busca-filtro placeholder="Buscar por paciente ou especialista..." [filtrosDisponiveis]="filtros"
+      (buscaAlterada)="aplicarBusca($event)" />
+
+    <br><br>
+
+    @if (erro()) {
+    <p class="vazio">{{ erro() }}</p>
+    }
+
+    <div class="grid-profissionais">
+      @for (consulta of consultasPaginadas(); track consulta.id) {
+      <app-card-consulta [consulta]="consulta" />
+      } @empty {
+      @if (!carregando() && !erro()) {
+      <p class="vazio">Nenhuma consulta encontrada.</p>
+      }
+      }
+    </div>
+  </div>
+
+  <app-paginacao [totalItens]="totalElementos()" [itensPorPagina]="itensPorPagina" [paginaAtual]="paginaAtual()"
+    (paginaAlterada)="mudarPagina($event)" />
+
+</div>
