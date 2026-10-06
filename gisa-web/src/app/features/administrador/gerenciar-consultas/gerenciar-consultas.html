@@ -15,10 +15,12 @@
   </div>
 
   <div class="painel-busca">
-    <app-busca-filtro placeholder="Buscar por paciente ou especialista..." [filtrosDisponiveis]="filtros"
-      (buscaAlterada)="aplicarBusca($event)" />
+    <app-busca-filtro placeholder="Buscar por paciente ou especialista..." (buscaAlterada)="aplicarBusca($event)" />
 
-    <br><br>
+    <app-filtro-avancado
+      [statusDisponiveis]="statusDisponiveis"
+      [periodosDisponiveis]="periodosDisponiveis"
+      (filtroAlterado)="aplicarFiltroAvancado($event)" />
 
     @if (erro()) {
     <p class="vazio">{{ erro() }}</p>
