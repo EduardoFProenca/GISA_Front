@@ -25,6 +25,10 @@ export interface Terapia {
 export interface NovaTerapia {
   idPaciente: number;
   idEspecialista: number;
+  // TODO(Kauã): só vêm preenchidos quando modalidade = COLETIVA. São as pessoas
+  // além do paciente/especialista principais acima (ex: List<Long> no DTO do Spring).
+  idsPacientesAdicionais?: number[];
+  idsEspecialistasAdicionais?: number[];
   dataHoraInicio: string;
   dataHoraFim: string;
   modalidade: Modalidade;

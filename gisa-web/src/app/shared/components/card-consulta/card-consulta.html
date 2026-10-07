@@ -1,16 +1,75 @@
-<div class="card-prof">
-  <div class="avatar-prof">
-    {{ consulta.nomePaciente.charAt(0) }}
+<article class="card-consulta" [class]="classeStatus" [class.coletiva]="ehColetiva">
+
+  <div class="topo">
+    <div class="icone" [title]="labelModalidade" [innerHTML]="sanitizarIcone(icone)"></div>
+
+    <div class="titulos">
+      <div class="linha-titulo">
+        <strong [title]="titulo">{{ titulo }}</strong>
+        <span class="badge-status">{{ labelStatus }}</span>
+      </div>
+      <p class="subtitulo">{{ subtitulo }}</p>
+    </div>
   </div>
 
-  <div class="corpo-prof">
-    <div class="topo-prof">
-      <strong>{{ consulta.nomePaciente }}</strong>
-      <span class="status-badge" [class]="classeStatus">
-        {{ consulta.status }}
-      </span>
+  <p class="meta">
+    <span>{{ data }}</span>
+    <span class="sep">·</span>
+    <span>{{ horario }}</span>
+    <span class="sep">·</span>
+    <span>{{ labelModalidade }}</span>
+  </p>
+
+  @if (ehColetiva) {
+    <ul class="participantes">
+      @for (p of visiveis; track p.id) {
+        <li class="chip" [class.especialista]="p.tipo === 'ESPECIALISTA'" [title]="tooltip(p)">
+          <span class="ponto"></span>{{ nomeCurto(p.nome) }}
+        </li>
+      }
+      @if (ocultos > 0) {
+        <li class="chip mais" [title]="nomesOcultos">+{{ ocultos }}</li>
+      }
+    </ul>
+  }
+
+  <div class="rodape">
+    <button type="button" class="btn btn-detalhes" (click)="verDetalhes.emit(consulta.id)">
+      Detalhes
+    </button>
+
+    <div class="acoes">
+      @if (podeAdicionar) {
+        <button type="button" class="btn btn-adicionar" title="Adicionar pessoas à consulta"
+          aria-label="Adicionar pessoas à consulta" (click)="adicionarPessoas.emit(consulta.id)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Adicionar
+        </button>
+      }
+
+      @if (podeEditar) {
+        <button type="button" class="btn btn-icone" title="Editar consulta" aria-label="Editar consulta"
+          (click)="editar.emit(consulta.id)">
+          <span [innerHTML]="sanitizarIcone(icones.editar)"></span>
+        </button>
+      }
+
+      @if (podeCancelar) {
+        <button type="button" class="btn btn-icone perigo" title="Cancelar consulta" aria-label="Cancelar consulta"
+          (click)="cancelar.emit(consulta.id)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9" />
+            <line x1="15" y1="9" x2="9" y2="15" />
+            <line x1="9" y1="9" x2="15" y2="15" />
+          </svg>
+        </button>
+      }
     </div>
-    <p class="especialidade-prof">com {{ consulta.nomeEspecialista }}</p>
-    <p class="registro-prof">{{ dataFormatada }} · {{ consulta.modalidade }}</p>
   </div>
-</div>
+
+</article>

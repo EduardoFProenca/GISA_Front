@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -16,10 +16,21 @@ import { Modalidade, NovaTerapia } from '../../../core/models/consulta.model';
 const CAMPOS_API: Record<string, string> = {
   idPaciente: 'paciente',
   idEspecialista: 'especialista',
+  idsPacientesAdicionais: 'participantes',
+  idsEspecialistasAdicionais: 'participantes',
   modalidade: 'modalidade',
   dataHoraInicio: 'data',
   dataHoraFim: 'horaTermino',
 };
+
+type TipoPessoa = 'paciente' | 'especialista';
+
+// Um select extra (pessoa além da principal) numa consulta coletiva.
+// O uid é estável: serve de track no @for e de chave de erro.
+interface PessoaExtra {
+  uid: number;
+  id: number | null;
+}
 
 @Component({
   selector: 'app-criar-consulta',
@@ -51,6 +62,13 @@ export class CriarConsulta implements OnInit {
   data = signal('');
   horaInicio = signal('');
   horaTermino = signal('');
+
+  // Pessoas extras (só valem quando a modalidade é COLETIVA)
+  pacientesExtras = signal<PessoaExtra[]>([]);
+  especialistasExtras = signal<PessoaExtra[]>([]);
+  private proximoUid = 1;
+
+  ehColetiva = computed(() => this.modalidade() === Modalidade.COLETIVA);
 
   // Estado da tela
   erros = signal<Record<string, string>>({});
@@ -95,6 +113,69 @@ export class CriarConsulta implements OnInit {
     });
   }
 
+  // ---------- pessoas extras (consulta coletiva) ----------
+
+  private extras(tipo: TipoPessoa) {
+    return tipo === 'paciente' ? this.pacientesExtras : this.especialistasExtras;
+  }
+
+  adicionarPessoa(tipo: TipoPessoa) {
+    this.extras(tipo).update((lista) => [...lista, { uid: this.proximoUid++, id: null }]);
+  }
+
+  removerPessoa(tipo: TipoPessoa, uid: number) {
+    this.extras(tipo).update((lista) => lista.filter((x) => x.uid !== uid));
+    this.cacheOpcoes.delete(`${tipo}:${uid}`);
+    this.limparErro(`${tipo}-${uid}`);
+    this.limparErro('participantes');
+  }
+
+  aoMudarExtra(tipo: TipoPessoa, uid: number, id: number | string | null) {
+    this.extras(tipo).update((lista) =>
+      lista.map((x) => (x.uid === uid ? { ...x, id: id as number | null } : x))
+    );
+    this.limparErro(`${tipo}-${uid}`);
+    this.limparErro('participantes');
+  }
+
+  // Ids já escolhidos para o tipo, ignorando o campo de quem está perguntando.
+  private idsEscolhidos(tipo: TipoPessoa, ignorar: number | 'principal'): number[] {
+    const ids: number[] = [];
+    const principal = tipo === 'paciente' ? this.idPaciente() : this.idEspecialista();
+    if (ignorar !== 'principal' && principal != null) ids.push(principal);
+
+    // Extras só contam em consulta coletiva (fora dela ficam guardados, mas inativos).
+    if (this.ehColetiva()) {
+      for (const extra of this.extras(tipo)()) {
+        if (extra.uid !== ignorar && extra.id != null) ids.push(extra.id);
+      }
+    }
+    return ids;
+  }
+
+  private cacheOpcoes = new Map<
+    string,
+    { base: OpcaoSelectBusca[]; chave: string; lista: OpcaoSelectBusca[] }
+  >();
+
+  // Opções de um select, sem as pessoas já escolhidas nos OUTROS campos do mesmo tipo.
+  // Devolve a MESMA referência enquanto nada mudou: o SelectBusca reseta o texto digitado
+  // sempre que recebe um array novo em [opcoes].
+  opcoesDisponiveis(tipo: TipoPessoa, uid: number | 'principal'): OpcaoSelectBusca[] {
+    const base = tipo === 'paciente' ? this.opcoesPacientes() : this.opcoesEspecialistas();
+    const usados = this.idsEscolhidos(tipo, uid);
+    if (usados.length === 0) return base;
+
+    const chave = usados.join(',');
+    const chaveCache = `${tipo}:${uid}`;
+    const guardado = this.cacheOpcoes.get(chaveCache);
+    if (guardado && guardado.base === base && guardado.chave === chave) return guardado.lista;
+
+    const lista = base.filter((o) => !usados.includes(o.id as number));
+    this.cacheOpcoes.set(chaveCache, { base, chave, lista });
+    return lista;
+  }
+
   // ---------- validação ----------
 
   private validar(): boolean {
@@ -113,11 +194,24 @@ export class CriarConsulta implements OnInit {
       e['horaTermino'] = 'O término deve ser depois do início.';
     }
 
+    // Campo extra aberto e vazio: ou escolhe a pessoa, ou remove o campo.
+    if (this.ehColetiva()) {
+      for (const tipo of ['paciente', 'especialista'] as const) {
+        for (const extra of this.extras(tipo)()) {
+          if (extra.id == null) e[`${tipo}-${extra.uid}`] = 'Selecione a pessoa ou remova este campo.';
+        }
+      }
+    }
+
     this.erros.set(e);
     return Object.keys(e).length === 0;
   }
 
   // ---------- salvar ----------
+
+  private idsAdicionais(tipo: TipoPessoa): number[] {
+    return this.extras(tipo)().map((x) => x.id as number);
+  }
 
   salvarConsulta() {
     if (this.salvando()) return;
@@ -137,6 +231,11 @@ export class CriarConsulta implements OnInit {
       dataHoraInicio: `${this.data()}T${this.horaInicio()}:00`,
       dataHoraFim: `${this.data()}T${this.horaTermino()}:00`,
     };
+
+    if (this.ehColetiva()) {
+      dados.idsPacientesAdicionais = this.idsAdicionais('paciente');
+      dados.idsEspecialistasAdicionais = this.idsAdicionais('especialista');
+    }
 
     this.terapiaService.criar(dados).subscribe({
       next: () => {
@@ -178,7 +277,7 @@ export class CriarConsulta implements OnInit {
     this.salvando.set(false);
     this.erro.set(mensagem);
     setTimeout(() => {
-      document.querySelector('.input-erro')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document.querySelector('.input-erro, .erro-msg')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 50);
   }
 
@@ -191,6 +290,9 @@ export class CriarConsulta implements OnInit {
     this.data.set('');
     this.horaInicio.set('');
     this.horaTermino.set('');
+    this.pacientesExtras.set([]);
+    this.especialistasExtras.set([]);
+    this.cacheOpcoes.clear();
     this.erros.set({});
     this.erro.set('');
   }

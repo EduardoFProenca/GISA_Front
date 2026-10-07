@@ -18,7 +18,7 @@
       <div class="campo">
         <label for="paciente">Paciente <span class="obrigatorio">*</span></label>
         <app-select-busca
-          [opcoes]="opcoesPacientes()"
+          [opcoes]="opcoesDisponiveis('paciente', 'principal')"
           [value]="idPaciente()"
           (valueChange)="aoMudarPaciente($event)"
           placeholder="Digite ou selecione o paciente"
@@ -26,12 +26,49 @@
           [comErro]="!!erros()['paciente']">
         </app-select-busca>
         @if (erros()['paciente']) { <span class="erro-msg">{{ erros()['paciente'] }}</span> }
+
+        @if (ehColetiva()) {
+          @for (extra of pacientesExtras(); track extra.uid) {
+            <div class="item-extra">
+              <div class="linha-extra">
+                <app-select-busca
+                  [opcoes]="opcoesDisponiveis('paciente', extra.uid)"
+                  [value]="extra.id"
+                  (valueChange)="aoMudarExtra('paciente', extra.uid, $event)"
+                  placeholder="Digite ou selecione outro paciente"
+                  semResultados="Nenhum paciente encontrado"
+                  [comErro]="!!erros()['paciente-' + extra.uid]">
+                </app-select-busca>
+                <button type="button" class="btn-remover" title="Remover paciente" aria-label="Remover paciente"
+                  (click)="removerPessoa('paciente', extra.uid)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+              @if (erros()['paciente-' + extra.uid]) {
+                <span class="erro-msg">{{ erros()['paciente-' + extra.uid] }}</span>
+              }
+            </div>
+          }
+
+          <button type="button" class="btn-adicionar-pessoa" (click)="adicionarPessoa('paciente')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Adicionar paciente
+          </button>
+        }
       </div>
 
       <div class="campo">
         <label for="especialista">Profissional <span class="obrigatorio">*</span></label>
         <app-select-busca
-          [opcoes]="opcoesEspecialistas()"
+          [opcoes]="opcoesDisponiveis('especialista', 'principal')"
           [value]="idEspecialista()"
           (valueChange)="aoMudarEspecialista($event)"
           placeholder="Digite ou selecione o profissional"
@@ -39,8 +76,49 @@
           [comErro]="!!erros()['especialista']">
         </app-select-busca>
         @if (erros()['especialista']) { <span class="erro-msg">{{ erros()['especialista'] }}</span> }
+
+        @if (ehColetiva()) {
+          @for (extra of especialistasExtras(); track extra.uid) {
+            <div class="item-extra">
+              <div class="linha-extra">
+                <app-select-busca
+                  [opcoes]="opcoesDisponiveis('especialista', extra.uid)"
+                  [value]="extra.id"
+                  (valueChange)="aoMudarExtra('especialista', extra.uid, $event)"
+                  placeholder="Digite ou selecione outro profissional"
+                  semResultados="Nenhum profissional encontrado"
+                  [comErro]="!!erros()['especialista-' + extra.uid]">
+                </app-select-busca>
+                <button type="button" class="btn-remover" title="Remover profissional" aria-label="Remover profissional"
+                  (click)="removerPessoa('especialista', extra.uid)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+              @if (erros()['especialista-' + extra.uid]) {
+                <span class="erro-msg">{{ erros()['especialista-' + extra.uid] }}</span>
+              }
+            </div>
+          }
+
+          <button type="button" class="btn-adicionar-pessoa" (click)="adicionarPessoa('especialista')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Adicionar profissional
+          </button>
+        }
       </div>
     </div>
+
+    @if (erros()['participantes']) {
+      <span class="erro-msg">{{ erros()['participantes'] }}</span>
+    }
 
     <div class="linha-form">
       <div class="campo">

@@ -28,7 +28,12 @@
 
     <div class="grid-profissionais">
       @for (consulta of consultasPaginadas(); track consulta.id) {
-      <app-card-consulta [consulta]="consulta" />
+      <app-card-consulta
+        [consulta]="consulta"
+        (verDetalhes)="verDetalhes($event)"
+        (editar)="editarConsulta($event)"
+        (adicionarPessoas)="adicionarPessoas($event)"
+        (cancelar)="pedirCancelamento($event)" />
       } @empty {
       @if (!carregando() && !erro()) {
       <p class="vazio">Nenhuma consulta encontrada.</p>
@@ -41,3 +46,12 @@
     (paginaAlterada)="mudarPagina($event)" />
 
 </div>
+
+<app-confirm-dialog
+  [aberto]="consultaParaCancelar() !== null"
+  titulo="Cancelar consulta?"
+  [mensagem]="mensagemCancelamento()"
+  textoConfirmar="Cancelar consulta"
+  textoCancelar="Voltar"
+  (confirmar)="confirmarCancelamento()"
+  (cancelar)="fecharCancelamento()" />

@@ -6,6 +6,7 @@ import { FiltroAvancado, EstadoFiltroAvancado, OpcaoFiltroAvancado } from '../..
 import { CardConsulta, ConsultaCard } from '../../../shared/components/card-consulta/card-consulta';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { Paginacao } from '../../../shared/components/paginacao/paginacao';
+import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { ICONES } from '../../../shared/icons';
 import { Modalidade, StatusTerapia } from '../../../core/models/consulta.model';
 
@@ -24,22 +25,7 @@ const COR_STATUS: Record<StatusTerapia, string> = {
   [StatusTerapia.EM_ATENDIMENTO]: '#d97706',
 };
 
-const LABEL_MODALIDADE: Record<Modalidade, string> = {
-  [Modalidade.INDIVIDUAL]: 'Individual',
-  [Modalidade.COLETIVA]: 'Coletiva',
-};
-
 export type PeriodoAtalho = 'hoje' | 'ontem' | 'amanha' | 'mes' | 'manual' | '';
-
-interface ConsultaMock {
-  id: string;
-  nomePaciente: string;
-  nomeEspecialista: string;
-  dataHoraInicio: string;
-  dataHoraFim: string;
-  modalidade: Modalidade;
-  status: StatusTerapia;
-}
 
 function inicioDoDia(d: Date): Date {
   const copia = new Date(d);
@@ -55,7 +41,7 @@ function fimDoDia(d: Date): Date {
 
 @Component({
   selector: 'app-gerenciar-consultas',
-  imports: [FormsModule, CardEstatistica, BuscaFiltro, FiltroAvancado, CardConsulta, CabecalhoPagina, Paginacao],
+  imports: [FormsModule, CardEstatistica, BuscaFiltro, FiltroAvancado, CardConsulta, CabecalhoPagina, Paginacao, ConfirmDialog],
   templateUrl: './gerenciar-consultas.html',
   styleUrl: './gerenciar-consultas.scss',
 })
@@ -84,8 +70,11 @@ export class GerenciarConsultas implements OnInit {
   private dataManualInicio = signal('');
   private dataManualFim = signal('');
 
-  private todasConsultas = signal<ConsultaMock[]>([]);
+  private todasConsultas = signal<ConsultaCard[]>([]);
   termoBusca = signal('');
+
+  // Consulta aguardando confirmação de cancelamento (null = diálogo fechado).
+  consultaParaCancelar = signal<ConsultaCard | null>(null);
 
   paginaAtual = signal(1);
   itensPorPagina = 9;
@@ -129,10 +118,9 @@ export class GerenciarConsultas implements OnInit {
     const intervalo = this.intervaloPeriodo();
 
     return this.todasConsultas().filter((c) => {
+      // A busca vale para qualquer participante (paciente ou especialista).
       const bateTexto =
-        !termo ||
-        c.nomePaciente.toLowerCase().includes(termo) ||
-        c.nomeEspecialista.toLowerCase().includes(termo);
+        !termo || c.participantes.some((p) => p.nome.toLowerCase().includes(termo));
 
       const bateStatus = status.size === 0 || status.has(c.status);
 
@@ -157,59 +145,76 @@ export class GerenciarConsultas implements OnInit {
 
   consultasPaginadas = computed<ConsultaCard[]>(() => {
     const inicio = (this.paginaAtual() - 1) * this.itensPorPagina;
-    return this.consultasFiltradas()
-      .slice(inicio, inicio + this.itensPorPagina)
-      .map((c) => this.paraCard(c));
+    return this.consultasFiltradas().slice(inicio, inicio + this.itensPorPagina);
+  });
+
+  mensagemCancelamento = computed(() => {
+    const consulta = this.consultaParaCancelar();
+    if (!consulta) return '';
+    const quando = consulta.dataHoraInicio.split('T')[0].split('-').reverse().join('/');
+    const tipo = consulta.modalidade === Modalidade.COLETIVA ? 'coletiva' : 'individual';
+    return `A consulta ${tipo} do dia ${quando} será marcada como cancelada.`;
   });
 
   ngOnInit() {
     // TODO(Kauã): trocar por chamada real quando existir TerapiaController/Repository
     // (ex: GET /terapias, paginado) — hoje a entidade Terapia existe no banco mas não
-    // tem endpoint exposto.
+    // tem endpoint exposto. A API precisa devolver a lista de participantes
+    // (pacientes + especialistas) de cada terapia, já que a coletiva tem vários.
     setTimeout(() => {
       this.todasConsultas.set([
         {
           id: '1',
-          nomePaciente: 'Lucas Oliveira Santos',
-          nomeEspecialista: 'Dra. Ana Souza',
           dataHoraInicio: '2026-10-05T09:00:00',
           dataHoraFim: '2026-10-05T09:50:00',
           modalidade: Modalidade.INDIVIDUAL,
           status: StatusTerapia.AGENDADA,
+          participantes: [
+            { id: 'p1', nome: 'Lucas Oliveira Santos', tipo: 'PACIENTE' },
+            { id: 'e1', nome: 'Dra. Ana Souza', tipo: 'ESPECIALISTA' },
+          ],
         },
         {
           id: '2',
-          nomePaciente: 'Beatriz Lima',
-          nomeEspecialista: 'Dr. Roberto Almeida',
           dataHoraInicio: '2026-09-28T14:00:00',
           dataHoraFim: '2026-09-28T15:30:00',
           modalidade: Modalidade.COLETIVA,
           status: StatusTerapia.CONCLUIDA,
+          participantes: [
+            { id: 'e2', nome: 'Dr. Roberto Almeida', tipo: 'ESPECIALISTA' },
+            { id: 'e1', nome: 'Dra. Ana Souza', tipo: 'ESPECIALISTA' },
+            { id: 'p2', nome: 'Beatriz Lima', tipo: 'PACIENTE' },
+            { id: 'p3', nome: 'Mateus Rocha Pereira', tipo: 'PACIENTE' },
+            { id: 'p4', nome: 'Sofia Andrade', tipo: 'PACIENTE' },
+            { id: 'p5', nome: 'Pedro Henrique Costa', tipo: 'PACIENTE' },
+          ],
         },
         {
           id: '3',
-          nomePaciente: 'Pedro Henrique Costa',
-          nomeEspecialista: 'Dra. Ana Souza',
           dataHoraInicio: '2026-09-20T10:00:00',
           dataHoraFim: '2026-09-20T10:50:00',
           modalidade: Modalidade.INDIVIDUAL,
           status: StatusTerapia.CANCELADA,
+          participantes: [
+            { id: 'p5', nome: 'Pedro Henrique Costa', tipo: 'PACIENTE' },
+            { id: 'e1', nome: 'Dra. Ana Souza', tipo: 'ESPECIALISTA' },
+          ],
+        },
+        {
+          id: '4',
+          dataHoraInicio: '2026-10-09T10:00:00',
+          dataHoraFim: '2026-10-09T11:00:00',
+          modalidade: Modalidade.COLETIVA,
+          status: StatusTerapia.AGENDADA,
+          participantes: [
+            { id: 'e2', nome: 'Dr. Roberto Almeida', tipo: 'ESPECIALISTA' },
+            { id: 'p2', nome: 'Beatriz Lima', tipo: 'PACIENTE' },
+            { id: 'p4', nome: 'Sofia Andrade', tipo: 'PACIENTE' },
+          ],
         },
       ]);
       this.carregando.set(false);
     }, 300);
-  }
-
-  private paraCard(c: ConsultaMock): ConsultaCard {
-    return {
-      id: c.id,
-      nomePaciente: c.nomePaciente,
-      nomeEspecialista: c.nomeEspecialista,
-      dataHoraInicio: c.dataHoraInicio,
-      dataHoraFim: c.dataHoraFim,
-      modalidade: LABEL_MODALIDADE[c.modalidade],
-      status: LABEL_STATUS[c.status],
-    };
   }
 
   aplicarBusca(estado: EstadoBusca) {
@@ -227,5 +232,41 @@ export class GerenciarConsultas implements OnInit {
 
   mudarPagina(pagina: number) {
     this.paginaAtual.set(pagina);
+  }
+
+  // --- Ações do card ---
+
+  verDetalhes(id: string) {
+    // TODO(Kauã): navegar para o detalhe da consulta (rota ainda não existe).
+  }
+
+  editarConsulta(id: string) {
+    // TODO(Kauã): navegar para a edição da consulta (rota e endpoint ainda não existem).
+  }
+
+  adicionarPessoas(id: string) {
+    // TODO(Kauã): abrir diálogo para escolher pacientes e/ou especialistas e
+    // chamar a API que vincula os participantes à terapia coletiva.
+  }
+
+  pedirCancelamento(id: string) {
+    const consulta = this.todasConsultas().find((c) => c.id === id) ?? null;
+    this.consultaParaCancelar.set(consulta);
+  }
+
+  fecharCancelamento() {
+    this.consultaParaCancelar.set(null);
+  }
+
+  confirmarCancelamento() {
+    const alvo = this.consultaParaCancelar();
+    if (!alvo) return;
+
+    // TODO(Kauã): trocar por chamada real (ex: PATCH /terapias/{id}/cancelar).
+    // Por enquanto só atualiza o mock em memória.
+    this.todasConsultas.update((lista) =>
+      lista.map((c) => (c.id === alvo.id ? { ...c, status: StatusTerapia.CANCELADA } : c))
+    );
+    this.consultaParaCancelar.set(null);
   }
 }
