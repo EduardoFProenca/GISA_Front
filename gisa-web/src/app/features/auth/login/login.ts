@@ -1,7 +1,13 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TimeoutError, timeout } from 'rxjs';
 import { Auth } from '../../../core/auth/auth';
+
+// Render (plano gratuito) pode levar quase 1 minuto para acordar na primeira chamada.
+const TEMPO_LIMITE_MS = 60_000;
+const AVISO_DEMORA_MS = 5_000;
 
 @Component({
   selector: 'app-login',
@@ -13,11 +19,14 @@ import { Auth } from '../../../core/auth/auth';
 export class LoginComponent {
   usuario: string = '';
   senha: string = '';
-  mostrarSenha: boolean = false;
-  erroUsuario: boolean = false;
-  erroSenha: boolean = false;
-  erroLogin: string = '';
-  carregando: boolean = false;
+
+  // Estado da tela em signals: atualiza mesmo em callbacks assíncronos (HTTP, setTimeout).
+  mostrarSenha = signal(false);
+  erroUsuario = signal(false);
+  erroSenha = signal(false);
+  erroLogin = signal('');
+  carregando = signal(false);
+  demorando = signal(false);
 
   auth = inject(Auth);
 
@@ -32,26 +41,56 @@ export class LoginComponent {
 
     if (!usuarioValido || !senhaValida) return;
 
-    this.erroLogin = '';
-    this.carregando = true;
+    this.erroLogin.set('');
+    this.carregando.set(true);
+    this.demorando.set(false);
 
-    this.auth.login({ cpf: this.usuario, senha: this.senha }).subscribe({
-      next: () => {
-        this.carregando = false;
-        this.router.navigate(['/administrador']);
-      },
-      error: (err) => {
-        this.carregando = false;
-        this.erroLogin = err?.error?.message || 'CPF ou senha inválidos.';
-      }
-    });
+    const aviso = setTimeout(() => this.demorando.set(true), AVISO_DEMORA_MS);
+
+    this.auth
+      .login({ cpf: this.usuario, senha: this.senha })
+      .pipe(timeout(TEMPO_LIMITE_MS))
+      .subscribe({
+        next: () => {
+          clearTimeout(aviso);
+          this.finalizarCarregamento();
+          this.router.navigate(['/administrador']);
+        },
+        error: (err: unknown) => {
+          clearTimeout(aviso);
+          this.finalizarCarregamento();
+          this.erroLogin.set(this.mensagemDeErro(err));
+        }
+      });
   }
 
   toggleSenha() {
-    this.mostrarSenha = !this.mostrarSenha;
+    this.mostrarSenha.update((v) => !v);
   }
 
   esqueciSenha() {
+  }
+
+  private finalizarCarregamento() {
+    this.carregando.set(false);
+    this.demorando.set(false);
+  }
+
+  private mensagemDeErro(err: unknown): string {
+    if (err instanceof TimeoutError) {
+      return 'O servidor demorou para responder. Tente novamente em instantes.';
+    }
+
+    const http = err as HttpErrorResponse;
+
+    // status 0: a requisição nem chegou (offline, CORS ou bloqueador do navegador)
+    if (http?.status === 0) {
+      return 'Não foi possível conectar ao servidor. Verifique sua internet ou se algum bloqueador do navegador está ativo.';
+    }
+    if (http?.status >= 500) {
+      return 'Erro no servidor. Tente novamente em instantes.';
+    }
+    return http?.error?.message || 'CPF ou senha inválidos.';
   }
 
   private validarCampo(valor: string, tamanhoMinimo: number): boolean {
@@ -60,12 +99,8 @@ export class LoginComponent {
   }
 
   private mostrarErro(campo: 'usuario' | 'senha') {
-    if (campo === 'usuario') this.erroUsuario = true;
-    else this.erroSenha = true;
-
-    setTimeout(() => {
-      if (campo === 'usuario') this.erroUsuario = false;
-      else this.erroSenha = false;
-    }, 1000);
+    const sinal = campo === 'usuario' ? this.erroUsuario : this.erroSenha;
+    sinal.set(true);
+    setTimeout(() => sinal.set(false), 1000);
   }
 }
