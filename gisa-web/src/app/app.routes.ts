@@ -7,5 +7,9 @@ export const routes: Routes = [
     path: 'administrador',
     loadChildren: () => import('./features/administrador/administrador.routes').then(m => m.administradorRoutes)
   },
+  {
+    path: 'recepcionista',
+    loadChildren: () => import('./features/recepcionista/recepcionista.routes').then(m => m.recepcionistaRoutes)
+  },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
 ];

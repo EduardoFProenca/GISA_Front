@@ -1,0 +1,133 @@
+:host {
+  display: block;
+}
+
+.linha-paciente {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0;
+  border-top: 1px solid #f1f5f9;
+}
+
+.info-paciente {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+
+  .nome {
+    font-weight: 600;
+    color: #1e293b;
+  }
+
+  .justificativa {
+    flex-basis: 100%;
+    color: #64748b;
+  }
+}
+
+.situacao {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #64748b;
+
+  &[data-presenca='PRESENTE'] {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  &[data-presenca='FALTA_JUSTIFICADA'] {
+    background: #fef3c7;
+    color: #b45309;
+  }
+
+  &[data-presenca='FALTA_INJUSTIFICADA'] {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+}
+
+.acoes {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  border: 1px solid #cbd5e1;
+  background: white;
+  color: #334155;
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  &.presente {
+    border-color: #16a34a;
+    color: #15803d;
+
+    &:hover:not(:disabled),
+    &.ativo {
+      background: #16a34a;
+      color: white;
+    }
+  }
+
+  &.falta-justificada {
+    border-color: #d97706;
+    color: #b45309;
+
+    &:hover:not(:disabled),
+    &.ativo {
+      background: #d97706;
+      color: white;
+    }
+  }
+
+  &.falta {
+    border-color: #dc2626;
+    color: #b91c1c;
+
+    &:hover:not(:disabled),
+    &.ativo {
+      background: #dc2626;
+      color: white;
+    }
+  }
+
+  &.confirmar {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: white;
+  }
+}
+
+.justificativa-form {
+  flex-basis: 100%;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+
+  input {
+    flex: 1;
+    min-width: 220px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 0.45rem 0.7rem;
+    font: inherit;
+  }
+}

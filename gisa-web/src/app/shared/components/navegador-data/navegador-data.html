@@ -1,0 +1,12 @@
+<div class="barra-data">
+  <button type="button" class="btn-nav" (click)="mudarDia(-1)" aria-label="Dia anterior">‹</button>
+
+  <div class="data-atual">
+    <strong>{{ extenso() }}</strong>
+    <input #dataInput type="date" [value]="data()" (change)="selecionar(dataInput.value)"
+      aria-label="Escolher data" />
+  </div>
+
+  <button type="button" class="btn-nav" (click)="mudarDia(1)" aria-label="Próximo dia">›</button>
+  <button type="button" class="btn-hoje" [disabled]="ehHoje()" (click)="irParaHoje()">Hoje</button>
+</div>

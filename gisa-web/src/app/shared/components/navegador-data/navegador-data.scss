@@ -1,0 +1,57 @@
+:host {
+  display: block;
+}
+
+.barra-data {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.data-atual {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+
+  strong {
+    text-transform: capitalize;
+    color: #0f172a;
+  }
+
+  input[type='date'] {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.35rem 0.6rem;
+    font: inherit;
+    color: #334155;
+  }
+}
+
+.btn-nav,
+.btn-hoje {
+  border: 1px solid #e2e8f0;
+  background: white;
+  border-radius: 8px;
+  padding: 0.35rem 0.8rem;
+  font: inherit;
+  color: #334155;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: #f1f5f9;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.btn-nav {
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 0.3rem 0.75rem;
+}

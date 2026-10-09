@@ -1,1 +1,34 @@
-<p>registrar-presenca works!</p>
+<app-cabecalho-pagina titulo="Consultas Diárias" />
+
+<div class="pagina-presenca">
+
+  <app-resumo-presenca-dia [resumo]="resumo()" />
+
+  <div class="painel">
+    <app-navegador-data [data]="data()" (dataAlterada)="mudarData($event)" />
+
+    <app-busca-filtro placeholder="Buscar por paciente ou especialista..." (buscaAlterada)="aplicarBusca($event)" />
+
+    @if (erro()) {
+    <p class="mensagem erro">{{ erro() }}</p>
+    }
+
+    <div class="lista-consultas">
+      @if (carregando()) {
+      <p class="mensagem">Carregando consultas...</p>
+      } @else {
+      @for (c of consultasFiltradas(); track c.idTerapia) {
+      <app-card-consulta-presenca
+        [consulta]="c"
+        [idPacienteSalvando]="idPacienteSalvando(c)"
+        (presencaMarcada)="registrar(c, $event)" />
+      } @empty {
+      @if (!erro()) {
+      <p class="mensagem">Nenhuma consulta encontrada para este dia.</p>
+      }
+      }
+      }
+    </div>
+  </div>
+
+</div>
