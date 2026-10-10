@@ -73,3 +73,7 @@ h3 {
     }
   }
 }
+
+.info-bloco + .info-bloco {
+  margin-top: 0.75rem;
+}

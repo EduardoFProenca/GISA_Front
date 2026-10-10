@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { StatusPaciente } from '../../../../../core/models/paciente.model';
 
 @Component({
   imports: [CommonModule, FormsModule],
@@ -10,8 +9,8 @@ import { StatusPaciente } from '../../../../../core/models/paciente.model';
   templateUrl: './info-paciente.html',
 })
 export class InfoPaciente {
+  // O status (MATRICULADO) e a data de cadastro são definidos pelo back; não são enviados.
   pacienteData = {
-    convenio: false,
-    statusPaciente: 'MATRICULADO' as StatusPaciente
+    convenio: false
   };
 }

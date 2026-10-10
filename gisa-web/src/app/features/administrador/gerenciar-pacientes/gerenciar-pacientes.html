@@ -1,23 +1,23 @@
-<app-cabecalho-pagina 
-  titulo="Gestão de Pacientes" 
+<app-cabecalho-pagina
+  titulo="Gestão de Pacientes"
   textoAcao="Novo Paciente"
   rotaAcao="/administrador/pacientes/novo"
 />
 
 <div class="pagina-profissionais">
   <div class="stats-grid">
-    <app-card-estatistica 
-      titulo="Total de Pacientes" 
+    <app-card-estatistica
+      titulo="Total de Pacientes"
       [valor]="totalElementos"
-      [iconeSvg]="icones.gestaoPacientes" 
-      corIcone="#dbeafe" 
+      [iconeSvg]="icones.gestaoPacientes"
+      corIcone="#dbeafe"
     />
   </div>
 
   <div class="painel-busca">
-    <app-busca-filtro 
-      placeholder="Buscar por nome ou CPF..." 
-      (buscaAlterada)="aplicarBusca($event.termo)" 
+    <app-busca-filtro
+      placeholder="Buscar por nome ou CPF..."
+      (buscaAlterada)="aplicarBusca($event)"
     />
 
     <br><br>
@@ -27,7 +27,7 @@
     }
 
     <div class="grid-profissionais">
-      @for (paciente of pacientesFiltrados; track paciente.idPaciente) {
+      @for (paciente of pacientes; track paciente.idCadastro) {
         <app-card-paciente [paciente]="paciente" />
       } @empty {
         @if (!carregando && !erro) {
@@ -36,4 +36,13 @@
       }
     </div>
   </div>
+
+  @if (!emBusca) {
+    <app-paginacao
+      [totalItens]="totalElementos"
+      [itensPorPagina]="itensPorPagina"
+      [paginaAtual]="paginaAtual"
+      (paginaAlterada)="mudarPagina($event)"
+    />
+  }
 </div>

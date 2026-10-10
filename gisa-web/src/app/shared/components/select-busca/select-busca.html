@@ -17,6 +17,9 @@
       } @empty {
         <li class="sem-resultados">{{ semResultados }}</li>
       }
+      @if (restantes > 0) {
+        <li class="sem-resultados">+ {{ restantes }} resultados. Continue digitando para refinar.</li>
+      }
     </ul>
   }
 </div>

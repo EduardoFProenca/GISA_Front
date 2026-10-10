@@ -9,6 +9,7 @@ import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm
 import { SucessoDialog } from '../../../shared/components/sucesso-dialog/sucesso-dialog';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
 import { Contato } from '../../../shared/components/contato/contato';
+import { StatusPaciente } from '../../../core/models/paciente.model';
 
 @Component({
   selector: 'app-editar-paciente',
@@ -32,7 +33,7 @@ export class EditarPaciente implements OnInit {
 
   id: string = this.route.snapshot.paramMap.get('id') ?? '';
 
-  status: 'MATRICULADO' | 'INATIVO' = 'MATRICULADO';
+  status: StatusPaciente = 'MATRICULADO';
   confirmarCancelamentoAberto = false;
   dialogSucessoAberto = false;
   salvando = false;

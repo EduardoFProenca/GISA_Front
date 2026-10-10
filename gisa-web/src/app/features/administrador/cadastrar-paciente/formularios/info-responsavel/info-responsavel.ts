@@ -34,8 +34,6 @@ export class InfoResponsavel {
     { label: 'Pai', value: 'PAI' },
     { label: 'Mãe', value: 'MAE' },
     { label: 'Avô / Avó', value: 'AVO' },
-    { label: 'Tio / Tia', value: 'TIO' },
-    { label: 'Irmão / Irmã', value: 'IRMAO' },
     { label: 'Tutor Legal', value: 'TUTOR_LEGAL' },
     { label: 'Outro', value: 'OUTRO' }
   ];

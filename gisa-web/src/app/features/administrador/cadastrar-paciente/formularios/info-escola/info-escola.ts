@@ -18,6 +18,6 @@ export class InfoEscola {
 
   opcoesTipoEscola: { label: string; value: TipoEscola }[] = [
     { label: 'Pública', value: 'PUBLICA' },
-    { label: 'Privada', value: 'PRIVADA' }
+    { label: 'Particular', value: 'PARTICULAR' }
   ];
 }

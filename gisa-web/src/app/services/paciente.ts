@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { PacienteResumo } from '../core/models/paciente-resumo.model';
+import { PacienteLista, PacienteResumo } from '../core/models/paciente-resumo.model';
 import { PaginaSpring } from '../core/models/profissional-resumo.model';
 
 @Injectable({ providedIn: 'root' })
@@ -11,11 +11,19 @@ export class PacienteService {
   private http = inject(HttpClient);
   private base = `${environment.apiUrl}/pacientes`;
 
-  // ATENÇÃO: endpoint assumido (GET /pacientes paginado, igual ao de /profissionais).
+  // GET /api/pacientes (paginado, 0-indexed).
   listar(): Observable<PacienteResumo[]> {
     const params = new HttpParams().set('page', 0).set('size', 1000);
     return this.http
       .get<PaginaSpring<PacienteResumo>>(this.base, { params })
       .pipe(map((pagina) => pagina.content));
+  }
+
+  listarPaginado(pagina: number, tamanho: number): Observable<PaginaSpring<PacienteLista>> {
+    const params = new HttpParams()
+      .set('page', pagina)
+      .set('size', tamanho)
+      .set('sort', 'nome,asc');
+    return this.http.get<PaginaSpring<PacienteLista>>(this.base, { params });
   }
 }
