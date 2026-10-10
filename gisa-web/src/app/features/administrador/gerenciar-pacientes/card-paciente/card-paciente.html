@@ -11,12 +11,12 @@
       </button>
     </div>
 
-    <p class="cargo-prof">Idade: {{ idade }} anos | CPF: {{ paciente.cpf }}</p>
+    <p class="cargo-prof">Idade: {{ paciente.idade }} anos | CPF: {{ cpfFormatado }}</p>
     <p class="especialidade-prof">Resp: {{ nomeResponsavel }}</p>
     <p class="registro-prof">CID: {{ cidPrincipal }}</p>
 
     <span class="status-badge" [class]="classeStatus">
-      {{ paciente.statusPaciente || 'Ativo' }}
+      {{ rotuloStatus }}
     </span>
   </div>
 </div>

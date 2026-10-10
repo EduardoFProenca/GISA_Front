@@ -15,6 +15,8 @@ import { FormsModule } from '@angular/forms';
 export interface OpcaoSelectBusca {
   id: number | string;
   label: string;
+  // Texto mostrado no campo depois de escolher (se omitido, usa o label).
+  rotuloSelecionado?: string;
 }
 
 // Combobox com filtro por texto: digita para reduzir a lista, ou clica pra abrir tudo.
@@ -34,6 +36,8 @@ export class SelectBusca implements OnChanges {
   @Input() semResultados: string = 'Nenhum resultado encontrado';
   @Input() comErro: boolean = false;
   @Input() disabled: boolean = false;
+  // Máximo de opções exibidas de uma vez (listas grandes, como CID). Padrão: todas.
+  @Input() limite: number = Infinity;
 
   @Output() valueChange = new EventEmitter<number | string | null>();
 
@@ -48,13 +52,30 @@ export class SelectBusca implements OnChanges {
 
   private sincronizarTermoComValor() {
     const selecionada = this.opcoes.find((o) => o.id === this.value);
-    this.termo.set(selecionada ? selecionada.label : '');
+    this.termo.set(selecionada ? this.rotulo(selecionada) : '');
+  }
+
+  private rotulo(opcao: OpcaoSelectBusca): string {
+    return opcao.rotuloSelecionado ?? opcao.label;
+  }
+
+  // Ignora maiúsculas e acentos ("mae" encontra "Mãe").
+  private normalizar(texto: string): string {
+    return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  }
+
+  private get todasFiltradas(): OpcaoSelectBusca[] {
+    const alvo = this.normalizar(this.termo().trim());
+    if (!alvo) return this.opcoes;
+    return this.opcoes.filter((o) => this.normalizar(o.label).includes(alvo));
   }
 
   get opcoesFiltradas(): OpcaoSelectBusca[] {
-    const alvo = this.termo().trim().toLowerCase();
-    if (!alvo) return this.opcoes;
-    return this.opcoes.filter((o) => o.label.toLowerCase().includes(alvo));
+    return this.todasFiltradas.slice(0, this.limite);
+  }
+
+  get restantes(): number {
+    return Math.max(0, this.todasFiltradas.length - this.limite);
   }
 
   aoFocar() {
@@ -67,13 +88,13 @@ export class SelectBusca implements OnChanges {
     this.aberto.set(true);
     // Enquanto o usuário digita e o texto não bate mais com a opção escolhida, limpamos a seleção.
     const selecionada = this.opcoes.find((o) => o.id === this.value);
-    if (!selecionada || selecionada.label !== texto) {
+    if (!selecionada || this.rotulo(selecionada) !== texto) {
       this.valueChange.emit(null);
     }
   }
 
   selecionar(opcao: OpcaoSelectBusca) {
-    this.termo.set(opcao.label);
+    this.termo.set(this.rotulo(opcao));
     this.aberto.set(false);
     this.valueChange.emit(opcao.id);
   }

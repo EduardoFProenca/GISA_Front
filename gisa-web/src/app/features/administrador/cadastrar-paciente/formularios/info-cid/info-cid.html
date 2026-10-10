@@ -4,32 +4,50 @@
   <div class="linha-form">
     <div class="campo">
       <label>Código CID</label>
-      <input 
-        type="text" 
-        [(ngModel)]="codigoInput" 
-        placeholder="Ex: F84.0" 
+      <app-select-busca
+        [opcoes]="opcoes"
+        [value]="codigoSelecionado()"
+        (valueChange)="aoEscolherCodigo($event)"
+        [limite]="50"
+        placeholder="Digite o código ou o nome. Ex: F84.0 ou autismo"
+        semResultados="Nenhum CID encontrado"
       />
     </div>
 
-    <div class="campo campo-descricao">
+    <div class="campo">
       <label>Descrição da Doença / Diagnóstico</label>
-      <input 
-        type="text" 
-        [(ngModel)]="descricaoInput" 
-        placeholder="Ex: Autismo Infantil" 
+      <input
+        type="text"
+        class="campo-fechado"
+        [value]="descricao()"
+        readonly
+        tabindex="-1"
+        placeholder="Preenchida automaticamente ao escolher o código"
       />
     </div>
-
-    <button type="button" class="btn-adicionar" (click)="adicionarCid()">
-      Adicionar CID
-    </button>
   </div>
 
-  <!-- Lista de CIDs Adicionados -->
-  <div class="lista-cids-adicionados" *ngIf="listaCids.length > 0">
-    <div class="tag-cid" *ngFor="let cid of listaCids; let i = index">
-      <span><strong>{{ cid.codigoCID }}</strong> - {{ cid.descricao }}</span>
-      <button type="button" class="btn-remover" (click)="removerCid(i)">✕</button>
+  @if (erro()) {
+    <p class="erro-cid">{{ erro() }}</p>
+  }
+
+  <button
+    type="button"
+    class="btn-adicionar"
+    [disabled]="!cidSelecionado() || verificando()"
+    (click)="adicionarCid()"
+  >
+    {{ verificando() ? 'Verificando...' : 'Adicionar CID' }}
+  </button>
+
+  @if (listaCids().length > 0) {
+    <div class="lista-cids-adicionados">
+      @for (cid of listaCids(); track cid.codigoCID; let i = $index) {
+        <div class="tag-cid">
+          <span><strong>{{ cid.codigoCID }}</strong> - {{ cid.descricao }}</span>
+          <button type="button" class="btn-remover" title="Remover" (click)="removerCid(i)">✕</button>
+        </div>
+      }
     </div>
-  </div>
+  }
 </div>

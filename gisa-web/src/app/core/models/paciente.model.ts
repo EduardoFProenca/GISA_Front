@@ -1,13 +1,11 @@
 export type StatusPaciente = 'MATRICULADO' | 'DESLIGADO' | 'ALTA';
 
-export type TipoEscola = 'PUBLICA' | 'PRIVADA';
+export type TipoEscola = 'PUBLICA' | 'PARTICULAR';
 
 export type GrauParentesco = 
   | 'PAI' 
   | 'MAE' 
   | 'AVO' 
-  | 'TIO' 
-  | 'IRMAO' 
   | 'TUTOR_LEGAL' 
   | 'OUTRO';
 

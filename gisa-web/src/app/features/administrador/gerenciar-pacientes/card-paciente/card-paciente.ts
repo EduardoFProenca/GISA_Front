@@ -1,8 +1,16 @@
 import { Component, Input, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ICONES } from '../../../../shared/icons'; // Ajuste o caminho se necessário
-import { Paciente } from '../../../../core/models/paciente.model';
+import { ICONES } from '../../../../shared/icons';
+import { PacienteLista } from '../../../../core/models/paciente-resumo.model';
+import { StatusPaciente } from '../../../../core/models/paciente.model';
+import { soDigitos } from '../../../../shared/utils/texto.util';
+
+const ROTULO_STATUS: Record<StatusPaciente, string> = {
+  MATRICULADO: 'Matriculado',
+  ALTA: 'Alta',
+  DESLIGADO: 'Desligado',
+};
 
 @Component({
   selector: 'app-card-paciente',
@@ -11,7 +19,7 @@ import { Paciente } from '../../../../core/models/paciente.model';
   styleUrl: './card-paciente.scss'
 })
 export class CardPacienteComponent {
-  @Input() paciente!: Paciente;
+  @Input() paciente!: PacienteLista;
   icones = ICONES;
 
   private router = inject(Router);
@@ -22,32 +30,39 @@ export class CardPacienteComponent {
     return this.sanitizer.bypassSecurityTrustHtml(svg);
   }
 
-  get idade(): number {
-    if (!this.paciente?.dataNascimento) return 0;
-    const anoNasc = new Date(this.paciente.dataNascimento).getFullYear();
-    const anoAtual = new Date().getFullYear();
-    return anoAtual - anoNasc;
+  // A API devolve o CPF sem máscara.
+  get cpfFormatado(): string {
+    const d = soDigitos(this.paciente?.cpf);
+    return d.length === 11 ? d.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : (this.paciente?.cpf ?? '');
   }
 
   get nomeResponsavel(): string {
-    return this.paciente?.vinculosResponsavel?.[0]?.responsavel?.nome || 'Sem responsável';
+    const lista = this.paciente?.responsaveis ?? [];
+    if (lista.length === 0) return 'Sem responsável';
+    return lista.length > 1 ? `${lista[0].nome} +${lista.length - 1}` : lista[0].nome;
   }
 
   get cidPrincipal(): string {
-    if (!this.paciente?.cids || this.paciente.cids.length === 0) return 'Nenhum CID';
-    return `${this.paciente.cids[0].codigoCID} - ${this.paciente.cids[0].descricao}`;
+    const lista = this.paciente?.cids ?? [];
+    if (lista.length === 0) return 'Nenhum CID';
+    const extra = lista.length > 1 ? ` (+${lista.length - 1})` : '';
+    return `${lista[0].codigoCID} - ${lista[0].descricao}${extra}`;
   }
 
   get classeStatus(): string {
-    return (this.paciente?.statusPaciente || 'ativo').toLowerCase();
+    return (this.paciente?.statusPaciente ?? '').toLowerCase();
+  }
+
+  get rotuloStatus(): string {
+    return ROTULO_STATUS[this.paciente?.statusPaciente] ?? '';
   }
 
   abrirDetalhe(): void {
-    this.router.navigateByUrl(`/administrador/pacientes/${this.paciente.idPaciente}`);
+    this.router.navigateByUrl(`/administrador/pacientes/${this.paciente.idCadastro}`);
   }
 
   abrirEdicao(event: Event): void {
     event.stopPropagation();
-    this.router.navigateByUrl(`/administrador/pacientes/${this.paciente.idPaciente}/editar`);
+    this.router.navigateByUrl(`/administrador/pacientes/${this.paciente.idCadastro}/editar`);
   }
 }

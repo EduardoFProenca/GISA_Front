@@ -100,7 +100,12 @@
     color: #043616;
   }
 
-  &.inativo {
+  &.alta {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+
+  &.inativo, &.desligado {
     background: #cc4c4c;
     color: #610a0a;
   }
