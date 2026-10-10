@@ -55,6 +55,9 @@ function nomeCurto(nome: string): string {
 export class CardConsulta {
   @Input() consulta!: ConsultaCard;
 
+  // false esconde o botão de editar (ex.: Controle de Agendamentos).
+  @Input() permitirEditar: boolean = true;
+
   // Todos emitem o id da consulta; quem decide o que fazer é a tela.
   @Output() verDetalhes = new EventEmitter<string>();
   @Output() editar = new EventEmitter<string>();
@@ -94,7 +97,7 @@ export class CardConsulta {
   // --- Regras dos botões ---
 
   get podeEditar(): boolean {
-    return this.consulta.status === StatusTerapia.AGENDADA;
+    return this.permitirEditar && this.consulta.status === StatusTerapia.AGENDADA;
   }
 
   get podeCancelar(): boolean {

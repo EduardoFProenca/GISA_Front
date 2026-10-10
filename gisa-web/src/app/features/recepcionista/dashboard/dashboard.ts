@@ -19,6 +19,7 @@ export class DashboardRecepcionista {
     { titulo: 'Gerenciar Paciente', descricao: 'Registro e triagem', iconeSvg: ICONES.gestaoPacientes, rota: '/recepcionista/pacientes' },
     { titulo: 'Emitir Recusa', descricao: 'Documento de recusa', iconeSvg: ICONES.cadastrarPaciente, rota: '/recepcionista/recusa' },
     { titulo: 'Registrar Presença', descricao: 'Presença ou ausência', iconeSvg: ICONES.gestaoConsultas, rota: '/recepcionista/presenca' },
+    { titulo: 'Controle de Agendamentos', descricao: 'Consultas e cancelamentos', iconeSvg: ICONES.calendario, rota: '/recepcionista/agendamentos' },
   ];
 
   atividadesRecentes: Atividade[] = [
@@ -47,6 +48,7 @@ export class DashboardRecepcionista {
     { label: 'Pacientes', iconeSvg: ICONES.gestaoPacientes, rota: '/recepcionista/pacientes' },
     { label: 'Recusas', iconeSvg: ICONES.cadastrarPaciente, rota: '/recepcionista/recusa' },
     { label: 'Presenças', iconeSvg: ICONES.gestaoConsultas, rota: '/recepcionista/presenca' },
+    { label: 'Agendamentos', iconeSvg: ICONES.calendario, rota: '/recepcionista/agendamentos' },
   ];
 
   verCadastro(id: string) {
