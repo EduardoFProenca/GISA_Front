@@ -1,25 +1,42 @@
 <div class="secao">
   <h3>Informações Escolares</h3>
 
-  <div class="linha-form">
+  <div class="linha-tripla">
     <div class="campo">
-      <label>Nome da Escola</label>
-      <input type="text" [(ngModel)]="escolaData.nome" placeholder="Nome da instituição" />
+      <label for="escolaNome">Nome da Escola</label>
+      <input type="text" id="escolaNome" name="escolaNome" [(ngModel)]="nome" list="escolas-sugestoes"
+        autocomplete="off" placeholder="Digite para buscar ou cadastrar"
+        [class.input-erro]="erros['nome'] || erros['escola']" (input)="aoDigitarNome()">
+      <datalist id="escolas-sugestoes">
+        @for (escola of sugestoes(); track escola.idEscola) {
+          <option [value]="escola.nome"></option>
+        }
+      </datalist>
+      @if (escolaSelecionada) {
+        <span class="dica-escola">Escola já cadastrada.</span>
+      } @else if (escolaNova) {
+        <span class="dica-escola">Escola nova: será cadastrada junto com o paciente.</span>
+      }
+      @if (erros['nome']) { <span class="erro-msg">{{ erros['nome'] }}</span> }
+      @if (erros['escola']) { <span class="erro-msg">{{ erros['escola'] }}</span> }
     </div>
 
     <div class="campo">
-      <label>Tipo de Escola</label>
-      <select [(ngModel)]="escolaData.tipoEscola">
-        <option value="" disabled selected>Selecione...</option>
-        <option *ngFor="let item of opcoesTipoEscola" [value]="item.value">
-          {{ item.label }}
-        </option>
+      <label for="tipoEscola">Tipo de Escola @if (escolaNova) { <span class="obrigatorio">*</span> }</label>
+      <select id="tipoEscola" name="tipoEscola" [(ngModel)]="tipoEscola" [disabled]="!!escolaSelecionada"
+        [class.input-erro]="erros['tipoEscola']" (change)="limparErro('tipoEscola')">
+        <option value="" disabled selected>Selecione</option>
+        @for (item of opcoesTipoEscola; track item.value) {
+          <option [value]="item.value">{{ item.label }}</option>
+        }
       </select>
+      @if (erros['tipoEscola']) { <span class="erro-msg">{{ erros['tipoEscola'] }}</span> }
     </div>
 
     <div class="campo">
-      <label>Telefone da Escola</label>
-      <input type="text" [(ngModel)]="escolaData.telefone" placeholder="(00) 0000-0000" />
+      <label for="telefoneEscola">Telefone da Escola</label>
+      <input type="text" id="telefoneEscola" name="telefoneEscola" [(ngModel)]="telefone"
+        [disabled]="!!escolaSelecionada" placeholder="(00) 0000-0000">
     </div>
   </div>
 </div>

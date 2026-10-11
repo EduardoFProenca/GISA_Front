@@ -23,6 +23,9 @@ export class DadosPessoais extends ComErros implements OnInit {
   @Input() dadosIniciais?: Partial<DadosPessoaisValor>;
   @Input() bloquearCpfSexoNascimento: boolean = false;
   @Input() somenteLeitura: boolean = false;
+  // Paciente não tem e-mail e o celular dele é opcional (ver API de pacientes).
+  @Input() exibirEmail: boolean = true;
+  @Input() celularObrigatorio: boolean = true;
 
   nome: string = '';
   cpf: string = '';

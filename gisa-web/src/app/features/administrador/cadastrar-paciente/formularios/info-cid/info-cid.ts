@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output, computed, inject, signal } from '@angular/core';
+import { ComErros } from '../../../../../shared/components/com-erros';
 import { Cid } from '../../../../../core/models/paciente.model';
 import { CidSelecionado, CidService } from '../../../../../services/cid';
 import { OpcaoSelectBusca, SelectBusca } from '../../../../../shared/components/select-busca/select-busca';
@@ -9,7 +10,7 @@ import { OpcaoSelectBusca, SelectBusca } from '../../../../../shared/components/
   templateUrl: './info-cid.html',
   styleUrl: './info-cid.scss',
 })
-export class InfoCid {
+export class InfoCid extends ComErros {
   private cidService = inject(CidService);
 
   // Permite reaproveitar o componente na edição (CIDs que o paciente já tem na base).
@@ -82,5 +83,12 @@ export class InfoCid {
   removerCid(index: number) {
     this.listaCids.update((lista) => lista.filter((_, i) => i !== index));
     this.cidsChange.emit(this.listaCids());
+  }
+
+  limpar() {
+    this.listaCids.set([]);
+    this.codigoSelecionado.set(null);
+    this.erro.set(null);
+    this.erros = {};
   }
 }

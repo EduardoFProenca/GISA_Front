@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { PacienteLista, PacienteResumo } from '../core/models/paciente-resumo.model';
-import { PaginaApi, PaginaSpring, normalizarPagina } from '../core/models/profissional-resumo.model';
+import { CadastroPacienteResponse, PacienteCadastroPayload } from '../core/models/paciente-cadastro.model';
+import { PaginaSpring } from '../core/models/profissional-resumo.model';
 
 @Injectable({ providedIn: 'root' })
 export class PacienteService {
@@ -15,8 +16,12 @@ export class PacienteService {
   listar(): Observable<PacienteResumo[]> {
     const params = new HttpParams().set('page', 0).set('size', 1000);
     return this.http
-      .get<PaginaApi<PacienteResumo>>(this.base, { params })
-      .pipe(map((pagina) => normalizarPagina(pagina).content));
+      .get<PaginaSpring<PacienteResumo>>(this.base, { params })
+      .pipe(map((pagina) => pagina.content));
+  }
+
+  cadastrar(dados: PacienteCadastroPayload): Observable<CadastroPacienteResponse> {
+    return this.http.post<CadastroPacienteResponse>(this.base, dados);
   }
 
   listarPaginado(pagina: number, tamanho: number): Observable<PaginaSpring<PacienteLista>> {
@@ -24,8 +29,6 @@ export class PacienteService {
       .set('page', pagina)
       .set('size', tamanho)
       .set('sort', 'nome,asc');
-    return this.http
-      .get<PaginaApi<PacienteLista>>(this.base, { params })
-      .pipe(map((resposta) => normalizarPagina(resposta)));
+    return this.http.get<PaginaSpring<PacienteLista>>(this.base, { params });
   }
 }

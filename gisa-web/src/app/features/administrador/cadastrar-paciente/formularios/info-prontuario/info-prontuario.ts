@@ -1,17 +1,22 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ComErros } from '../../../../../shared/components/com-erros';
 
 @Component({
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   selector: 'app-info-prontuario',
   styleUrl: './info-prontuario.scss',
   templateUrl: './info-prontuario.html',
 })
-export class InfoProntuario {
-  prontuarioData = {
-    alergias: '',
-    comorbidade: '',
-    mobilidade: ''
-  };
+export class InfoProntuario extends ComErros {
+  alergias = '';
+  comorbidade = '';
+  mobilidade = '';
+
+  limpar() {
+    this.alergias = '';
+    this.comorbidade = '';
+    this.mobilidade = '';
+    this.erros = {};
+  }
 }

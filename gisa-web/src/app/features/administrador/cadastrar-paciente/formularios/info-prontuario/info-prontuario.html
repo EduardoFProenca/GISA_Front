@@ -1,20 +1,25 @@
 <div class="secao">
   <h3>Informações do Prontuário</h3>
 
-  <div class="linha-form">
+  <div class="linha-tripla">
     <div class="campo">
-      <label>Alergias</label>
-      <input type="text" [(ngModel)]="prontuarioData.alergias" placeholder="Ex: Dipirona, Lácteos (ou Nenhuma)" />
+      <label for="alergias">Alergias</label>
+      <input type="text" id="alergias" name="alergias" [(ngModel)]="alergias"
+        placeholder="Ex: Dipirona, Lácteos (ou Nenhuma)">
     </div>
 
     <div class="campo">
-      <label>Comorbidades</label>
-      <input type="text" [(ngModel)]="prontuarioData.comorbidade" placeholder="Ex: Asma, Epilepsia..." />
+      <label for="comorbidade">Comorbidades</label>
+      <input type="text" id="comorbidade" name="comorbidade" [(ngModel)]="comorbidade"
+        placeholder="Ex: Asma, Epilepsia...">
     </div>
 
     <div class="campo">
-      <label>Mobilidade</label>
-      <input type="text" [(ngModel)]="prontuarioData.mobilidade" placeholder="Ex: Cadeira de rodas, Muletas, Reduzida..." />
+      <label for="mobilidade">Mobilidade</label>
+      <input type="text" id="mobilidade" name="mobilidade" [(ngModel)]="mobilidade"
+        placeholder="Ex: Cadeira de rodas, Muletas, Reduzida...">
     </div>
   </div>
+
+  @if (erros['prontuario']) { <span class="erro-msg">{{ erros['prontuario'] }}</span> }
 </div>

@@ -5,7 +5,13 @@
 </app-cabecalho-pagina>
 
 <div class="card-form">
-  <app-dados-pessoais />
+  <p class="legenda-obrigatorio">Campos com <span class="obrigatorio">*</span> são obrigatórios.</p>
+
+  @if (erro) {
+  <p class="erro-msg erro-geral">{{ erro }}</p>
+  }
+
+  <app-dados-pessoais [exibirEmail]="false" [celularObrigatorio]="false" />
   <br><hr>
   <app-contato />
   <br><hr>
@@ -19,3 +25,13 @@
   <br><hr>
   <app-info-cid />
 </div>
+
+<app-sucesso-dialog
+  [aberto]="dialogSucessoAberto"
+  titulo="Paciente cadastrado com sucesso!"
+  [mensagem]="nomeCadastrado + ' foi salvo(a) no sistema.'"
+  textoPrimario="Ver detalhes"
+  textoSecundario="Continuar cadastrando"
+  (verDetalhes)="aoVerDetalhesCadastrado()"
+  (continuar)="aoContinuarCadastrando()">
+</app-sucesso-dialog>

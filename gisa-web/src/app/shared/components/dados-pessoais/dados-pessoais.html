@@ -25,12 +25,14 @@
         (input)="limparErro('dataNascimento')">
       @if (erros['dataNascimento']) { <span class="erro-msg">{{ erros['dataNascimento'] }}</span> }
     </div>
-    <div class="campo">
-      <label for="email">Email <span class="obrigatorio">*</span></label>
-      <input type="text" id="email" name="email" [(ngModel)]="email" placeholder="profissional@email.com"
-        [disabled]="somenteLeitura" [class.input-erro]="erros['email']" (input)="limparErro('email')">
-      @if (erros['email']) { <span class="erro-msg">{{ erros['email'] }}</span> }
-    </div>
+    @if (exibirEmail) {
+      <div class="campo">
+        <label for="email">Email <span class="obrigatorio">*</span></label>
+        <input type="text" id="email" name="email" [(ngModel)]="email" placeholder="profissional@email.com"
+          [disabled]="somenteLeitura" [class.input-erro]="erros['email']" (input)="limparErro('email')">
+        @if (erros['email']) { <span class="erro-msg">{{ erros['email'] }}</span> }
+      </div>
+    }
   </div>
 
   <div class="linha-tripla">
@@ -41,6 +43,7 @@
         <option value="" disabled selected>Selecione</option>
         <option value="M">Masculino</option>
         <option value="F">Feminino</option>
+        <option value="O">Outro</option>
       </select>
       @if (erros['sexo']) { <span class="erro-msg">{{ erros['sexo'] }}</span> }
     </div>
@@ -58,7 +61,7 @@
       @if (erros['estadoCivil']) { <span class="erro-msg">{{ erros['estadoCivil'] }}</span> }
     </div>
     <div class="campo">
-      <label for="celular">Celular <span class="obrigatorio">*</span></label>
+      <label for="celular">Celular @if (celularObrigatorio) { <span class="obrigatorio">*</span> }</label>
       <input type="text" id="celular" name="celular" [(ngModel)]="celular" placeholder="(00) 00000-0000"
         [disabled]="somenteLeitura" [class.input-erro]="erros['celular']" (input)="limparErro('celular')">
       @if (erros['celular']) { <span class="erro-msg">{{ erros['celular'] }}</span> }

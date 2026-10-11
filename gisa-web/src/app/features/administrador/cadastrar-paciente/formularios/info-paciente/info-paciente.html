@@ -1,13 +1,12 @@
 <div class="secao">
-  <h3>Informações Administrativas do Paciente</h3>
+  <h3>Informações Administrativas</h3>
 
   <div class="linha-form">
     <div class="campo">
-      <label>Possui Convênio?</label>
-      <select [ngModel]="pacienteData.convenio ? 'true' : 'false'" (ngModelChange)="pacienteData.convenio = ($event === 'true')">
-        <option value="false">Não</option>
-        <option value="true">Sim</option>
-      </select>
+      <label class="checkbox-inline">
+        <input type="checkbox" name="convenio" [(ngModel)]="convenio">
+        Paciente possui convênio
+      </label>
     </div>
   </div>
 </div>

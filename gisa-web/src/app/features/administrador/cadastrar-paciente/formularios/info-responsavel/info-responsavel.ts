@@ -1,34 +1,42 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import type { GrauParentesco } from '../../../../../core/models/paciente.model';
+import { ComErros } from '../../../../../shared/components/com-erros';
+import { Contato } from '../../../../../shared/components/contato/contato';
+import { GrauParentesco } from '../../../../../core/models/paciente.model';
 import { ICONES } from '../../../../../shared/icons';
+import { EnderecoForm, ResponsavelItem } from '../../models/formularios-paciente';
+import { PacienteValidadorService } from '../../services/paciente-validador';
 
-export interface ResponsavelItem {
-  nome: string;
-  cpf: string;
-  telefone: string;
-  ocupacao: string;
-  grauParentesco: GrauParentesco | '';
-}
+export type { ResponsavelItem };
+
+const ROTULO_PARENTESCO: Record<GrauParentesco, string> = {
+  PAI: 'Pai',
+  MAE: 'Mãe',
+  AVO: 'Avô / Avó',
+  TUTOR_LEGAL: 'Tutor legal',
+  OUTRO: 'Outro',
+};
 
 @Component({
   selector: 'app-info-responsavel',
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule, Contato],
   templateUrl: './info-responsavel.html',
   styleUrl: './info-responsavel.scss'
 })
-export class InfoResponsavel {
+export class InfoResponsavel extends ComErros {
+  private validador = inject(PacienteValidadorService);
+
+  // Endereço do responsável que não reside com o paciente (só existe enquanto o cartão está aberto).
+  @ViewChild(Contato) contatoResp?: Contato;
+
   readonly icones = ICONES;
 
-  exibindoFormulario: boolean = false;
-  indexEdicao: number | null = null; // Guarda o índice do responsável sendo editado (null = novo)
+  exibindoFormulario = false;
+  indexEdicao: number | null = null; // índice do responsável em edição (null = novo)
 
-  // Lista de responsáveis salvos nas "caixinhas"
   listaResponsaveis: ResponsavelItem[] = [];
-
-  // Form temporário
-  novoResponsavel: ResponsavelItem = this.getFormVazio();
+  novoResponsavel: ResponsavelItem = this.formVazio();
+  errosCard: Record<string, string> = {};
 
   opcoesParentesco: { label: string; value: GrauParentesco }[] = [
     { label: 'Pai', value: 'PAI' },
@@ -38,50 +46,89 @@ export class InfoResponsavel {
     { label: 'Outro', value: 'OUTRO' }
   ];
 
-  getFormVazio(): ResponsavelItem {
+  formVazio(): ResponsavelItem {
     return {
       nome: '',
       cpf: '',
-      telefone: '',
+      dataNascimento: '',
+      sexo: '',
+      estadoCivil: '',
+      celular: '',
       ocupacao: '',
-      grauParentesco: ''
+      grauParentesco: '',
+      naoResideComPaciente: false,
+      endereco: null,
     };
+  }
+
+  rotuloParentesco(grau: GrauParentesco | ''): string {
+    return grau ? ROTULO_PARENTESCO[grau] : '';
+  }
+
+  limparErroCard(campo: string) {
+    delete this.errosCard[campo];
   }
 
   abrirFormulario() {
     this.indexEdicao = null;
-    this.novoResponsavel = this.getFormVazio();
+    this.novoResponsavel = this.formVazio();
+    this.errosCard = {};
     this.exibindoFormulario = true;
+    this.limparErro('responsaveis');
   }
 
   editarResponsavel(index: number) {
+    const atual = this.listaResponsaveis[index];
     this.indexEdicao = index;
-    // Clona o objeto para não alterar diretamente na lista antes de confirmar
-    this.novoResponsavel = { ...this.listaResponsaveis[index] };
+    // Clona para não alterar a lista antes de confirmar
+    this.novoResponsavel = { ...atual, endereco: atual.endereco ? { ...atual.endereco } : null };
+    this.errosCard = {};
     this.exibindoFormulario = true;
+    this.limparErro('responsaveis');
+  }
+
+  aoMudarResidencia() {
+    if (!this.novoResponsavel.naoResideComPaciente) this.novoResponsavel.endereco = null;
   }
 
   salvarResponsavel() {
-    if (!this.novoResponsavel.nome.trim() || !this.novoResponsavel.cpf.trim()) {
-      alert('Preencha ao menos Nome e CPF do responsável.');
-      return;
-    }
+    const r = this.novoResponsavel;
+    const resultado = this.validador.validarResponsavel(r, this.contatoResp, this.listaResponsaveis, this.indexEdicao);
+    this.errosCard = resultado.erros;
+    if (!resultado.valido) return;
+
+    const item: ResponsavelItem = {
+      ...r,
+      endereco: r.naoResideComPaciente && this.contatoResp ? this.enderecoDe(this.contatoResp) : null,
+    };
 
     if (this.indexEdicao !== null) {
-      // Atualiza o responsável existente
-      this.listaResponsaveis[this.indexEdicao] = { ...this.novoResponsavel };
+      this.listaResponsaveis[this.indexEdicao] = item;
     } else {
-      // Adiciona um novo
-      this.listaResponsaveis.push({ ...this.novoResponsavel });
+      this.listaResponsaveis.push(item);
     }
 
+    this.limparErro('responsaveis');
     this.cancelarEdicao();
+  }
+
+  private enderecoDe(c: Contato): EnderecoForm {
+    return {
+      cep: c.cep,
+      endereco: c.endereco,
+      numero: c.numero,
+      complemento: c.complemento,
+      bairro: c.bairro,
+      cidade: c.cidade,
+      uf: c.uf,
+    };
   }
 
   cancelarEdicao() {
     this.exibindoFormulario = false;
     this.indexEdicao = null;
-    this.novoResponsavel = this.getFormVazio();
+    this.errosCard = {};
+    this.novoResponsavel = this.formVazio();
   }
 
   removerResponsavel(index: number) {
@@ -89,5 +136,12 @@ export class InfoResponsavel {
       this.cancelarEdicao();
     }
     this.listaResponsaveis.splice(index, 1);
+    this.limparErro('responsaveis');
+  }
+
+  limpar() {
+    this.listaResponsaveis = [];
+    this.cancelarEdicao();
+    this.erros = {};
   }
 }

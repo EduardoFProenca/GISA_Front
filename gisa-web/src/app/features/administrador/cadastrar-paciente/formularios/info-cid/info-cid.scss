@@ -1,12 +1,12 @@
 .secao {
-  margin-top: 1.5rem;
+  margin-top: 0.5rem;
 
   h3 {
     font-size: 1.1rem;
     font-weight: 600;
     color: #000;
     text-align: left;
-    margin: 0 0 1.25rem 0;
+    margin: 2rem 0 1.25rem 0;
     padding-bottom: 0.6rem;
     border-bottom: 1px solid #e5e7eb;
   }
@@ -14,7 +14,18 @@
 
 .linha-form {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.linha-tripla {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 1.5rem;
   margin-bottom: 1rem;
 
@@ -26,65 +37,101 @@
 .campo {
   display: flex;
   flex-direction: column;
+}
 
-  label {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 0.5rem;
+.checkbox-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  cursor: pointer;
+
+  input[type='checkbox'] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #3b82f6;
+  }
+}
+
+.add-item {
+  background: transparent;
+  color: #2563eb;
+  border: 1.5px dashed #93c5fd;
+  padding: 0.6rem;
+  width: 100%;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transform: none;
+
+  &:hover {
+    background: #eff6ff;
+    transform: none;
+    box-shadow: none;
+    border-color: #2563eb;
   }
 
-  input {
-    width: 100%;
-    padding: 0.6rem 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    outline: none;
-    box-sizing: border-box;
-
-    &:focus {
-      border-color: #0284c7;
-    }
+  &:active {
+    transform: none;
+    filter: none;
+    box-shadow: none;
   }
 
-  // Campo fechado para digitação: aparência de "somente leitura".
-  .campo-fechado {
+  &:disabled {
+    color: #94a3b8;
+    border-color: #cbd5e1;
+    background: transparent;
+    cursor: not-allowed;
+  }
+}
+
+.remover-item {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  padding: 0;
+  background: #fef2f2;
+  color: #ef4444;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  transform: none;
+
+  &:hover {
+    background: #fee2e2;
+    transform: none;
+    box-shadow: none;
+  }
+
+  &:active {
+    transform: none;
+    filter: none;
+    box-shadow: none;
+  }
+}
+
+.linha-cid {
+  grid-template-columns: 1fr 2fr;
+}
+
+// Campo fechado: só leitura, vem do CID escolhido.
+.campo-fechado {
+  background-color: #f3f4f6;
+  color: #374151;
+  cursor: default;
+
+  &:focus {
+    border-color: #e5e7eb;
     background-color: #f3f4f6;
-    color: #374151;
-    cursor: default;
-
-    &:focus {
-      border-color: #d1d5db;
-    }
+    box-shadow: none;
   }
 }
 
 .erro-cid {
-  margin: 0 0 0.75rem 0;
-  font-size: 0.85rem;
-  color: #dc2626;
-}
-
-.btn-adicionar {
-  background-color: #0284c7;
-  color: #ffffff;
-  border: none;
-  padding: 0.6rem 1.1rem;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-
-  &:hover:not(:disabled) {
-    background-color: #0369a1;
-  }
-
-  &:disabled {
-    background-color: #cbd5e1;
-    cursor: not-allowed;
-  }
+  margin-bottom: 0.75rem;
 }
 
 .lista-cids-adicionados {
@@ -92,29 +139,43 @@
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 1rem;
+}
 
-  .tag-cid {
-    background-color: #e0f2fe;
-    color: #0369a1;
-    padding: 0.35rem 0.75rem;
-    border-radius: 16px;
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+.tag-cid {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  padding: 0.35rem 0.5rem 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
 
-    .btn-remover {
-      background: none;
+  .btn-remover {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    color: #1d4ed8;
+    font-size: 0.75rem;
+    font-weight: bold;
+    transform: none;
+
+    &:hover {
+      background: #fee2e2;
+      color: #ef4444;
+      transform: none;
+      box-shadow: none;
       border: none;
-      color: #0369a1;
-      font-weight: bold;
-      cursor: pointer;
-      padding: 0;
-      font-size: 0.85rem;
+    }
 
-      &:hover {
-        color: #ef4444;
-      }
+    &:active {
+      transform: none;
+      filter: none;
+      box-shadow: none;
     }
   }
 }

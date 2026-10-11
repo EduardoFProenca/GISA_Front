@@ -1,16 +1,19 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ComErros } from '../../../../../shared/components/com-erros';
 
 @Component({
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   selector: 'app-info-paciente',
   styleUrl: './info-paciente.scss',
   templateUrl: './info-paciente.html',
 })
-export class InfoPaciente {
+export class InfoPaciente extends ComErros {
   // O status (MATRICULADO) e a data de cadastro são definidos pelo back; não são enviados.
-  pacienteData = {
-    convenio: false
-  };
+  convenio = false;
+
+  limpar() {
+    this.convenio = false;
+    this.erros = {};
+  }
 }

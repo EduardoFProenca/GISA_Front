@@ -1,7 +1,7 @@
 <div class="secao">
   <h3>
-    Endereço e Contato
-    <span class="subtitulo-secao">Localização e formas de contato</span>
+    {{ titulo }}
+    @if (subtitulo) { <span class="subtitulo-secao">{{ subtitulo }}</span> }
   </h3>
 
   <div class="linha-form">
@@ -49,9 +49,9 @@
       <label for="uf">UF <span class="obrigatorio">*</span></label>
       <select id="uf" name="uf" [(ngModel)]="uf" [class.input-erro]="erros['uf']" (change)="limparErro('uf')">
         <option value="" disabled selected>Selecione</option>
-        <option value="SP">SP</option>
-        <option value="RJ">RJ</option>
-        <option value="MG">MG</option>
+        @for (sigla of ufs; track sigla) {
+          <option [value]="sigla">{{ sigla }}</option>
+        }
       </select>
       @if (erros['uf']) { <span class="erro-msg">{{ erros['uf'] }}</span> }
     </div>

@@ -1,7 +1,7 @@
 <div class="secao">
   <h3>Diagnóstico / CIDs</h3>
 
-  <div class="linha-form">
+  <div class="linha-form linha-cid">
     <div class="campo">
       <label>Código CID</label>
       <app-select-busca
@@ -28,16 +28,19 @@
   </div>
 
   @if (erro()) {
-    <p class="erro-cid">{{ erro() }}</p>
+    <span class="erro-msg erro-cid">{{ erro() }}</span>
+  }
+  @if (erros['cids']) {
+    <span class="erro-msg erro-cid">{{ erros['cids'] }}</span>
   }
 
   <button
     type="button"
-    class="btn-adicionar"
+    class="add-item"
     [disabled]="!cidSelecionado() || verificando()"
     (click)="adicionarCid()"
   >
-    {{ verificando() ? 'Verificando...' : 'Adicionar CID' }}
+    {{ verificando() ? 'Verificando...' : '+ Adicionar CID' }}
   </button>
 
   @if (listaCids().length > 0) {
