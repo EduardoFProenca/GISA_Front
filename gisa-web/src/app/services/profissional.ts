@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { map } from 'rxjs/operators';
 import {
   DadosBaseProfissional,
   DadosEspecialista,
@@ -12,7 +12,18 @@ import {
   EspecialistaPJComUsuario,
   CadastroResponse
 } from '../core/models/profissional.model';
-import { PaginaSpring, ProfissionalResumo } from '../core/models/profissional-resumo.model';
+import {
+  PaginaApi,
+  PaginaSpring,
+  ProfissionalResumo,
+  normalizarPagina,
+} from '../core/models/profissional-resumo.model';
+import {
+  EspecialistaApi,
+  EspecialistaPJApi,
+  ProfissionalApi,
+  ProfissionalDetalhe,
+} from '../core/models/profissional-detalhe.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProfissionalService {
@@ -23,7 +34,38 @@ export class ProfissionalService {
     const params = new HttpParams()
       .set('page', pagina)
       .set('size', tamanho);
-    return this.http.get<PaginaSpring<ProfissionalResumo>>(`${this.base}/profissionais`, { params });
+    return this.http
+      .get<PaginaApi<ProfissionalResumo>>(`${this.base}/profissionais`, { params })
+      .pipe(map((resposta) => normalizarPagina(resposta)));
+  }
+
+  // GET /profissionais/{id}; depois tenta /especialistas/pj/{id} e /especialistas/{id}
+  // (a API devolve 404 quando o profissional não é daquele tipo).
+  buscarDetalhe(id: number): Observable<ProfissionalDetalhe> {
+    return this.http.get<ProfissionalApi>(`${this.base}/profissionais/${id}`).pipe(
+      switchMap((profissional) =>
+        this.buscarEspecialista(id).pipe(map((extra) => ({ profissional, ...extra })))
+      )
+    );
+  }
+
+  private buscarEspecialista(
+    id: number
+  ): Observable<{ especialista: EspecialistaApi | null; pj: EspecialistaPJApi | null }> {
+    const naoEncontrado = (e: HttpErrorResponse) => e.status === 404;
+
+    return this.http.get<EspecialistaPJApi>(`${this.base}/especialistas/pj/${id}`).pipe(
+      map((pj) => ({ especialista: pj.especialista, pj })),
+      catchError((erroPJ: HttpErrorResponse) => {
+        if (!naoEncontrado(erroPJ)) return throwError(() => erroPJ);
+        return this.http.get<EspecialistaApi>(`${this.base}/especialistas/${id}`).pipe(
+          map((especialista) => ({ especialista, pj: null })),
+          catchError((erro: HttpErrorResponse) =>
+            naoEncontrado(erro) ? of({ especialista: null, pj: null }) : throwError(() => erro)
+          )
+        );
+      })
+    );
   }
 
   cadastrarProfissional(dados: DadosBaseProfissional): Observable<CadastroResponse> {
@@ -51,9 +93,13 @@ export class ProfissionalService {
   }
 
   listarEspecialistas(): Observable<ProfissionalResumo[]> {
-  const params = new HttpParams().set('page', 0).set('size', 1000);
-  return this.http
-    .get<PaginaSpring<ProfissionalResumo>>(`${this.base}/profissionais`, { params })
-    .pipe(map((p) => p.content.filter((x) => !!x.registroConselho && x.statusCadastro !== 'INATIVO')));
-}
+    const params = new HttpParams().set('page', 0).set('size', 1000);
+    return this.http
+      .get<PaginaApi<ProfissionalResumo>>(`${this.base}/profissionais`, { params })
+      .pipe(
+        map((p) =>
+          normalizarPagina(p).content.filter((x) => !!x.registroConselho && x.statusCadastro !== 'INATIVO')
+        )
+      );
+  }
 }

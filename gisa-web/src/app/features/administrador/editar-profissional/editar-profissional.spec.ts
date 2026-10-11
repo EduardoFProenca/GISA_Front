@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { EditarProfissional } from './editar-profissional';
 
 describe('EditarProfissional', () => {
@@ -8,6 +10,7 @@ describe('EditarProfissional', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [EditarProfissional],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EditarProfissional);
@@ -17,5 +20,10 @@ describe('EditarProfissional', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('mostra erro quando o id da rota é inválido', () => {
+    expect(component.carregado()).toBe(false);
+    expect(component.erro()).toBe('Profissional inválido.');
   });
 });

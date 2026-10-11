@@ -2,6 +2,11 @@
     (salvar)="salvarEdicao()" (cancelar)="cancelar()">
 </app-cabecalho-pagina>
 
+@if (erro()) {
+<p class="erro-msg">{{ erro() }}</p>
+} @else if (!carregado()) {
+<p>Carregando...</p>
+} @else {
 <div class="card-form">
     <div class="secao">
         <h3>Situação do Profissional</h3>
@@ -35,9 +40,8 @@
     <app-contato [dadosIniciais]="contato"></app-contato>
     <br>
     <hr>
-
-
 </div>
+}
 
 <app-confirm-dialog [aberto]="confirmarCancelamentoAberto" titulo="Descartar alterações?"
     mensagem="As alterações feitas nesta edição serão perdidas." textoConfirmar="Descartar"
