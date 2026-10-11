@@ -1,6 +1,6 @@
 <app-cabecalho-pagina
   titulo="Gestão de Pacientes"
-  textoAcao="Novo Paciente"
+  [textoAcao]="somenteLeitura ? '' : 'Novo Paciente'"
   rotaAcao="/administrador/pacientes/novo"
 />
 
@@ -28,7 +28,7 @@
 
     <div class="grid-profissionais">
       @for (paciente of pacientes; track paciente.idCadastro) {
-        <app-card-paciente [paciente]="paciente" />
+        <app-card-paciente [paciente]="paciente" [somenteLeitura]="somenteLeitura" [rotaBase]="rotaBase" />
       } @empty {
         @if (!carregando && !erro) {
           <p class="vazio">Nenhum paciente encontrado.</p>

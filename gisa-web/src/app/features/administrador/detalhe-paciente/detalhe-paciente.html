@@ -1,6 +1,6 @@
 <app-cabecalho-pagina
   titulo="Detalhes do Paciente"
-  textoAcao="Editar"
+  [textoAcao]="somenteLeitura ? '' : 'Editar'"
   [rotaAcao]="'/administrador/pacientes/' + id + '/editar'"
 ></app-cabecalho-pagina>
 

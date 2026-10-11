@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { lerContextoPacientes } from '../../../core/routing/contexto-pacientes';
 
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
@@ -42,6 +43,8 @@ export class DetalhePaciente implements OnInit {
   private route = inject(ActivatedRoute);
 
   id: string = this.route.snapshot.paramMap.get('id') ?? '';
+  // Perfil de leitura (ex.: Assistente Social): esconde o botão "Editar".
+  somenteLeitura = lerContextoPacientes(this.route).somenteLeitura;
   status: StatusPaciente = 'MATRICULADO';
 
   dadosPessoais: any = {};

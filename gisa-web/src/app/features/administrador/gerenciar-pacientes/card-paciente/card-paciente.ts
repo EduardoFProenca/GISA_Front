@@ -4,6 +4,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ICONES } from '../../../../shared/icons';
 import { PacienteLista } from '../../../../core/models/paciente-resumo.model';
 import { StatusPaciente } from '../../../../core/models/paciente.model';
+import { ROTA_BASE_ADMIN } from '../../../../core/routing/contexto-pacientes';
 import { soDigitos } from '../../../../shared/utils/texto.util';
 
 const ROTULO_STATUS: Record<StatusPaciente, string> = {
@@ -20,6 +21,8 @@ const ROTULO_STATUS: Record<StatusPaciente, string> = {
 })
 export class CardPacienteComponent {
   @Input() paciente!: PacienteLista;
+  @Input() somenteLeitura = false;
+  @Input() rotaBase = ROTA_BASE_ADMIN;
   icones = ICONES;
 
   private router = inject(Router);
@@ -58,11 +61,12 @@ export class CardPacienteComponent {
   }
 
   abrirDetalhe(): void {
-    this.router.navigateByUrl(`/administrador/pacientes/${this.paciente.idCadastro}`);
+    this.router.navigateByUrl(`${this.rotaBase}/${this.paciente.idCadastro}`);
   }
 
   abrirEdicao(event: Event): void {
     event.stopPropagation();
-    this.router.navigateByUrl(`/administrador/pacientes/${this.paciente.idCadastro}/editar`);
+    if (this.somenteLeitura) return;
+    this.router.navigateByUrl(`${this.rotaBase}/${this.paciente.idCadastro}/editar`);
   }
 }

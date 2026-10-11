@@ -1,4 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { lerContextoPacientes } from '../../../core/routing/contexto-pacientes';
 import { ICONES } from '../../../shared/icons';
 import { PacienteLista } from '../../../core/models/paciente-resumo.model';
 import { PacienteService } from '../../../services/paciente';
@@ -21,6 +23,11 @@ const TAMANHO_BUSCA = 500;
 })
 export class GerenciarPacientes implements OnInit {
   private pacienteService = inject(PacienteService);
+  private contexto = lerContextoPacientes(inject(ActivatedRoute));
+
+  // Perfil de leitura (ex.: Assistente Social): sem "Novo Paciente" e sem "Editar".
+  somenteLeitura = this.contexto.somenteLeitura;
+  rotaBase = this.contexto.rotaBase;
 
   icones = ICONES;
   carregando = false;

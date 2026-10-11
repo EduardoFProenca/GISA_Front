@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { CardEstatistica } from '../../../shared/components/card-estatistica/card-estatistica';
 import { PainelAcoesComponent, AcaoRapida } from '../../../shared/components/painel-acoes/painel-acoes';
 import { AtividadesRecentes, Atividade } from '../../../shared/components/atividades-recentes/atividades-recentes';
 import { Header } from '../../../shared/components/header/header';
-import { Menu } from '../../../shared/components/menu/menu';
 import { ICONES } from '../../../shared/icons';
 
 @Component({
@@ -13,11 +13,13 @@ import { ICONES } from '../../../shared/icons';
   styleUrl: './dashboard.scss',
 })
 export class DashboardAssistenteSocial {
+  private router = inject(Router);
+
   icones = ICONES;
 
   acoesRapidas: AcaoRapida[] = [
-    { titulo: 'Visualizar Dados de Saúde', descricao: 'Consultar histórico clínico', iconeSvg: ICONES.gestaoPacientes, rota: '/assistente-social/dados-saude' },
-    { titulo: 'Gerenciar Histórico', descricao: 'Situação socioeconômica', iconeSvg: ICONES.gestaoAtividades, rota: '/assistente-social/historico' },
+    { titulo: 'Visualizar Dados de Saúde', descricao: 'Consultar histórico clínico', iconeSvg: ICONES.gestaoPacientes, rota: '/assistente-social/pacientes' },
+    { titulo: 'Gerenciar Histórico', descricao: 'Situação socioeconômica', iconeSvg: ICONES.gestaoAtividades, rota: '/assistente-social/pacientes' },
   ];
 
   atividadesRecentes: Atividade[] = [
@@ -25,29 +27,29 @@ export class DashboardAssistenteSocial {
       descricao: 'Histórico atualizado — família Silva',
       tempoAtras: '30 min atrás',
       acoes: [
-        { label: 'Ver histórico', acao: () => this.verHistorico('familia-silva') },
+        { label: 'Ver histórico', acao: () => this.verHistorico(1) },
       ]
     },
     {
       descricao: 'PTS revisado para Carlos Mendes',
       tempoAtras: '2 horas atrás',
       acoes: [
-        { label: 'Ver PTS', acao: () => this.verPTS('carlos-mendes') },
+        { label: 'Ver PTS', acao: () => this.verPTS(2) },
       ]
     },
   ];
 
   itensMenu = [
     { label: 'Início', iconeSvg: ICONES.calendario, rota: '/assistente-social' },
-    { label: 'Dados de Saúde', iconeSvg: ICONES.gestaoPacientes, rota: '/assistente-social/dados-saude' },
-    { label: 'Histórico Social', iconeSvg: ICONES.gestaoAtividades, rota: '/assistente-social/historico' },
+    { label: 'Pacientes', iconeSvg: ICONES.gestaoPacientes, rota: '/assistente-social/pacientes' },
   ];
 
-  verHistorico(id: string) {
-    console.log('ver histórico de', id);
+  // Abre o detalhe do paciente em modo leitura (o PTS ainda não tem tela própria no projeto).
+  verHistorico(idPaciente: number) {
+    this.router.navigate(['/assistente-social/pacientes', idPaciente]);
   }
 
-  verPTS(id: string) {
-    console.log('ver PTS de', id);
+  verPTS(idPaciente: number) {
+    this.router.navigate(['/assistente-social/pacientes', idPaciente]);
   }
 }
