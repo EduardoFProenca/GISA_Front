@@ -39,7 +39,7 @@ export class GerenciarPacientes implements OnInit {
   pacientes = signal<PacienteLista[]>([]);
   totalElementos = signal(0);
   paginaAtual = signal(1);
-  itensPorPagina = 9;
+  itensPorPagina = 6; // 3 cards por linha x 2 linhas
 
   emBusca = computed(() => !!this.termoBusca().trim());
 

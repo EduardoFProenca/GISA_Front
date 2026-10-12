@@ -1,5 +1,5 @@
 import { Cid, GrauParentesco, StatusPaciente, TipoEscola } from './paciente.model';
-import { Endereco } from './profissional.model';
+import { PacienteCadastroPayload } from './paciente-cadastro.model';
 
 export interface EnderecoDetalhe {
   cep: string;
@@ -16,16 +16,23 @@ export interface ResponsavelDetalhe {
   cpf: string;
   celular: string | null;
   grauParentesco: GrauParentesco;
+  dataNascimento: string;
+  sexo: string;
+  estadoCivil: string;
+  ocupacao: string;
+  naoResideComPaciente: boolean;
+  endereco: EnderecoDetalhe | null; // só quando não reside com o paciente
 }
 
 export interface EscolaDetalhe {
+  idEscola: number;
   nome: string;
   tipoEscola: TipoEscola;
   telefone: string | null;
 }
 
-// Ficha completa do paciente (tela de detalhe). ATENÇÃO: a documentação da API ainda não tem
-// GET /pacientes/{id}; este formato espelha o cadastro (POST /pacientes) e pode mudar.
+// Ficha completa do paciente (telas de detalhe e edição). ATENÇÃO: a documentação da API ainda
+// não tem GET /pacientes/{id}; este formato espelha o cadastro (POST /pacientes) e pode mudar.
 export interface PacienteDetalhe {
   idCadastro: number;
   nome: string;
@@ -46,11 +53,8 @@ export interface PacienteDetalhe {
 
 // Corpo da edição (PUT /pacientes/{id}). ATENÇÃO: endpoint ainda não documentado na API;
 // formato assumido a partir do cadastro. CPF, sexo e data de nascimento não são editáveis.
-export interface PacienteEdicaoPayload {
-  nome: string;
-  estadoCivil: string;
-  celular?: string;
-  numCNS?: string;
+// idEscola = null remove a escola do paciente.
+export type PacienteEdicaoPayload = Omit<PacienteCadastroPayload, 'cpf' | 'sexo' | 'dataNascimento' | 'idEscola'> & {
+  idEscola: number | null;
   statusPaciente: StatusPaciente;
-  enderecos: Endereco[];
-}
+};

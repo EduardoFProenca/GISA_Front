@@ -14,6 +14,9 @@ export class PacienteService {
   private http = inject(HttpClient);
   private base = `${environment.apiUrl}/pacientes`;
 
+  // true = telas de pacientes usando os exemplos (core/data/pacientes-exemplo.ts).
+  readonly modoExemplo = environment.usarDadosExemplo;
+
   // GET /api/pacientes (paginado, 0-indexed).
   listar(): Observable<PacienteResumo[]> {
     const params = new HttpParams().set('page', 0).set('size', 1000);
@@ -58,27 +61,13 @@ export class PacienteService {
   }
 
   // ATENÇÃO: PUT /pacientes/{id} ainda não consta na documentação da API (endpoint assumido).
-  // Com os exemplos ligados, a edição altera o exemplo em memória (some ao recarregar a página).
-  editar(id: number, dados: PacienteEdicaoPayload): Observable<void> {
+  // Com os exemplos ligados, a edição substitui o exemplo em memória por `visaoAtualizada`
+  // (some ao recarregar a página); sem os exemplos, só `dados` é enviado.
+  editar(id: number, dados: PacienteEdicaoPayload, visaoAtualizada: PacienteDetalhe): Observable<void> {
     if (environment.usarDadosExemplo) {
-      const p = PACIENTES_EXEMPLO.find((x) => x.idCadastro === id);
-      if (!p) return throwError(() => ({ status: 404 }));
-
-      const e = dados.enderecos[0];
-      p.nome = dados.nome;
-      p.estadoCivil = dados.estadoCivil;
-      p.celular = dados.celular ?? null;
-      p.numCNS = dados.numCNS ?? null;
-      p.statusPaciente = dados.statusPaciente;
-      p.endereco = {
-        cep: e.cep,
-        endereco: e.rua,
-        numero: e.numero,
-        complemento: e.complemento ?? '',
-        bairro: e.bairro,
-        cidade: e.cidade,
-        uf: e.estado,
-      };
+      const i = PACIENTES_EXEMPLO.findIndex((x) => x.idCadastro === id);
+      if (i < 0) return throwError(() => ({ status: 404 }));
+      PACIENTES_EXEMPLO[i] = visaoAtualizada;
       return of(undefined).pipe(delay(400));
     }
     return this.http.put<void>(`${this.base}/${id}`, dados);

@@ -1,4 +1,4 @@
-import { Component, ViewChild, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ComErros } from '../../../../../shared/components/com-erros';
 import { Contato } from '../../../../../shared/components/contato/contato';
@@ -18,6 +18,7 @@ const ROTULO_PARENTESCO: Record<GrauParentesco, string> = {
 };
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-responsavel',
   imports: [FormsModule, Contato],
   templateUrl: './info-responsavel.html',
@@ -35,6 +36,12 @@ export class InfoResponsavel extends ComErros {
   indexEdicao: number | null = null; // índice do responsável em edição (null = novo)
 
   listaResponsaveis: ResponsavelItem[] = [];
+
+  // Edição: responsáveis que o paciente já tem (clonados para não alterar o original).
+  @Input() set responsaveisIniciais(lista: ResponsavelItem[] | undefined) {
+    if (!lista) return;
+    this.listaResponsaveis = lista.map((r) => ({ ...r, endereco: r.endereco ? { ...r.endereco } : null }));
+  }
   novoResponsavel: ResponsavelItem = this.formVazio();
   errosCard: Record<string, string> = {};
 

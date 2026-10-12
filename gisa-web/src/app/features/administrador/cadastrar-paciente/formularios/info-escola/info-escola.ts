@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Subject, of } from 'rxjs';
@@ -7,8 +7,10 @@ import { ComErros } from '../../../../../shared/components/com-erros';
 import { TipoEscola } from '../../../../../core/models/paciente.model';
 import { EscolaCadastrada } from '../../../../../core/models/escola.model';
 import { EscolaService } from '../../../../../services/escola';
+import { formatarCelular } from '../../../../../shared/utils/formatacao.util';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule],
   selector: 'app-info-escola',
   styleUrl: './info-escola.scss',
@@ -26,6 +28,15 @@ export class InfoEscola extends ComErros {
   // e será cadastrada (POST /escolas) antes do paciente.
   escolaSelecionada: EscolaCadastrada | null = null;
   sugestoes = signal<EscolaCadastrada[]>([]);
+
+  // Edição: o paciente já tem escola cadastrada.
+  @Input() set escolaInicial(e: EscolaCadastrada | null | undefined) {
+    if (!e) return;
+    this.nome = e.nome;
+    this.tipoEscola = e.tipoEscola;
+    this.telefone = formatarCelular(e.telefone ?? '');
+    this.escolaSelecionada = e;
+  }
 
   opcoesTipoEscola: { label: string; value: TipoEscola }[] = [
     { label: 'Pública', value: 'PUBLICA' },
