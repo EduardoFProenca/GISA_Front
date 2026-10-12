@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { lerContextoPacientes } from '../../../core/routing/contexto-pacientes';
 import { ICONES } from '../../../shared/icons';
@@ -30,42 +30,46 @@ export class GerenciarPacientes implements OnInit {
   rotaBase = this.contexto.rotaBase;
 
   icones = ICONES;
-  carregando = false;
-  erro = '';
-  termoBusca = '';
 
-  pacientes: PacienteLista[] = [];
-  totalElementos = 0;
-
-  paginaAtual = 1;
+  // Estado em signals: os componentes do projeto não são re-verificados sozinhos
+  // quando uma resposta HTTP chega, então o template precisa ler signals.
+  carregando = signal(false);
+  erro = signal('');
+  termoBusca = signal('');
+  pacientes = signal<PacienteLista[]>([]);
+  totalElementos = signal(0);
+  paginaAtual = signal(1);
   itensPorPagina = 9;
+
+  emBusca = computed(() => !!this.termoBusca().trim());
 
   ngOnInit(): void {
     this.carregar();
   }
 
   private carregar(): void {
-    this.carregando = true;
-    this.erro = '';
+    this.carregando.set(true);
+    this.erro.set('');
 
-    const buscando = !!this.termoBusca.trim();
-    const pagina = buscando ? 0 : this.paginaAtual - 1; // API é 0-indexed
+    const buscando = this.emBusca();
+    const pagina = buscando ? 0 : this.paginaAtual() - 1; // API é 0-indexed
     const tamanho = buscando ? TAMANHO_BUSCA : this.itensPorPagina;
 
     this.pacienteService.listarPaginado(pagina, tamanho).subscribe({
       next: (res) => {
-        this.carregando = false;
+        this.carregando.set(false);
         if (buscando) {
-          this.pacientes = res.content.filter((p) => this.bateComBusca(p));
-          this.totalElementos = this.pacientes.length;
+          const filtrados = res.content.filter((p) => this.bateComBusca(p));
+          this.pacientes.set(filtrados);
+          this.totalElementos.set(filtrados.length);
         } else {
-          this.pacientes = res.content;
-          this.totalElementos = res.totalElements;
+          this.pacientes.set(res.content);
+          this.totalElementos.set(res.totalElements);
         }
       },
       error: (err) => {
-        this.carregando = false;
-        this.erro = err?.error?.message || 'Não foi possível carregar os pacientes.';
+        this.carregando.set(false);
+        this.erro.set(err?.error?.message || 'Não foi possível carregar os pacientes.');
       },
     });
   }
@@ -74,7 +78,7 @@ export class GerenciarPacientes implements OnInit {
   private bateComBusca(p: PacienteLista): boolean {
     const normalizar = (t: string) =>
       t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-    const termo = this.termoBusca.trim();
+    const termo = this.termoBusca().trim();
     const digitos = soDigitos(termo);
     return (
       normalizar(p.nome).includes(normalizar(termo)) ||
@@ -82,18 +86,14 @@ export class GerenciarPacientes implements OnInit {
     );
   }
 
-  get emBusca(): boolean {
-    return !!this.termoBusca.trim();
-  }
-
   mudarPagina(pagina: number): void {
-    this.paginaAtual = pagina;
+    this.paginaAtual.set(pagina);
     this.carregar();
   }
 
   aplicarBusca(estado: EstadoBusca): void {
-    this.termoBusca = estado.termo;
-    this.paginaAtual = 1;
+    this.termoBusca.set(estado.termo);
+    this.paginaAtual.set(1);
     this.carregar();
   }
 }

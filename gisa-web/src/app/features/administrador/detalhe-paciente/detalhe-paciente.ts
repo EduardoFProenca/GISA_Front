@@ -1,11 +1,14 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { lerContextoPacientes } from '../../../core/routing/contexto-pacientes';
 
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
 import { Contato } from '../../../shared/components/contato/contato';
-import { Cid, GrauParentesco, StatusPaciente, TipoEscola } from '../../../core/models/paciente.model';
+import { GrauParentesco, StatusPaciente, TipoEscola } from '../../../core/models/paciente.model';
+import { PacienteDetalhe } from '../../../core/models/paciente-detalhe.model';
+import { lerContextoPacientes } from '../../../core/routing/contexto-pacientes';
+import { PacienteService } from '../../../services/paciente';
+import { formatarCelular, formatarCep, formatarCpf } from '../../../shared/utils/formatacao.util';
 
 const ROTULO_STATUS: Record<StatusPaciente, string> = {
   MATRICULADO: 'Matriculado',
@@ -26,13 +29,6 @@ const ROTULO_ESCOLA: Record<TipoEscola, string> = {
   PARTICULAR: 'Particular',
 };
 
-interface ResponsavelDetalhe {
-  nome: string;
-  cpf: string;
-  celular: string;
-  grauParentesco: GrauParentesco;
-}
-
 @Component({
   selector: 'app-detalhe-paciente',
   imports: [CabecalhoPagina, DadosPessoais, Contato],
@@ -41,61 +37,66 @@ interface ResponsavelDetalhe {
 })
 export class DetalhePaciente implements OnInit {
   private route = inject(ActivatedRoute);
+  private pacienteService = inject(PacienteService);
 
-  id: string = this.route.snapshot.paramMap.get('id') ?? '';
+  id = signal(this.route.snapshot.paramMap.get('id') ?? '');
   // Perfil de leitura (ex.: Assistente Social): esconde o botão "Editar".
   somenteLeitura = lerContextoPacientes(this.route).somenteLeitura;
-  status: StatusPaciente = 'MATRICULADO';
 
-  dadosPessoais: any = {};
-  contato: any = {};
-  infoEscola: { nome: string; tipoEscola: TipoEscola; telefone: string } | null = null;
-  responsaveis: ResponsavelDetalhe[] = [];
-  infoProntuario = { alergias: '', comorbidade: '', mobilidade: '' };
-  cids: Cid[] = [];
+  // Signals: a resposta HTTP chega fora do ciclo normal e o template precisa reagir a ela.
+  carregando = signal(true);
+  erro = signal('');
+  paciente = signal<PacienteDetalhe | null>(null);
+
+  rotuloStatus = computed(() => {
+    const p = this.paciente();
+    return p ? ROTULO_STATUS[p.statusPaciente] : '';
+  });
+
+  dadosPessoais = computed(() => {
+    const p = this.paciente();
+    if (!p) return {};
+    return {
+      nome: p.nome,
+      cpf: formatarCpf(p.cpf),
+      email: '',
+      dataNascimento: p.dataNascimento,
+      sexo: p.sexo,
+      celular: formatarCelular(p.celular),
+      estadoCivil: p.estadoCivil,
+      numCNS: p.numCNS ?? '',
+    };
+  });
+
+  contato = computed(() => {
+    const p = this.paciente();
+    return p ? { ...p.endereco, cep: formatarCep(p.endereco.cep) } : {};
+  });
 
   ngOnInit(): void {
-    // TODO: carregar do back. A documentação da API ainda não tem GET /pacientes/{id};
-    // quando existir, trocar este mock pelo PacienteService (mesmos campos do cadastro).
-    this.dadosPessoais = {
-      nome: 'Lucas Oliveira Santos',
-      cpf: '123.456.789-00',
-      email: 'lucas.santos@email.com',
-      dataNascimento: '2015-05-10',
-      sexo: 'M',
-      celular: '(11) 98765-4321',
-      estadoCivil: 'SOLTEIRO',
-      numCNS: '000 1111 2222 3333'
-    };
-    this.contato = {
-      cep: '01001-000',
-      endereco: 'Praça da Sé',
-      numero: '100',
-      complemento: '',
-      bairro: 'Sé',
-      cidade: 'São Paulo',
-      uf: 'SP'
-    };
-    this.infoEscola = {
-      nome: 'Escola Municipal Monteiro Lobato',
-      tipoEscola: 'PUBLICA',
-      telefone: '(11) 3333-0000'
-    };
-    this.responsaveis = [
-      { nome: 'Maria Santos', cpf: '000.111.222-33', celular: '(11) 98765-4321', grauParentesco: 'MAE' },
-      { nome: 'Carlos Santos', cpf: '111.222.333-44', celular: '', grauParentesco: 'PAI' }
-    ];
-    this.infoProntuario = {
-      alergias: 'Nenhuma conhecida',
-      comorbidade: 'Rinite alérgica',
-      mobilidade: 'Anda sem auxílio'
-    };
-    this.cids = [{ codigoCID: 'F84.0', descricao: 'Autismo infantil' }];
-    this.status = 'MATRICULADO';
+    // Recarrega também se só o :id da rota mudar (a tela é reaproveitada pelo roteador).
+    this.route.paramMap.subscribe((params) => {
+      this.id.set(params.get('id') ?? '');
+      this.carregar();
+    });
   }
 
-  get rotuloStatus(): string {
-    return ROTULO_STATUS[this.status];
+  private carregar(): void {
+    this.carregando.set(true);
+    this.erro.set('');
+    this.paciente.set(null);
+
+    // Com environment.usarDadosExemplo = true vem de core/data/pacientes-exemplo.ts.
+    this.pacienteService.buscarPorId(Number(this.id())).subscribe({
+      next: (p) => {
+        this.paciente.set(p);
+        this.carregando.set(false);
+      },
+      error: (err) => {
+        this.erro.set(err?.status === 404 ? 'Paciente não encontrado.' : 'Não foi possível carregar o paciente.');
+        this.carregando.set(false);
+      },
+    });
   }
 
   rotuloParentesco(grau: GrauParentesco): string {
@@ -104,5 +105,13 @@ export class DetalhePaciente implements OnInit {
 
   rotuloEscola(tipo: TipoEscola): string {
     return ROTULO_ESCOLA[tipo];
+  }
+
+  cpfFormatado(valor: string): string {
+    return formatarCpf(valor);
+  }
+
+  celularFormatado(valor: string | null): string {
+    return formatarCelular(valor);
   }
 }

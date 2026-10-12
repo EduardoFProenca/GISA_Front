@@ -1,98 +1,104 @@
 <app-cabecalho-pagina
   titulo="Detalhes do Paciente"
   [textoAcao]="somenteLeitura ? '' : 'Editar'"
-  [rotaAcao]="'/administrador/pacientes/' + id + '/editar'"
+  [rotaAcao]="'/administrador/pacientes/' + id() + '/editar'"
 ></app-cabecalho-pagina>
 
 <div class="card-form">
-  <!-- Status -->
-  <div class="secao">
-    <h3>Situação do Paciente</h3>
-    <div class="campo">
-      <label for="status">Status</label>
-      <input
-        type="text"
-        id="status"
-        [value]="rotuloStatus"
-        disabled
-      />
+  @if (carregando()) {
+    <p class="aviso">Carregando paciente...</p>
+  } @else if (erro()) {
+    <p class="aviso erro-msg">{{ erro() }}</p>
+  } @else if (paciente(); as p) {
+    <!-- Status -->
+    <div class="secao">
+      <h3>Situação do Paciente</h3>
+      <div class="campo">
+        <label for="status">Status</label>
+        <input
+          type="text"
+          id="status"
+          [value]="rotuloStatus()"
+          disabled
+        />
+      </div>
     </div>
-  </div>
 
-  <br><hr><br>
+    <br><hr><br>
 
-  <!-- Dados Pessoais -->
-  <app-dados-pessoais
-    [dadosIniciais]="dadosPessoais"
-    [bloquearCpfSexoNascimento]="true"
-    [somenteLeitura]="true"
-  ></app-dados-pessoais>
+    <!-- Dados Pessoais -->
+    <app-dados-pessoais
+      [dadosIniciais]="dadosPessoais()"
+      [bloquearCpfSexoNascimento]="true"
+      [somenteLeitura]="true"
+    ></app-dados-pessoais>
 
-  <br><hr><br>
+    <br><hr><br>
 
-  <!-- Responsáveis -->
-  <div class="secao">
-    <h3>Responsáveis</h3>
-    @for (resp of responsaveis; track resp.cpf) {
-      <div class="info-bloco">
-        <p><strong>Nome:</strong> {{ resp.nome }}</p>
-        <p><strong>CPF:</strong> {{ resp.cpf }}</p>
-        <p><strong>Celular:</strong> {{ resp.celular || '—' }}</p>
-        <p><strong>Grau de Parentesco:</strong> {{ rotuloParentesco(resp.grauParentesco) }}</p>
-      </div>
-    } @empty {
-      <p>Nenhum responsável cadastrado.</p>
-    }
-  </div>
-
-  <br><hr><br>
-
-  <!-- Informações Escolares -->
-  <div class="secao">
-    <h3>Informações Escolares</h3>
-    @if (infoEscola) {
-      <div class="info-bloco">
-        <p><strong>Escola:</strong> {{ infoEscola.nome }}</p>
-        <p><strong>Tipo:</strong> {{ rotuloEscola(infoEscola.tipoEscola) }}</p>
-        <p><strong>Telefone:</strong> {{ infoEscola.telefone || '—' }}</p>
-      </div>
-    } @else {
-      <p>Sem escola informada.</p>
-    }
-  </div>
-
-  <br><hr><br>
-
-  <!-- Diagnóstico / CIDs -->
-  <div class="secao">
-    <h3>Diagnóstico / CIDs</h3>
-    @for (cid of cids; track cid.codigoCID) {
-      <div class="info-bloco">
-        <p><strong>Código CID:</strong> {{ cid.codigoCID }}</p>
-        <p><strong>Descrição:</strong> {{ cid.descricao }}</p>
-      </div>
-    } @empty {
-      <p>Nenhum CID cadastrado.</p>
-    }
-  </div>
-
-  <br><hr><br>
-
-  <!-- Prontuário -->
-  <div class="secao">
-    <h3>Prontuário</h3>
-    <div class="info-bloco">
-      <p><strong>Alergias:</strong> {{ infoProntuario.alergias || '—' }}</p>
-      <p><strong>Comorbidades:</strong> {{ infoProntuario.comorbidade || '—' }}</p>
-      <p><strong>Mobilidade:</strong> {{ infoProntuario.mobilidade || '—' }}</p>
+    <!-- Responsáveis -->
+    <div class="secao">
+      <h3>Responsáveis</h3>
+      @for (resp of p.responsaveis; track resp.cpf) {
+        <div class="info-bloco">
+          <p><strong>Nome:</strong> {{ resp.nome }}</p>
+          <p><strong>CPF:</strong> {{ cpfFormatado(resp.cpf) }}</p>
+          <p><strong>Celular:</strong> {{ celularFormatado(resp.celular) || '—' }}</p>
+          <p><strong>Grau de Parentesco:</strong> {{ rotuloParentesco(resp.grauParentesco) }}</p>
+        </div>
+      } @empty {
+        <p>Nenhum responsável cadastrado.</p>
+      }
     </div>
-  </div>
 
-  <br><hr><br>
+    <br><hr><br>
 
-  <!-- Contato e Endereço -->
-  <app-contato
-    [dadosIniciais]="contato"
-    [somenteLeitura]="true"
-  ></app-contato>
+    <!-- Informações Escolares -->
+    <div class="secao">
+      <h3>Informações Escolares</h3>
+      @if (p.escola; as escola) {
+        <div class="info-bloco">
+          <p><strong>Escola:</strong> {{ escola.nome }}</p>
+          <p><strong>Tipo:</strong> {{ rotuloEscola(escola.tipoEscola) }}</p>
+          <p><strong>Telefone:</strong> {{ celularFormatado(escola.telefone) || '—' }}</p>
+        </div>
+      } @else {
+        <p>Sem escola informada.</p>
+      }
+    </div>
+
+    <br><hr><br>
+
+    <!-- Diagnóstico / CIDs -->
+    <div class="secao">
+      <h3>Diagnóstico / CIDs</h3>
+      @for (cid of p.cids; track cid.codigoCID) {
+        <div class="info-bloco">
+          <p><strong>Código CID:</strong> {{ cid.codigoCID }}</p>
+          <p><strong>Descrição:</strong> {{ cid.descricao }}</p>
+        </div>
+      } @empty {
+        <p>Nenhum CID cadastrado.</p>
+      }
+    </div>
+
+    <br><hr><br>
+
+    <!-- Prontuário -->
+    <div class="secao">
+      <h3>Prontuário</h3>
+      <div class="info-bloco">
+        <p><strong>Alergias:</strong> {{ p.prontuario.alergias || '—' }}</p>
+        <p><strong>Comorbidades:</strong> {{ p.prontuario.comorbidade || '—' }}</p>
+        <p><strong>Mobilidade:</strong> {{ p.prontuario.mobilidade || '—' }}</p>
+      </div>
+    </div>
+
+    <br><hr><br>
+
+    <!-- Contato e Endereço -->
+    <app-contato
+      [dadosIniciais]="contato()"
+      [somenteLeitura]="true"
+    ></app-contato>
+  }
 </div>

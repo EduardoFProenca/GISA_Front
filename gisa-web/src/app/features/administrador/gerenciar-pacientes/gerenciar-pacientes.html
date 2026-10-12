@@ -8,7 +8,7 @@
   <div class="stats-grid">
     <app-card-estatistica
       titulo="Total de Pacientes"
-      [valor]="totalElementos"
+      [valor]="totalElementos()"
       [iconeSvg]="icones.gestaoPacientes"
       corIcone="#dbeafe"
     />
@@ -22,26 +22,26 @@
 
     <br><br>
 
-    @if (erro) {
-      <p class="vazio">{{ erro }}</p>
+    @if (erro()) {
+      <p class="vazio">{{ erro() }}</p>
     }
 
     <div class="grid-profissionais">
-      @for (paciente of pacientes; track paciente.idCadastro) {
+      @for (paciente of pacientes(); track paciente.idCadastro) {
         <app-card-paciente [paciente]="paciente" [somenteLeitura]="somenteLeitura" [rotaBase]="rotaBase" />
       } @empty {
-        @if (!carregando && !erro) {
+        @if (!carregando() && !erro()) {
           <p class="vazio">Nenhum paciente encontrado.</p>
         }
       }
     </div>
   </div>
 
-  @if (!emBusca) {
+  @if (!emBusca()) {
     <app-paginacao
-      [totalItens]="totalElementos"
+      [totalItens]="totalElementos()"
       [itensPorPagina]="itensPorPagina"
-      [paginaAtual]="paginaAtual"
+      [paginaAtual]="paginaAtual()"
       (paginaAlterada)="mudarPagina($event)"
     />
   }
