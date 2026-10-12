@@ -1,9 +1,12 @@
-<app-header></app-header>
+<app-header tituloPortal="Administrador" subtituloPortal="Portal do Administrador" />
 <br>
 <div class="stats-grid">
-  <app-card-estatistica ... />
-  <app-card-estatistica ... />
-  <app-card-estatistica ... />
+  <app-card-estatistica titulo="Total de Pacientes" [valor]="totalPacientes()"
+    [iconeSvg]="icones.gestaoPacientes" corIcone="#dbeafe" />
+  <app-card-estatistica titulo="Total de Profissionais" [valor]="totalProfissionais()"
+    [iconeSvg]="icones.gestaoProfissionais" corIcone="#dcfce7" />
+  <app-card-estatistica titulo="Profissionais Ativos" [valor]="profissionaisAtivos()"
+    [iconeSvg]="icones.cadastrarProfissional" corIcone="#fef3c7" />
 </div>
 
 <div class="conteudo-principal">

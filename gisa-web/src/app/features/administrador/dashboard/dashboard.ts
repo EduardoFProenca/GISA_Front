@@ -1,34 +1,60 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CardEstatistica } from '../../../shared/components/card-estatistica/card-estatistica';
 import { PainelAcoesComponent, AcaoRapida } from '../../../shared/components/painel-acoes/painel-acoes';
 import { AtividadesRecentes, Atividade } from '../../../shared/components/atividades-recentes/atividades-recentes';
 import { Header } from '../../../shared/components/header/header';
-import { Menu } from '../../../shared/components/menu/menu';
 import { ICONES } from '../../../shared/icons';
-
-
+import { PacienteService } from '../../../services/paciente';
+import { ProfissionalService } from '../../../services/profissional';
 
 @Component({
   selector: 'app-dashboard-administrador',
-  imports: [CardEstatistica, PainelAcoesComponent, AtividadesRecentes, Header, Menu],
+  imports: [CardEstatistica, PainelAcoesComponent, AtividadesRecentes, Header],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
-export class DashboardAdministrador {
+export class DashboardAdministrador implements OnInit {
+  private pacienteService = inject(PacienteService);
+  private profissionalService = inject(ProfissionalService);
+
+  icones = ICONES;
+
+  // '—' enquanto carrega ou se a chamada falhar.
+  totalPacientes = signal<number | string>('—');
+  totalProfissionais = signal<number | string>('—');
+  profissionaisAtivos = signal<number | string>('—');
+
   acoesRapidas: AcaoRapida[] = [
-     { titulo: 'Criar Consulta', descricao: 'Nova consulta no sistema', iconeSvg: ICONES.calendario, rota: '/administrador/consultas/nova' },
     { titulo: 'Cadastrar Paciente', descricao: 'Novo registro no sistema', iconeSvg: ICONES.cadastrarPaciente, rota: '/administrador/pacientes/novo' },
-    { titulo: 'Cadastrar Profissional', descricao: 'Adicionar ao corpo clínico', iconeSvg: ICONES.cadastrarProfissional, rota: '/administrador/profissionais/novo' },
     //{ titulo: 'Criação de Agenda', descricao: 'Configurar nova agenda', iconeSvg: ICONES.criacaoAgenda, rota: '/administrador/agenda-medico/nova' },
+    { titulo: 'Criar Consulta', descricao: 'Nova consulta no sistema', iconeSvg: ICONES.calendario, rota: '/administrador/consultas/nova' },
+    { titulo: 'Gestão de Pacientes', descricao: 'Ver todos os pacientes', iconeSvg: ICONES.gestaoPacientes, rota: '/administrador/pacientes/gerenciar' },
+    { titulo: 'Cadastrar Profissional', descricao: 'Adicionar ao corpo clínico', iconeSvg: ICONES.cadastrarProfissional, rota: '/administrador/profissionais/novo' },
     { titulo: 'Gestão de Consultas', descricao: 'Visualizar e gerenciar', iconeSvg: ICONES.gestaoConsultas, rota: '/administrador/consultas/gerenciar' },
     //{ titulo: 'Gestão de Agenda', descricao: 'Visualizar e configurar', iconeSvg: ICONES.calendario, rota: '/administrador/agenda-medico' },
-    { titulo: 'Gestão de Pacientes', descricao: 'Ver todos os pacientes', iconeSvg: ICONES.gestaoPacientes, rota: '/administrador/pacientes/gerenciar' },
     { titulo: 'Gestão de Profissionais', descricao: 'Ver corpo clínico', iconeSvg: ICONES.gestaoProfissionais, rota: '/administrador/profissionais/gerenciar' },
     //{ titulo: 'Controle de Agendamentos', descricao: 'Confirmar e remarcar', iconeSvg: ICONES.calendario, rota: '/administrador/agendamentos' },
   ];
 
+  // TODO(Kauã): sem endpoint de atividades; seguem fixas até existir.
   atividadesRecentes: Atividade[] = [
     { descricao: 'Novo paciente cadastrado', tempoAtras: '10 min atrás' },
     { descricao: 'Consulta agendada para Dr. Silva', tempoAtras: '23 min atrás' },
   ];
+
+  ngOnInit() {
+    // size=1: só o total interessa, não a lista.
+    this.pacienteService.listarPaginado(0, 1).subscribe({
+      next: (pagina) => this.totalPacientes.set(pagina.totalElements),
+    });
+
+    this.profissionalService.listarPaginado(0, 1000).subscribe({
+      next: (pagina) => {
+        this.totalProfissionais.set(pagina.totalElements);
+        this.profissionaisAtivos.set(
+          pagina.content.filter((p) => p.statusCadastro === 'ATIVO').length
+        );
+      },
+    });
+  }
 }

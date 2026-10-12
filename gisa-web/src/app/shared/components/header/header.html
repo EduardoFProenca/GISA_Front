@@ -1,23 +1,51 @@
 <header class="header-principal">
   <div class="header-esquerda">
-    <div class="avatar">
-      @if (auth.usuarioAtual()?.fotoUrl) {
-        <img [src]="auth.usuarioAtual()!.fotoUrl" alt="Foto de perfil">
-      } @else {
-        <span [innerHTML]="icones.pessoa"></span>
-      }
-    </div>
     <div>
-      <strong>{{ tituloPortal }}</strong>
-      <p>{{ subtituloPortal }}</p>
+      <strong>{{ nome }}</strong>
+      <p>{{ funcao }}</p>
     </div>
   </div>
 
   <div class="header-direita">
-    <span class="notificacao" [innerHTML]="sanitizarIcone(icones.sino)"></span>
-    <a (click)="auth.logout()">
+    <div class="notificacoes">
+      <button type="button" class="btn-icone" aria-label="Notificações" aria-haspopup="true"
+        [attr.aria-expanded]="painelAberto()" (click)="alternarPainel()">
+        <span [innerHTML]="sanitizarIcone(icones.sino)"></span>
+        @if (notificacoes.naoLidas() > 0) {
+          <span class="badge">{{ notificacoes.naoLidas() > 9 ? '9+' : notificacoes.naoLidas() }}</span>
+        }
+      </button>
+
+      @if (painelAberto()) {
+        <div class="painel-notificacoes" role="dialog" aria-label="Notificações">
+          <div class="painel-topo">
+            <strong>Notificações</strong>
+            @if (notificacoes.naoLidas() > 0) {
+              <button type="button" class="link" (click)="notificacoes.marcarTodasComoLidas()">
+                Marcar todas como lidas
+              </button>
+            }
+          </div>
+
+          @for (n of notificacoes.itens(); track n.id) {
+            <button type="button" class="item" [class.nao-lida]="!n.lida"
+              (click)="notificacoes.marcarComoLida(n.id)">
+              <span class="item-titulo">{{ n.titulo }}</span>
+              @if (n.mensagem) {
+                <span class="item-msg">{{ n.mensagem }}</span>
+              }
+              <span class="item-tempo">{{ tempo(n.criadaEm) }}</span>
+            </button>
+          } @empty {
+            <p class="vazio">Nenhuma notificação.</p>
+          }
+        </div>
+      }
+    </div>
+
+    <button type="button" class="btn-sair" (click)="sair()">
       <span [innerHTML]="sanitizarIcone(icones.sair)"></span>
       Sair
-    </a>
+    </button>
   </div>
 </header>
