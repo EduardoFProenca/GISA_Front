@@ -24,14 +24,14 @@ export class DashboardAssistenteSocial {
 
   atividadesRecentes: Atividade[] = [
     {
-      descricao: 'Histórico atualizado — família Silva',
+      descricao: 'Histórico atualizado — família Santos',
       tempoAtras: '30 min atrás',
       acoes: [
         { label: 'Ver histórico', acao: () => this.verHistorico(1) },
       ]
     },
     {
-      descricao: 'PTS revisado para Carlos Mendes',
+      descricao: 'PTS revisado para Ana Clara Ferreira',
       tempoAtras: '2 horas atrás',
       acoes: [
         { label: 'Ver PTS', acao: () => this.verPTS(2) },
