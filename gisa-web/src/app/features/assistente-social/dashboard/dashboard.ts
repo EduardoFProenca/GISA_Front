@@ -1,5 +1,4 @@
-import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
 import { CardEstatistica } from '../../../shared/components/card-estatistica/card-estatistica';
 import { PainelAcoesComponent, AcaoRapida } from '../../../shared/components/painel-acoes/painel-acoes';
 import { AtividadesRecentes, Atividade } from '../../../shared/components/atividades-recentes/atividades-recentes';
@@ -13,43 +12,17 @@ import { ICONES } from '../../../shared/icons';
   styleUrl: './dashboard.scss',
 })
 export class DashboardAssistenteSocial {
-  private router = inject(Router);
-
   icones = ICONES;
 
   acoesRapidas: AcaoRapida[] = [
-    { titulo: 'Visualizar Dados de Saúde', descricao: 'Consultar histórico clínico', iconeSvg: ICONES.gestaoPacientes, rota: '/assistente-social/pacientes' },
-    { titulo: 'Gerenciar Histórico', descricao: 'Situação socioeconômica', iconeSvg: ICONES.gestaoAtividades, rota: '/assistente-social/pacientes' },
+    { titulo: 'Visualizar Pacientes', descricao: 'Consultar dados de um paciente', iconeSvg: ICONES.gestaoPacientes, rota: '/assistente-social/pacientes' },
   ];
 
-  atividadesRecentes: Atividade[] = [
-    {
-      descricao: 'Histórico atualizado — família Santos',
-      tempoAtras: '30 min atrás',
-      acoes: [
-        { label: 'Ver histórico', acao: () => this.verHistorico(1) },
-      ]
-    },
-    {
-      descricao: 'PTS revisado para Ana Clara Ferreira',
-      tempoAtras: '2 horas atrás',
-      acoes: [
-        { label: 'Ver PTS', acao: () => this.verPTS(2) },
-      ]
-    },
-  ];
+  // TODO: preencher com o histórico de atividades quando a API tiver o endpoint.
+  atividadesRecentes: Atividade[] = [];
 
   itensMenu = [
     { label: 'Início', iconeSvg: ICONES.calendario, rota: '/assistente-social' },
     { label: 'Pacientes', iconeSvg: ICONES.gestaoPacientes, rota: '/assistente-social/pacientes' },
   ];
-
-  // Abre o detalhe do paciente em modo leitura (o PTS ainda não tem tela própria no projeto).
-  verHistorico(idPaciente: number) {
-    this.router.navigate(['/assistente-social/pacientes', idPaciente]);
-  }
-
-  verPTS(idPaciente: number) {
-    this.router.navigate(['/assistente-social/pacientes', idPaciente]);
-  }
 }

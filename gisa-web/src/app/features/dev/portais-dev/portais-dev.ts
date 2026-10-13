@@ -13,6 +13,7 @@ export class PortaisDev {
   portais = [
     { titulo: 'Administrador', descricao: 'Profissionais, pacientes e consultas', rota: '/administrador' },
     { titulo: 'Recepção', descricao: 'Presença, agendamentos, recusas', rota: '/recepcionista' },
-    { titulo: 'Assistente Social', descricao: 'Histórico e dados de saúde', rota: '/assistente-social' },
+    { titulo: 'Assistente Social', descricao: 'Dados dos pacientes', rota: '/assistente-social' },
+    { titulo: 'Especialista', descricao: 'Terapias, receitas e atestados', rota: '/especialista' },
   ];
 }

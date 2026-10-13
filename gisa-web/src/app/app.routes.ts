@@ -18,5 +18,9 @@ export const routes: Routes = [
     path: 'assistente-social',
     loadChildren: () => import('./features/assistente-social/assistente-social.routes').then(m => m.assistenteSocialRoutes)
   },
+  {
+    path: 'especialista',
+    loadChildren: () => import('./features/especialista/especialista.routes').then(m => m.especialistaRoutes)
+  },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
 ];

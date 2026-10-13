@@ -3,22 +3,20 @@ import { CardEstatistica } from '../../../shared/components/card-estatistica/car
 import { PainelAcoesComponent, AcaoRapida } from '../../../shared/components/painel-acoes/painel-acoes';
 import { AtividadesRecentes, Atividade } from '../../../shared/components/atividades-recentes/atividades-recentes';
 import { Header } from '../../../shared/components/header/header';
-import { Menu } from '../../../shared/components/menu/menu';
 import { ICONES } from '../../../shared/icons';
 
 @Component({
-  selector: 'app-dashboard-medico',
-  imports: [CardEstatistica, PainelAcoesComponent, AtividadesRecentes, Header, Menu],
+  selector: 'app-dashboard-especialista',
+  imports: [CardEstatistica, PainelAcoesComponent, AtividadesRecentes, Header],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
-export class DashboardMedico {
+export class DashboardEspecialista {
   icones = ICONES;
 
   acoesRapidas: AcaoRapida[] = [
-    { titulo: 'Gerenciar Atendimento', descricao: 'Dados de saúde do paciente', iconeSvg: ICONES.gestaoPacientes, rota: '/medico/atendimento' },
-    { titulo: 'Emitir Receita', descricao: 'Nova receita médica', iconeSvg: ICONES.gestaoAtividades, rota: '/medico/receita' },
-    { titulo: 'Emitir Atestado', descricao: 'Novo atestado', iconeSvg: ICONES.cadastrarPaciente, rota: '/medico/atestado' },
+    { titulo: 'Emitir Receita', descricao: 'Nova receita', iconeSvg: ICONES.gestaoAtividades, rota: '/especialista/receita' },
+    { titulo: 'Emitir Atestado', descricao: 'Novo atestado', iconeSvg: ICONES.cadastrarPaciente, rota: '/especialista/atestado' },
   ];
 
   atividadesRecentes: Atividade[] = [
