@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { CadastroValidadorService } from './cadastro-validador';
 import { CadastroPayloadService } from './cadastro-payload';
 import { FormulariosCadastro } from '../models/formularios-cadastro';
-import { Especialidade } from '../../../../core/models/especialidade.model';
 import { comErros } from './test-helpers';
 
 function formularioBase(): FormulariosCadastro {
@@ -27,10 +26,10 @@ function formularioBase(): FormulariosCadastro {
       uf: 'SP',
     }),
     infoProfissional: comErros({
-      cargo: 'MEDICO',
-      codigoCBO: '',
+      cargo: '2',
     }),
     infoUsuario: comErros({
+      possuiAcesso: false,
       temAcessoSistema: false,
       senha: '',
       perfil: '',
@@ -38,8 +37,8 @@ function formularioBase(): FormulariosCadastro {
     infoEspecialista: comErros({
       ehEspecialista: false,
       registroProfissional: '  CRM-SP 123456  ',
-      especialidades: ['pediatria'],
-      opcoesEspecialidade: [{ valor: 'pediatria', label: 'Pediatria' }],
+      especialidades: ['7'],
+      opcoesEspecialidade: [{ valor: '7', label: 'Pediatria' }],
       jornadas: [{ diaSemana: 1, horaInicio: '08:00', horaTermino: '17:00' }],
       atuaComoPJ: false,
       cnpj: '12.345.678/0001-95',
@@ -57,21 +56,6 @@ describe('CadastroPayloadService', () => {
     service = new CadastroPayloadService(new CadastroValidadorService());
   });
 
-  it('idCargoPorNome resolve por nome ignorando maiúsculas/underscore', () => {
-    const cargos = [{ idCargo: 2, nome: 'Médico' }];
-    expect(service.idCargoPorNome(cargos, 'MEDICO')).toBe(2);
-  });
-
-  it('idCargoPorNome cai no primeiro cargo da lista quando não encontra o nome', () => {
-    const cargos = [{ idCargo: 5, nome: 'Recepcionista' }];
-    expect(service.idCargoPorNome(cargos, 'INEXISTENTE')).toBe(5);
-  });
-
-  it('idPerfilPorNome resolve por nome ignorando maiúsculas/underscore', () => {
-    const perfis = [{ idPerfil: 3, nome: 'Assistente Social' }];
-    expect(service.idPerfilPorNome(perfis, 'ASSISTENTE_SOCIAL')).toBe(3);
-  });
-
   it('montarEndereco remove máscara do CEP e recorta os espaços', () => {
     const endereco = service.montarEndereco(formularioBase());
 
@@ -82,9 +66,7 @@ describe('CadastroPayloadService', () => {
 
   it('montarDadosBase remove máscara de CPF, celular e CNS, e resolve o idCargo', () => {
     const f = formularioBase();
-    const cargos = [{ idCargo: 2, nome: 'Médico' }];
-
-    const dados = service.montarDadosBase(f, cargos);
+    const dados = service.montarDadosBase(f);
 
     expect(dados.nome).toBe('Maria Silva');
     expect(dados.cpf).toBe('12345678901');
@@ -95,17 +77,16 @@ describe('CadastroPayloadService', () => {
 
   it('montarUsuario retorna null quando o profissional não tem acesso ao sistema', () => {
     const f = formularioBase();
-    expect(service.montarUsuario(f, [])).toBeNull();
+    expect(service.montarUsuario(f)).toBeNull();
   });
 
   it('montarUsuario resolve o idPerfil quando há acesso ao sistema', () => {
     const f = formularioBase();
     f.infoUsuario.temAcessoSistema = true;
     f.infoUsuario.senha = 'SenhaSegura123';
-    f.infoUsuario.perfil = 'MEDICO';
-    const perfis = [{ idPerfil: 2, nome: 'Médico' }];
+    f.infoUsuario.perfil = '2';
 
-    const usuario = service.montarUsuario(f, perfis);
+    const usuario = service.montarUsuario(f);
 
     expect(usuario).toEqual({ senha: 'SenhaSegura123', idPerfil: 2 });
   });
@@ -123,34 +104,28 @@ describe('CadastroPayloadService', () => {
     expect(jornadas[0].diaSemana).toBe(1);
   });
 
-  it('mapearEspecialidadesIds casa o label da opção selecionada com o nome retornado pela API', () => {
+  it('montarUsuario não concede acesso de novo a quem já tem usuário', () => {
     const f = formularioBase();
-    f.infoEspecialista.especialidades = ['pediatria'];
-    f.infoEspecialista.opcoesEspecialidade = [{ valor: 'pediatria', label: 'Pediatria' }];
+    f.infoUsuario.possuiAcesso = true;
+    f.infoUsuario.temAcessoSistema = true;
+    f.infoUsuario.senha = 'SenhaSegura123';
+    f.infoUsuario.perfil = '2';
 
-    const todas: Especialidade[] = [
-      { idEspecialidade: 7, nome: 'Pediatria', descricao: '' },
-      { idEspecialidade: 8, nome: 'Neurologia', descricao: '' },
-    ];
-
-    expect(service.mapearEspecialidadesIds(f, todas)).toEqual([7]);
+    expect(service.montarUsuario(f)).toBeNull();
   });
 
-  it('mapearEspecialidadesIds ignora especialidade sem correspondência na API', () => {
+  it('especialidadesIds converte os valores do select e remove repetidos', () => {
     const f = formularioBase();
-    f.infoEspecialista.especialidades = ['pediatria'];
-    f.infoEspecialista.opcoesEspecialidade = [{ valor: 'pediatria', label: 'Pediatria' }];
+    f.infoEspecialista.especialidades = ['7', '', '7', '8'];
 
-    const todas: Especialidade[] = [{ idEspecialidade: 8, nome: 'Neurologia', descricao: '' }];
-
-    expect(service.mapearEspecialidadesIds(f, todas)).toEqual([]);
+    expect(service.especialidadesIds(f)).toEqual([7, 8]);
   });
 
   it('montarDadosEspecialista recorta o registro e inclui as jornadas mapeadas', () => {
     const f = formularioBase();
-    const dadosBase = service.montarDadosBase(f, [{ idCargo: 2, nome: 'Médico' }]);
+    const dadosBase = service.montarDadosBase(f);
 
-    const dadosEspecialista = service.montarDadosEspecialista(f, dadosBase, [7]);
+    const dadosEspecialista = service.montarDadosEspecialista(f, dadosBase);
 
     expect(dadosEspecialista.registroConselho).toBe('CRM-SP 123456');
     expect(dadosEspecialista.especialidadesIds).toEqual([7]);
@@ -159,8 +134,8 @@ describe('CadastroPayloadService', () => {
 
   it('montarDadosEspecialistaPJ remove máscara do CNPJ e recorta a razão social', () => {
     const f = formularioBase();
-    const dadosBase = service.montarDadosBase(f, [{ idCargo: 2, nome: 'Médico' }]);
-    const dadosEspecialista = service.montarDadosEspecialista(f, dadosBase, [7]);
+    const dadosBase = service.montarDadosBase(f);
+    const dadosEspecialista = service.montarDadosEspecialista(f, dadosBase);
 
     const dadosPJ = service.montarDadosEspecialistaPJ(f, dadosEspecialista);
 

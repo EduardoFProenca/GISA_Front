@@ -30,8 +30,31 @@ export class CadastroValidadorService {
     return { valido };
   }
 
+  enderecoVazio(f: FormulariosCadastro): boolean {
+    const c = f.contato;
+    return [c.cep, c.endereco, c.numero, c.complemento, c.bairro, c.cidade, c.uf].every((v) => vazio(v));
+  }
+
   jornadasCompletas(f: FormulariosCadastro): JornadaForm[] {
     return f.infoEspecialista.jornadas.filter((j) => j.diaSemana && j.horaInicio && j.horaTermino);
+  }
+
+  // HH:mm compara como texto.
+  problemaJornadas(jornadas: JornadaForm[]): string | null {
+    if (jornadas.some((j) => j.horaInicio >= j.horaTermino)) {
+      return 'O horário de término deve ser depois do início.';
+    }
+    const ordenadas = [...jornadas].sort((a, b) =>
+      Number(a.diaSemana) - Number(b.diaSemana) || a.horaInicio.localeCompare(b.horaInicio)
+    );
+    for (let i = 1; i < ordenadas.length; i++) {
+      const ant = ordenadas[i - 1];
+      const atual = ordenadas[i];
+      if (Number(ant.diaSemana) === Number(atual.diaSemana) && atual.horaInicio < ant.horaTermino) {
+        return 'Há horários sobrepostos no mesmo dia.';
+      }
+    }
+    return null;
   }
 
   private validarDadosPessoais(f: FormulariosCadastro, marcar: (a: ComErros, c: string, m?: string) => void) {
@@ -58,6 +81,8 @@ export class CadastroValidadorService {
   }
 
   private validarContato(f: FormulariosCadastro, marcar: (a: ComErros, c: string, m?: string) => void) {
+    // Endereço é opcional para profissionais (PROFISSIONAIS.md); se começar a preencher, exige completo.
+    if (this.enderecoVazio(f)) return;
     const c = f.contato;
 
     const cep = soDigitos(c.cep);
@@ -77,6 +102,10 @@ export class CadastroValidadorService {
 
   private validarInfoUsuario(f: FormulariosCadastro, marcar: (a: ComErros, c: string, m?: string) => void) {
     const iu = f.infoUsuario;
+    if (iu.possuiAcesso) {
+      if (vazio(iu.perfil)) marcar(iu, 'perfil');
+      return;
+    }
     if (!iu.temAcessoSistema) return;
 
     if (vazio(iu.senha)) marcar(iu, 'senha');
@@ -96,8 +125,13 @@ export class CadastroValidadorService {
       marcar(ie, 'especialidades', 'Selecione ao menos uma especialidade.');
     }
 
-    if (this.jornadasCompletas(f).length === 0) {
+    const jornadas = this.jornadasCompletas(f);
+    if (jornadas.length === 0) {
       marcar(ie, 'jornadas', 'Informe ao menos um horário completo (dia, início e término).');
+    } else {
+      // A API não valida horários: o front garante início < término e nada sobreposto no mesmo dia.
+      const problema = this.problemaJornadas(jornadas);
+      if (problema) marcar(ie, 'jornadas', problema);
     }
 
     if (ie.atuaComoPJ) {

@@ -85,37 +85,3 @@ h3 {
   font-size: 0.95rem;
 }
 
-.erro-msg {
-  color: #dc2626;
-}
-
-.acoes-situacao {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 1rem;
-
-  button {
-    border: none;
-    border-radius: 8px;
-    padding: 0.6rem 1.1rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-
-    &:disabled {
-      opacity: 0.6;
-      cursor: default;
-    }
-  }
-
-  .btn-inativar {
-    background: #fee2e2;
-    color: #b91c1c;
-  }
-
-  .btn-reativar {
-    background: #dcfce7;
-    color: #15803d;
-  }
-}

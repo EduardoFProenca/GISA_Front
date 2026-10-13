@@ -1,57 +1,53 @@
 <app-cabecalho-pagina titulo="Editar Profissional" [mostrarSalvar]="true" [mostrarCancelar]="true"
-    (salvar)="salvarEdicao()" (cancelar)="cancelar()">
+    (salvar)="salvarEdicao()" (cancelar)="confirmarCancelamentoAberto.set(true)">
 </app-cabecalho-pagina>
 
-@if (erro()) {
+@if (carregando()) {
+<p class="aviso">Carregando...</p>
+} @else if (erro()) {
 <p class="erro-msg">{{ erro() }}</p>
-} @else if (!carregado()) {
-<p>Carregando...</p>
-} @else {
+} @else if (formularios(); as f) {
 <div class="card-form">
-    <div class="secao">
-        <h3>Situação do Profissional</h3>
-        <div class="campo">
-            <label for="status">Status *</label>
-            <select id="status" name="status" [(ngModel)]="status">
-                <option value="ATIVO">Ativo</option>
-                <option value="INATIVO">Inativo</option>
-            </select>
-        </div>
-    </div>
-    <br>
-    <hr>
-    <app-dados-pessoais [dadosIniciais]="dadosPessoais" [bloquearCpfSexoNascimento]="true">
+    <p class="legenda-obrigatorio">Campos com <span class="obrigatorio">*</span> são obrigatórios.
+        CPF, nascimento, sexo, registro no conselho e CNPJ não podem ser alterados.
+        Para inativar ou reativar, use a tela de detalhes.</p>
+
+    @if (erroGeral()) {
+    <p class="erro-msg erro-geral">{{ erroGeral() }}</p>
+    }
+
+    <app-dados-pessoais [dadosIniciais]="f.dadosPessoais" [bloquearCpfSexoNascimento]="true">
     </app-dados-pessoais>
     <br>
     <hr>
 
-    <app-info-profissional [dadosIniciais]="infoProfissional"></app-info-profissional>
+    <app-info-profissional [dadosIniciais]="f.infoProfissional" [cargos]="opcoes().cargos"></app-info-profissional>
     <br>
     <hr>
 
-    <app-info-usuario [dadosIniciais]="infoUsuario"></app-info-usuario>
+    <app-info-usuario [dadosIniciais]="f.infoUsuario" [perfis]="opcoes().perfis"></app-info-usuario>
     <br>
     <hr>
 
-    <app-info-especialista [dadosIniciais]="infoEspecialista"></app-info-especialista>
+    <app-info-especialista [dadosIniciais]="f.infoEspecialista" [especialidadesDisponiveis]="opcoes().especialidades"
+        [bloquearTipo]="true"></app-info-especialista>
     <br>
     <hr>
 
-    <app-contato [dadosIniciais]="contato"></app-contato>
-    <br>
-    <hr>
+    <app-contato [dadosIniciais]="f.contato" subtitulo="Opcional. Se informar, preencha o endereço completo."></app-contato>
 </div>
 }
 
-<app-confirm-dialog [aberto]="confirmarCancelamentoAberto" titulo="Descartar alterações?"
+<app-confirm-dialog [aberto]="confirmarCancelamentoAberto()" titulo="Descartar alterações?"
     mensagem="As alterações feitas nesta edição serão perdidas." textoConfirmar="Descartar"
-    textoCancelar="Continuar editando" (confirmar)="confirmarCancelamento()" (cancelar)="fecharConfirmacao()">
+    textoCancelar="Continuar editando" (confirmar)="confirmarCancelamento()"
+    (cancelar)="confirmarCancelamentoAberto.set(false)">
 </app-confirm-dialog>
 
 <app-sucesso-dialog
-    [aberto]="dialogSucessoAberto"
+    [aberto]="dialogSucessoAberto()"
     titulo="Alterações salvas com sucesso!"
-    [mensagem]="'Os dados de ' + dadosPessoais.nome + ' foram atualizados.'"
+    [mensagem]="'Os dados de ' + nomeSalvo() + ' foram atualizados.'"
     textoPrimario="Ver Detalhes"
     textoSecundario="Gestão de Profissionais"
     (verDetalhes)="irParaDetalhes()"

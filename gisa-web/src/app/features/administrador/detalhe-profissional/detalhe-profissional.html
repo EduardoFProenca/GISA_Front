@@ -1,43 +1,102 @@
-<app-cabecalho-pagina titulo="Detalhes do Profissional" textoAcao="Editar"
+<app-cabecalho-pagina titulo="Detalhes do Profissional" [textoAcao]="podeEditar && ativo() ? 'Editar' : ''"
     [rotaAcao]="'/administrador/profissionais/' + id + '/editar'">
 </app-cabecalho-pagina>
 
-@if (erro()) {
+@if (carregando()) {
+<p class="aviso">Carregando...</p>
+} @else if (erro()) {
 <p class="erro-msg">{{ erro() }}</p>
-} @else if (!carregado()) {
-<p>Carregando...</p>
-} @else {
+} @else if (formularios(); as f) {
 <div class="card-form">
     <div class="secao">
         <h3>Situação do Profissional</h3>
-        <div class="campo">
-            <label for="status">Status</label>
-            <input type="text" id="status" [value]="status === 'ATIVO' ? 'Ativo' : 'Inativo'" disabled>
+        <div class="info-bloco">
+            <p><strong>Tipo:</strong> {{ rotuloTipo() }}</p>
+            <p><strong>Cadastro:</strong> {{ ativo() ? 'Ativo' : 'Inativo' }}</p>
+            @if (usuario(); as u) {
+            <p><strong>Perfil de acesso:</strong> {{ u.perfil.nome }}</p>
+            <p><strong>Permissões:</strong>
+                {{ u.permissoes.length ? '' : 'nenhuma' }}
+                @for (p of u.permissoes; track p.idPermissao; let ultimo = $last) {
+                {{ p.descricao }}{{ ultimo ? '' : ', ' }}
+                }
+            </p>
+            } @else {
+            <p><strong>Acesso ao sistema:</strong> não possui</p>
+            }
         </div>
+
+        <div class="acoes-situacao">
+            @if (podeGerenciarUsuarios && ativo()) {
+            @if (usuario()) {
+            <button type="button" class="btn-secundario" (click)="abrirDialogo('senha')">Redefinir senha</button>
+            } @else {
+            <button type="button" class="btn-secundario" (click)="abrirDialogo('acesso')">Conceder acesso ao sistema</button>
+            }
+            }
+            @if (podeInativar) {
+            <button type="button" [class]="ativo() ? 'btn-inativar' : 'btn-reativar'" [disabled]="alterandoStatus()"
+                (click)="confirmacaoAberta.set(true)">
+                {{ alterandoStatus() ? 'Salvando...' : ativo() ? 'Inativar' : 'Reativar' }}
+            </button>
+            }
+        </div>
+        @if (erroStatus()) { <p class="erro-msg">{{ erroStatus() }}</p> }
+        @if (avisoAcesso()) { <p class="aviso-ok">{{ avisoAcesso() }}</p> }
     </div>
     <br>
     <hr>
     <br>
 
-    <app-dados-pessoais [dadosIniciais]="dadosPessoais" [bloquearCpfSexoNascimento]="true" [somenteLeitura]="true">
+    <app-dados-pessoais [dadosIniciais]="f.dadosPessoais" [bloquearCpfSexoNascimento]="true" [somenteLeitura]="true">
     </app-dados-pessoais>
     <br>
     <hr>
 
-    <app-info-profissional [dadosIniciais]="infoProfissional" [somenteLeitura]="true"></app-info-profissional>
+    <app-info-profissional [dadosIniciais]="f.infoProfissional" [cargos]="opcoes().cargos"
+        [somenteLeitura]="true"></app-info-profissional>
     <br>
     <hr>
 
-    <app-info-usuario [dadosIniciais]="infoUsuario" [somenteLeitura]="true"></app-info-usuario>
+    <app-info-especialista [dadosIniciais]="f.infoEspecialista" [especialidadesDisponiveis]="opcoes().especialidades"
+        [somenteLeitura]="true"></app-info-especialista>
     <br>
     <hr>
 
-    <app-info-especialista [dadosIniciais]="infoEspecialista" [somenteLeitura]="true"></app-info-especialista>
-    <br>
-    <hr>
-
-    <app-contato [dadosIniciais]="contato" [somenteLeitura]="true"></app-contato>
-    <br>
-    <hr>
+    <app-contato [dadosIniciais]="f.contato" [somenteLeitura]="true"></app-contato>
 </div>
 }
+
+<app-confirm-dialog [aberto]="confirmacaoAberta()" [titulo]="ativo() ? 'Inativar profissional?' : 'Reativar profissional?'"
+    [mensagem]="ativo()
+      ? 'O cadastro fica inativo e, se tiver acesso ao sistema, não conseguirá mais fazer login.'
+      : 'O cadastro volta a ficar ativo.'"
+    [textoConfirmar]="ativo() ? 'Inativar' : 'Reativar'" textoCancelar="Voltar"
+    (confirmar)="confirmarAlteracaoStatus()" (cancelar)="confirmacaoAberta.set(false)">
+</app-confirm-dialog>
+
+<app-form-dialog [aberto]="dialogo() !== null"
+    [titulo]="dialogo() === 'acesso' ? 'Conceder acesso ao sistema' : 'Redefinir senha'"
+    [descricao]="dialogo() === 'acesso'
+      ? 'O login será feito com o CPF do cadastro e a senha abaixo.'
+      : 'Defina uma senha temporária e informe a pessoa. As sessões abertas dela serão encerradas.'"
+    [erro]="erroDialogo()" [salvando]="salvandoDialogo()"
+    [textoConfirmar]="dialogo() === 'acesso' ? 'Conceder acesso' : 'Redefinir'"
+    (confirmar)="confirmarDialogo()" (cancelar)="dialogo.set(null)">
+    @if (dialogo() === 'acesso') {
+    <div>
+        <label for="perfilAcesso">Perfil</label>
+        <select id="perfilAcesso" name="perfilAcesso" [(ngModel)]="perfilAcesso">
+            <option value="" disabled>Selecione o perfil</option>
+            @for (p of opcoes().perfis; track p.idPerfil) {
+            <option [value]="'' + p.idPerfil">{{ p.nome }}</option>
+            }
+        </select>
+    </div>
+    }
+    <div>
+        <label for="senhaAcesso">{{ dialogo() === 'acesso' ? 'Senha inicial' : 'Nova senha' }}</label>
+        <input type="text" id="senhaAcesso" name="senhaAcesso" [(ngModel)]="senha" placeholder="Entre 8 e 30 caracteres"
+            autocomplete="off">
+    </div>
+</app-form-dialog>

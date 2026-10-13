@@ -19,6 +19,7 @@ export interface ProfissionalCard {
 })
 export class CardProfissional {
   @Input() profissional!: ProfissionalCard;
+  @Input() podeEditar = true;
   icones = ICONES;
 
   private router = inject(Router);

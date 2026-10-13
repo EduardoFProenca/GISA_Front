@@ -1,4 +1,4 @@
-<app-cabecalho-pagina titulo="Gestão de Profissionais" textoAcao="Novo Profissional"
+<app-cabecalho-pagina titulo="Gestão de Profissionais" [textoAcao]="podeCadastrar ? 'Novo Profissional' : ''"
     rotaAcao="/administrador/profissionais/novo" />
 
 <div class="pagina-profissionais">
@@ -9,7 +9,7 @@
     </div>
 
     <div class="painel-busca">
-        <app-busca-filtro placeholder="Buscar por nome ou registro..." [filtrosDisponiveis]="filtros"
+        <app-busca-filtro placeholder="Buscar por nome ou CPF..." [filtrosDisponiveis]="filtros"
             (buscaAlterada)="aplicarBusca($event)" />
 
         <br><br>
@@ -20,7 +20,7 @@
 
         <div class="grid-profissionais">
             @for (prof of profissionaisPaginados(); track prof.id) {
-            <app-card-profissional [profissional]="prof" />
+            <app-card-profissional [profissional]="prof" [podeEditar]="podeEditar" />
             } @empty {
             @if (!carregando() && !erro()) {
             <p class="vazio">Nenhum profissional encontrado.</p>

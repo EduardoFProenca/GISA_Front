@@ -12,13 +12,15 @@
             <circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/>
           </svg>
         </button>
-        <button type="button" class="btn-editar" title="Editar" (click)="abrirEdicao($event)">
-          <span [innerHTML]="sanitizarIcone(icones.editar)"></span>
-        </button>
+        @if (podeEditar) {
+          <button type="button" class="btn-editar" title="Editar" (click)="abrirEdicao($event)">
+            <span [innerHTML]="sanitizarIcone(icones.editar)"></span>
+          </button>
+        }
       </div>
     </div>
     <p class="cargo-prof">{{ profissional.cargo }}</p>
-    <p class="crm-prof">CRM: {{ profissional.crm }}</p>
+    <p class="crm-prof">Registro: {{ profissional.crm }}</p>
 
     <span class="status-badge" [class]="classeStatus">
       {{ profissional.statusCadastro }}

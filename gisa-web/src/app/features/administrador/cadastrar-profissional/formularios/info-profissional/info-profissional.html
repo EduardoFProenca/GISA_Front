@@ -1,4 +1,4 @@
-<div class="secao">
+<fieldset class="secao" [disabled]="somenteLeitura">
   <h3>Profissional</h3>
 
   <div class="linha-form">
@@ -6,16 +6,17 @@
       <label for="cargo">Cargo <span class="obrigatorio">*</span></label>
       <select id="cargo" name="cargo" [(ngModel)]="cargo" [class.input-erro]="erros['cargo']"
         (change)="limparErro('cargo')">
-        <option value="" disabled selected>Selecione o cargo</option>
-        @for (c of cargos; track c.valor) {
-          <option [value]="c.valor">{{ c.label }}</option>
+        <option value="" disabled>Selecione o cargo</option>
+        @for (c of cargos; track c.idCargo) {
+          <option [value]="'' + c.idCargo">{{ c.nome }}</option>
         }
       </select>
       @if (erros['cargo']) { <span class="erro-msg">{{ erros['cargo'] }}</span> }
     </div>
     <div class="campo">
-      <label for="codigoCBO">Código (CBO)</label>
-      <input type="text" id="codigoCBO" name="codigoCBO" [(ngModel)]="codigoCBO" placeholder="Ex: 2251-25">
+      <label for="codigoCBO">CBO</label>
+      <input type="text" id="codigoCBO" name="codigoCBO" [value]="cbo" readonly tabindex="-1"
+        placeholder="Definido pelo cargo">
     </div>
   </div>
-</div>
+</fieldset>

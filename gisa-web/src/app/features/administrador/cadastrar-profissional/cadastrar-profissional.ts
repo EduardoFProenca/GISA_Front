@@ -1,4 +1,4 @@
-import { Component, ViewChild, inject, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ViewChild, inject, OnInit, ChangeDetectorRef, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
@@ -9,13 +9,9 @@ import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cab
 import { InfoProfissional } from './formularios/info-profissional/info-profissional';
 import { SucessoDialog } from '../../../shared/components/sucesso-dialog/sucesso-dialog';
 import { ProfissionalService } from '../../../core/services/profissional';
-import { EspecialidadeService } from '../../../core/services/especialidade';
-import { CargoService } from '../../../core/services/cargo';
-import { PerfilService } from '../../../core/services/perfil';
-import { Cargo } from '../../../core/models/cargo.model';
-import { Perfil } from '../../../core/models/perfil.model';
 import { CadastroResponse } from '../../../core/models/profissional.model';
-import { Especialidade } from '../../../core/models/especialidade.model';
+import { mensagemDeErro } from '../../../core/http/erro-api';
+import { OpcoesProfissional, OpcoesProfissionalService } from './services/opcoes-profissional';
 import { FormulariosCadastro, listaErros } from './models/formularios-cadastro';
 import { CadastroValidadorService } from './services/cadastro-validador';
 import { CadastroPayloadService } from './services/cadastro-payload';
@@ -35,9 +31,7 @@ export class CadastroProfissional implements OnInit {
   @ViewChild(InfoEspecialista) infoEspecialista!: InfoEspecialista;
 
   private profissionalService = inject(ProfissionalService);
-  private especialidadeService = inject(EspecialidadeService);
-  private cargoService = inject(CargoService);
-  private perfilService = inject(PerfilService);
+  private opcoesService = inject(OpcoesProfissionalService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
 
@@ -52,12 +46,14 @@ export class CadastroProfissional implements OnInit {
   nomeCadastrado = '';
   idCadastrado: number | null = null;
 
-  private cargos: Cargo[] = [];
-  private perfis: Perfil[] = [];
+  // Cargos, perfis e especialidades da API (opções dos selects).
+  opcoes = signal<OpcoesProfissional>({ cargos: [], perfis: [], especialidades: [] });
 
   ngOnInit() {
-    this.cargoService.listar().subscribe({ next: (c) => (this.cargos = c) });
-    this.perfilService.listar().subscribe({ next: (p) => (this.perfis = p) });
+    this.opcoesService.carregar().subscribe({
+      next: (o) => this.opcoes.set(o),
+      error: (err) => this.finalizarComErro(mensagemDeErro(err, 'Não foi possível carregar cargos, perfis e especialidades.')),
+    });
   }
 
   private get formularios(): FormulariosCadastro {
@@ -70,7 +66,7 @@ export class CadastroProfissional implements OnInit {
     };
   }
 
-  async salvarCadastro() {
+  salvarCadastro() {
     if (this.salvando) return;
 
     this.erro = '';
@@ -83,58 +79,32 @@ export class CadastroProfissional implements OnInit {
 
     this.salvando = true;
 
-    try {
-      const dadosBase = this.payload.montarDadosBase(f, this.cargos);
-      const usuario = this.payload.montarUsuario(f, this.perfis);
+    const dadosBase = this.payload.montarDadosBase(f);
+    const usuario = this.payload.montarUsuario(f);
+    const ie = f.infoEspecialista;
 
-      if (!f.infoEspecialista.ehEspecialista) {
-        if (usuario) {
-          this.profissionalService
-            .cadastrarProfissionalComUsuario({ profissional: dadosBase, usuario })
-            .subscribe(this.handlersPadrao());
-        } else {
-          this.profissionalService.cadastrarProfissional(dadosBase).subscribe(this.handlersPadrao());
-        }
-        return;
-      }
-
-      const selecionadas = f.infoEspecialista.especialidades.filter((e) => !!e);
-      const todasEspecialidades = await new Promise<Especialidade[]>((resolve, reject) => {
-        this.especialidadeService.listar().subscribe({ next: resolve, error: reject });
-      });
-      const especialidadesIds = this.payload.mapearEspecialidadesIds(f, todasEspecialidades);
-
-      if (especialidadesIds.length !== selecionadas.length) {
-        f.infoEspecialista.erros['especialidades'] = 'Especialidade não encontrada no sistema. Escolha outra.';
-        this.finalizarComErro('Corrija os campos destacados em vermelho.');
-        return;
-      }
-
-      const dadosEspecialista = this.payload.montarDadosEspecialista(f, dadosBase, especialidadesIds);
-
-      if (f.infoEspecialista.atuaComoPJ) {
-        const dadosPJ = this.payload.montarDadosEspecialistaPJ(f, dadosEspecialista);
-
-        if (usuario) {
-          this.profissionalService
-            .cadastrarEspecialistaPJComUsuario({ especialistaPJ: dadosPJ, usuario })
-            .subscribe(this.handlersPadrao());
-        } else {
-          this.profissionalService.cadastrarEspecialistaPJ(dadosPJ).subscribe(this.handlersPadrao());
-        }
-        return;
-      }
-
-      if (usuario) {
-        this.profissionalService
-          .cadastrarEspecialistaComUsuario({ especialista: dadosEspecialista, usuario })
-          .subscribe(this.handlersPadrao());
-      } else {
-        this.profissionalService.cadastrarEspecialista(dadosEspecialista).subscribe(this.handlersPadrao());
-      }
-    } catch (e) {
-      this.finalizarComErro('Não foi possível carregar as especialidades.');
+    if (!ie.ehEspecialista) {
+      const req = usuario
+        ? this.profissionalService.cadastrarProfissionalComUsuario({ profissional: dadosBase, usuario })
+        : this.profissionalService.cadastrarProfissional(dadosBase);
+      req.subscribe(this.handlersPadrao());
+      return;
     }
+
+    const especialista = this.payload.montarDadosEspecialista(f, dadosBase);
+    if (ie.atuaComoPJ) {
+      const pj = this.payload.montarDadosEspecialistaPJ(f, especialista);
+      const req = usuario
+        ? this.profissionalService.cadastrarEspecialistaPJComUsuario({ especialistaPJ: pj, usuario })
+        : this.profissionalService.cadastrarEspecialistaPJ(pj);
+      req.subscribe(this.handlersPadrao());
+      return;
+    }
+
+    const req = usuario
+      ? this.profissionalService.cadastrarEspecialistaComUsuario({ especialista, usuario })
+      : this.profissionalService.cadastrarEspecialista(especialista);
+    req.subscribe(this.handlersPadrao());
   }
 
   private handlersPadrao() {
@@ -170,7 +140,6 @@ export class CadastroProfissional implements OnInit {
       cep: '', endereco: '', numero: '', complemento: '', bairro: '', cidade: '', uf: ''
     });
     this.infoProfissional.cargo = '';
-    this.infoProfissional.codigoCBO = '';
     this.infoUsuario.temAcessoSistema = false;
     this.infoUsuario.senha = '';
     this.infoUsuario.perfil = '';

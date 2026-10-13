@@ -14,16 +14,16 @@
     <app-dados-pessoais />
     <br>
     <hr>
-    <app-info-profissional></app-info-profissional>
+    <app-info-profissional [cargos]="opcoes().cargos"></app-info-profissional>
     <br>
     <hr>
-    <app-info-usuario />
+    <app-info-usuario [perfis]="opcoes().perfis" />
     <br>
     <hr>
-    <app-info-especialista />
+    <app-info-especialista [especialidadesDisponiveis]="opcoes().especialidades" />
     <br>
     <hr>
-    <app-contato />
+    <app-contato subtitulo="Opcional. Se informar, preencha o endereço completo." />
   </div>
 
   <app-sucesso-dialog

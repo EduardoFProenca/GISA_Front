@@ -22,13 +22,16 @@ export interface ContatoForm extends ComErros {
 }
 
 export interface InfoProfissionalForm extends ComErros {
+  // idCargo (texto do select).
   cargo: string;
-  codigoCBO: string;
 }
 
 export interface InfoUsuarioForm extends ComErros {
+  // true = o cadastro já tem usuário (edição): só o perfil pode mudar.
+  possuiAcesso: boolean;
   temAcessoSistema: boolean;
   senha: string;
+  // idPerfil (texto do select).
   perfil: string;
 }
 
@@ -46,6 +49,7 @@ export interface JornadaForm {
 export interface InfoEspecialistaForm extends ComErros {
   ehEspecialista: boolean;
   registroProfissional: string;
+  // idEspecialidade (texto do select).
   especialidades: string[];
   opcoesEspecialidade: OpcaoEspecialidade[];
   jornadas: JornadaForm[];

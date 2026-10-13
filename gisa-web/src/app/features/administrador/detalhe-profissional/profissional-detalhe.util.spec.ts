@@ -1,7 +1,5 @@
 import { Profissional, ProfissionalDetalhe } from '../../../core/models/profissional.model';
 import {
-  cargoParaValor,
-  especialidadeParaValor,
   formatarCelular,
   formatarCpf,
   paraFormularios,
@@ -36,16 +34,7 @@ const profissional: Profissional = {
 };
 
 describe('profissional-detalhe.util', () => {
-  it('converte nome de cargo em valor do select', () => {
-    expect(cargoParaValor('Médico')).toBe('MEDICO');
-    expect(cargoParaValor('Assistente Social')).toBe('ASSISTENTE_SOCIAL');
-    expect(cargoParaValor(null)).toBe('');
-  });
 
-  it('converte nome de especialidade em valor do select', () => {
-    expect(especialidadeParaValor('Clínica Geral')).toBe('clinica-geral');
-    expect(especialidadeParaValor('Terapia Ocupacional')).toBe('terapia-ocupacional');
-  });
 
   it('formata CPF e celular', () => {
     expect(formatarCpf('12345678900')).toBe('123.456.789-00');
@@ -59,7 +48,7 @@ describe('profissional-detalhe.util', () => {
     expect(f.dadosPessoais['cpf']).toBe('123.456.789-00');
     expect(f.contato['cep']).toBe('01001-000');
     expect(f.contato['uf']).toBe('SP');
-    expect(f.infoProfissional['cargo']).toBe('MEDICO');
+    expect(f.infoProfissional['cargo']).toBe('2');
     expect(f.infoEspecialista['ehEspecialista']).toBe(false);
   });
 
@@ -85,7 +74,7 @@ describe('profissional-detalhe.util', () => {
     expect(e['ehEspecialista']).toBe(true);
     expect(e['atuaComoPJ']).toBe(true);
     expect(e['cnpj']).toBe('12.345.678/0001-90');
-    expect(e['especialidades']).toEqual(['clinica-geral']);
+    expect(e['especialidades']).toEqual(['1']);
     expect(e['jornadas']).toEqual([{ diaSemana: 2, horaInicio: '08:00', horaTermino: '12:00' }]);
   });
 });

@@ -24,7 +24,7 @@ describe('EditarProfissional', () => {
   });
 
   it('mostra erro quando o id da rota é inválido', () => {
-    expect(component.carregado()).toBe(false);
+    expect(component.carregando()).toBe(false);
     expect(component.erro()).toBe('Profissional inválido.');
   });
 });

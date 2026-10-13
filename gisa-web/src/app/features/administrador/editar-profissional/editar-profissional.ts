@@ -1,7 +1,7 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { firstValueFrom, forkJoin } from 'rxjs';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { SucessoDialog } from '../../../shared/components/sucesso-dialog/sucesso-dialog';
@@ -10,13 +10,19 @@ import { Contato } from '../../../shared/components/contato/contato';
 import { InfoProfissional } from '../cadastrar-profissional/formularios/info-profissional/info-profissional';
 import { InfoUsuario } from '../cadastrar-profissional/formularios/info-usuario/info-usuario';
 import { InfoEspecialista } from '../cadastrar-profissional/formularios/info-especialista/info-especialista';
-import { ProfissionalService } from '../../../core/services/profissional';
-import { paraFormularios } from '../detalhe-profissional/profissional-detalhe.util';
+import { FormulariosCadastro } from '../cadastrar-profissional/models/formularios-cadastro';
+import { CadastroValidadorService } from '../cadastrar-profissional/services/cadastro-validador';
+import { CadastroPayloadService } from '../cadastrar-profissional/services/cadastro-payload';
+import { CadastroErrosApiService } from '../cadastrar-profissional/services/cadastro-erros-api';
+import { OpcoesProfissional, OpcoesProfissionalService } from '../cadastrar-profissional/services/opcoes-profissional';
+import { ProfissionalService, tipoDoDetalhe } from '../../../core/services/profissional';
+import { ProfissionalDetalhe } from '../../../core/models/profissional.model';
+import { mensagemDeErro } from '../../../core/http/erro-api';
+import { FormulariosDetalhe, paraFormularios } from '../detalhe-profissional/profissional-detalhe.util';
 
 @Component({
   selector: 'app-editar-profissional',
   imports: [
-    FormsModule,
     CabecalhoPagina,
     ConfirmDialog,
     SucessoDialog,
@@ -34,86 +40,113 @@ export class EditarProfissional implements OnInit {
   private router = inject(Router);
   private location = inject(Location);
   private profissionalService = inject(ProfissionalService);
+  private opcoesService = inject(OpcoesProfissionalService);
+  private validador = inject(CadastroValidadorService);
+  private payload = inject(CadastroPayloadService);
+  private errosApi = inject(CadastroErrosApiService);
 
-  id: string = this.route.snapshot.paramMap.get('id') ?? '';
+  @ViewChild(DadosPessoais) dadosPessoaisForm?: DadosPessoais;
+  @ViewChild(Contato) contatoForm?: Contato;
+  @ViewChild(InfoProfissional) infoProfissionalForm?: InfoProfissional;
+  @ViewChild(InfoUsuario) infoUsuarioForm?: InfoUsuario;
+  @ViewChild(InfoEspecialista) infoEspecialistaForm?: InfoEspecialista;
 
-  status: 'ATIVO' | 'INATIVO' = 'ATIVO';
-  confirmarCancelamentoAberto = false;
+  id = Number(this.route.snapshot.paramMap.get('id'));
 
-  dialogSucessoAberto = false;
-  salvando = false;
-
-  // Os formulários filhos só leem dadosIniciais no ngOnInit,
-  // então o template só os renderiza depois que `carregado` vira true.
-  carregado = signal(false);
+  // Os formulários filhos só leem dadosIniciais no ngOnInit: renderizam depois de carregar.
+  carregando = signal(true);
   erro = signal('');
+  erroGeral = signal('');
+  salvando = signal(false);
+  dialogSucessoAberto = signal(false);
+  confirmarCancelamentoAberto = signal(false);
+  nomeSalvo = signal('');
 
-  dadosPessoais: any = {};
-  contato: any = {};
-  infoProfissional: any = {};
-  infoUsuario: any = {};
-  infoEspecialista: any = {};
+  detalhe = signal<ProfissionalDetalhe | null>(null);
+  formularios = signal<FormulariosDetalhe | null>(null);
+  opcoes = signal<OpcoesProfissional>({ cargos: [], perfis: [], especialidades: [] });
+  tipo = computed(() => {
+    const d = this.detalhe();
+    return d ? tipoDoDetalhe(d) : 'PROFISSIONAL';
+  });
 
   ngOnInit() {
-    const idNumerico = Number(this.id);
-    if (!Number.isInteger(idNumerico) || idNumerico <= 0) {
+    if (!Number.isInteger(this.id) || this.id <= 0) {
       this.erro.set('Profissional inválido.');
+      this.carregando.set(false);
       return;
     }
 
-    this.profissionalService.buscarDetalhe(idNumerico).subscribe({
-      next: (detalhe) => {
-        const f = paraFormularios(detalhe);
-        this.dadosPessoais = f.dadosPessoais;
-        this.contato = f.contato;
-        this.infoProfissional = f.infoProfissional;
-        this.infoUsuario = f.infoUsuario;
-        this.infoEspecialista = f.infoEspecialista;
-        this.status = f.status;
-        this.carregado.set(true);
-      },
-      error: (err) => {
-        this.erro.set(
-          err?.status === 404
-            ? 'Profissional não encontrado.'
-            : err?.error?.message || 'Não foi possível carregar o profissional.'
-        );
-      },
-    });
+    forkJoin({ detalhe: this.profissionalService.buscarDetalhe(this.id), opcoes: this.opcoesService.carregar() })
+      .subscribe({
+        next: ({ detalhe, opcoes }) => {
+          this.opcoes.set(opcoes);
+          this.detalhe.set(detalhe);
+          this.formularios.set(paraFormularios(detalhe));
+          this.carregando.set(false);
+        },
+        error: (err) => {
+          this.erro.set(err?.status === 404 ? 'Profissional não encontrado.' : mensagemDeErro(err, 'Não foi possível carregar o profissional.'));
+          this.carregando.set(false);
+        },
+      });
   }
 
-  salvarEdicao() {
-    // TODO(Kauã): plugar aqui o PUT/PATCH real quando o endpoint de edição existir na API.
-    // Por enquanto simula sucesso local para não travar o fluxo de tela.
-    if (!this.carregado()) return;
-    this.salvando = true;
+  private get formulariosAtuais(): FormulariosCadastro | null {
+    if (!this.dadosPessoaisForm || !this.contatoForm || !this.infoProfissionalForm || !this.infoUsuarioForm || !this.infoEspecialistaForm) {
+      return null;
+    }
+    return {
+      dadosPessoais: this.dadosPessoaisForm,
+      contato: this.contatoForm,
+      infoProfissional: this.infoProfissionalForm,
+      infoUsuario: this.infoUsuarioForm,
+      infoEspecialista: this.infoEspecialistaForm,
+    };
+  }
 
-    setTimeout(() => {
-      this.salvando = false;
-      this.dialogSucessoAberto = true;
-    }, 5);
+  // PATCH na rota do tipo e, se marcado "Terá acesso", concede o acesso em seguida.
+  async salvarEdicao() {
+    const f = this.formulariosAtuais;
+    if (!f || this.salvando()) return;
+
+    this.erroGeral.set('');
+    if (!this.validador.validar(f).valido) {
+      this.erroGeral.set('Preencha os campos obrigatórios destacados em vermelho.');
+      setTimeout(() => document.querySelector('.input-erro')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
+      return;
+    }
+
+    this.salvando.set(true);
+    try {
+      await firstValueFrom(this.profissionalService.atualizar(this.id, this.tipo(), this.payload.montarAtualizacao(f)));
+      const usuario = this.payload.montarUsuario(f);
+      if (usuario) {
+        await firstValueFrom(this.profissionalService.concederAcesso(this.id, this.tipo(), usuario));
+        // Evita conceder de novo se o usuário salvar outra vez nesta tela.
+        f.infoUsuario.possuiAcesso = true;
+      }
+      this.nomeSalvo.set(f.dadosPessoais.nome.trim());
+      this.dialogSucessoAberto.set(true);
+    } catch (err) {
+      this.erroGeral.set(this.errosApi.tratar(err, f).mensagemGeral);
+    } finally {
+      this.salvando.set(false);
+    }
   }
 
   irParaGerenciarProfissionais() {
-    this.dialogSucessoAberto = false;
+    this.dialogSucessoAberto.set(false);
     this.router.navigate(['/administrador/profissionais/gerenciar']);
   }
 
   irParaDetalhes() {
-    this.dialogSucessoAberto = false;
+    this.dialogSucessoAberto.set(false);
     this.router.navigate(['/administrador/profissionais', this.id]);
   }
 
-  cancelar() {
-    this.confirmarCancelamentoAberto = true;
-  }
-
   confirmarCancelamento() {
-    this.confirmarCancelamentoAberto = false;
+    this.confirmarCancelamentoAberto.set(false);
     this.location.back();
-  }
-
-  fecharConfirmacao() {
-    this.confirmarCancelamentoAberto = false;
   }
 }

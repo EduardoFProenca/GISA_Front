@@ -10,20 +10,6 @@ export interface FormulariosDetalhe {
   infoEspecialista: Record<string, unknown>;
 }
 
-function semAcento(texto: string): string {
-  return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-}
-
-// "Assistente Social" -> "ASSISTENTE_SOCIAL" (inverso de idCargoPorNome)
-export function cargoParaValor(nome: string | null | undefined): string {
-  return semAcento(nome ?? '').trim().toUpperCase().replace(/\s+/g, '_');
-}
-
-// "Clínica Geral" -> "clinica-geral" (valores do select de especialidades)
-export function especialidadeParaValor(nome: string): string {
-  return semAcento(nome).trim().toLowerCase().replace(/\s+/g, '-');
-}
-
 export function formatarCpf(valor: string | null | undefined): string {
   const d = soDigitos(valor);
   return d.length === 11 ? d.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : (valor ?? '');
@@ -55,7 +41,7 @@ export function formatarCns(valor: string | null | undefined): string {
 
 // Converte a resposta da API nos valores que os formulários compartilhados esperam.
 export function paraFormularios(detalhe: ProfissionalDetalhe): FormulariosDetalhe {
-  const { pessoa, email, cargo } = detalhe.profissional;
+  const { pessoa, email, cargo, usuario } = detalhe.profissional;
   const endereco = pessoa.enderecos?.[0];
   const esp = detalhe.especialista;
   const pj = detalhe.pj;
@@ -70,7 +56,7 @@ export function paraFormularios(detalhe: ProfissionalDetalhe): FormulariosDetalh
         nomeFantasia: pj?.nomeFantasia ?? '',
         inscricaoEstadual: pj?.inscricaoEstadual ?? '',
         especialidades: esp.especialidades?.length
-          ? esp.especialidades.map((e) => especialidadeParaValor(e.nome))
+          ? esp.especialidades.map((e) => String(e.idEspecialidade))
           : [''],
         jornadas: esp.jornadas?.length
           ? esp.jornadas.map((j) => ({
@@ -104,11 +90,14 @@ export function paraFormularios(detalhe: ProfissionalDetalhe): FormulariosDetalh
       uf: endereco?.estado ?? '',
     },
     infoProfissional: {
-      cargo: cargoParaValor(cargo?.nome),
-      codigoCBO: cargo?.codigoCBO ?? '',
+      cargo: cargo ? String(cargo.idCargo) : '',
     },
-    // TODO(Kauã): a resposta de GET /profissionais/{id} não traz usuário/perfil.
-    infoUsuario: {},
+    infoUsuario: {
+      possuiAcesso: !!usuario,
+      temAcessoSistema: false,
+      senha: '',
+      perfil: usuario ? String(usuario.perfil.idPerfil) : '',
+    },
     infoEspecialista,
   };
 }

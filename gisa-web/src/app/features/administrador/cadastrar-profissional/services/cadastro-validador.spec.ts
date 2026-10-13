@@ -29,6 +29,7 @@ function formularioValido(): FormulariosCadastro {
       codigoCBO: '',
     }),
     infoUsuario: comErros({
+      possuiAcesso: false,
       temAcessoSistema: false,
       senha: '',
       perfil: '',

@@ -1,12 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ComErros } from '../../../../../shared/components/com-erros';
+import { Especialidade } from '../../../../../core/models/especialidade.model';
+import { JornadaForm, OpcaoEspecialidade } from '../../models/formularios-cadastro';
 
-export interface Jornada {
-  diaSemana: string;
-  horaInicio: string;
-  horaTermino: string;
-}
+export type Jornada = JornadaForm;
 
 @Component({
   selector: 'app-info-especialista',
@@ -17,29 +15,28 @@ export interface Jornada {
 export class InfoEspecialista extends ComErros implements OnInit {
   @Input() dadosIniciais?: Partial<InfoEspecialista>;
   @Input() somenteLeitura: boolean = false;
+  // Edição: o tipo do cadastro (especialista/PJ), o registro e o CNPJ não mudam.
+  @Input() bloquearTipo: boolean = false;
+
+  // GET /especialidades
+  @Input() set especialidadesDisponiveis(lista: Especialidade[]) {
+    this.opcoesEspecialidade = lista.map((e) => ({ valor: String(e.idEspecialidade), label: e.nome }));
+  }
 
   ehEspecialista: boolean = false;
   registroProfissional: string = '';
-  estadoRegistro: string = '';
   atuaComoPJ: boolean = false;
   cnpj: string = '';
   razaoSocial: string = '';
   nomeFantasia: string = '';
   inscricaoEstadual: string = '';
 
-  opcoesEspecialidade = [
-    { valor: 'clinica-geral', label: 'Clínica Geral' },
-    { valor: 'pediatria', label: 'Pediatria' },
-    { valor: 'neurologia', label: 'Neurologia' },
-    { valor: 'psiquiatria', label: 'Psiquiatria' },
-    { valor: 'fisioterapia', label: 'Fisioterapia' },
-    { valor: 'fonoaudiologia', label: 'Fonoaudiologia' },
-    { valor: 'terapia-ocupacional', label: 'Terapia Ocupacional' },
-    { valor: 'assistencia-social', label: 'Assistência Social' },
-  ];
+  opcoesEspecialidade: OpcaoEspecialidade[] = [];
 
+  // idEspecialidade (como texto, valor do select).
   especialidades: string[] = [''];
 
+  // diaSemana da API: 1 = Segunda ... 7 = Domingo.
   diasSemana = [
     { valor: 1, label: 'Segunda' },
     { valor: 2, label: 'Terça' },
@@ -47,6 +44,7 @@ export class InfoEspecialista extends ComErros implements OnInit {
     { valor: 4, label: 'Quinta' },
     { valor: 5, label: 'Sexta' },
     { valor: 6, label: 'Sábado' },
+    { valor: 7, label: 'Domingo' },
   ];
 
   jornadas: Jornada[] = [{ diaSemana: '', horaInicio: '', horaTermino: '' }];

@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
 import { soDigitos } from '../../../../shared/utils/texto.util';
-import { Cargo } from '../../../../core/models/cargo.model';
-import { PerfilResumo } from '../../../../core/models/perfil.model';
-
-// Só idCargo e nome são usados: aceita tanto a listagem completa quanto referências.
-type CargoRef = Pick<Cargo, 'idCargo' | 'nome'>;
-import { Especialidade } from '../../../../core/models/especialidade.model';
 import {
+  AtualizacaoEspecialistaPJPayload,
   DadosBaseProfissional,
   DadosEspecialista,
   DadosEspecialistaPJ,
@@ -17,21 +12,11 @@ import { Endereco, EstadoCivil, Sexo } from '../../../../core/models/comum.model
 import { FormulariosCadastro } from '../models/formularios-cadastro';
 import { CadastroValidadorService } from './cadastro-validador';
 
+// Monta os corpos das requisições de profissional/especialista/PJ a partir dos formulários.
+// Cargo, perfil e especialidades já chegam como IDs (os selects usam as listas da API).
 @Injectable({ providedIn: 'root' })
 export class CadastroPayloadService {
   constructor(private validador: CadastroValidadorService) {}
-
-  idCargoPorNome(cargos: CargoRef[], nomeCargo: string): number {
-    const alvo = nomeCargo.replace(/_/g, ' ').toLowerCase();
-    const encontrado = cargos.find((c) => c.nome.toLowerCase() === alvo);
-    return encontrado?.idCargo ?? cargos[0]?.idCargo ?? 0;
-  }
-
-  idPerfilPorNome(perfis: PerfilResumo[], nomePerfil: string): number {
-    const alvo = nomePerfil.replace(/_/g, ' ').toLowerCase();
-    const encontrado = perfis.find((p) => p.nome.toLowerCase() === alvo);
-    return encontrado?.idPerfil ?? perfis[0]?.idPerfil ?? 0;
-  }
 
   montarEndereco(f: FormulariosCadastro): Endereco {
     const c = f.contato;
@@ -46,7 +31,12 @@ export class CadastroPayloadService {
     };
   }
 
-  montarDadosBase(f: FormulariosCadastro, cargos: CargoRef[]): DadosBaseProfissional {
+  // Sem endereço preenchido = lista vazia (endereço é opcional para profissionais).
+  montarEnderecos(f: FormulariosCadastro): Endereco[] {
+    return this.validador.enderecoVazio(f) ? [] : [this.montarEndereco(f)];
+  }
+
+  montarDadosBase(f: FormulariosCadastro): DadosBaseProfissional {
     const dp = f.dadosPessoais;
     return {
       nome: dp.nome.trim(),
@@ -56,16 +46,17 @@ export class CadastroPayloadService {
       celular: soDigitos(dp.celular),
       numCNS: soDigitos(dp.numCNS) || undefined,
       estadoCivil: dp.estadoCivil as EstadoCivil,
-      enderecos: [this.montarEndereco(f)],
+      enderecos: this.montarEnderecos(f),
       email: dp.email.trim(),
-      idCargo: this.idCargoPorNome(cargos, f.infoProfissional.cargo),
+      idCargo: Number(f.infoProfissional.cargo),
     };
   }
 
-  montarUsuario(f: FormulariosCadastro, perfis: PerfilResumo[]): DadosUsuario | null {
+  // null = sem acesso novo (não marcado, ou o cadastro já tem usuário).
+  montarUsuario(f: FormulariosCadastro): DadosUsuario | null {
     const iu = f.infoUsuario;
-    if (!iu.temAcessoSistema) return null;
-    return { senha: iu.senha, idPerfil: this.idPerfilPorNome(perfis, iu.perfil) };
+    if (iu.possuiAcesso || !iu.temAcessoSistema) return null;
+    return { senha: iu.senha, idPerfil: Number(iu.perfil) };
   }
 
   mapearJornadas(f: FormulariosCadastro): Jornada[] {
@@ -76,29 +67,16 @@ export class CadastroPayloadService {
     }));
   }
 
-  mapearEspecialidadesIds(f: FormulariosCadastro, todasEspecialidades: Especialidade[]): number[] {
-    const selecionadas = f.infoEspecialista.especialidades.filter((e) => !!e);
-    const ids: number[] = [];
-
-    for (const valor of selecionadas) {
-      const opcao = f.infoEspecialista.opcoesEspecialidade.find((o) => o.valor === valor);
-      const nomeLabel = opcao?.label ?? valor;
-      const encontrada = todasEspecialidades.find((e) => e.nome.toLowerCase() === nomeLabel.toLowerCase());
-      if (encontrada) ids.push(encontrada.idEspecialidade);
-    }
-
-    return ids;
+  // IDs únicos das especialidades escolhidas.
+  especialidadesIds(f: FormulariosCadastro): number[] {
+    return [...new Set(f.infoEspecialista.especialidades.filter((e) => !!e).map(Number))];
   }
 
-  montarDadosEspecialista(
-    f: FormulariosCadastro,
-    dadosBase: DadosBaseProfissional,
-    especialidadesIds: number[]
-  ): DadosEspecialista {
+  montarDadosEspecialista(f: FormulariosCadastro, dadosBase: DadosBaseProfissional): DadosEspecialista {
     return {
       ...dadosBase,
       registroConselho: f.infoEspecialista.registroProfissional.trim(),
-      especialidadesIds,
+      especialidadesIds: this.especialidadesIds(f),
       novasEspecialidades: [],
       jornadas: this.mapearJornadas(f),
     };
@@ -110,8 +88,32 @@ export class CadastroPayloadService {
       ...dadosEspecialista,
       cnpj: soDigitos(ie.cnpj),
       razaoSocial: ie.razaoSocial.trim(),
-      nomeFantasia: ie.nomeFantasia.trim(),
-      inscricaoEstadual: ie.inscricaoEstadual.trim(),
+      nomeFantasia: ie.nomeFantasia.trim() || undefined,
+      inscricaoEstadual: ie.inscricaoEstadual.trim() || undefined,
+    };
+  }
+
+  // PATCH de profissional/especialista/PJ: o serviço envia só os campos do tipo do cadastro.
+  // cpf, nascimento, sexo, registro e CNPJ são somente leitura (não vão no corpo).
+  montarAtualizacao(f: FormulariosCadastro): AtualizacaoEspecialistaPJPayload {
+    const dp = f.dadosPessoais;
+    const ie = f.infoEspecialista;
+    const iu = f.infoUsuario;
+    return {
+      nome: dp.nome.trim(),
+      celular: soDigitos(dp.celular) || null,
+      numCNS: soDigitos(dp.numCNS) || null,
+      estadoCivil: dp.estadoCivil as EstadoCivil,
+      enderecos: this.montarEnderecos(f),
+      email: dp.email.trim(),
+      idCargo: Number(f.infoProfissional.cargo),
+      // Só funciona para quem já tem usuário (senão a API responde 409).
+      idPerfil: iu.possuiAcesso ? Number(iu.perfil) : undefined,
+      especialidadesIds: this.especialidadesIds(f),
+      jornadas: this.mapearJornadas(f),
+      razaoSocial: ie.razaoSocial.trim(),
+      nomeFantasia: ie.nomeFantasia.trim() || null,
+      inscricaoEstadual: ie.inscricaoEstadual.trim() || null,
     };
   }
 }

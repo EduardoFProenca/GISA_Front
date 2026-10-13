@@ -48,13 +48,11 @@ export class DashboardAdministrador implements OnInit {
       next: (pagina) => this.totalPacientes.set(pagina.totalElements),
     });
 
-    this.profissionalService.listarPaginado(0, 1000).subscribe({
-      next: (pagina) => {
-        this.totalProfissionais.set(pagina.totalElements);
-        this.profissionaisAtivos.set(
-          pagina.content.filter((p) => p.statusCadastro === 'ATIVO').length
-        );
-      },
+    this.profissionalService.listar({ size: 1 }).subscribe({
+      next: (pagina) => this.totalProfissionais.set(pagina.totalElements),
+    });
+    this.profissionalService.listar({ size: 1, statusCadastro: 'ATIVO' }).subscribe({
+      next: (pagina) => this.profissionaisAtivos.set(pagina.totalElements),
     });
   }
 }

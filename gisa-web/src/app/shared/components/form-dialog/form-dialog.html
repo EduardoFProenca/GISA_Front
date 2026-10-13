@@ -1,0 +1,25 @@
+@if (aberto()) {
+  <div class="overlay" (click)="cancelar.emit()">
+    <form class="dialog" (click)="$event.stopPropagation()" (submit)="$event.preventDefault(); confirmar.emit()">
+      <h3>{{ titulo() }}</h3>
+      @if (descricao()) {
+        <p class="descricao">{{ descricao() }}</p>
+      }
+
+      <div class="conteudo">
+        <ng-content />
+      </div>
+
+      @if (erro()) {
+        <p class="erro">{{ erro() }}</p>
+      }
+
+      <div class="dialog-acoes">
+        <button type="button" class="btn-cancelar" (click)="cancelar.emit()">{{ textoCancelar() }}</button>
+        <button type="submit" class="btn-confirmar" [disabled]="salvando()">
+          {{ salvando() ? 'Salvando...' : textoConfirmar() }}
+        </button>
+      </div>
+    </form>
+  </div>
+}

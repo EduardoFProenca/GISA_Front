@@ -1,22 +1,38 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Observable, forkJoin } from 'rxjs';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
+import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
+import { FormDialog } from '../../../shared/components/form-dialog/form-dialog';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
 import { Contato } from '../../../shared/components/contato/contato';
 import { InfoProfissional } from '../cadastrar-profissional/formularios/info-profissional/info-profissional';
-import { InfoUsuario } from '../cadastrar-profissional/formularios/info-usuario/info-usuario';
 import { InfoEspecialista } from '../cadastrar-profissional/formularios/info-especialista/info-especialista';
-import { ProfissionalService } from '../../../core/services/profissional';
-import { paraFormularios } from './profissional-detalhe.util';
+import { OpcoesProfissional, OpcoesProfissionalService } from '../cadastrar-profissional/services/opcoes-profissional';
+import { ProfissionalService, tipoDoDetalhe } from '../../../core/services/profissional';
+import { UsuarioService } from '../../../core/services/usuario';
+import { ProfissionalDetalhe, TipoProfissional } from '../../../core/models/profissional.model';
+import { Auth } from '../../../core/auth/auth';
+import { mensagemDeErro } from '../../../core/http/erro-api';
+import { FormulariosDetalhe, paraFormularios } from './profissional-detalhe.util';
+
+const ROTULO_TIPO: Record<TipoProfissional, string> = {
+  PROFISSIONAL: 'Profissional',
+  ESPECIALISTA: 'Especialista',
+  ESPECIALISTA_PJ: 'Especialista PJ',
+};
 
 @Component({
   selector: 'app-detalhe-profissional',
   imports: [
+    FormsModule,
     CabecalhoPagina,
+    ConfirmDialog,
+    FormDialog,
     DadosPessoais,
     Contato,
     InfoProfissional,
-    InfoUsuario,
     InfoEspecialista,
   ],
   templateUrl: './detalhe-profissional.html',
@@ -25,46 +41,140 @@ import { paraFormularios } from './profissional-detalhe.util';
 export class DetalheProfissional implements OnInit {
   private route = inject(ActivatedRoute);
   private profissionalService = inject(ProfissionalService);
+  private usuarioService = inject(UsuarioService);
+  private opcoesService = inject(OpcoesProfissionalService);
+  private auth = inject(Auth);
 
-  id: string = this.route.snapshot.paramMap.get('id') ?? '';
+  id = Number(this.route.snapshot.paramMap.get('id'));
 
-  status: 'ATIVO' | 'INATIVO' = 'ATIVO';
+  podeEditar = this.auth.temPermissao('EDITAR_PROFISSIONAL');
+  podeInativar = this.auth.temPermissao('INATIVAR_PROFISSIONAL');
+  podeGerenciarUsuarios = this.auth.temPermissao('GERENCIAR_USUARIOS');
 
-  // Os formulários filhos só leem dadosIniciais no ngOnInit,
-  // então o template só os renderiza depois que `carregado` vira true.
-  carregado = signal(false);
+  // Os formulários filhos só leem dadosIniciais no ngOnInit: renderizam depois de carregar.
+  carregando = signal(true);
   erro = signal('');
+  detalhe = signal<ProfissionalDetalhe | null>(null);
+  formularios = signal<FormulariosDetalhe | null>(null);
+  opcoes = signal<OpcoesProfissional>({ cargos: [], perfis: [], especialidades: [] });
 
-  dadosPessoais: any = {};
-  contato: any = {};
-  infoProfissional: any = {};
-  infoUsuario: any = {};
-  infoEspecialista: any = {};
+  tipo = computed(() => {
+    const d = this.detalhe();
+    return d ? tipoDoDetalhe(d) : 'PROFISSIONAL';
+  });
+  rotuloTipo = computed(() => ROTULO_TIPO[this.tipo()]);
+  ativo = computed(() => this.detalhe()?.profissional.pessoa.statusCadastro === 'ATIVO');
+  usuario = computed(() => this.detalhe()?.profissional.usuario ?? null);
+
+  // Inativar / reativar
+  confirmacaoAberta = signal(false);
+  alterandoStatus = signal(false);
+  erroStatus = signal('');
+
+  // Conceder acesso / redefinir senha
+  dialogo = signal<'acesso' | 'senha' | null>(null);
+  salvandoDialogo = signal(false);
+  erroDialogo = signal('');
+  avisoAcesso = signal('');
+  senha = '';
+  perfilAcesso = '';
 
   ngOnInit() {
-    const idNumerico = Number(this.id);
-    if (!Number.isInteger(idNumerico) || idNumerico <= 0) {
+    if (!Number.isInteger(this.id) || this.id <= 0) {
       this.erro.set('Profissional inválido.');
+      this.carregando.set(false);
+      return;
+    }
+    this.carregar();
+  }
+
+  private carregar() {
+    this.carregando.set(true);
+    this.erro.set('');
+    forkJoin({ detalhe: this.profissionalService.buscarDetalhe(this.id), opcoes: this.opcoesService.carregar() })
+      .subscribe({
+        next: ({ detalhe, opcoes }) => {
+          this.opcoes.set(opcoes);
+          this.detalhe.set(detalhe);
+          this.formularios.set(paraFormularios(detalhe));
+          this.carregando.set(false);
+        },
+        error: (err) => {
+          this.erro.set(err?.status === 404 ? 'Profissional não encontrado.' : mensagemDeErro(err, 'Não foi possível carregar o profissional.'));
+          this.carregando.set(false);
+        },
+      });
+  }
+
+  // ---------- Inativar / reativar ----------
+
+  confirmarAlteracaoStatus() {
+    this.confirmacaoAberta.set(false);
+    this.alterandoStatus.set(true);
+    this.erroStatus.set('');
+
+    const req: Observable<unknown> = this.ativo()
+      ? this.profissionalService.inativar(this.id, this.tipo())
+      : this.profissionalService.reativar(this.id, this.tipo());
+
+    req.subscribe({
+      next: () => {
+        this.alterandoStatus.set(false);
+        this.carregar();
+      },
+      error: (err) => {
+        this.alterandoStatus.set(false);
+        this.erroStatus.set(mensagemDeErro(err, 'Não foi possível alterar a situação do profissional.'));
+      },
+    });
+  }
+
+  // ---------- Conceder acesso / redefinir senha ----------
+
+  abrirDialogo(tipo: 'acesso' | 'senha') {
+    this.senha = '';
+    this.perfilAcesso = '';
+    this.erroDialogo.set('');
+    this.avisoAcesso.set('');
+    this.dialogo.set(tipo);
+  }
+
+  confirmarDialogo() {
+    const tipo = this.dialogo();
+    if (this.senha.length < 8 || this.senha.length > 30) {
+      this.erroDialogo.set('A senha deve ter entre 8 e 30 caracteres.');
+      return;
+    }
+    if (tipo === 'acesso' && !this.perfilAcesso) {
+      this.erroDialogo.set('Selecione o perfil.');
       return;
     }
 
-    this.profissionalService.buscarDetalhe(idNumerico).subscribe({
-      next: (detalhe) => {
-        const f = paraFormularios(detalhe);
-        this.dadosPessoais = f.dadosPessoais;
-        this.contato = f.contato;
-        this.infoProfissional = f.infoProfissional;
-        this.infoUsuario = f.infoUsuario;
-        this.infoEspecialista = f.infoEspecialista;
-        this.status = f.status;
-        this.carregado.set(true);
+    this.salvandoDialogo.set(true);
+    this.erroDialogo.set('');
+
+    const req: Observable<unknown> =
+      tipo === 'acesso'
+        ? this.profissionalService.concederAcesso(this.id, this.tipo(), {
+            senha: this.senha,
+            idPerfil: Number(this.perfilAcesso),
+          })
+        : this.usuarioService.redefinirSenha(this.id, { novaSenha: this.senha });
+
+    req.subscribe({
+      next: () => {
+        this.salvandoDialogo.set(false);
+        this.dialogo.set(null);
+        this.avisoAcesso.set(
+          tipo === 'acesso'
+            ? 'Acesso concedido. O login é feito com o CPF e a senha informada.'
+            : 'Senha redefinida. As sessões abertas desse usuário foram encerradas.'
+        );
+        if (tipo === 'acesso') this.carregar();
       },
       error: (err) => {
-        this.erro.set(
-          err?.status === 404
-            ? 'Profissional não encontrado.'
-            : err?.error?.message || 'Não foi possível carregar o profissional.'
-        );
+        this.salvandoDialogo.set(false);
+        this.erroDialogo.set(mensagemDeErro(err, 'Não foi possível salvar.'));
       },
     });
   }

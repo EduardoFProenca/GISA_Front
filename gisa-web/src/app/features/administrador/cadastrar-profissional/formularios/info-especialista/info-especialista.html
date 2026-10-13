@@ -1,8 +1,8 @@
-<div class="secao">
+<fieldset class="secao" [disabled]="somenteLeitura">
     <div class="cabecalho-checkbox">
         <h3>Especialista</h3>
         <label class="checkbox-inline">
-            <input type="checkbox" name="ehEspecialista" [(ngModel)]="ehEspecialista">
+            <input type="checkbox" name="ehEspecialista" [(ngModel)]="ehEspecialista" [disabled]="bloquearTipo">
             É especialista
         </label>
     </div>
@@ -17,7 +17,7 @@
                 <select name="especialidade-{{ $index }}" [(ngModel)]="especialidades[$index]"
                     [class.input-erro]="erros['especialidades'] && !especialidades[$index]"
                     (change)="limparErro('especialidades')">
-                    <option value="" disabled selected>Selecione a especialidade</option>
+                    <option value="" disabled>Selecione a especialidade</option>
                     @for (opcao of opcoesEspecialidade; track opcao.valor) {
                     <option [value]="opcao.valor">{{ opcao.label }}</option>
                     }
@@ -32,9 +32,9 @@
         </div>
 
         <div class="campo">
-            <label for="registro">Registro Profissional (CRM) <span class="obrigatorio">*</span></label>
-            <input type="text" id="registro" name="registro" [(ngModel)]="registroProfissional"
-                placeholder="Ex: CRM-SP 123456" [class.input-erro]="erros['registroProfissional']"
+            <label for="registro">Registro no Conselho <span class="obrigatorio">*</span></label>
+            <input type="text" id="registro" name="registro" [(ngModel)]="registroProfissional" [disabled]="bloquearTipo"
+                placeholder="Ex: CRP-12345" [class.input-erro]="erros['registroProfissional']"
                 (input)="limparErro('registroProfissional')">
             @if (erros['registroProfissional']) { <span class="erro-msg">{{ erros['registroProfissional'] }}</span> }
         </div>
@@ -67,7 +67,7 @@
         <div class="linha-checkbox">
             <span class="rotulo-secundario">Pessoa Jurídica (PJ)</span>
             <label class="checkbox-inline">
-                <input type="checkbox" name="atuaComoPJ" [(ngModel)]="atuaComoPJ">
+                <input type="checkbox" name="atuaComoPJ" [(ngModel)]="atuaComoPJ" [disabled]="bloquearTipo">
                 Profissional atua como PJ
             </label>
         </div>
@@ -76,7 +76,7 @@
         <div class="linha-form bloco-pj">
             <div class="campo">
                 <label for="cnpj">CNPJ <span class="obrigatorio">*</span></label>
-                <input type="text" id="cnpj" name="cnpj" [(ngModel)]="cnpj" placeholder="00.000.000/0000-00"
+                <input type="text" id="cnpj" name="cnpj" [(ngModel)]="cnpj" [disabled]="bloquearTipo" placeholder="00.000.000/0000-00"
                     [class.input-erro]="erros['cnpj']" (input)="limparErro('cnpj')">
                 @if (erros['cnpj']) { <span class="erro-msg">{{ erros['cnpj'] }}</span> }
             </div>
@@ -103,4 +103,4 @@
         }
     </div>
     }
-</div>
+</fieldset>

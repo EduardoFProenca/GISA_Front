@@ -1,30 +1,38 @@
-<div class="secao">
+<fieldset class="secao" [disabled]="somenteLeitura">
   <div class="cabecalho-checkbox">
     <h3>Acesso ao Sistema</h3>
-    <label class="checkbox-inline">
-      <input type="checkbox" name="temAcessoSistema" [(ngModel)]="temAcessoSistema">
-      Terá acesso ao sistema
-    </label>
+    @if (!possuiAcesso) {
+      <label class="checkbox-inline">
+        <input type="checkbox" name="temAcessoSistema" [(ngModel)]="temAcessoSistema">
+        {{ somenteLeitura ? 'Sem acesso ao sistema' : 'Terá acesso ao sistema' }}
+      </label>
+    }
   </div>
 
-  @if (temAcessoSistema) {
+  @if (possuiAcesso) {
+    <p class="aviso-acesso">Possui acesso ao sistema.</p>
+  }
+
+  @if (temAcessoSistema && !possuiAcesso) {
     <div class="campo">
       <label for="senha">Senha Inicial <span class="obrigatorio">*</span></label>
-      <input type="text" id="senha" name="senha" [(ngModel)]="senha" placeholder="Mínimo de 8 caracteres"
+      <input type="text" id="senha" name="senha" [(ngModel)]="senha" placeholder="Entre 8 e 30 caracteres"
         [class.input-erro]="erros['senha']" (input)="limparErro('senha')">
       @if (erros['senha']) { <span class="erro-msg">{{ erros['senha'] }}</span> }
     </div>
+  }
 
+  @if (possuiAcesso || temAcessoSistema) {
     <div class="campo">
       <label for="perfil">Perfil <span class="obrigatorio">*</span></label>
       <select id="perfil" name="perfil" [(ngModel)]="perfil" [class.input-erro]="erros['perfil']"
         (change)="limparErro('perfil')">
-        <option value="" disabled selected>Selecione o perfil</option>
-        @for (p of perfis; track p.valor) {
-          <option [value]="p.valor">{{ p.label }}</option>
+        <option value="" disabled>Selecione o perfil</option>
+        @for (p of perfis; track p.idPerfil) {
+          <option [value]="'' + p.idPerfil">{{ p.nome }}</option>
         }
       </select>
       @if (erros['perfil']) { <span class="erro-msg">{{ erros['perfil'] }}</span> }
     </div>
   }
-</div>
+</fieldset>
