@@ -1,0 +1,361 @@
+@use '../especialista' as *;
+
+.pagina-agenda {
+  padding: 2rem 4rem;
+
+  @media (max-width: 900px) {
+    padding: 1.5rem 1rem;
+  }
+}
+
+.painel {
+  background: white;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+// ---- barra do mês ----
+.barra-mes {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.navegacao-mes {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.titulo-mes {
+  margin: 0;
+  font-size: 1.15rem;
+  min-width: 11rem;
+  text-align: center;
+}
+
+.btn-nav {
+  @include btn-reset;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: #475569;
+  cursor: pointer;
+
+  &:hover {
+    background: #0890b231;
+  }
+}
+
+.btn-hoje {
+  @include btn-secundario;
+  padding: 0.35rem 1rem;
+  font-size: 0.85rem;
+}
+
+// ---- calendário ----
+.calendario {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 1rem;
+  background: #e5e7eb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: opacity 0.2s;
+
+  &.carregando {
+    opacity: 0.5;
+  }
+}
+
+.cabecalho-dia {
+  background: #f8fafc;
+  padding: 0.5rem 0;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.celula {
+  background: white;
+  min-height: 6.5rem;
+  padding: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+  min-width: 0;
+
+  &:hover {
+    background: #f0f9ff;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #0891b2;
+    outline-offset: -2px;
+  }
+
+  &.fora-do-mes {
+    background: #f8fafc;
+
+    .numero-dia {
+      color: #cbd5e1;
+    }
+  }
+
+  &.hoje .numero-dia {
+    background: #0891b2;
+    color: white;
+  }
+
+  &.selecionada {
+    box-shadow: inset 0 0 0 2px #0891b2;
+  }
+}
+
+.numero-dia {
+  align-self: flex-start;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  line-height: 1.5rem;
+  padding: 0 0.3rem;
+  text-align: center;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.chip {
+  @include btn-reset(false);
+  display: flex;
+  gap: 0.3rem;
+  width: 100%;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+
+  &:hover {
+    filter: brightness(0.95);
+  }
+}
+
+.chip-hora {
+  font-weight: 700;
+}
+
+.chip-nome {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mais {
+  font-size: 0.68rem;
+  color: #64748b;
+  padding-left: 5px;
+}
+
+// ---- lista ----
+.lista-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.75rem 0 0.75rem;
+
+  h3 {
+    margin: 0;
+    text-align: left;
+    font-size: 1rem;
+    text-transform: capitalize;
+  }
+}
+
+.controles-lista {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.alternar {
+  display: flex;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-left: 0.5rem;
+
+  button {
+    @include btn-reset;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+
+    &:hover {
+      background: #f1f5f9;
+    }
+
+    &.ativo,
+    &.ativo:hover {
+      background: #0891b2;
+      color: white;
+    }
+  }
+}
+
+.titulo-dia {
+  margin: 1.25rem 0 0.4rem;
+  font-size: 0.85rem;
+  color: #64748b;
+  text-transform: capitalize;
+}
+
+.lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item-agenda {
+  @include btn-reset;
+  display: grid;
+  grid-template-columns: 8.5rem 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+
+  &:hover {
+    background: #f0f9ff;
+  }
+
+  .horario {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #0e7490;
+  }
+
+  .paciente {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+
+    strong {
+      font-size: 0.92rem;
+      color: #1a1a2e;
+    }
+
+    small {
+      color: #94a3b8;
+      font-size: 0.78rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr auto;
+
+    .horario {
+      grid-column: 1 / -1;
+    }
+  }
+}
+
+.mensagem {
+  text-align: center;
+  color: #94a3b8;
+  padding: 1.5rem;
+  margin: 0;
+
+  &.erro {
+    color: #b91c1c;
+    background: #fee2e2;
+    border-radius: 8px;
+    margin-top: 1rem;
+    padding: 0.75rem;
+  }
+
+  &.sucesso {
+    color: #166534;
+    background: #dcfce7;
+    border-radius: 8px;
+    margin-top: 1rem;
+    padding: 0.75rem;
+  }
+}
+
+// ---- modal de detalhes ----
+.overlay {
+  @include overlay-modal;
+}
+
+.modal {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+
+  h3 {
+    margin: 0 0 1rem;
+    text-align: left;
+    font-size: 1.15rem;
+  }
+}
+
+.detalhes {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem 1.25rem;
+
+  dt {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-bottom: 0.15rem;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 0.92rem;
+    color: #1a1a2e;
+    font-weight: 500;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.acoes-modal {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.btn-primario {
+  @include btn-primario;
+}
+
+.btn-secundario {
+  @include btn-secundario;
+}
+
+@include selos-status;

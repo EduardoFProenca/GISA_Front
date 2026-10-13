@@ -1,0 +1,150 @@
+@use '../../../especialista' as *;
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.filtro {
+  @include btn-reset;
+  padding: 0.3rem 0.9rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  color: #475569;
+  cursor: pointer;
+
+  &:hover {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+  }
+
+  &.ativo,
+  &.ativo:hover {
+    background: #0891b2;
+    border-color: #0891b2;
+    color: white;
+  }
+}
+
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 1.25rem;
+  border-left: 2px solid #e2e8f0;
+}
+
+.evento {
+  position: relative;
+  padding-bottom: 1.1rem;
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+.marcador {
+  position: absolute;
+  left: -1.78rem;
+  top: 0.35rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: #94a3b8;
+  border: 2px solid white;
+  box-shadow: 0 0 0 1px #cbd5e1;
+}
+
+.tipo-terapia .marcador { background: #0891b2; }
+.tipo-cadastro .marcador { background: #7c3aed; }
+
+.cartao {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cartao-topo {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+
+  .tipo {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #64748b;
+  }
+}
+
+.titulo {
+  font-size: 0.95rem;
+  color: #1a1a2e;
+}
+
+.cid {
+  align-self: flex-start;
+  background: #ede9fe;
+  color: #5b21b6;
+  border-radius: 6px;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.78rem;
+}
+
+.descricao {
+  margin: 0.2rem 0;
+  font-size: 0.88rem;
+  color: #334155;
+  white-space: pre-line;
+}
+
+.autor {
+  color: #94a3b8;
+  font-size: 0.76rem;
+}
+
+.vazio {
+  text-align: center;
+  color: #94a3b8;
+  padding: 1.5rem 0;
+  margin: 0;
+}
+
+h4 {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  color: #334155;
+}
+
+.diagnosticos {
+  margin-bottom: 1.75rem;
+}
+
+.lista-cids {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  li {
+    background: #ede9fe;
+    color: #4c1d95;
+    border-radius: 8px;
+    padding: 0.45rem 0.8rem;
+    font-size: 0.88rem;
+  }
+}
+
+.vazio.erro {
+  color: #b91c1c;
+}

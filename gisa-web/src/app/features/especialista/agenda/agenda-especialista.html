@@ -1,0 +1,148 @@
+<app-cabecalho-pagina titulo="Minha Agenda" />
+
+<div class="pagina-agenda">
+  <div class="painel">
+    <div class="barra-mes">
+      <div class="navegacao-mes">
+        <button type="button" class="btn-nav" aria-label="Mês anterior" (click)="mudarMes(-1)">‹</button>
+        <h2 class="titulo-mes">{{ tituloMes() }}</h2>
+        <button type="button" class="btn-nav" aria-label="Próximo mês" (click)="mudarMes(1)">›</button>
+      </div>
+      <button type="button" class="btn-hoje" (click)="irParaHoje()">Hoje</button>
+    </div>
+
+    <app-busca-filtro
+      placeholder="Buscar paciente..."
+      [filtrosDisponiveis]="filtrosDisponiveis"
+      (buscaAlterada)="aplicarBusca($event)"
+    />
+
+    @if (erro()) {
+      <p class="mensagem erro" role="alert">{{ erro() }}</p>
+    }
+    @if (aviso()) {
+      <p class="mensagem sucesso" role="status">{{ aviso() }}</p>
+    }
+
+    <!-- Calendário mensal -->
+    <div class="calendario" [class.carregando]="carregando()">
+      @for (nome of diasSemana; track nome) {
+        <div class="cabecalho-dia">{{ nome }}</div>
+      }
+
+      @for (dia of grade().dias; track dia.iso) {
+        <div
+          class="celula"
+          [class.fora-do-mes]="!dia.doMes"
+          [class.hoje]="dia.iso === hoje"
+          [class.selecionada]="dia.iso === selecionada()"
+          role="button"
+          tabindex="0"
+          [attr.aria-label]="dataExtenso(dia.iso)"
+          (click)="selecionarDia(dia.iso)"
+          (keydown.enter)="selecionarDia(dia.iso)"
+        >
+          <span class="numero-dia">{{ dia.dia }}</span>
+
+          @for (a of doDia(dia.iso).slice(0, maxChips); track a.idTerapia + '-' + a.idPaciente) {
+            <button type="button" class="chip" [class]="'chip st-' + statusDe(a)" (click)="abrirDetalhe(a, $event)">
+              <span class="chip-hora">{{ a.horaInicio }}</span>
+              <span class="chip-nome">{{ a.pacienteNome }}</span>
+            </button>
+          }
+          @if (doDia(dia.iso).length > maxChips) {
+            <span class="mais">+{{ doDia(dia.iso).length - maxChips }} mais</span>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Lista do dia / da semana -->
+    <div class="lista-topo">
+      <h3>
+        @if (visao() === 'dia') {
+          Atendimentos de {{ dataExtenso(selecionada()) }}
+        } @else {
+          Semana de {{ rotuloSemana() }}
+        }
+      </h3>
+
+      <div class="controles-lista">
+        <button type="button" class="btn-nav" aria-label="Período anterior" (click)="mudarPeriodo(-1)">‹</button>
+        <button type="button" class="btn-nav" aria-label="Próximo período" (click)="mudarPeriodo(1)">›</button>
+
+        <div class="alternar" role="group" aria-label="Visão da lista">
+          <button type="button" [class.ativo]="visao() === 'dia'" (click)="mudarVisao('dia')">Dia</button>
+          <button type="button" [class.ativo]="visao() === 'semana'" (click)="mudarVisao('semana')">Semana</button>
+        </div>
+      </div>
+    </div>
+
+    @if (carregando()) {
+      <p class="mensagem">Carregando agenda...</p>
+    } @else if (totalNaLista() === 0) {
+      <p class="mensagem">Nenhum atendimento encontrado neste período.</p>
+    } @else {
+      @for (dia of diasDaLista(); track dia) {
+        @if (doDia(dia).length > 0) {
+          @if (visao() === 'semana') {
+            <h4 class="titulo-dia">{{ dataExtenso(dia) }}</h4>
+          }
+          <ul class="lista">
+            @for (a of doDia(dia); track a.idTerapia + '-' + a.idPaciente) {
+              <li>
+                <button type="button" class="item-agenda" (click)="abrirDetalhe(a)">
+                  <span class="horario">{{ a.horaInicio }} – {{ a.horaTermino }}</span>
+                  <span class="paciente">
+                    <strong>{{ a.pacienteNome }}</strong>
+                    <small>{{ rotuloModalidade[a.modalidade] }}@if (a.outrosEspecialistas.length) { · com {{ a.outrosEspecialistas.join(', ') }} }</small>
+                  </span>
+                  <span class="selo" [class]="'selo st-' + statusDe(a)">{{ rotuloStatus[statusDe(a)] }}</span>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      }
+    }
+  </div>
+</div>
+
+<!-- Detalhes do agendamento -->
+@if (detalhe(); as a) {
+  <div class="overlay" (click)="fecharDetalhe()">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="titulo-detalhe" (click)="$event.stopPropagation()">
+      <h3 id="titulo-detalhe">Detalhes do agendamento</h3>
+
+      <dl class="detalhes">
+        <div><dt>Paciente</dt><dd>{{ a.pacienteNome }}</dd></div>
+        <div><dt>Matrícula única</dt><dd>{{ matricula(a.idPaciente) }}</dd></div>
+        <div><dt>Data</dt><dd>{{ dataCurta(a.data) }}</dd></div>
+        <div><dt>Horário</dt><dd>{{ a.horaInicio }} – {{ a.horaTermino }}</dd></div>
+        <div><dt>Especialidade</dt><dd>{{ especialidade() || '—' }}</dd></div>
+        <div><dt>Modalidade</dt><dd>{{ rotuloModalidade[a.modalidade] }}</dd></div>
+        <div>
+          <dt>Status de presença</dt>
+          <dd><span class="selo" [class]="'selo st-' + statusDe(a)">{{ rotuloStatus[statusDe(a)] }}</span></dd>
+        </div>
+      </dl>
+
+      <div class="acoes-modal">
+        <button type="button" class="btn-secundario" (click)="fecharDetalhe()">Fechar</button>
+        <button type="button" class="btn-secundario" [disabled]="!podeRemarcar(a)" (click)="abrirRemarcacao(a)">
+          Solicitar Remarcação
+        </button>
+        <button type="button" class="btn-primario" [disabled]="!podeAbrirProntuario(a)" (click)="abrirProntuario(a)">
+          Iniciar Atendimento / Abrir Prontuário
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<app-modal-remarcacao
+  [aberto]="remarcando() !== null"
+  [alvo]="alvoRemarcacao()"
+  (fechar)="remarcando.set(null)"
+  (solicitada)="aoSolicitarRemarcacao()"
+/>

@@ -33,8 +33,7 @@ export const FUNCIONALIDADES = {
   ALTERAR_STATUS_TERAPIA: null,
   REGISTRAR_PRESENCA: null,
 
-  // Documentos impressos
-  EMITIR_RECEITA: null,
+  // Documentos impressos (o sistema não emite receitas)
   EMITIR_ATESTADO: null,
   EMITIR_RECUSA: null,
 

@@ -1,18 +1,226 @@
+@use '../especialista' as *;
+
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
   margin-bottom: 1.5rem;
+
+  @media (max-width: 1000px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .conteudo-principal {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 1.5rem;
+  align-items: start;
 
-
+  @media (max-width: 1000px) {
+    grid-template-columns: 1fr;
+  }
 }
 
+.coluna {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.painel {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  h3 {
+    margin: 0 0 1rem;
+    font-size: 1.1rem;
+    text-align: left;
+  }
+
+  &.destaque {
+    border-left: 4px solid #0891b2;
+  }
+}
+
+.painel-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+
+  .link {
+    font-size: 0.82rem;
+    color: #0891b2;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// ---- próximo paciente ----
+.proximo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #e0f2fe;
+  color: #0e7490;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.proximo-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  flex: 1;
+  min-width: 14rem;
+}
+
+.proximo-nome {
+  font-size: 1.1rem;
+  color: #1a1a2e;
+}
+
+.proximo-detalhe {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+// ---- busca ----
+.rotulo-busca {
+  margin-top: 0;
+}
+
+.resultados {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 0;
+}
+
+.resultado {
+  @include btn-reset;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.7rem 0.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+
+  &:hover {
+    background: #f0f9ff;
+  }
+
+  strong {
+    display: block;
+    font-size: 0.92rem;
+    color: #1a1a2e;
+  }
+
+  small {
+    color: #94a3b8;
+    font-size: 0.78rem;
+  }
+
+  .abrir {
+    font-size: 0.8rem;
+    color: #0891b2;
+    white-space: nowrap;
+  }
+}
+
+// ---- solicitações ----
+.resumo-solicitacoes {
+  margin: -0.25rem 0 0.75rem;
+  font-size: 0.8rem;
+  color: #0e7490;
+}
+
+.solicitacoes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #f1f5f9;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  small {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.78rem;
+    color: #64748b;
+  }
+
+  strong {
+    font-size: 0.9rem;
+  }
+}
+
+.solicitacao-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.parecer {
+  margin: 0.4rem 0 0;
+  padding: 0.5rem 0.7rem;
+  background: #f8fafc;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: #475569;
+}
+
+.vazio {
+  margin: 0;
+  padding: 0.75rem 0;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  list-style: none;
+}
+
+.mensagem.erro {
+  color: #b91c1c;
+  background: #fee2e2;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin: 0 0 1rem;
+}
+
+.btn-primario {
+  @include btn-primario;
+}
+
+.sol-PENDENTE { background: #fef3c7; color: #b45309; }
+.sol-APROVADA { background: #dcfce7; color: #15803d; }
+.sol-RECUSADA { background: #fee2e2; color: #b91c1c; }
+
+@include selos-status;
 
 .aviso-painel {
   margin: 0 0 1rem;
@@ -21,4 +229,9 @@
   background: #fef3c7;
   color: #92400e;
   font-size: 0.9rem;
+}
+
+.links {
+  display: flex;
+  gap: 1rem;
 }

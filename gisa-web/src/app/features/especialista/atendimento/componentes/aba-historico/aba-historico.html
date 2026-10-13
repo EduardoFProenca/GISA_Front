@@ -1,0 +1,48 @@
+<section class="diagnosticos">
+  <h4>Diagnósticos (CID)</h4>
+  @if (cids.length === 0) {
+    <p class="vazio">Nenhum CID registrado para este paciente.</p>
+  } @else {
+    <ul class="lista-cids">
+      @for (c of cids; track c.codigoCID) {
+        <li><strong>{{ c.codigoCID }}</strong> — {{ c.descricao }}</li>
+      }
+    </ul>
+  }
+</section>
+
+<h4>Linha do tempo</h4>
+
+<div class="filtros" role="group" aria-label="Filtrar histórico">
+  @for (f of filtros; track f.valor) {
+    <button type="button" class="filtro" [class.ativo]="filtro() === f.valor" (click)="filtro.set(f.valor)">
+      {{ f.label }}
+    </button>
+  }
+</div>
+
+@if (carregando) {
+  <p class="vazio">Carregando histórico...</p>
+} @else if (erro) {
+  <p class="vazio erro">{{ erro }}</p>
+} @else if (visiveis().length === 0) {
+  <p class="vazio">Nenhum registro no histórico.</p>
+} @else {
+  <ol class="timeline">
+    @for (e of visiveis(); track e.idEvento) {
+      <li [class]="ehTerapia(e) ? 'evento tipo-terapia' : 'evento tipo-cadastro'">
+        <span class="marcador" aria-hidden="true"></span>
+        <div class="cartao">
+          <div class="cartao-topo">
+            <span class="tipo">{{ rotulos[e.tipo] }}</span>
+            <time [attr.datetime]="e.dataHora">{{ dataHora(e.dataHora) }}</time>
+          </div>
+          <p class="descricao">{{ e.descricao }}</p>
+          @if (e.usuario) {
+            <small class="autor">{{ e.usuario.nome }}</small>
+          }
+        </div>
+      </li>
+    }
+  </ol>
+}

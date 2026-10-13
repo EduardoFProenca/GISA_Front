@@ -1,0 +1,109 @@
+// Pedaços de estilo compartilhados pelas telas do perfil Especialista.
+// Uso: @use '../especialista' as *;   (de features/especialista/<tela>/<tela>.scss)
+
+// O `button` global tem fundo, escala e "pulinho" no hover; para botões que são só área clicável
+// (chips, abas, células do calendário) é preciso limpar isso.
+// $limpar-fundo: false deixa o fundo para quem usa (ex.: chips coloridos por status).
+@mixin btn-reset($limpar-fundo: true) {
+  @if $limpar-fundo {
+    background: none;
+  }
+  color: inherit;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  box-shadow: none;
+  transform: none;
+  filter: none;
+
+  &:hover,
+  &:active {
+    @if $limpar-fundo {
+      background: none;
+    }
+    border: none;
+    box-shadow: none;
+    transform: none;
+    filter: none;
+  }
+}
+
+@mixin btn-primario {
+  background: #0891b2;
+  color: white;
+  border: none;
+  padding: 0.55rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: #0e7490;
+    border: none;
+  }
+
+  &:disabled {
+    background: #cbd5e1;
+    cursor: not-allowed;
+    transform: scale(0.95);
+    box-shadow: none;
+  }
+}
+
+@mixin btn-secundario {
+  background: transparent;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  padding: 0.55rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+
+  &:hover:not(:disabled) {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+  }
+
+  &:disabled {
+    color: #94a3b8;
+    cursor: not-allowed;
+    transform: scale(0.95);
+    box-shadow: none;
+  }
+}
+
+@mixin overlay-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+}
+
+// Selo de status da agenda (classe .st-<STATUS>).
+// IMPORTANTE: incluir no FIM do scss da tela, para as cores vencerem o reset dos botões.
+@mixin selos-status {
+  .selo {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .st-AGENDADA { background: #dbeafe; color: #1d4ed8; }
+  .st-PRESENTE { background: #dcfce7; color: #15803d; }
+  .st-FALTA_JUSTIFICADA { background: #fef3c7; color: #b45309; }
+  .st-FALTA_INJUSTIFICADA { background: #fee2e2; color: #b91c1c; }
+  .st-CONCLUIDA { background: #e2e8f0; color: #475569; }
+  .st-CANCELADA { background: #f1f5f9; color: #94a3b8; text-decoration: line-through; }
+}

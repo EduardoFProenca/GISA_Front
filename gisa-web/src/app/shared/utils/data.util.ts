@@ -42,3 +42,30 @@ export function dataCurta(iso: string | null | undefined): string {
   const [ano, mes, dia] = iso.split('-');
   return dia && mes && ano ? `${dia}/${mes}/${ano}` : iso;
 }
+
+
+// Idade em anos completos a partir de yyyy-MM-dd.
+export function idadeEmAnos(dataNascimento: string, hoje: Date = new Date()): number {
+  const nasc = deIso(dataNascimento.slice(0, 10));
+  let idade = hoje.getFullYear() - nasc.getFullYear();
+  const fezAniversario =
+    hoje.getMonth() > nasc.getMonth() ||
+    (hoje.getMonth() === nasc.getMonth() && hoje.getDate() >= nasc.getDate());
+  if (!fezAniversario) idade--;
+  return idade;
+}
+
+// 'HH:mm:ss' ou 'HH:mm' -> 'HH:mm'
+export function horaCurta(hora: string): string {
+  return (hora ?? '').slice(0, 5);
+}
+
+// Date -> 'yyyy-MM-ddTHH:mm' no horário local (comparação de horários de terapia).
+export function paraIsoMinuto(d: Date): string {
+  return `${paraIso(d)}T${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
+// Diferença em dias inteiros entre duas datas yyyy-MM-dd (fim - inicio).
+export function diasEntre(inicioIso: string, fimIso: string): number {
+  return Math.round((deIso(fimIso).getTime() - deIso(inicioIso).getTime()) / 86_400_000);
+}

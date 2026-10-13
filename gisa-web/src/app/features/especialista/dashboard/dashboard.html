@@ -1,25 +1,122 @@
 <app-header tituloPortal="Especialista" subtituloPortal="Portal do Especialista" />
-<br>
-<div class="corpo">
 
-    <main class="conteudo">
-        @if (aviso()) {
-        <p class="aviso-painel">{{ aviso() }}</p>
+<div class="corpo">
+  <br>
+
+  <main class="conteudo">
+    <!-- Resumo do dia -->
+    <div class="stats-grid">
+      <app-card-estatistica titulo="Pacientes do Dia" [valor]="carregando() ? '—' : resumo().total" [iconeSvg]="icones.gestaoPacientes" corIcone="#dbeafe" />
+      <app-card-estatistica titulo="Atendidos" [valor]="carregando() ? '—' : resumo().atendidos" [iconeSvg]="icones.gestaoConsultas" corIcone="#dcfce7" />
+      <app-card-estatistica titulo="Aguardando na Fila" [valor]="carregando() ? '—' : resumo().aguardando" [iconeSvg]="icones.calendario" corIcone="#fef3c7" />
+      <app-card-estatistica titulo="Faltas" [valor]="carregando() ? '—' : resumo().faltas" [iconeSvg]="icones.gestaoAtividades" corIcone="#fee2e2" />
+    </div>
+
+    @if (aviso()) {
+      <p class="aviso-painel" role="alert">{{ aviso() }}</p>
+    }
+
+    <div class="conteudo-principal">
+      <div class="coluna">
+        <!-- Próximo paciente -->
+        <section class="painel destaque">
+          <div class="painel-topo">
+            <h3>Próximo Paciente</h3>
+            <span class="links"><a class="link" routerLink="/especialista/minhas-terapias">Minhas terapias</a><a class="link" routerLink="/especialista/agenda">Ver agenda completa</a></span>
+          </div>
+
+          @if (carregando()) {
+            <p class="vazio">Carregando atendimentos...</p>
+          } @else if (proximo(); as p) {
+            <div class="proximo">
+              <div class="avatar" aria-hidden="true">{{ p.pacienteNome.charAt(0) }}</div>
+              <div class="proximo-info">
+                <strong class="proximo-nome">{{ p.pacienteNome }}</strong>
+                <span class="proximo-detalhe">
+                  {{ p.horaInicio }} – {{ p.horaTermino }} · {{ rotuloModalidade[p.modalidade] }}
+                </span>
+                <span class="selo" [class]="'selo st-' + statusDe(p)">{{ rotuloStatus[statusDe(p)] }}</span>
+              </div>
+              <button type="button" class="btn-primario" (click)="abrirProntuario(p.idPaciente, p.idTerapia)">
+                Iniciar Atendimento / Abrir Prontuário
+              </button>
+            </div>
+          } @else {
+            <p class="vazio">Não há mais atendimentos previstos para hoje.</p>
+          }
+        </section>
+
+        <!-- Busca rápida -->
+        <section class="painel">
+          <h3>Busca Rápida de Assistidos</h3>
+          <label for="busca-assistido" class="rotulo-busca">Nome, CPF ou matrícula única</label>
+          <input
+            id="busca-assistido"
+            type="text"
+            autocomplete="off"
+            placeholder="Digite para localizar um paciente"
+            [value]="termoBusca()"
+            (input)="aoDigitarBusca($any($event.target).value)"
+          />
+
+          @if (erroBusca()) {
+            <p class="aviso-painel">{{ erroBusca() }}</p>
+          }
+
+          @if (mostrarResultados() && !buscandoPacientes()) {
+            <ul class="resultados">
+              @for (p of resultados(); track p.idCadastro) {
+                <li>
+                  <button type="button" class="resultado" (click)="abrirProntuario(p.idCadastro)">
+                    <span>
+                      <strong>{{ p.nome }}</strong>
+                      <small>CPF {{ cpf(p.cpf) }} · Matrícula {{ matricula(p.idCadastro) }}</small>
+                    </span>
+                    <span class="abrir">Abrir prontuário ›</span>
+                  </button>
+                </li>
+              } @empty {
+                <li class="vazio">Nenhum paciente encontrado.</li>
+              }
+            </ul>
+          }
+        </section>
+      </div>
+
+      <!-- Solicitações de remarcação -->
+      <section class="painel">
+        <h3>Solicitações de Remarcação</h3>
+        @if (avaliadas() > 0) {
+          <p class="resumo-solicitacoes">
+            {{ avaliadas() }} {{ avaliadas() === 1 ? 'solicitação avaliada' : 'solicitações avaliadas' }} pela Secretaria/Coordenação
+          </p>
         }
 
-        <div class="stats-grid">
-            <app-card-estatistica titulo="Terapias Hoje" [valor]="resumo()?.terapias ?? '—'" [iconeSvg]="icones.calendario"
-                corIcone="#dbeafe" />
-            <app-card-estatistica titulo="Pacientes Presentes" [valor]="resumo()?.presentes ?? '—'"
-                [iconeSvg]="icones.gestaoConsultas" corIcone="#dcfce7" />
-            <app-card-estatistica titulo="Presenças Pendentes" [valor]="resumo()?.pendentes ?? '—'"
-                [iconeSvg]="icones.pessoa" corIcone="#fef3c7" />
-        </div>
-
-        <div class="conteudo-principal">
-            <app-painel-acoes [acoes]="acoesRapidas" />
-            <app-atividades-recentes [atividades]="terapiasHoje()" titulo="Minhas terapias de hoje"
-                vazio="Nenhuma terapia para hoje." />
-        </div>
-    </main>
+        @if (carregandoSolicitacoes()) {
+          <p class="vazio">Carregando...</p>
+        } @else if (erroSolicitacoes()) {
+          <p class="vazio">{{ erroSolicitacoes() }}</p>
+        } @else {
+          <ul class="solicitacoes">
+            @for (s of solicitacoes(); track s.idSolicitacao) {
+              <li>
+                <div class="solicitacao-topo">
+                  <strong>{{ s.titulo }}</strong>
+                  <span class="selo" [class]="'selo sol-' + s.status">{{ rotuloSolicitacao[s.status] }}</span>
+                </div>
+                <small>
+                  {{ dataCurta(s.data) }} {{ s.horaInicio }} → {{ dataCurta(s.novaData) }} {{ s.novaHoraInicio }}
+                </small>
+                @if (s.parecer) {
+                  <p class="parecer">{{ s.parecer }}</p>
+                }
+              </li>
+            } @empty {
+              <li class="vazio">Nenhuma solicitação de remarcação.</li>
+            }
+          </ul>
+        }
+      </section>
+    </div>
+  </main>
 </div>

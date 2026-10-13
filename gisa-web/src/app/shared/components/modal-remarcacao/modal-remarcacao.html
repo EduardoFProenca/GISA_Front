@@ -1,0 +1,85 @@
+@if (aberto && alvo) {
+  <div class="overlay" (click)="aoFechar()">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="titulo-remarcacao" (click)="$event.stopPropagation()">
+      <h3 id="titulo-remarcacao">Solicitar remarcação</h3>
+
+      <p class="resumo">
+        <strong>{{ alvo.pacienteNome }}</strong><br>
+        Sessão atual: {{ sessaoAtual }}
+      </p>
+
+      <p class="legenda-obrigatorio"><span class="obrigatorio">*</span> Campos obrigatórios</p>
+
+      <label for="rem-motivo">Justificativa <span class="obrigatorio">*</span></label>
+      <textarea
+        id="rem-motivo"
+        rows="3"
+        placeholder="Explique por que a sessão precisa ser remarcada"
+        [(ngModel)]="motivo"
+        [class.input-erro]="erros['motivo']"
+        (ngModelChange)="limparErro('motivo')"
+      ></textarea>
+      @if (erros['motivo']) {
+        <span class="erro-msg">{{ erros['motivo'] }}</span>
+      }
+
+      <label for="rem-data">Nova data sugerida <span class="obrigatorio">*</span></label>
+      <input
+        id="rem-data"
+        type="date"
+        [min]="hoje"
+        [(ngModel)]="novaData"
+        [class.input-erro]="erros['novaData']"
+        (ngModelChange)="limparErro('novaData')"
+      />
+      @if (erros['novaData']) {
+        <span class="erro-msg">{{ erros['novaData'] }}</span>
+      }
+
+      <div class="linha-form">
+        <div>
+          <label for="rem-inicio">Início <span class="obrigatorio">*</span></label>
+          <input
+            id="rem-inicio"
+            type="time"
+            [(ngModel)]="novaHoraInicio"
+            [class.input-erro]="erros['novaHoraInicio']"
+            (ngModelChange)="limparErro('novaHoraInicio')"
+          />
+          @if (erros['novaHoraInicio']) {
+            <span class="erro-msg">{{ erros['novaHoraInicio'] }}</span>
+          }
+        </div>
+
+        <div>
+          <label for="rem-termino">Término <span class="obrigatorio">*</span></label>
+          <input
+            id="rem-termino"
+            type="time"
+            [(ngModel)]="novaHoraTermino"
+            [class.input-erro]="erros['novaHoraTermino']"
+            (ngModelChange)="limparErro('novaHoraTermino')"
+          />
+          @if (erros['novaHoraTermino']) {
+            <span class="erro-msg">{{ erros['novaHoraTermino'] }}</span>
+          }
+        </div>
+      </div>
+
+      <p class="aviso">
+        A solicitação fica <strong>pendente</strong> até a avaliação da Secretaria/Coordenação.
+      </p>
+
+      @if (erroGeral()) {
+        <div class="erro-geral" role="alert">{{ erroGeral() }}</div>
+      }
+
+      <div class="acoes">
+        <button type="button" class="btn-cancelar" [disabled]="enviando()" (click)="aoFechar()">Cancelar</button>
+        <button type="button" class="btn-enviar" [disabled]="enviando()" (click)="enviar()">
+          {{ enviando() ? 'Enviando...' : 'Enviar solicitação' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

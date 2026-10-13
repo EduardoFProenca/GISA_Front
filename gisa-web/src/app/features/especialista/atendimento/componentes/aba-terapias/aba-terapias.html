@@ -1,0 +1,51 @@
+@if (carregando) {
+  <p class="vazio">Carregando terapias do mês...</p>
+} @else if (erro) {
+  <p class="vazio erro">{{ erro }}</p>
+} @else if (!frequencia || frequencia.sessoes.length === 0) {
+  <p class="vazio">Nenhuma terapia agendada para este paciente em {{ mesReferencia }}.</p>
+} @else {
+  <p class="referencia">Frequência em {{ mesReferencia }} · mínimo exigido: {{ limite }}%</p>
+
+  <ul class="terapias">
+    @for (f of linhas; track f.rotulo; let primeiro = $first) {
+      <li class="terapia" [class.alerta]="f.abaixoDoLimite" [class.geral]="primeiro">
+        <div class="terapia-topo">
+          <strong>{{ f.rotulo }}</strong>
+          @if (f.percentual !== null) {
+            <span class="percentual" [class.baixo]="f.abaixoDoLimite">{{ f.percentual }}%</span>
+          } @else {
+            <span class="percentual neutro">—</span>
+          }
+        </div>
+
+        <div class="barra" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+             [attr.aria-valuenow]="f.percentual ?? 0" [attr.aria-label]="'Frequência: ' + f.rotulo">
+          <div class="barra-preenchida" [class.baixo]="f.abaixoDoLimite" [style.width.%]="f.percentual ?? 0"></div>
+          <span class="marca-limite" [style.left.%]="limite" [attr.title]="'Mínimo de ' + limite + '%'"></span>
+        </div>
+
+        <small class="legenda">
+          @if (f.registradas > 0) {
+            {{ f.presencas }} presença(s) em {{ f.registradas }} sessão(ões) com presença registrada
+            @if (f.abaixoDoLimite) {
+              · <strong>abaixo do mínimo de {{ limite }}%</strong>
+            }
+          } @else {
+            Nenhuma sessão com presença registrada ainda.
+          }
+        </small>
+      </li>
+    }
+  </ul>
+
+  <h4 class="titulo-sessoes">Sessões do mês</h4>
+  <ul class="sessoes">
+    @for (s of frequencia.sessoes; track s.idTerapia) {
+      <li>
+        <span>{{ dataCurta(s.data) }} · {{ s.horaInicio }} – {{ s.horaTermino }}</span>
+        <span class="presenca" [class]="'presenca p-' + s.presenca">{{ rotuloPresenca[s.presenca] }}</span>
+      </li>
+    }
+  </ul>
+}

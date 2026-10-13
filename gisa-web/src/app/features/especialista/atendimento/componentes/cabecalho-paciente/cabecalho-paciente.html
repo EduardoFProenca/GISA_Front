@@ -1,0 +1,23 @@
+<section class="cabecalho-paciente" aria-label="Identificação do paciente">
+  <div class="avatar" aria-hidden="true">{{ iniciais }}</div>
+
+  <div class="identificacao">
+    <h2>{{ paciente.pessoa.nome }}</h2>
+    <dl class="dados">
+      <div><dt>Matrícula única</dt><dd>{{ matricula }}</dd></div>
+      <div><dt>CPF</dt><dd>{{ cpf }}</dd></div>
+      <div><dt>Nascimento</dt><dd>{{ nascimento }} ({{ idade }})</dd></div>
+      <div><dt>Responsável</dt><dd>{{ responsavel }}</dd></div>
+      <div><dt>Escola</dt><dd>{{ escola }}</dd></div>
+      <div><dt>Convênio</dt><dd>{{ convenio }}</dd></div>
+    </dl>
+
+    @if (alertas.length > 0) {
+      <div class="alertas" role="note" aria-label="Alertas clínicos">
+        @for (a of alertas; track a.rotulo) {
+          <span class="alerta"><strong>{{ a.rotulo }}:</strong> {{ a.texto }}</span>
+        }
+      </div>
+    }
+  </div>
+</section>

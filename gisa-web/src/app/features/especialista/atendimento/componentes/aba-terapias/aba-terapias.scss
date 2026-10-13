@@ -1,0 +1,140 @@
+.terapias {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.terapia {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+
+  &.alerta {
+    border-color: #fecaca;
+    background: #fffafa;
+  }
+}
+
+.terapia-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+
+  strong {
+    display: block;
+    font-size: 0.95rem;
+    color: #1a1a2e;
+  }
+
+  small {
+    color: #94a3b8;
+    font-size: 0.78rem;
+  }
+}
+
+.percentual {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #15803d;
+
+  &.baixo {
+    color: #b91c1c;
+  }
+
+  &.neutro {
+    color: #cbd5e1;
+  }
+}
+
+.barra {
+  position: relative;
+  height: 10px;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.barra-preenchida {
+  height: 100%;
+  border-radius: 999px;
+  background: #16a34a;
+
+  &.baixo {
+    background: #dc2626;
+  }
+}
+
+.marca-limite {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  background: #334155;
+}
+
+.legenda {
+  display: block;
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  color: #64748b;
+
+  strong {
+    color: #b91c1c;
+  }
+}
+
+.vazio {
+  text-align: center;
+  color: #94a3b8;
+  padding: 1.5rem 0;
+  margin: 0;
+}
+
+.vazio.erro {
+  color: #b91c1c;
+}
+
+.referencia {
+  margin: 0 0 1rem;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.terapia.geral {
+  background: #f8fafc;
+}
+
+.titulo-sessoes {
+  margin: 1.75rem 0 0.5rem;
+  font-size: 0.95rem;
+  color: #334155;
+}
+
+.sessoes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.86rem;
+    color: #475569;
+  }
+}
+
+.presenca {
+  font-weight: 600;
+  font-size: 0.78rem;
+
+  &.p-PRESENTE { color: #15803d; }
+  &.p-FALTA_JUSTIFICADA { color: #b45309; }
+  &.p-FALTA_INJUSTIFICADA { color: #b91c1c; }
+  &.p-PENDENTE { color: #94a3b8; }
+}
