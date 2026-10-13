@@ -2,7 +2,7 @@ import { Component, ElementRef, HostListener, Input, inject, signal } from '@ang
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Auth } from '../../../core/auth/auth';
 import { Layout } from '../../../core/layout/layout';
-import { NotificacaoService, tempoDecorrido } from '../../../services/notificacao';
+import { NotificacaoService, tempoDecorrido } from '../../../core/services/notificacao';
 import { ICONES } from '../../icons';
 
 @Component({
@@ -19,7 +19,7 @@ export class Header {
   icones = ICONES;
   tempo = tempoDecorrido;
 
-  // Usados enquanto não há usuário logado com nome/cargo conhecidos.
+  // Usados enquanto o usuário logado ainda não foi carregado.
   @Input() tituloPortal: string = '';
   @Input() subtituloPortal: string = '';
   // Mostra o botão ☰ que abre/fecha o menu lateral (só nos portais que têm menu).
@@ -34,7 +34,7 @@ export class Header {
   }
 
   get funcao(): string {
-    return this.auth.usuarioAtual()?.cargo || this.subtituloPortal;
+    return this.auth.usuarioAtual()?.perfil.nome || this.subtituloPortal;
   }
 
   sanitizarIcone(svg: string): SafeHtml {

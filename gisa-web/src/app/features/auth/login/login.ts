@@ -10,10 +10,6 @@ import { lerErroApi, mensagemDeErro } from '../../../core/http/erro-api';
 const TEMPO_LIMITE_MS = 60_000;
 const AVISO_DEMORA_MS = 5_000;
 
-// TEMPORÁRIO: true = depois do login abre a tela de escolha de portal.
-// Mude para false para voltar a ir direto ao /administrador.
-const ESCOLHER_PORTAL_APOS_LOGIN = true;
-
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -56,10 +52,19 @@ export class LoginComponent {
       .login({ cpf: this.usuario, senha: this.senha })
       .pipe(timeout(TEMPO_LIMITE_MS))
       .subscribe({
-        next: () => {
+        next: (usuario) => {
           clearTimeout(aviso);
           this.finalizarCarregamento();
-          this.router.navigate([ESCOLHER_PORTAL_APOS_LOGIN ? '/portais' : '/administrador']);
+          const rota = this.auth.rotaInicial();
+          if (rota) {
+            this.router.navigate([rota]);
+            return;
+          }
+          // Perfil sem painel mapeado em core/auth/permissoes.ts.
+          this.auth.logout();
+          this.erroLogin.set(
+            `O perfil "${usuario.perfil.nome}" não tem acesso a nenhum painel. Procure o administrador.`
+          );
         },
         error: (err: unknown) => {
           clearTimeout(aviso);

@@ -1,0 +1,98 @@
+<app-cabecalho-pagina
+  titulo="Editar Paciente"
+  [mostrarSalvar]="true"
+  [mostrarCancelar]="true"
+  (salvar)="salvarEdicao()"
+  (cancelar)="cancelar()"
+></app-cabecalho-pagina>
+
+<div class="card-form">
+  @if (carregando()) {
+    <p class="aviso">Carregando paciente...</p>
+  } @else if (erro()) {
+    <p class="aviso erro-msg">{{ erro() }}</p>
+  } @else if (paciente()) {
+    <p class="legenda-obrigatorio">Campos com <span class="obrigatorio">*</span> são obrigatórios.</p>
+
+    @if (erroGeral()) {
+      <p class="erro-msg erro-geral">{{ erroGeral() }}</p>
+    }
+
+    <!-- Situação -->
+    <div class="secao">
+      <h3>Situação do Paciente</h3>
+      <div class="campo">
+        <label for="status">Status <span class="obrigatorio">*</span></label>
+        <select id="status" name="status" [ngModel]="status()" (ngModelChange)="status.set($event)">
+          <option value="MATRICULADO">Matriculado</option>
+          <option value="ALTA">Alta</option>
+          <option value="DESLIGADO">Desligado</option>
+        </select>
+      </div>
+    </div>
+
+    <br><hr><br>
+
+    <!-- Dados Pessoais -->
+    <app-dados-pessoais
+      [dadosIniciais]="dadosPessoais()"
+      [bloquearCpfSexoNascimento]="true"
+      [exibirEmail]="false"
+      [celularObrigatorio]="false"
+    ></app-dados-pessoais>
+
+    <br><hr><br>
+
+    <!-- Contato e Endereço -->
+    <app-contato
+      [dadosIniciais]="contato()"
+    ></app-contato>
+
+    <br><hr><br>
+
+    <!-- Informações administrativas -->
+    <app-info-paciente [convenioInicial]="convenioInicial()" />
+
+    <br><hr><br>
+
+    <!-- Responsáveis (adicionar, editar e remover) -->
+    <app-info-responsavel [responsaveisIniciais]="responsaveisIniciais()" />
+
+    <br><hr><br>
+
+    <!-- Escola -->
+    <app-info-escola [escolaInicial]="escolaInicial()" />
+
+    <br><hr><br>
+
+    <!-- Prontuário -->
+    <app-info-prontuario [prontuarioInicial]="prontuarioInicial()" />
+
+    <br><hr><br>
+
+    <!-- CIDs (adicionar e remover) -->
+    <app-info-cid [cidsIniciais]="cidsIniciais()" [permitirNovos]="false" />
+  }
+</div>
+
+<!-- Modal de Confirmação para Descartar Alterações -->
+<app-confirm-dialog
+  [aberto]="confirmarCancelamentoAberto()"
+  titulo="Descartar alterações?"
+  mensagem="As alterações feitas nesta edição serão perdidas."
+  textoConfirmar="Descartar"
+  textoCancelar="Continuar editando"
+  (confirmar)="confirmarCancelamento()"
+  (cancelar)="confirmarCancelamentoAberto.set(false)"
+></app-confirm-dialog>
+
+<!-- Modal de Sucesso ao Salvar -->
+<app-sucesso-dialog
+  [aberto]="dialogSucessoAberto()"
+  titulo="Alterações salvas com sucesso!"
+  [mensagem]="'Os dados de ' + nomeSalvo() + ' foram atualizados.'"
+  textoPrimario="Ver Detalhes"
+  textoSecundario="Gestão de Pacientes"
+  (verDetalhes)="irParaDetalhes()"
+  (continuar)="irParaGerenciarPacientes()"
+></app-sucesso-dialog>

@@ -4,8 +4,8 @@ import { PainelAcoesComponent, AcaoRapida } from '../../../shared/components/pai
 import { AtividadesRecentes, Atividade } from '../../../shared/components/atividades-recentes/atividades-recentes';
 import { Header } from '../../../shared/components/header/header';
 import { ICONES } from '../../../shared/icons';
-import { PacienteService } from '../../../services/paciente';
-import { ProfissionalService } from '../../../services/profissional';
+import { PacienteService } from '../../../core/services/paciente';
+import { ProfissionalService } from '../../../core/services/profissional';
 
 @Component({
   selector: 'app-dashboard-administrador',
@@ -28,7 +28,7 @@ export class DashboardAdministrador implements OnInit {
     { titulo: 'Cadastrar Paciente', descricao: 'Novo registro no sistema', iconeSvg: ICONES.cadastrarPaciente, rota: '/administrador/pacientes/novo' },
     //{ titulo: 'Criação de Agenda', descricao: 'Configurar nova agenda', iconeSvg: ICONES.criacaoAgenda, rota: '/administrador/agenda-medico/nova' },
     { titulo: 'Criar Consulta', descricao: 'Nova consulta no sistema', iconeSvg: ICONES.calendario, rota: '/administrador/consultas/nova' },
-    { titulo: 'Gestão de Pacientes', descricao: 'Ver todos os pacientes', iconeSvg: ICONES.gestaoPacientes, rota: '/administrador/pacientes/gerenciar' },
+    { titulo: 'Gestão de Pacientes', descricao: 'Ver todos os pacientes', iconeSvg: ICONES.gestaoPacientes, rota: '/administrador/pacientes' },
     { titulo: 'Cadastrar Profissional', descricao: 'Adicionar ao corpo clínico', iconeSvg: ICONES.cadastrarProfissional, rota: '/administrador/profissionais/novo' },
     { titulo: 'Gestão de Consultas', descricao: 'Visualizar e gerenciar', iconeSvg: ICONES.gestaoConsultas, rota: '/administrador/consultas/gerenciar' },
     //{ titulo: 'Gestão de Agenda', descricao: 'Visualizar e configurar', iconeSvg: ICONES.calendario, rota: '/administrador/agenda-medico' },
@@ -44,7 +44,7 @@ export class DashboardAdministrador implements OnInit {
 
   ngOnInit() {
     // size=1: só o total interessa, não a lista.
-    this.pacienteService.listarPaginado(0, 1).subscribe({
+    this.pacienteService.listar({ page: 0, size: 1 }).subscribe({
       next: (pagina) => this.totalPacientes.set(pagina.totalElements),
     });
 

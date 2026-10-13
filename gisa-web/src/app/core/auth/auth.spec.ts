@@ -3,12 +3,24 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { UsuarioLogado } from '../models/auth.model';
 import { Auth, decodificarToken } from './auth';
 
 function criarToken(payload: object): string {
   const b64 = (o: object) =>
     btoa(JSON.stringify(o)).replace(/=+$/, '').replace(/\+/g, '-').replace(/\//g, '_');
   return `${b64({ alg: 'HS256' })}.${b64(payload)}.assinatura`;
+}
+
+function usuario(perfil: string, permissoes: string[] = []): UsuarioLogado {
+  return {
+    idCadastro: 9,
+    nome: 'Mariana Costa',
+    cpf: '12345678902',
+    tipoCadastro: 'PROFISSIONAL',
+    perfil: { idPerfil: 3, nome: perfil },
+    permissoes: permissoes.map((nome, i) => ({ idPermissao: i + 1, nome, descricao: '' })),
+  };
 }
 
 describe('Auth', () => {
@@ -18,46 +30,54 @@ describe('Auth', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        provideRouter([{ path: 'login', children: [] }]),
-      ],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([{ path: 'login', children: [] }])],
     });
     auth = TestBed.inject(Auth);
     http = TestBed.inject(HttpTestingController);
   });
 
-  it('should be created', () => {
-    expect(auth).toBeTruthy();
-  });
+  function entrar(u: UsuarioLogado) {
+    auth.login({ cpf: '123', senha: '12345678' }).subscribe();
+    http.expectOne(`${environment.apiUrl}/auth/login`).flush({ token: criarToken({ sub: '123' }) });
+    http.expectOne(`${environment.apiUrl}/usuarios/me`).flush(u);
+  }
 
   it('decodifica o payload do token', () => {
     expect(decodificarToken(criarToken({ sub: '123' }))?.['sub']).toBe('123');
     expect(decodificarToken('lixo')).toBe(null);
   });
 
-  it('guarda token e usuário quando a API envia nome e cargo', () => {
-    auth.login({ cpf: '123', senha: '12345678' }).subscribe();
-    http
-      .expectOne(`${environment.apiUrl}/auth/login`)
-      .flush({ token: criarToken({ sub: '123' }), nome: 'Maria Souza', cargo: 'Administrador' });
+  it('no login guarda o token e carrega o usuário de /usuarios/me', () => {
+    entrar(usuario('Recepção'));
 
     expect(auth.isLoggedIn()).toBe(true);
-    expect(auth.usuarioAtual()).toEqual({ nome: 'Maria Souza', cargo: 'Administrador' });
+    expect(auth.usuarioAtual()?.nome).toBe('Mariana Costa');
+    expect(auth.rotaInicial()).toBe('/recepcao');
   });
 
-  it('não define usuário quando a API envia só o token', () => {
-    auth.login({ cpf: '123', senha: '12345678' }).subscribe();
-    http.expectOne(`${environment.apiUrl}/auth/login`).flush({ token: criarToken({ sub: '123' }) });
+  it('ACESSO_TOTAL libera qualquer funcionalidade', () => {
+    entrar(usuario('Administrador', ['ACESSO_TOTAL']));
 
-    expect(auth.isLoggedIn()).toBe(true);
-    expect(auth.usuarioAtual()).toBe(null);
+    expect(auth.temPermissao('VISUALIZAR_AUDITORIA')).toBe(true);
+    expect(auth.temPermissao('GERENCIAR_USUARIOS')).toBe(true);
+  });
+
+  it('exige a permissão do back quando ela existe e libera quando ainda não existe', () => {
+    entrar(usuario('Recepção', ['CADASTRAR_PROFISSIONAL']));
+
+    expect(auth.temPermissao('CADASTRAR_PROFISSIONAL')).toBe(true);
+    expect(auth.temPermissao('VISUALIZAR_AUDITORIA')).toBe(false);
+    expect(auth.temPermissao('REGISTRAR_PRESENCA')).toBe(true);
+  });
+
+  it('perfil sem painel mapeado não tem rota inicial', () => {
+    entrar(usuario('Financeiro'));
+
+    expect(auth.rotaInicial()).toBe(null);
   });
 
   it('logout limpa token e usuário', () => {
-    localStorage.setItem('gisa_token', criarToken({ sub: '123' }));
-    auth.setUsuarioAtual({ nome: 'Maria', cargo: 'Médico' });
+    entrar(usuario('Recepção'));
 
     auth.logout();
 

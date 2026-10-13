@@ -5,7 +5,7 @@ import { CardProfissional, ProfissionalCard } from '../../../shared/components/c
 import { ICONES } from '../../../shared/icons';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { Paginacao } from '../../../shared/components/paginacao/paginacao';
-import { ProfissionalService } from '../../../services/profissional';
+import { ProfissionalService } from '../../../core/services/profissional';
 import { ProfissionalResumo } from '../../../core/models/profissional.model';
 
 @Component({

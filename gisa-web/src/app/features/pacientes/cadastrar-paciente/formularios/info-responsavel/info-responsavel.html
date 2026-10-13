@@ -1,0 +1,142 @@
+<div class="secao">
+  <h3>Informações do Responsável</h3>
+
+  <p class="legenda-secao">Informe ao menos um responsável. <span class="obrigatorio">*</span></p>
+
+  <!-- Cartões dos responsáveis já adicionados -->
+  @if (listaResponsaveis.length > 0) {
+    <div class="container-cards">
+      @for (resp of listaResponsaveis; track $index) {
+        <div class="card-responsavel">
+          <div class="info-principal">
+            <div class="nome-resp">{{ resp.nome }}</div>
+            <div class="detalhes-resp">
+              <span><strong>CPF:</strong> {{ resp.cpf }}</span>
+              @if (resp.celular) { • <span><strong>Tel:</strong> {{ resp.celular }}</span> }
+              • <span><strong>Parentesco:</strong> {{ rotuloParentesco(resp.grauParentesco) }}</span>
+              @if (resp.ocupacao) { • <span><strong>Profissão:</strong> {{ resp.ocupacao }}</span> }
+              @if (resp.naoResideComPaciente) { • <span>Não reside com o paciente</span> }
+            </div>
+          </div>
+          <div class="acoes-card">
+            <button type="button" class="btn-editar" (click)="editarResponsavel($index)" title="Editar Responsável"
+              [innerHTML]="icones.editar"></button>
+            <button type="button" class="remover-item" (click)="removerResponsavel($index)"
+              title="Remover Responsável">✕</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (erros['responsaveis']) { <span class="erro-msg erro-lista">{{ erros['responsaveis'] }}</span> }
+
+  <!-- Formulário de preenchimento -->
+  @if (exibindoFormulario) {
+    <div class="formulario-card">
+      <h4>{{ indexEdicao !== null ? 'Editar Responsável' : 'Cadastrar Novo Responsável' }}</h4>
+
+      <div class="linha-form">
+        <div class="campo">
+          <label for="respNome">Nome do Responsável <span class="obrigatorio">*</span></label>
+          <input type="text" id="respNome" name="respNome" [(ngModel)]="novoResponsavel.nome"
+            placeholder="Digite o nome completo" [class.input-erro]="errosCard['nome']"
+            (input)="limparErroCard('nome')">
+          @if (errosCard['nome']) { <span class="erro-msg">{{ errosCard['nome'] }}</span> }
+        </div>
+
+        <div class="campo">
+          <label for="respCpf">CPF <span class="obrigatorio">*</span></label>
+          <input type="text" id="respCpf" name="respCpf" [(ngModel)]="novoResponsavel.cpf" [disabled]="!!novoResponsavel.idResponsavel"
+            placeholder="000.000.000-00" [class.input-erro]="errosCard['cpf']" (input)="limparErroCard('cpf')">
+          @if (errosCard['cpf']) { <span class="erro-msg">{{ errosCard['cpf'] }}</span> }
+        </div>
+      </div>
+
+      <div class="linha-tripla">
+        <div class="campo">
+          <label for="respNascimento">Data de Nascimento <span class="obrigatorio">*</span></label>
+          <input type="date" id="respNascimento" name="respNascimento" [(ngModel)]="novoResponsavel.dataNascimento" [disabled]="!!novoResponsavel.idResponsavel"
+            [class.input-erro]="errosCard['dataNascimento']" (input)="limparErroCard('dataNascimento')">
+          @if (errosCard['dataNascimento']) { <span class="erro-msg">{{ errosCard['dataNascimento'] }}</span> }
+        </div>
+
+        <div class="campo">
+          <label for="respSexo">Sexo <span class="obrigatorio">*</span></label>
+          <select id="respSexo" name="respSexo" [(ngModel)]="novoResponsavel.sexo" [disabled]="!!novoResponsavel.idResponsavel"
+            [class.input-erro]="errosCard['sexo']" (change)="limparErroCard('sexo')">
+            <option value="" disabled selected>Selecione</option>
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+            <option value="O">Outro</option>
+          </select>
+          @if (errosCard['sexo']) { <span class="erro-msg">{{ errosCard['sexo'] }}</span> }
+        </div>
+
+        <div class="campo">
+          <label for="respEstadoCivil">Estado Civil <span class="obrigatorio">*</span></label>
+          <select id="respEstadoCivil" name="respEstadoCivil" [(ngModel)]="novoResponsavel.estadoCivil"
+            [class.input-erro]="errosCard['estadoCivil']" (change)="limparErroCard('estadoCivil')">
+            <option value="" disabled selected>Selecione</option>
+            <option value="SOLTEIRO">Solteiro(a)</option>
+            <option value="CASADO">Casado(a)</option>
+            <option value="VIUVO">Viúvo(a)</option>
+            <option value="SEPARADO">Separado(a)</option>
+            <option value="DIVORCIADO">Divorciado(a)</option>
+          </select>
+          @if (errosCard['estadoCivil']) { <span class="erro-msg">{{ errosCard['estadoCivil'] }}</span> }
+        </div>
+      </div>
+
+      <div class="linha-tripla">
+        <div class="campo">
+          <label for="respCelular">Celular / WhatsApp</label>
+          <input type="text" id="respCelular" name="respCelular" [(ngModel)]="novoResponsavel.celular"
+            placeholder="(00) 00000-0000" [class.input-erro]="errosCard['celular']"
+            (input)="limparErroCard('celular')">
+          @if (errosCard['celular']) { <span class="erro-msg">{{ errosCard['celular'] }}</span> }
+        </div>
+
+        <div class="campo">
+          <label for="respOcupacao">Ocupação / Profissão</label>
+          <input type="text" id="respOcupacao" name="respOcupacao" [(ngModel)]="novoResponsavel.ocupacao"
+            placeholder="Ex: Professor...">
+        </div>
+
+        <div class="campo">
+          <label for="respParentesco">Grau de Parentesco <span class="obrigatorio">*</span></label>
+          <select id="respParentesco" name="respParentesco" [(ngModel)]="novoResponsavel.grauParentesco"
+            [class.input-erro]="errosCard['grauParentesco']" (change)="limparErroCard('grauParentesco')">
+            <option value="" disabled selected>Selecione</option>
+            @for (item of opcoesParentesco; track item.value) {
+              <option [value]="item.value">{{ item.label }}</option>
+            }
+          </select>
+          @if (errosCard['grauParentesco']) { <span class="erro-msg">{{ errosCard['grauParentesco'] }}</span> }
+        </div>
+      </div>
+
+      <div class="linha-checkbox">
+        <label class="checkbox-inline">
+          <input type="checkbox" name="respNaoReside" [(ngModel)]="novoResponsavel.naoResideComPaciente"
+            (ngModelChange)="aoMudarResidencia()">
+          Responsável não reside com o paciente
+        </label>
+      </div>
+
+      @if (novoResponsavel.naoResideComPaciente) {
+        <app-contato titulo="Endereço do Responsável" subtitulo=""
+          [dadosIniciais]="novoResponsavel.endereco ?? undefined" />
+      }
+
+      <div class="acoes-form">
+        <button type="button" class="btn-cancelar" (click)="cancelarEdicao()">Cancelar</button>
+        <button type="button" class="btn-confirmar" (click)="salvarResponsavel()">
+          {{ indexEdicao !== null ? 'Atualizar Responsável' : 'Confirmar Responsável' }}
+        </button>
+      </div>
+    </div>
+  } @else {
+    <button type="button" class="add-item" (click)="abrirFormulario()">+ Adicionar responsável</button>
+  }
+</div>

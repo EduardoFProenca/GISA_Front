@@ -29,3 +29,16 @@ export function dataExtenso(iso: string): string {
     year: 'numeric',
   });
 }
+// Data e hora vindas da API em UTC (ex.: '2026-10-13T17:32:10Z') no horário local: "13/10/2026 14:32".
+export function dataHoraLocal(isoUtc: string): string {
+  const d = new Date(isoUtc);
+  if (isNaN(d.getTime())) return isoUtc;
+  return d.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+// yyyy-MM-dd -> dd/MM/yyyy
+export function dataCurta(iso: string | null | undefined): string {
+  if (!iso) return '';
+  const [ano, mes, dia] = iso.split('-');
+  return dia && mes && ano ? `${dia}/${mes}/${ano}` : iso;
+}

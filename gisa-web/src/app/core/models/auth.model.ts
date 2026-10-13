@@ -12,9 +12,10 @@ export interface LoginResponse {
   [key: string]: any;
 }
 
-export type TipoCadastro = 'PROFISSIONAL' | 'ESPECIALISTA' | 'ESPECIALISTA_PJ';
+// PESSOA = cadastro sem vínculo de profissional (ex.: o administrador inicial).
+export type TipoCadastro = 'PESSOA' | 'PROFISSIONAL' | 'ESPECIALISTA' | 'ESPECIALISTA_PJ';
 
-// GET /usuarios/me. ATENÇÃO: rota pedida ao back, ainda não existe.
+// GET /usuarios/me (permissões ordenadas por ID).
 export interface UsuarioLogado {
   idCadastro: number;
   nome: string;

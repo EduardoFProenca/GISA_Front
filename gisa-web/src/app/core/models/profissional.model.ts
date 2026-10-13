@@ -1,19 +1,29 @@
 // Profissionais, especialistas e especialistas PJ (ver PROFISSIONAIS.md e ESPECIALISTAS.md).
-import { Endereco, EstadoCivil, Pessoa, Sexo, StatusCadastro } from './comum.model';
+import { Endereco, EstadoCivil, ParametrosPagina, Pessoa, Sexo, StatusCadastro } from './comum.model';
 import { Cargo } from './cargo.model';
 import { Especialidade, NovaEspecialidade } from './especialidade.model';
 import { PerfilResumo, Permissao } from './perfil.model';
 
 // ---------- Respostas ----------
 
+export type TipoProfissional = 'PROFISSIONAL' | 'ESPECIALISTA' | 'ESPECIALISTA_PJ';
+
 // Item de GET /profissionais (inclui especialistas e PJ). `idProfissional` = idCadastro.
-// `registroConselho` preenchido = especialista ou PJ.
 export interface ProfissionalResumo {
   idProfissional: number;
   nome: string;
   nomeCargo: string;
   registroConselho: string | null;
   statusCadastro: StatusCadastro;
+  tipo: TipoProfissional;
+}
+
+// Filtros de GET /profissionais. `tipo` é exato: ESPECIALISTA não inclui os PJ.
+export interface FiltroProfissionais extends ParametrosPagina {
+  cpf?: string;
+  nome?: string;
+  tipo?: TipoProfissional[];
+  statusCadastro?: StatusCadastro;
 }
 
 // Usuário de acesso ao sistema (null quando o cadastro não tem acesso).

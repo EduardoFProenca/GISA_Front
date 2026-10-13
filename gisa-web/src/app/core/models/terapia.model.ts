@@ -36,9 +36,11 @@ interface TerapiaBase {
   pacientes: PacienteTerapia[];
 }
 
-// Item de GET /terapias, GET /terapias/{id} e resposta do POST e do PATCH de presença.
+// Item de GET /terapias, GET /terapias/{id} e resposta de POST/PATCH (inclusive presença e status).
 export interface Terapia extends TerapiaBase {
   especialistas: EspecialistaTerapia[];
+  // Preenchido só quando a terapia foi cancelada.
+  motivoCancelamento: string | null;
 }
 
 // Item de GET /terapias/minhas (sem o próprio especialista logado).
@@ -46,17 +48,44 @@ export interface TerapiaDoEspecialista extends TerapiaBase {
   outrosEspecialistas: string[];
 }
 
-export interface FiltroTerapias extends ParametrosPagina {
+// Filtros de GET /terapias/minhas (size máximo 100).
+// Use `data` OU o intervalo `inicio`/`fim` (yyyy-MM-dd, dias incluídos), não os dois.
+export interface FiltroMinhasTerapias extends ParametrosPagina {
   status?: StatusTerapia[];
+  data?: string;
+  inicio?: string;
+  fim?: string;
 }
 
-// Corpo do POST /terapias e do POST /terapias/verificar-conflitos.
+// Filtros de GET /terapias. ID sem terapias devolve página vazia.
+export interface FiltroTerapias extends FiltroMinhasTerapias {
+  idPaciente?: number;
+  idEspecialista?: number;
+}
+
+// Corpo do POST /terapias.
 export interface NovaTerapiaPayload {
   pacientesIds: number[];
   especialistasIds: number[];
   data: string;
   horaInicio: string;
   horaTermino: string;
+}
+
+// PATCH /terapias/{id}: só terapias AGENDADA; listas substituem as atuais.
+// Paciente que continua mantém a presença; paciente novo entra como PENDENTE.
+export type AtualizacaoTerapiaPayload = Partial<NovaTerapiaPayload>;
+
+// POST /terapias/verificar-conflitos (idTerapiaIgnorada: ao validar uma edição).
+export interface VerificarConflitosPayload extends NovaTerapiaPayload {
+  idTerapiaIgnorada?: number;
+}
+
+// PATCH /terapias/{id}/status. Transições: AGENDADA -> EM_ATENDIMENTO -> CONCLUIDA;
+// AGENDADA/EM_ATENDIMENTO -> CANCELADA (motivo obrigatório, até 255). CONCLUIDA e CANCELADA são finais.
+export interface AlterarStatusTerapiaPayload {
+  status: StatusTerapia;
+  motivo?: string;
 }
 
 export interface ConflitoHorario {

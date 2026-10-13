@@ -1,0 +1,61 @@
+h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #000;
+  text-align: left;
+  margin: 0 0 1.25rem 0;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.aviso {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.erro-msg {
+  color: #dc2626;
+}
+
+.linha-tempo {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    background-color: #f8fafc;
+    border-left: 3px solid #3b82f6;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    text-align: left;
+  }
+}
+
+.cabecalho-evento {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.85rem;
+
+  .tipo {
+    font-weight: 600;
+    color: #1e3a8a;
+  }
+
+  .quando {
+    color: #64748b;
+  }
+}
+
+.descricao {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+  color: #1a1a2e;
+}
+
+.autor {
+  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}

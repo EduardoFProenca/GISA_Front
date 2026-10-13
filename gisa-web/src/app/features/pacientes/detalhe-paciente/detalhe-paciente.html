@@ -1,0 +1,138 @@
+<app-cabecalho-pagina
+  titulo="Detalhes do Paciente"
+  [textoAcao]="podeEditar && ativo() ? 'Editar' : ''"
+  [rotaAcao]="rotaBase + '/' + id() + '/editar'"
+></app-cabecalho-pagina>
+
+<div class="card-form">
+  @if (carregando()) {
+    <p class="aviso">Carregando paciente...</p>
+  } @else if (erro()) {
+    <p class="aviso erro-msg">{{ erro() }}</p>
+  } @else if (paciente(); as p) {
+    <!-- Situação -->
+    <div class="secao">
+      <h3>Situação do Paciente</h3>
+      <div class="info-bloco">
+        <p><strong>Situação:</strong> {{ situacao() }}</p>
+        <p><strong>Cadastrado em:</strong> {{ dataCadastro() }}</p>
+        <p><strong>Convênio:</strong> {{ p.convenio ? 'Sim' : 'Não' }}</p>
+      </div>
+
+      @if (podeInativar) {
+        <div class="acoes-situacao">
+          <button
+            type="button"
+            [class]="ativo() ? 'btn-inativar' : 'btn-reativar'"
+            [disabled]="alterandoStatus()"
+            (click)="pedirConfirmacao()"
+          >
+            {{ alterandoStatus() ? 'Salvando...' : ativo() ? 'Inativar paciente' : 'Reativar paciente' }}
+          </button>
+          @if (erroStatus()) {
+            <span class="erro-msg">{{ erroStatus() }}</span>
+          }
+        </div>
+      }
+    </div>
+
+    <br><hr><br>
+
+    <!-- Dados Pessoais -->
+    <app-dados-pessoais
+      [dadosIniciais]="dadosPessoais()"
+      [bloquearCpfSexoNascimento]="true"
+      [exibirEmail]="false"
+      [somenteLeitura]="true"
+    ></app-dados-pessoais>
+
+    <br><hr><br>
+
+    <!-- Responsáveis -->
+    <div class="secao">
+      <h3>Responsáveis</h3>
+      @for (vinculo of p.responsaveis; track vinculo.responsavel.idCadastro) {
+        <div class="info-bloco">
+          <p><strong>Nome:</strong> {{ vinculo.responsavel.nome }}</p>
+          <p><strong>CPF:</strong> {{ cpf(vinculo.responsavel.cpf) }}</p>
+          <p><strong>Celular:</strong> {{ celular(vinculo.responsavel.celular) || '—' }}</p>
+          <p><strong>Grau de Parentesco:</strong> {{ rotuloParentesco[vinculo.grauParentesco] }}</p>
+          <p><strong>Ocupação:</strong> {{ vinculo.ocupacao || '—' }}</p>
+          @if (vinculo.responsavel.statusCadastro === 'INATIVO') {
+            <p class="erro-msg">Cadastro do responsável inativo</p>
+          }
+        </div>
+      } @empty {
+        <p>Nenhum responsável cadastrado.</p>
+      }
+    </div>
+
+    <br><hr><br>
+
+    <!-- Informações Escolares -->
+    <div class="secao">
+      <h3>Informações Escolares</h3>
+      @if (p.escola; as escola) {
+        <div class="info-bloco">
+          <p><strong>Escola:</strong> {{ escola.nome }}</p>
+          <p><strong>Tipo:</strong> {{ rotuloEscola[escola.tipoEscola] }}</p>
+          <p><strong>Telefone:</strong> {{ celular(escola.telefone) || '—' }}</p>
+        </div>
+      } @else {
+        <p>Sem escola informada.</p>
+      }
+    </div>
+
+    <br><hr><br>
+
+    <!-- Diagnóstico / CIDs -->
+    <div class="secao">
+      <h3>Diagnóstico / CIDs</h3>
+      @for (cid of p.cids; track cid.codigoCID) {
+        <div class="info-bloco">
+          <p><strong>Código CID:</strong> {{ cid.codigoCID }}</p>
+          <p><strong>Descrição:</strong> {{ cid.descricao }}</p>
+        </div>
+      } @empty {
+        <p>Nenhum CID cadastrado.</p>
+      }
+    </div>
+
+    <br><hr><br>
+
+    <!-- Prontuário -->
+    <div class="secao">
+      <h3>Prontuário</h3>
+      <div class="info-bloco">
+        <p><strong>Alergias:</strong> {{ p.prontuario?.alergias || '—' }}</p>
+        <p><strong>Comorbidades:</strong> {{ p.prontuario?.comorbidade || '—' }}</p>
+        <p><strong>Mobilidade:</strong> {{ p.prontuario?.mobilidade || '—' }}</p>
+      </div>
+    </div>
+
+    <br><hr><br>
+
+    <!-- Contato e Endereço -->
+    <app-contato
+      [dadosIniciais]="contato()"
+      [somenteLeitura]="true"
+    ></app-contato>
+
+    @if (podeVerHistorico) {
+      <br><hr><br>
+      <app-historico-paciente [idPaciente]="id()" />
+    }
+  }
+</div>
+
+<app-confirm-dialog
+  [aberto]="confirmacaoAberta()"
+  [titulo]="ativo() ? 'Inativar paciente?' : 'Reativar paciente?'"
+  [mensagem]="ativo()
+    ? 'O cadastro fica inativo e o paciente passa a Desligado (se estiver em Alta, continua em Alta). O histórico é mantido.'
+    : 'O cadastro volta a ficar ativo e o paciente passa a Matriculado.'"
+  [textoConfirmar]="ativo() ? 'Inativar' : 'Reativar'"
+  textoCancelar="Voltar"
+  (confirmar)="confirmarAlteracaoStatus()"
+  (cancelar)="confirmacaoAberta.set(false)"
+></app-confirm-dialog>

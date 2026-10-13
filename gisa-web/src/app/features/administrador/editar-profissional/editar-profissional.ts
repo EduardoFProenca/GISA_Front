@@ -10,7 +10,7 @@ import { Contato } from '../../../shared/components/contato/contato';
 import { InfoProfissional } from '../cadastrar-profissional/formularios/info-profissional/info-profissional';
 import { InfoUsuario } from '../cadastrar-profissional/formularios/info-usuario/info-usuario';
 import { InfoEspecialista } from '../cadastrar-profissional/formularios/info-especialista/info-especialista';
-import { ProfissionalService } from '../../../services/profissional';
+import { ProfissionalService } from '../../../core/services/profissional';
 import { paraFormularios } from '../detalhe-profissional/profissional-detalhe.util';
 
 @Component({

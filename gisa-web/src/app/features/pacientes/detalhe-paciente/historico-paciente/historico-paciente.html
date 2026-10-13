@@ -1,0 +1,35 @@
+<div class="secao">
+  <h3>Histórico de Atividades</h3>
+
+  @if (erro()) {
+    <p class="aviso erro-msg">{{ erro() }}</p>
+  } @else if (carregando() && eventos().length === 0) {
+    <p class="aviso">Carregando histórico...</p>
+  } @else {
+    <ul class="linha-tempo">
+      @for (evento of eventos(); track evento.idEvento) {
+        <li>
+          <div class="cabecalho-evento">
+            <span class="tipo">{{ rotulos[evento.tipo] }}</span>
+            <span class="quando">{{ dataHora(evento.dataHora) }}</span>
+          </div>
+          <p class="descricao">{{ evento.descricao }}</p>
+          @if (evento.usuario) {
+            <p class="autor">por {{ evento.usuario.nome }}</p>
+          }
+        </li>
+      } @empty {
+        <p class="aviso">Nenhuma atividade registrada.</p>
+      }
+    </ul>
+
+    @if (total() > itensPorPagina) {
+      <app-paginacao
+        [totalItens]="total()"
+        [itensPorPagina]="itensPorPagina"
+        [paginaAtual]="pagina()"
+        (paginaAlterada)="mudarPagina($event)"
+      />
+    }
+  }
+</div>
