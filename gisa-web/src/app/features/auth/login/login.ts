@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { timeout } from 'rxjs';
 import { Auth } from '../../../core/auth/auth';
+import { motivoSemPainel } from '../../../core/auth/permissoes';
 import { lerErroApi, mensagemDeErro } from '../../../core/http/erro-api';
 
 // Render (plano gratuito) pode levar quase 1 minuto para acordar na primeira chamada.
@@ -60,11 +61,9 @@ export class LoginComponent {
             this.router.navigate([rota]);
             return;
           }
-          // Perfil sem painel mapeado em core/auth/permissoes.ts.
+          // Perfil sem painel (ou incompatível com o cadastro): ver core/auth/permissoes.ts.
           this.auth.logout();
-          this.erroLogin.set(
-            `O perfil "${usuario.perfil.nome}" não tem acesso a nenhum painel. Procure o administrador.`
-          );
+          this.erroLogin.set(motivoSemPainel(usuario));
         },
         error: (err: unknown) => {
           clearTimeout(aviso);

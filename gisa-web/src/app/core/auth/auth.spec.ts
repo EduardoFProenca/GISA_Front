@@ -70,6 +70,18 @@ describe('Auth', () => {
     expect(auth.temPermissao('REGISTRAR_PRESENCA')).toBe(true);
   });
 
+  it('perfil "Especialista" em cadastro que não é de especialista não abre o painel do especialista', () => {
+    entrar(usuario('Especialista'));
+
+    expect(auth.rotaInicial()).toBe(null);
+  });
+
+  it('perfil "Especialista" em cadastro de especialista abre o painel do especialista', () => {
+    entrar({ ...usuario('Especialista'), tipoCadastro: 'ESPECIALISTA' });
+
+    expect(auth.rotaInicial()).toBe('/especialista');
+  });
+
   it('perfil sem painel mapeado não tem rota inicial', () => {
     entrar(usuario('Financeiro'));
 

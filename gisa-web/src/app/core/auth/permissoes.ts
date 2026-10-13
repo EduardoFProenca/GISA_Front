@@ -84,16 +84,37 @@ export function normalizarNomePerfil(nome: string): string {
     .trim();
 }
 
-// Painel pelo nome do perfil. Sem correspondência: ACESSO_TOTAL abre o do administrador;
-// especialista/PJ abre o do especialista; os demais ficam sem painel (null).
-export function painelDoUsuario(usuario: {
+interface UsuarioPainel {
   perfil: { nome: string };
   permissoes: readonly { nome: string }[];
   tipoCadastro: string;
-}): Painel | null {
+}
+
+function ehCadastroDeEspecialista(u: UsuarioPainel): boolean {
+  return u.tipoCadastro === 'ESPECIALISTA' || u.tipoCadastro === 'ESPECIALISTA_PJ';
+}
+
+// O painel do especialista depende de terapias do próprio usuário (/terapias/minhas), que a API
+// só atende para cadastros de especialista/PJ: o perfil "Especialista" sozinho não basta.
+function perfilIncompativel(u: UsuarioPainel, painel: Painel): boolean {
+  return painel === 'ESPECIALISTA' && !ehCadastroDeEspecialista(u);
+}
+
+// Painel pelo nome do perfil. Sem correspondência (ou incompatível com o cadastro): ACESSO_TOTAL abre
+// o do administrador; especialista/PJ abre o do especialista; os demais ficam sem painel (null).
+export function painelDoUsuario(usuario: UsuarioPainel): Painel | null {
   const porPerfil = PAINEL_POR_PERFIL[normalizarNomePerfil(usuario.perfil.nome)];
-  if (porPerfil) return porPerfil;
+  if (porPerfil && !perfilIncompativel(usuario, porPerfil)) return porPerfil;
   if (usuario.permissoes.some((p) => p.nome === ACESSO_TOTAL)) return 'ADMINISTRADOR';
-  if (usuario.tipoCadastro === 'ESPECIALISTA' || usuario.tipoCadastro === 'ESPECIALISTA_PJ') return 'ESPECIALISTA';
+  if (ehCadastroDeEspecialista(usuario)) return 'ESPECIALISTA';
   return null;
+}
+
+// Explica por que o usuário ficou sem painel (mensagem do login).
+export function motivoSemPainel(usuario: UsuarioPainel): string {
+  const porPerfil = PAINEL_POR_PERFIL[normalizarNomePerfil(usuario.perfil.nome)];
+  if (porPerfil && perfilIncompativel(usuario, porPerfil)) {
+    return `O perfil "${usuario.perfil.nome}" só pode ser usado por cadastros de especialista. Procure o administrador para ajustar o seu perfil.`;
+  }
+  return `O perfil "${usuario.perfil.nome}" não tem acesso a nenhum painel. Procure o administrador.`;
 }
