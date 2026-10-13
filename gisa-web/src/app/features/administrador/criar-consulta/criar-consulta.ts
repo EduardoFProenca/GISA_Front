@@ -11,6 +11,7 @@ import { TerapiaService } from '../../../services/terapia';
 import { PacienteResumo } from '../../../core/models/paciente.model';
 import { ProfissionalResumo } from '../../../core/models/profissional.model';
 import { Modalidade, NovaTerapia } from '../../../core/models/consulta.model';
+import { aplicarErrosApi, campoDaChave } from '../../../core/http/erro-api';
 
 // Chave de erro da API -> campo da tela
 const CAMPOS_API: Record<string, string> = {
@@ -247,29 +248,18 @@ export class CriarConsulta implements OnInit {
   }
 
   private tratarErroApi(err: HttpErrorResponse) {
-    if (err.status === 0) {
-      this.finalizarComErro('Não foi possível conectar ao servidor. Tente novamente.');
-      return;
-    }
-
-    const campos: Record<string, string> = err.error?.fields ?? {};
     const novos: Record<string, string> = {};
-    const semDestino: string[] = [];
+    const { mensagemGeral } = aplicarErrosApi(
+      err,
+      (chave, mensagem) => {
+        const destino = CAMPOS_API[campoDaChave(chave)];
+        if (destino) novos[destino] = mensagem;
+        return !!destino;
+      },
+      { padrao: 'Erro ao salvar a consulta.' }
+    );
 
-    for (const [chave, mensagem] of Object.entries(campos)) {
-      const nome = chave.split('.').pop()!.replace(/\[\d+\]/g, '');
-      const destino = CAMPOS_API[nome];
-      if (destino) novos[destino] = mensagem;
-      else semDestino.push(mensagem);
-    }
-
-    const mapeados = Object.keys(novos).length;
-    if (mapeados > 0) this.erros.update((e) => ({ ...e, ...novos }));
-
-    let mensagemGeral = err.error?.message || 'Erro ao salvar a consulta.';
-    if (mapeados > 0) mensagemGeral = 'Corrija os campos destacados em vermelho.';
-    if (semDestino.length) mensagemGeral += ' ' + semDestino.join(' ');
-
+    if (Object.keys(novos).length) this.erros.update((e) => ({ ...e, ...novos }));
     this.finalizarComErro(mensagemGeral);
   }
 

@@ -48,8 +48,8 @@ export class CidService {
 
   // PONTO DE TROCA: hoje usa a lista local (core/data/cid10.ts).
   // Quando a API pública for escolhida, chamar ela aqui.
-  // ATENÇÃO: o authInterceptor coloca o token do GISA em TODA requisição; para a API
-  // pública é preciso pular o token (ex.: ignorar URLs que não começam com environment.apiUrl).
+  // O authInterceptor só envia o token para environment.apiUrl, então a chamada à API pública
+  // já sai sem o token do GISA.
   private buscarNaFontePublica(codigo: string): Observable<ResultadoCid> {
     const achado = CID10.find((c) => c.codigoCID === codigo);
     return of<ResultadoCid>(achado ? { tipo: 'novo', cid: { ...achado } } : { tipo: 'invalido' });

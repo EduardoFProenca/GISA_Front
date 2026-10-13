@@ -2,8 +2,9 @@ import { Component, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { TimeoutError, timeout } from 'rxjs';
+import { timeout } from 'rxjs';
 import { Auth } from '../../../core/auth/auth';
+import { lerErroApi, mensagemDeErro } from '../../../core/http/erro-api';
 
 // Render (plano gratuito) pode levar quase 1 minuto para acordar na primeira chamada.
 const TEMPO_LIMITE_MS = 60_000;
@@ -81,20 +82,11 @@ export class LoginComponent {
   }
 
   private mensagemDeErro(err: unknown): string {
-    if (err instanceof TimeoutError) {
-      return 'O servidor demorou para responder. Tente novamente em instantes.';
+    // No login, 401 é CPF/senha errados ou cadastro inativo, não sessão expirada.
+    if (err instanceof HttpErrorResponse && err.status === 401) {
+      return lerErroApi(err)?.message || 'CPF ou senha inválidos.';
     }
-
-    const http = err as HttpErrorResponse;
-
-    // status 0: a requisição nem chegou (offline, CORS ou bloqueador do navegador)
-    if (http?.status === 0) {
-      return 'Não foi possível conectar ao servidor. Verifique sua internet ou se algum bloqueador do navegador está ativo.';
-    }
-    if (http?.status >= 500) {
-      return 'Erro no servidor. Tente novamente em instantes.';
-    }
-    return http?.error?.message || 'CPF ou senha inválidos.';
+    return mensagemDeErro(err, 'CPF ou senha inválidos.');
   }
 
   private validarCampo(valor: string, tamanhoMinimo: number): boolean {

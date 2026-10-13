@@ -71,13 +71,14 @@ describe('CadastroErrosApiService', () => {
     expect(f.contato.erros['cep']).toBe('CEP inválido');
   });
 
-  it('em conflito (409), usa mensagem de "já existe no sistema"', () => {
+  it('CPF repetido (400 só com "message") marca o campo cpf', () => {
     const f = formularioVazio();
-    const err = erroApi(409, { fields: { cpf: 'CPF já cadastrado' } });
+    const err = erroApi(400, { message: 'CPF já cadastrado.', fields: {} });
 
     const resultado = service.tratar(err, f);
 
-    expect(resultado.mensagemGeral).toContain('já existem no sistema');
+    expect(f.dadosPessoais.erros['cpf']).toBe('CPF já cadastrado.');
+    expect(resultado.mensagemGeral).toContain('destacados em vermelho');
   });
 
   it('acumula mensagens de campos sem componente correspondente na mensagem geral', () => {

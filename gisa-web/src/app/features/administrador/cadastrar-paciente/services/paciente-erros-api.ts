@@ -1,58 +1,36 @@
 import { Injectable } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import { ComErros } from '../../../../shared/components/com-erros';
+import {
+  aplicarErrosApi,
+  campoDaChave,
+  MSG_CORRIJA_CAMPOS,
+  ResultadoErroApi,
+} from '../../../../core/http/erro-api';
 import { FormulariosPaciente, InfoEscolaForm } from '../models/formularios-paciente';
 
-export interface ResultadoErroApi {
-  mensagemGeral: string;
-  algumCampoMarcado: boolean;
-}
-
+// Mapeia os erros da API para os campos do cadastro/edição de paciente.
 @Injectable({ providedIn: 'root' })
 export class PacienteErrosApiService {
 
-  tratar(err: HttpErrorResponse, f: FormulariosPaciente): ResultadoErroApi {
-    const semRede = this.erroGeral(err);
-    if (semRede) return { mensagemGeral: semRede, algumCampoMarcado: false };
-
-    const campos: Record<string, string> = err.error?.fields ?? {};
-    const semDestino: string[] = [];
-    let mapeados = 0;
-
-    for (const [chave, mensagem] of Object.entries(campos)) {
-      if (this.marcarCampo(chave, mensagem, f)) mapeados++;
-      else semDestino.push(mensagem);
-    }
-
-    const mensagemRegra: string = err.error?.message ?? '';
-    if (mapeados === 0 && mensagemRegra && this.marcarPorMensagem(mensagemRegra, f)) mapeados++;
-
-    let mensagemGeral = mensagemRegra || 'Erro ao salvar cadastro.';
-    if (mapeados > 0) mensagemGeral = 'Corrija os campos destacados em vermelho.';
-    if (semDestino.length) mensagemGeral += ' ' + semDestino.join(' ');
-
-    return { mensagemGeral, algumCampoMarcado: mapeados > 0 };
+  tratar(err: unknown, f: FormulariosPaciente): ResultadoErroApi {
+    return aplicarErrosApi(err, (chave, mensagem) => this.marcarCampo(chave, mensagem, f), {
+      padrao: 'Erro ao salvar cadastro.',
+      marcarPorMensagem: (mensagem) => this.marcarPorMensagem(mensagem, f),
+    });
   }
 
   // Erros do POST /escolas (feito antes do cadastro do paciente).
-  tratarEscola(err: HttpErrorResponse, ie: InfoEscolaForm): string {
-    const semRede = this.erroGeral(err);
-    if (semRede) return semRede;
-
-    const campos: Record<string, string> = err.error?.fields ?? {};
-    let marcou = false;
-    if (campos['nome']) { ie.erros['nome'] = campos['nome']; marcou = true; }
-    if (campos['tipoEscola']) { ie.erros['tipoEscola'] = campos['tipoEscola']; marcou = true; }
-
-    return marcou
-      ? 'Corrija os campos destacados em vermelho.'
-      : (err.error?.message || 'Não foi possível cadastrar a escola.');
-  }
-
-  private erroGeral(err: HttpErrorResponse): string | null {
-    if (err.status === 0) return 'Não foi possível conectar ao servidor. Tente novamente.';
-    if (err.status === 401 || err.status === 403) return 'Sua sessão expirou. Faça login novamente.';
-    return null;
+  tratarEscola(err: unknown, ie: InfoEscolaForm): string {
+    const r = aplicarErrosApi(
+      err,
+      (chave, mensagem) => {
+        if (chave !== 'nome' && chave !== 'tipoEscola') return false;
+        ie.erros[chave] = mensagem;
+        return true;
+      },
+      { padrao: 'Não foi possível cadastrar a escola.' }
+    );
+    return r.algumCampoMarcado ? MSG_CORRIJA_CAMPOS : r.mensagemGeral;
   }
 
   private marcarCampo(chave: string, mensagem: string, f: FormulariosPaciente): boolean {
@@ -80,27 +58,25 @@ export class PacienteErrosApiService {
     }
 
     if (chave.startsWith('enderecos')) {
-      const k = chave.split('.').pop()!.replace(/\[\d+\]/g, '');
       const mapaEndereco: Record<string, string> = {
         cep: 'cep', rua: 'endereco', numero: 'numero', bairro: 'bairro', cidade: 'cidade', estado: 'uf',
       };
-      f.contato.erros[mapaEndereco[k] ?? 'cep'] = mensagem;
+      f.contato.erros[mapaEndereco[campoDaChave(chave)] ?? 'cep'] = mensagem;
       return true;
     }
 
-    const dp = f.dadosPessoais;
     const camposPessoa = ['nome', 'cpf', 'dataNascimento', 'sexo', 'estadoCivil', 'celular', 'numCNS'];
     if (camposPessoa.includes(chave)) {
-      dp.erros[chave] = mensagem;
+      f.dadosPessoais.erros[chave] = mensagem;
       return true;
     }
 
     return false;
   }
 
-  // Regras de negócio chegam só em `message` (sem `fields`).
+  // Regras de negócio chegam só em `message` (ver PACIENTES.md, "Regras de negócio").
   private marcarPorMensagem(mensagem: string, f: FormulariosPaciente): boolean {
-    if (/^Já existe uma pessoa/i.test(mensagem)) {
+    if (/^CPF já cadastrado/i.test(mensagem)) {
       f.dadosPessoais.erros['cpf'] = mensagem;
       return true;
     }

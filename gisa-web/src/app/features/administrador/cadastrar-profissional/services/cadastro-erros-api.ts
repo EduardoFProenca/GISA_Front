@@ -1,49 +1,30 @@
 import { Injectable } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import { ComErros } from '../../../../shared/components/com-erros';
+import { aplicarErrosApi, campoDaChave, ResultadoErroApi } from '../../../../core/http/erro-api';
 import { FormulariosCadastro } from '../models/formularios-cadastro';
 
-export interface ResultadoErroApi {
-  mensagemGeral: string;
-  algumCampoMarcado: boolean;
-}
-
+// Mapeia os erros da API para os campos do cadastro de profissional.
 @Injectable({ providedIn: 'root' })
 export class CadastroErrosApiService {
 
-  tratar(err: HttpErrorResponse, f: FormulariosCadastro): ResultadoErroApi {
-    if (err.status === 0) {
-      return { mensagemGeral: 'Não foi possível conectar ao servidor. Tente novamente.', algumCampoMarcado: false };
-    }
-
-    const campos: Record<string, string> = err.error?.fields ?? {};
-    const semDestino: string[] = [];
-    let mapeados = 0;
-
-    for (const [chave, mensagem] of Object.entries(campos)) {
-      const destino = this.destinoCampo(chave, f);
-      if (destino) {
-        destino[0].erros[destino[1]] = mensagem;
-        mapeados++;
-      } else {
-        semDestino.push(mensagem);
+  tratar(err: unknown, f: FormulariosCadastro): ResultadoErroApi {
+    return aplicarErrosApi(
+      err,
+      (chave, mensagem) => this.marcar(this.destinoCampo(campoDaChave(chave), f), mensagem),
+      {
+        padrao: 'Erro ao salvar cadastro.',
+        marcarPorMensagem: (mensagem) => this.marcar(this.destinoMensagem(mensagem, f), mensagem),
       }
-    }
-
-    let mensagemGeral = err.error?.message || 'Erro ao salvar cadastro.';
-    if (mapeados > 0) {
-      mensagemGeral =
-        err.status === 409
-          ? 'Alguns dados já existem no sistema. Corrija os campos destacados em vermelho.'
-          : 'Corrija os campos destacados em vermelho.';
-    }
-    if (semDestino.length) mensagemGeral += ' ' + semDestino.join(' ');
-
-    return { mensagemGeral, algumCampoMarcado: mapeados > 0 };
+    );
   }
 
-  private destinoCampo(chave: string, f: FormulariosCadastro): [ComErros, string] | null {
-    const k = chave.split('.').pop()!.replace(/\[\d+\]/g, '');
+  private marcar(destino: [ComErros, string] | null, mensagem: string): boolean {
+    if (!destino) return false;
+    destino[0].erros[destino[1]] = mensagem;
+    return true;
+  }
+
+  private destinoCampo(campo: string, f: FormulariosCadastro): [ComErros, string] | null {
     const { dadosPessoais: dp, contato: c, infoProfissional: ip, infoUsuario: iu, infoEspecialista: ie } = f;
 
     const mapa: Record<string, [ComErros, string]> = {
@@ -75,6 +56,17 @@ export class CadastroErrosApiService {
       razaoSocial: [ie, 'razaoSocial'],
     };
 
-    return mapa[k] ?? null;
+    return mapa[campo] ?? null;
+  }
+
+  // Regras de negócio que chegam só em `message` (ver PROFISSIONAIS.md e ESPECIALISTAS.md).
+  private destinoMensagem(mensagem: string, f: FormulariosCadastro): [ComErros, string] | null {
+    if (/^CPF já cadastrado/i.test(mensagem)) return [f.dadosPessoais, 'cpf'];
+    if (/^E-mail já cadastrado/i.test(mensagem)) return [f.dadosPessoais, 'email'];
+    if (/^CNPJ já cadastrado/i.test(mensagem)) return [f.infoEspecialista, 'cnpj'];
+    if (/^Cargo não encontrado/i.test(mensagem)) return [f.infoProfissional, 'cargo'];
+    if (/^Perfil não encontrado/i.test(mensagem)) return [f.infoUsuario, 'perfil'];
+    if (/especialidade/i.test(mensagem)) return [f.infoEspecialista, 'especialidades'];
+    return null;
   }
 }
