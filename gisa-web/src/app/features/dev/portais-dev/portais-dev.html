@@ -1,0 +1,13 @@
+<main class="portais">
+  <h1>Escolha o portal</h1>
+  <p class="aviso">Tela temporária de desenvolvimento</p>
+
+  <div class="grid">
+    @for (portal of portais; track portal.rota) {
+      <a class="card" [routerLink]="portal.rota">
+        <strong>{{ portal.titulo }}</strong>
+        <span>{{ portal.descricao }}</span>
+      </a>
+    }
+  </div>
+</main>

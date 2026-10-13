@@ -1,14 +1,21 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, HostListener, inject, Input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Auth } from '../../../core/auth/auth';
 import { Layout } from '../../../core/layout/layout';
 
 export interface ItemMenu {
   label: string;
   iconeSvg: string;
   rota: string;
+  // true = só fica destacado na rota exata (use no item "Início").
+  exato?: boolean;
 }
 
+const LARGURA_CELULAR_PX = 768;
+
+// Menu lateral. Abre/fecha pelo Layout (botão ☰ do cabeçalho).
+// No celular vira gaveta sobre o conteúdo, com fundo escurecido.
 @Component({
   selector: 'app-menu',
   imports: [RouterLink, RouterLinkActive],
@@ -17,9 +24,11 @@ export interface ItemMenu {
 })
 export class Menu {
   @Input() itens: ItemMenu[] = [];
+  // Usado quando não há usuário logado com nome conhecido.
   @Input() nomeUsuario: string = '';
 
   layout = inject(Layout);
+  private auth = inject(Auth);
 
   constructor(private sanitizer: DomSanitizer) {}
 
@@ -27,7 +36,27 @@ export class Menu {
     return !this.layout.menuAberto();
   }
 
+  get nome(): string {
+    return this.auth.usuarioAtual()?.nome || this.nomeUsuario;
+  }
+
   sanitizarIcone(svg: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(svg);
+  }
+
+  fechar() {
+    this.layout.fecharMenu();
+  }
+
+  // No celular o menu cobre a tela, então fecha ao escolher um item.
+  aoNavegar() {
+    if (typeof window !== 'undefined' && window.innerWidth <= LARGURA_CELULAR_PX) {
+      this.fechar();
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  aoPressionarEsc() {
+    if (!this.menuFechado) this.fechar();
   }
 }

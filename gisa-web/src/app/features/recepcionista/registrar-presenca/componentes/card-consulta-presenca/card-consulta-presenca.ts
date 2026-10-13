@@ -6,7 +6,13 @@ import {
   StatusPresenca,
 } from '../../../../../core/models/consulta-diaria.model';
 import { LinhaPacientePresenca } from '../linha-paciente-presenca/linha-paciente-presenca';
-import { LABEL_MODALIDADE, LABEL_STATUS, especialistasTexto, horarioConsulta } from '../../presenca.util';
+import {
+  LABEL_MODALIDADE,
+  LABEL_STATUS,
+  consultaLiberada,
+  especialistasTexto,
+  horarioConsulta,
+} from '../../presenca.util';
 
 export interface PresencaMarcada {
   idPaciente: number;
@@ -35,6 +41,8 @@ export class CardConsultaPresenca {
   );
   labelStatus = computed(() => LABEL_STATUS[this.consulta().status]);
   cancelada = computed(() => this.consulta().status === StatusTerapia.CANCELADA);
+  // Visual: todos os pacientes já tiveram a presença registrada.
+  liberada = computed(() => consultaLiberada(this.consulta()));
 
   bloqueado(p: PacienteConsulta): boolean {
     return this.cancelada() || this.idPacienteSalvando() === p.idPaciente;

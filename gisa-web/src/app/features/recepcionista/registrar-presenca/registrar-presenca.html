@@ -9,6 +9,11 @@
 
     <app-busca-filtro placeholder="Buscar por paciente ou especialista..." (buscaAlterada)="aplicarBusca($event)" />
 
+    <app-filtro-avancado
+      tituloStatus="Situação"
+      [statusDisponiveis]="situacoesDisponiveis"
+      (filtroAlterado)="aplicarFiltroAvancado($event)" />
+
     @if (erro()) {
     <p class="mensagem erro">{{ erro() }}</p>
     }

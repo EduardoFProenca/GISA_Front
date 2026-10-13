@@ -9,6 +9,10 @@ import { Auth } from '../../../core/auth/auth';
 const TEMPO_LIMITE_MS = 60_000;
 const AVISO_DEMORA_MS = 5_000;
 
+// TEMPORÁRIO: true = depois do login abre a tela de escolha de portal.
+// Mude para false para voltar a ir direto ao /administrador.
+const ESCOLHER_PORTAL_APOS_LOGIN = true;
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -54,7 +58,7 @@ export class LoginComponent {
         next: () => {
           clearTimeout(aviso);
           this.finalizarCarregamento();
-          this.router.navigate(['/administrador']);
+          this.router.navigate([ESCOLHER_PORTAL_APOS_LOGIN ? '/portais' : '/administrador']);
         },
         error: (err: unknown) => {
           clearTimeout(aviso);

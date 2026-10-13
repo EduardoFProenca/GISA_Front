@@ -1,8 +1,11 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login';
+import { PortaisDev } from './features/dev/portais-dev/portais-dev';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  // TEMPORÁRIO: remover junto com features/dev/portais-dev
+  { path: 'portais', component: PortaisDev },
   {
     path: 'administrador',
     loadChildren: () => import('./features/administrador/administrador.routes').then(m => m.administradorRoutes)

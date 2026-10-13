@@ -21,39 +21,41 @@
     </div>
   </div>
 
-  <div class="divisor"></div>
+  @if (periodosDisponiveis.length > 0) {
+    <div class="divisor"></div>
 
-  <div class="grupo-filtro">
-    <div class="cabecalho-grupo">
-      <span class="icone-grupo" [innerHTML]="sanitizarIcone(icones.calendario)"></span>
-      <span class="titulo-grupo">{{ tituloPeriodo }}</span>
-    </div>
+    <div class="grupo-filtro">
+      <div class="cabecalho-grupo">
+        <span class="icone-grupo" [innerHTML]="sanitizarIcone(icones.calendario)"></span>
+        <span class="titulo-grupo">{{ tituloPeriodo }}</span>
+      </div>
 
-    <div class="segmentado">
-      @for (opcao of periodosDisponiveis; track opcao.valor) {
-        <button
-          type="button"
-          class="segmento"
-          [class.ativo]="periodoSelecionado() === opcao.valor"
-          (click)="selecionarPeriodo(opcao.valor)">
-          {{ opcao.label }}
-        </button>
+      <div class="segmentado">
+        @for (opcao of periodosDisponiveis; track opcao.valor) {
+          <button
+            type="button"
+            class="segmento"
+            [class.ativo]="periodoSelecionado() === opcao.valor"
+            (click)="selecionarPeriodo(opcao.valor)">
+            {{ opcao.label }}
+          </button>
+        }
+      </div>
+
+      @if (periodoSelecionado() === valorPeriodoManual) {
+        <div class="intervalo-manual">
+          <label>
+            <span>De</span>
+            <input type="date" [ngModel]="dataInicio()" (ngModelChange)="atualizarDataInicio($event)">
+          </label>
+          <label>
+            <span>Até</span>
+            <input type="date" [ngModel]="dataFim()" (ngModelChange)="atualizarDataFim($event)">
+          </label>
+        </div>
       }
     </div>
-
-    @if (periodoSelecionado() === valorPeriodoManual) {
-      <div class="intervalo-manual">
-        <label>
-          <span>De</span>
-          <input type="date" [ngModel]="dataInicio()" (ngModelChange)="atualizarDataInicio($event)">
-        </label>
-        <label>
-          <span>Até</span>
-          <input type="date" [ngModel]="dataFim()" (ngModelChange)="atualizarDataFim($event)">
-        </label>
-      </div>
-    }
-  </div>
+  }
 
   @if (totalFiltrosAtivos > 0) {
     <button type="button" class="btn-limpar" (click)="limparFiltros()">

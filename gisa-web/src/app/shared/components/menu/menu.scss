@@ -1,17 +1,29 @@
+:host {
+  display: block;
+  flex-shrink: 0;
+}
+
 .menu-lateral {
+  position: sticky;
+  top: 0;
   width: 220px;
+  height: 100vh;
   background: white;
   border-right: 1px solid #e5e7eb;
-  height: 100%;
-  overflow: hidden;
-  transition: width 0.25s ease, opacity 0.25s ease;
-  flex-shrink: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  transition: width 0.25s ease, opacity 0.25s ease, visibility 0.25s;
 
   &.fechado {
     width: 0;
     opacity: 0;
     border-right: none;
+    visibility: hidden;
   }
+}
+
+.fundo {
+  display: none;
 }
 
 .menu-usuario {
@@ -51,4 +63,27 @@ li a {
 .menu-icone {
   display: inline-flex;
   flex-shrink: 0;
+}
+
+// Celular: gaveta sobre o conteúdo, com fundo escurecido.
+@media (max-width: 768px) {
+  .menu-lateral {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 30;
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+
+    &.fechado {
+      box-shadow: none;
+    }
+  }
+
+  .fundo {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    background: rgba(15, 23, 42, 0.4);
+  }
 }

@@ -1,0 +1,9 @@
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.conteudo-shell {
+  flex: 1;
+  min-width: 0;
+}

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { CardEstatistica } from '../../../shared/components/card-estatistica/card-estatistica';
-import { PainelAcoesComponent, AcaoRapida } from '../../../shared/components/painel-acoes/painel-acoes';
+import { PainelAcoesComponent } from '../../../shared/components/painel-acoes/painel-acoes';
 import { AtividadesRecentes, Atividade } from '../../../shared/components/atividades-recentes/atividades-recentes';
 import { Header } from '../../../shared/components/header/header';
-import { Menu } from '../../../shared/components/menu/menu';
 import { ICONES } from '../../../shared/icons';
+import { ACOES_RAPIDAS_RECEPCIONISTA } from '../acoes-rapidas';
 
 @Component({
   selector: 'app-dashboard-recepcionista',
@@ -15,12 +15,7 @@ import { ICONES } from '../../../shared/icons';
 export class DashboardRecepcionista {
   icones = ICONES;
 
-  acoesRapidas: AcaoRapida[] = [
-    { titulo: 'Gerenciar Paciente', descricao: 'Registro e triagem', iconeSvg: ICONES.gestaoPacientes, rota: '/recepcionista/pacientes' },
-    { titulo: 'Emitir Recusa', descricao: 'Documento de recusa', iconeSvg: ICONES.cadastrarPaciente, rota: '/recepcionista/recusa' },
-    { titulo: 'Registrar Presença', descricao: 'Presença ou ausência', iconeSvg: ICONES.gestaoConsultas, rota: '/recepcionista/presenca' },
-    { titulo: 'Controle de Agendamentos', descricao: 'Consultas e cancelamentos', iconeSvg: ICONES.calendario, rota: '/recepcionista/agendamentos' },
-  ];
+  acoesRapidas = ACOES_RAPIDAS_RECEPCIONISTA;
 
   atividadesRecentes: Atividade[] = [
     {
@@ -41,14 +36,6 @@ export class DashboardRecepcionista {
         { label: 'Ver documento', acao: () => this.verRecusa('pedro-alves') },
       ]
     },
-  ];
-
-  itensMenu = [
-    { label: 'Início', iconeSvg: ICONES.calendario, rota: '/recepcionista' },
-    { label: 'Pacientes', iconeSvg: ICONES.gestaoPacientes, rota: '/recepcionista/pacientes' },
-    { label: 'Recusas', iconeSvg: ICONES.cadastrarPaciente, rota: '/recepcionista/recusa' },
-    { label: 'Presenças', iconeSvg: ICONES.gestaoConsultas, rota: '/recepcionista/presenca' },
-    { label: 'Agendamentos', iconeSvg: ICONES.calendario, rota: '/recepcionista/agendamentos' },
   ];
 
   verCadastro(id: string) {

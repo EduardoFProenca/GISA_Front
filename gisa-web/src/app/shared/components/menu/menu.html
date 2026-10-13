@@ -1,13 +1,28 @@
+@if (!menuFechado) {
+  <div class="fundo" (click)="fechar()"></div>
+}
 
-<nav class="menu-lateral" [class.fechado]="menuFechado">  
-  <div class="menu-usuario">
-    <span>{{ nomeUsuario }}</span>
-  </div>
+<nav
+  class="menu-lateral"
+  aria-label="Menu principal"
+  [class.fechado]="menuFechado"
+  [attr.aria-hidden]="menuFechado"
+  [attr.inert]="menuFechado ? '' : null">
+
+  @if (nome) {
+    <div class="menu-usuario">
+      <span>{{ nome }}</span>
+    </div>
+  }
 
   <ul>
     @for (item of itens; track item.rota) {
       <li>
-        <a [routerLink]="item.rota" routerLinkActive="ativo">
+        <a
+          [routerLink]="item.rota"
+          routerLinkActive="ativo"
+          [routerLinkActiveOptions]="{ exact: item.exato ?? false }"
+          (click)="aoNavegar()">
           <span class="menu-icone" [innerHTML]="sanitizarIcone(item.iconeSvg)"></span>
           {{ item.label }}
         </a>

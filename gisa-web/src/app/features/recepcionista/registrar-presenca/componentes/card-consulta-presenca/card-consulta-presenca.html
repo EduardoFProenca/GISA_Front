@@ -1,10 +1,14 @@
-<article class="card-consulta" [class.cancelada]="cancelada()">
+<article class="card-consulta" [class.cancelada]="cancelada()" [class.liberada]="liberada()">
   <header class="card-topo">
     <div>
       <strong class="horario">{{ horario() }}</strong>
       <span class="meta">{{ meta() }}</span>
     </div>
+    @if (liberada()) {
+    <span class="badge" data-status="LIBERADA">Horário liberado</span>
+    } @else {
     <span class="badge" [attr.data-status]="consulta().status">{{ labelStatus() }}</span>
+    }
   </header>
 
   <ul class="lista-pacientes">

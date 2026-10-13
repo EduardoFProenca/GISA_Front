@@ -12,6 +12,8 @@ export interface ResumoPresenca {
   pendentes: number;
 }
 
+export type SituacaoConsulta = 'PENDENTE' | 'LIBERADA' | 'CANCELADA';
+
 export const LABEL_STATUS: Record<StatusTerapia, string> = {
   [StatusTerapia.AGENDADA]: 'Agendada',
   [StatusTerapia.CONCLUIDA]: 'Concluída',
@@ -46,6 +48,31 @@ export function calcularResumo(consultas: ConsultaDiaria[]): ResumoPresenca {
     ).length,
     pendentes: pacientes.filter((p) => p.presenca === null).length,
   };
+}
+
+// "Liberada" = todos os pacientes já tiveram a presença registrada.
+// Efeito apenas visual: não altera data/hora da consulta.
+// TODO(Kauã): liberar a vaga na agenda de verdade ao receber o PATCH de presença.
+export function consultaLiberada(c: ConsultaDiaria): boolean {
+  return (
+    c.status !== StatusTerapia.CANCELADA &&
+    c.pacientes.length > 0 &&
+    c.pacientes.every((p) => p.presenca !== null)
+  );
+}
+
+export function situacaoDaConsulta(c: ConsultaDiaria): SituacaoConsulta {
+  if (c.status === StatusTerapia.CANCELADA) return 'CANCELADA';
+  return consultaLiberada(c) ? 'LIBERADA' : 'PENDENTE';
+}
+
+// Multi-seleção: conjunto vazio = sem filtro (mostra tudo).
+export function filtrarPorSituacao(
+  consultas: ConsultaDiaria[],
+  situacoes: ReadonlySet<string>
+): ConsultaDiaria[] {
+  if (situacoes.size === 0) return consultas;
+  return consultas.filter((c) => situacoes.has(situacaoDaConsulta(c)));
 }
 
 export function filtrarConsultas(consultas: ConsultaDiaria[], termo: string): ConsultaDiaria[] {

@@ -1,6 +1,7 @@
 import { Component, ElementRef, HostListener, Input, inject, signal } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Auth } from '../../../core/auth/auth';
+import { Layout } from '../../../core/layout/layout';
 import { NotificacaoService, tempoDecorrido } from '../../../services/notificacao';
 import { ICONES } from '../../icons';
 
@@ -12,6 +13,7 @@ import { ICONES } from '../../icons';
 })
 export class Header {
   auth = inject(Auth);
+  layout = inject(Layout);
   notificacoes = inject(NotificacaoService);
   private elemento = inject<ElementRef<HTMLElement>>(ElementRef);
   icones = ICONES;
@@ -20,6 +22,8 @@ export class Header {
   // Usados enquanto não há usuário logado com nome/cargo conhecidos.
   @Input() tituloPortal: string = '';
   @Input() subtituloPortal: string = '';
+  // Mostra o botão ☰ que abre/fecha o menu lateral (só nos portais que têm menu).
+  @Input() mostrarBotaoMenu: boolean = false;
 
   painelAberto = signal(false);
 

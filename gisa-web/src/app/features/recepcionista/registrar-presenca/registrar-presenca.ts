@@ -1,6 +1,11 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { BuscaFiltro, EstadoBusca } from '../../../shared/components/busca-filtro/busca-filtro';
+import {
+  EstadoFiltroAvancado,
+  FiltroAvancado,
+  OpcaoFiltroAvancado,
+} from '../../../shared/components/filtro-avancado/filtro-avancado';
 import { NavegadorData } from '../../../shared/components/navegador-data/navegador-data';
 import { hojeIso } from '../../../shared/utils/data.util';
 import { PresencaService } from '../../../services/presenca';
@@ -10,11 +15,23 @@ import {
   CardConsultaPresenca,
   PresencaMarcada,
 } from './componentes/card-consulta-presenca/card-consulta-presenca';
-import { atualizarPaciente, calcularResumo, filtrarConsultas } from './presenca.util';
+import {
+  atualizarPaciente,
+  calcularResumo,
+  filtrarConsultas,
+  filtrarPorSituacao,
+} from './presenca.util';
 
 @Component({
   selector: 'app-registrar-presenca',
-  imports: [CabecalhoPagina, BuscaFiltro, NavegadorData, ResumoPresencaDia, CardConsultaPresenca],
+  imports: [
+    CabecalhoPagina,
+    BuscaFiltro,
+    FiltroAvancado,
+    NavegadorData,
+    ResumoPresencaDia,
+    CardConsultaPresenca,
+  ],
   templateUrl: './registrar-presenca.html',
   styleUrl: './registrar-presenca.scss',
 })
@@ -26,10 +43,21 @@ export class RegistrarPresenca implements OnInit {
   carregando = signal(true);
   erro = signal('');
   termoBusca = signal('');
+  situacoes = signal<ReadonlySet<string>>(new Set());
   salvando = signal<{ idTerapia: number; idPaciente: number } | null>(null);
 
+  // O período é escolhido no navegador de data, então o filtro avançado só tem situação.
+  situacoesDisponiveis: OpcaoFiltroAvancado[] = [
+    { valor: 'PENDENTE', label: 'Pendentes', cor: '#2563eb' },
+    { valor: 'LIBERADA', label: 'Compareceu', cor: '#16a34a' },
+    { valor: 'CANCELADA', label: 'Falta', cor: '#ef4444' },
+    //{ valor: 'CANCELADAjustificada', label: 'Falta justificada', cor: '#b38d25' },
+  ];
+
   resumo = computed(() => calcularResumo(this.consultas()));
-  consultasFiltradas = computed(() => filtrarConsultas(this.consultas(), this.termoBusca()));
+  consultasFiltradas = computed(() =>
+    filtrarPorSituacao(filtrarConsultas(this.consultas(), this.termoBusca()), this.situacoes())
+  );
 
   // Evita que uma resposta antiga sobrescreva a de uma data escolhida depois.
   private requisicao = 0;
@@ -65,6 +93,10 @@ export class RegistrarPresenca implements OnInit {
 
   aplicarBusca(estado: EstadoBusca) {
     this.termoBusca.set(estado.termo);
+  }
+
+  aplicarFiltroAvancado(estado: EstadoFiltroAvancado) {
+    this.situacoes.set(new Set(estado.status));
   }
 
   idPacienteSalvando(c: ConsultaDiaria): number | null {
