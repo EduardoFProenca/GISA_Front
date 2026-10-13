@@ -1,9 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { CardEstatistica } from '../../../shared/components/card-estatistica/card-estatistica';
 import { PainelAcoesComponent, AcaoRapida } from '../../../shared/components/painel-acoes/painel-acoes';
 import { AtividadesRecentes, Atividade } from '../../../shared/components/atividades-recentes/atividades-recentes';
 import { Header } from '../../../shared/components/header/header';
 import { ICONES } from '../../../shared/icons';
+import { hojeIso } from '../../../shared/utils/data.util';
+import { ROTULO_STATUS_TERAPIA } from '../../../shared/utils/rotulos.util';
+import { TerapiaService } from '../../../core/services/terapia';
+import { mensagemDeErro } from '../../../core/http/erro-api';
+import { calcularResumo, horarioTerapia, ResumoPresenca } from '../../terapias/registrar-presenca/presenca.util';
 
 @Component({
   selector: 'app-dashboard-especialista',
@@ -11,57 +17,36 @@ import { ICONES } from '../../../shared/icons';
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
-export class DashboardEspecialista {
+export class DashboardEspecialista implements OnInit {
+  private terapiaService = inject(TerapiaService);
+  private router = inject(Router);
+
   icones = ICONES;
 
   acoesRapidas: AcaoRapida[] = [
+    { titulo: 'Minhas Terapias', descricao: 'Terapias do dia e presença', iconeSvg: ICONES.calendario, rota: '/especialista/minhas-terapias' },
     { titulo: 'Emitir Receita', descricao: 'Nova receita', iconeSvg: ICONES.gestaoAtividades, rota: '/especialista/receita' },
     { titulo: 'Emitir Atestado', descricao: 'Novo atestado', iconeSvg: ICONES.cadastrarPaciente, rota: '/especialista/atestado' },
   ];
 
-  atividadesRecentes: Atividade[] = [
-    {
-      descricao: 'Consulta com Ana Souza concluída',
-      tempoAtras: '15 min atrás',
-      acoes: [
-        { label: 'Ver detalhes', acao: () => this.verDetalhes('ana-souza') },
-        { label: 'Cancelar', acao: () => this.cancelarConsulta('ana-souza') },
-      ]
-    },
-    {
-      descricao: 'Receita emitida para João Pedro',
-      tempoAtras: '40 min atrás',
-      acoes: [
-        { label: 'Reenviar', acao: () => this.reenviarReceita('joao-pedro') },
-        { label: 'Ver receita', acao: () => this.verReceita('joao-pedro') },
-      ]
-    },
-    {
-      descricao: 'Atestado emitido',
-      tempoAtras: '2 horas atrás',
-    },
-  ];
+  resumo = signal<ResumoPresenca | null>(null);
+  terapiasHoje = signal<Atividade[]>([]);
+  aviso = signal('');
 
-
-
-
-  
-  // --- já que não tem backend ainda ---
-
-  verDetalhes(id: string) {
-    console.log('ver detalhes de', id);
+  ngOnInit() {
+    // /minhas responde 400 se o usuário logado não for especialista (ex.: administrador).
+    this.terapiaService.minhas({ data: hojeIso(), size: 100, sort: 'dataHoraInicio,asc' }).subscribe({
+      next: (p) => {
+        this.resumo.set(calcularResumo(p.content));
+        this.terapiasHoje.set(
+          p.content.map((t) => ({
+            descricao: `${horarioTerapia(t)} · ${t.titulo}`,
+            tempoAtras: ROTULO_STATUS_TERAPIA[t.status],
+            acoes: [{ label: 'Ver', acao: () => this.router.navigate(['/especialista/terapias', t.idTerapia]) }],
+          }))
+        );
+      },
+      error: (err) => this.aviso.set(mensagemDeErro(err, 'Não foi possível carregar suas terapias.')),
+    });
   }
-
-  cancelarConsulta(id: string) {
-    console.log('cancelar consulta de', id);
-  }
-
-  reenviarReceita(id: string) {
-    console.log('reenviar receita para', id);
-  }
-
-  verReceita(id: string) {
-    console.log('ver receita de', id);
-  }
-  //============================================
 }

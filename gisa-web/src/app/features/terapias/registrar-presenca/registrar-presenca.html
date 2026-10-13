@@ -1,0 +1,45 @@
+<app-cabecalho-pagina [titulo]="titulo" />
+
+<div class="pagina-presenca">
+
+  <app-resumo-presenca-dia [resumo]="resumo()" />
+
+  <div class="painel">
+    <app-navegador-data [data]="data()" (dataAlterada)="mudarData($event)" />
+
+    <app-busca-filtro placeholder="Buscar por paciente ou especialista..." (buscaAlterada)="aplicarBusca($event)" />
+
+    <app-filtro-avancado
+      tituloStatus="Situação"
+      [statusDisponiveis]="situacoesDisponiveis"
+      (filtroAlterado)="aplicarFiltroAvancado($event)" />
+
+    @if (erro()) {
+    <p class="mensagem erro">{{ erro() }}</p>
+    }
+
+    <div class="lista-consultas">
+      @if (carregando()) {
+      <p class="mensagem">Carregando terapias...</p>
+      } @else {
+      @for (t of terapiasFiltradas(); track t.idTerapia) {
+      <div class="item-terapia">
+        <app-card-terapia-presenca
+          [terapia]="t"
+          [podeRegistrar]="podeRegistrar"
+          [idPacienteSalvando]="idPacienteSalvando(t)"
+          (presencaMarcada)="registrar(t, $event)" />
+        @if (rotaTerapias) {
+        <a class="link-detalhes" [routerLink]="[rotaTerapias, t.idTerapia]">Ver detalhes da terapia</a>
+        }
+      </div>
+      } @empty {
+      @if (!erro()) {
+      <p class="mensagem">Nenhuma terapia encontrada para este dia.</p>
+      }
+      }
+      }
+    </div>
+  </div>
+
+</div>

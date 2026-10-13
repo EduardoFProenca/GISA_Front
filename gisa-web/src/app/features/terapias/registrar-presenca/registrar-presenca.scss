@@ -1,0 +1,46 @@
+.pagina-presenca {
+  padding: 4rem;
+
+  @media (max-width: 600px) {
+    padding: 1.5rem 1rem;
+  }
+}
+
+.painel {
+  background: white;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.lista-consultas {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.mensagem {
+  text-align: center;
+  color: #94a3b8;
+  padding: 1.5rem;
+  margin: 0;
+
+  &.erro {
+    color: #b91c1c;
+    background: #fee2e2;
+    border-radius: 8px;
+    margin-top: 1rem;
+  }
+}
+.link-detalhes {
+  display: inline-block;
+  margin: 0.4rem 0 0 0.25rem;
+  font-size: 0.85rem;
+  color: #2563eb;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

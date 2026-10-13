@@ -1,0 +1,133 @@
+<app-cabecalho-pagina
+  [titulo]="editando ? 'Editar Terapia' : 'Nova Terapia'"
+  [mostrarSalvar]="!carregando() && !erroCarregar()"
+  [mostrarCancelar]="true"
+  (salvar)="salvar()"
+  (cancelar)="cancelar()">
+</app-cabecalho-pagina>
+
+<div class="card-form">
+  @if (carregando()) {
+  <p class="aviso">Carregando terapia...</p>
+  } @else if (erroCarregar()) {
+  <p class="erro-msg erro-geral">{{ erroCarregar() }}</p>
+  } @else {
+  <p class="legenda-obrigatorio">Campos com <span class="obrigatorio">*</span> são obrigatórios.</p>
+
+  @if (erro()) {
+  <p class="erro-msg erro-geral">{{ erro() }}</p>
+  }
+
+  <div class="secao">
+    <h3>Participantes</h3>
+
+    <div class="linha-form">
+      @for (tipo of ['paciente', 'especialista']; track tipo) {
+      <div class="campo">
+        <label>
+          {{ tipo === 'paciente' ? 'Pacientes' : 'Especialistas' }} <span class="obrigatorio">*</span>
+        </label>
+
+        @for (item of lista($any(tipo))(); track item.uid) {
+        <div class="item-extra">
+          <div class="linha-extra">
+            <app-select-busca
+              [opcoes]="opcoesDisponiveis($any(tipo), item.uid)"
+              [value]="item.id"
+              (valueChange)="aoMudarPessoa($any(tipo), item.uid, $event)"
+              [placeholder]="tipo === 'paciente' ? 'Digite ou selecione o paciente' : 'Digite ou selecione o especialista'"
+              [semResultados]="tipo === 'paciente' ? 'Nenhum paciente encontrado' : 'Nenhum especialista encontrado'"
+              [comErro]="!!erros()[tipo + '-' + item.uid] || emConflito($any(tipo), item.id)">
+            </app-select-busca>
+            @if (lista($any(tipo))().length > 1) {
+            <button type="button" class="btn-remover" title="Remover" aria-label="Remover"
+              (click)="removerPessoa($any(tipo), item.uid)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+            }
+          </div>
+          @if (erros()[tipo + '-' + item.uid]) {
+          <span class="erro-msg">{{ erros()[tipo + '-' + item.uid] }}</span>
+          }
+        </div>
+        }
+        @if (erros()[tipo === 'paciente' ? 'pacientes' : 'especialistas']; as msg) {
+        <span class="erro-msg">{{ msg }}</span>
+        }
+
+        <button type="button" class="btn-adicionar-pessoa" (click)="adicionarPessoa($any(tipo))">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          {{ tipo === 'paciente' ? 'Adicionar paciente' : 'Adicionar especialista' }}
+        </button>
+      </div>
+      }
+    </div>
+  </div>
+
+  <div class="secao">
+    <h3>Data e Horário</h3>
+
+    <div class="linha-form">
+      <div class="campo">
+        <label for="modalidade">Modalidade</label>
+        <input type="text" id="modalidade" [value]="modalidade()" readonly tabindex="-1"
+          title="Definida pelo número de pacientes">
+      </div>
+
+      <div class="campo">
+        <label for="data">Data <span class="obrigatorio">*</span></label>
+        <input type="date" id="data" name="data" [ngModel]="data()" (ngModelChange)="data.set($event); limparErro('data')"
+          [class.input-erro]="erros()['data']">
+        @if (erros()['data']) { <span class="erro-msg">{{ erros()['data'] }}</span> }
+      </div>
+    </div>
+
+    <div class="linha-form">
+      <div class="campo">
+        <label for="horaInicio">Início <span class="obrigatorio">*</span></label>
+        <input type="time" id="horaInicio" name="horaInicio" [ngModel]="horaInicio()"
+          (ngModelChange)="horaInicio.set($event); limparErro('horaInicio')" [class.input-erro]="erros()['horaInicio']">
+        @if (erros()['horaInicio']) { <span class="erro-msg">{{ erros()['horaInicio'] }}</span> }
+      </div>
+
+      <div class="campo">
+        <label for="horaTermino">Término <span class="obrigatorio">*</span></label>
+        <input type="time" id="horaTermino" name="horaTermino" [ngModel]="horaTermino()"
+          (ngModelChange)="horaTermino.set($event); limparErro('horaTermino')" [class.input-erro]="erros()['horaTermino']">
+        @if (erros()['horaTermino']) { <span class="erro-msg">{{ erros()['horaTermino'] }}</span> }
+      </div>
+    </div>
+
+    @if (verificando()) {
+    <p class="aviso-conflito verificando">Verificando disponibilidade...</p>
+    } @else if (conflitos().length) {
+    <div class="aviso-conflito">
+      <strong>Conflito de horário</strong>
+      <ul>
+        @for (c of conflitos(); track c.tipo + c.idCadastro + c.idTerapia) {
+        <li>{{ textoConflito(c) }}</li>
+        }
+      </ul>
+    </div>
+    }
+  </div>
+  }
+</div>
+
+<app-sucesso-dialog
+  [aberto]="dialogSucessoAberto()"
+  [titulo]="editando ? 'Terapia atualizada!' : 'Terapia agendada!'"
+  [mensagem]="editando ? 'As alterações foram salvas.' : 'A terapia foi agendada no sistema.'"
+  textoPrimario="Ver detalhes"
+  [textoSecundario]="editando ? 'Voltar à lista' : 'Agendar outra'"
+  (verDetalhes)="verDetalhes()"
+  (continuar)="continuar()">
+</app-sucesso-dialog>

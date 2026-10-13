@@ -118,6 +118,11 @@
       [somenteLeitura]="true"
     ></app-contato>
 
+    @if (podeVerTerapias) {
+      <br><hr><br>
+      <app-terapias-paciente [idPaciente]="id()" [rotaTerapias]="rotaTerapias" />
+    }
+
     @if (podeVerHistorico) {
       <br><hr><br>
       <app-historico-paciente [idPaciente]="id()" />

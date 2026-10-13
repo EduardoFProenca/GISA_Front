@@ -1,0 +1,81 @@
+<app-cabecalho-pagina [titulo]="titulo" [textoAcao]="podeAgendar ? 'Nova Terapia' : ''"
+  [rotaAcao]="rotaBase + '/nova'" />
+
+<div class="pagina-profissionais">
+
+  <div class="stats-grid">
+    <app-card-estatistica titulo="Terapias encontradas" [valor]="totalElementos()"
+      [iconeSvg]="icones.gestaoConsultas" corIcone="#dbeafe" />
+    <app-card-estatistica titulo="Agendadas" [valor]="contadores()['AGENDADA'] ?? '—'"
+      [iconeSvg]="icones.calendario" corIcone="#dbeafe" />
+    <app-card-estatistica titulo="Concluídas" [valor]="contadores()['CONCLUIDA'] ?? '—'"
+      [iconeSvg]="icones.estrela" corIcone="#dcfce7" />
+    <app-card-estatistica titulo="Canceladas" [valor]="contadores()['CANCELADA'] ?? '—'"
+      [iconeSvg]="icones.sino" corIcone="#fee2e2" />
+  </div>
+
+  <div class="painel-busca">
+    <div class="filtros-pessoas">
+      <app-select-busca
+        [opcoes]="opcoesPacientes()"
+        [value]="idPaciente()"
+        (valueChange)="filtrarPaciente($event)"
+        placeholder="Filtrar por paciente"
+        semResultados="Nenhum paciente encontrado" />
+      <app-select-busca
+        [opcoes]="opcoesEspecialistas()"
+        [value]="idEspecialista()"
+        (valueChange)="filtrarEspecialista($event)"
+        placeholder="Filtrar por especialista"
+        semResultados="Nenhum especialista encontrado" />
+    </div>
+
+    <app-filtro-avancado
+      [statusDisponiveis]="statusDisponiveis"
+      [periodosDisponiveis]="periodosDisponiveis"
+      (filtroAlterado)="aplicarFiltroAvancado($event)" />
+
+    @if (erro()) {
+    <p class="vazio">{{ erro() }}</p>
+    }
+
+    <div class="grid-profissionais">
+      @for (terapia of terapias(); track terapia.idTerapia) {
+      <app-card-terapia
+        [terapia]="terapia"
+        [permitirEditar]="podeEditar"
+        [permitirCancelar]="podeCancelar"
+        (verDetalhes)="verDetalhes($event)"
+        (editar)="editar($event)"
+        (cancelar)="pedirCancelamento($event)" />
+      } @empty {
+      @if (carregando()) {
+      <p class="vazio">Carregando terapias...</p>
+      } @else if (!erro()) {
+      <p class="vazio">Nenhuma terapia encontrada.</p>
+      }
+      }
+    </div>
+  </div>
+
+  <app-paginacao [totalItens]="totalElementos()" [itensPorPagina]="itensPorPagina" [paginaAtual]="paginaAtual()"
+    (paginaAlterada)="mudarPagina($event)" />
+
+</div>
+
+<app-form-dialog
+  [aberto]="terapiaParaCancelar() !== null"
+  titulo="Cancelar terapia?"
+  [descricao]="descricaoCancelamento()"
+  [erro]="erroCancelamento()"
+  [salvando]="cancelando()"
+  textoConfirmar="Cancelar terapia"
+  textoCancelar="Voltar"
+  (confirmar)="confirmarCancelamento()"
+  (cancelar)="terapiaParaCancelar.set(null)">
+  <div>
+    <label for="motivoCancelamento">Motivo do cancelamento</label>
+    <textarea id="motivoCancelamento" name="motivoCancelamento" rows="3" maxlength="255"
+      [(ngModel)]="motivo" placeholder="Ex.: especialista em licença"></textarea>
+  </div>
+</app-form-dialog>

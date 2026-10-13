@@ -1,0 +1,91 @@
+<app-cabecalho-pagina titulo="Detalhes da Terapia"
+  [textoAcao]="podeEditar && terapia()?.status === 'AGENDADA' ? 'Editar' : ''"
+  [rotaAcao]="rotaBase + '/' + id + '/editar'">
+</app-cabecalho-pagina>
+
+<div class="card-form">
+  @if (carregando()) {
+  <p class="aviso">Carregando terapia...</p>
+  } @else if (erro()) {
+  <p class="erro-msg">{{ erro() }}</p>
+  } @else if (terapia(); as t) {
+  <div class="secao">
+    <h3>{{ t.titulo }}</h3>
+    <div class="info-bloco">
+      <p><strong>Quando:</strong> {{ quando() }}</p>
+      <p><strong>Modalidade:</strong> {{ rotuloModalidade() }}</p>
+      <p><strong>Status:</strong> {{ rotuloStatus() }}
+        @if (t.horarioLiberado) { · horário liberado (todos os pacientes justificaram a falta) }
+      </p>
+      @if (t.motivoCancelamento) {
+      <p><strong>Motivo do cancelamento:</strong> {{ t.motivoCancelamento }}</p>
+      }
+    </div>
+
+    @if (podeAlterarStatus && (proximo() || podeCancelar())) {
+    <div class="acoes-situacao">
+      @if (proximo(); as p) {
+      <button type="button" class="btn-reativar" [disabled]="salvando()" (click)="confirmacaoAberta.set(true)">
+        {{ salvando() ? 'Salvando...' : p.texto }}
+      </button>
+      }
+      @if (podeCancelar()) {
+      <button type="button" class="btn-inativar" [disabled]="salvando()" (click)="abrirCancelamento()">Cancelar terapia</button>
+      }
+    </div>
+    }
+    @if (erroAcao()) { <p class="erro-msg">{{ erroAcao() }}</p> }
+  </div>
+
+  <br><hr><br>
+
+  <div class="secao">
+    <h3>Especialistas</h3>
+    @for (e of t.especialistas; track e.idCadastro) {
+    <div class="info-bloco">
+      <p><strong>{{ e.nome }}</strong></p>
+      <p>{{ e.especialidades.join(', ') || 'Sem especialidade informada' }}</p>
+    </div>
+    }
+  </div>
+
+  <br><hr><br>
+
+  <div class="secao">
+    <h3>Pacientes e Presença</h3>
+    <app-card-terapia-presenca
+      [terapia]="t"
+      [podeRegistrar]="podeRegistrarPresenca"
+      [idPacienteSalvando]="salvandoPresenca()"
+      (presencaMarcada)="registrarPresenca($event)" />
+  </div>
+
+  <p class="voltar"><a [routerLink]="rotaBase">← Voltar para a lista</a></p>
+  }
+</div>
+
+<app-confirm-dialog
+  [aberto]="confirmacaoAberta()"
+  [titulo]="(proximo()?.texto ?? '') + '?'"
+  [mensagem]="proximo()?.mensagem ?? ''"
+  textoConfirmar="Confirmar"
+  textoCancelar="Voltar"
+  (confirmar)="avancarStatus()"
+  (cancelar)="confirmacaoAberta.set(false)" />
+
+<app-form-dialog
+  [aberto]="cancelamentoAberto()"
+  titulo="Cancelar terapia?"
+  descricao="O horário volta a ficar livre para pacientes e especialistas."
+  [erro]="erroCancelamento()"
+  [salvando]="salvando()"
+  textoConfirmar="Cancelar terapia"
+  textoCancelar="Voltar"
+  (confirmar)="confirmarCancelamento()"
+  (cancelar)="cancelamentoAberto.set(false)">
+  <div>
+    <label for="motivo">Motivo do cancelamento</label>
+    <textarea id="motivo" name="motivo" rows="3" maxlength="255" [(ngModel)]="motivo"
+      placeholder="Ex.: especialista em licença"></textarea>
+  </div>
+</app-form-dialog>

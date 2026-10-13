@@ -21,6 +21,8 @@ export interface Atividade {
 })
 export class AtividadesRecentes {
   @Input() atividades: Atividade[] = [];
+  @Input() titulo = 'Atividades';
+  @Input() vazio = 'Nenhuma atividade.';
 
   constructor(private sanitizer: DomSanitizer) {}
 

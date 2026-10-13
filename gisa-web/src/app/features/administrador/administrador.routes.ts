@@ -5,21 +5,18 @@ import { CadastroProfissional } from './cadastrar-profissional/cadastrar-profiss
 import { GerenciarProfissionais } from './gerenciar-profissionais/gerenciar-profissionais';
 import { DetalheProfissional } from './detalhe-profissional/detalhe-profissional';
 import { EditarProfissional } from './editar-profissional/editar-profissional';
-import { CriarConsulta } from '../terapias/criar-consulta/criar-consulta';
 import { HistoricoProfissional } from './historico-profissional/historico-profissional';
-import { GerenciarConsultas } from '../terapias/gerenciar-consultas/gerenciar-consultas';
 import { pacientesRoutes } from '../pacientes/pacientes.routes';
+import { terapiasRoutes } from '../terapias/terapias.routes';
 
 export const administradorRoutes: Routes = [
   { path: '', component: DashboardAdministrador },
   { path: 'profissionais/novo', component: CadastroProfissional },
-  { path: 'profissionais/gerenciar', component: GerenciarProfissionais },
-  { path: 'profissionais/:id', component: DetalheProfissional },
+  { path: 'profissionais/gerenciar', component: GerenciarProfissionais, ...exigePermissao('VISUALIZAR_PROFISSIONAIS') },
+  { path: 'profissionais/:id', component: DetalheProfissional, ...exigePermissao('VISUALIZAR_PROFISSIONAIS') },
   { path: 'profissionais/:id/editar', component: EditarProfissional, ...exigePermissao('EDITAR_PROFISSIONAL') },
-  { path: 'consultas/nova', component: CriarConsulta, ...exigePermissao('AGENDAR_TERAPIA') },
-  { path: 'profissionais/:id/historico', component: HistoricoProfissional },
+  { path: 'profissionais/:id/historico', component: HistoricoProfissional, ...exigePermissao('VISUALIZAR_TERAPIAS') },
 
   { path: 'pacientes', children: pacientesRoutes('/administrador/pacientes') },
-
-  { path: 'consultas/gerenciar', component: GerenciarConsultas, ...exigePermissao('VISUALIZAR_TERAPIAS') },
+  { path: 'terapias', children: terapiasRoutes('/administrador/terapias') },
 ];

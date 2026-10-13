@@ -1,47 +1,27 @@
-<app-cabecalho-pagina titulo="Histórico do Profissional"></app-cabecalho-pagina>
+<app-cabecalho-pagina [titulo]="nome() ? 'Terapias de ' + nome() : 'Terapias do Profissional'"></app-cabecalho-pagina>
 
 <div class="card-form">
-
-
-  <h3 class="titulo-secao-historico">Consultas Realizadas</h3>
-
-  <app-busca-filtro placeholder="Buscar por especialista, modalidade ou status..."
-    (buscaAlterada)="consultas.aplicarBusca($event)" />
-
-  <br><br>
-
-  @if (carregandoConsultas()) {
-  <p class="vazio">Carregando consultas...</p>
-  } @else if (consultas.itensFiltrados().length === 0) {
-  <p class="vazio">Nenhuma consulta encontrada para este profissional.</p>
+  @if (erro()) {
+  <p class="vazio">{{ erro() }}</p>
+  } @else if (!atendeTerapias()) {
+  <p class="vazio">Este cadastro não é de especialista, então não participa de terapias.</p>
   } @else {
-  <app-painel-acoes titulo="Consultas" [acoes]="consultas.acoesPaginadas()" />
+  <app-filtro-avancado [statusDisponiveis]="statusDisponiveis" (filtroAlterado)="aplicarFiltro($event)" />
 
-  <br>
-  <hr>
-  <br>
+  <div class="grid-terapias">
+    @for (t of terapias(); track t.idTerapia) {
+    <app-card-terapia [terapia]="t" [permitirEditar]="false" [permitirCancelar]="false"
+      (verDetalhes)="verDetalhes($event)" />
+    } @empty {
+    @if (carregando()) {
+    <p class="vazio">Carregando terapias...</p>
+    } @else {
+    <p class="vazio">Nenhuma terapia encontrada.</p>
+    }
+    }
+  </div>
 
-  <h3 class="titulo-secao-historico">Eventos do Cadastro</h3>
-
-  <app-busca-filtro placeholder="Buscar por título ou descrição do evento..."
-    (buscaAlterada)="eventos.aplicarBusca($event)" />
-
-  <br><br>
-
-  @if (carregandoEventos()) {
-  <p class="vazio">Carregando eventos...</p>
-  } @else if (eventos.itensFiltrados().length === 0) {
-  <p class="vazio">Nenhum evento encontrado para este profissional.</p>
-  } @else {
-  <app-painel-acoes titulo="Linha do Tempo" [acoes]="eventos.acoesPaginadas()" />
-
-  <app-paginacao [totalItens]="eventos.itensFiltrados().length" [itensPorPagina]="eventos.itensPorPagina"
-    [paginaAtual]="eventos.paginaAtual()" (paginaAlterada)="eventos.mudarPagina($event)" />
-  }
-
-
-
-  <app-paginacao [totalItens]="consultas.itensFiltrados().length" [itensPorPagina]="consultas.itensPorPagina"
-    [paginaAtual]="consultas.paginaAtual()" (paginaAlterada)="consultas.mudarPagina($event)" />
+  <app-paginacao [totalItens]="total()" [itensPorPagina]="itensPorPagina" [paginaAtual]="pagina()"
+    (paginaAlterada)="mudarPagina($event)" />
   }
 </div>

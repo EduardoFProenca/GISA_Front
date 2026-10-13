@@ -3,6 +3,7 @@ import { EstadoCivil, StatusCadastro } from '../../core/models/comum.model';
 import { GrauParentesco, StatusPaciente } from '../../core/models/paciente.model';
 import { TipoEscola } from '../../core/models/escola.model';
 import { TipoEventoPaciente } from '../../core/models/historico.model';
+import { Modalidade, Presenca, StatusTerapia } from '../../core/models/terapia.model';
 
 export const ROTULO_STATUS_PACIENTE: Record<StatusPaciente, string> = {
   MATRICULADO: 'Matriculado',
@@ -48,4 +49,31 @@ export const ROTULO_EVENTO_PACIENTE: Record<TipoEventoPaciente, string> = {
   TERAPIA_ALTERADA: 'Terapia alterada',
   TERAPIA_CANCELADA: 'Terapia cancelada',
   PRESENCA_REGISTRADA: 'Presença registrada',
+};
+
+export const ROTULO_STATUS_TERAPIA: Record<StatusTerapia, string> = {
+  AGENDADA: 'Agendada',
+  EM_ATENDIMENTO: 'Em atendimento',
+  CONCLUIDA: 'Concluída',
+  CANCELADA: 'Cancelada',
+};
+
+// Cor do indicador de cada status (filtros e badges).
+export const COR_STATUS_TERAPIA: Record<StatusTerapia, string> = {
+  AGENDADA: '#2563eb',
+  EM_ATENDIMENTO: '#d97706',
+  CONCLUIDA: '#16a34a',
+  CANCELADA: '#ef4444',
+};
+
+export const ROTULO_MODALIDADE: Record<Modalidade, string> = {
+  INDIVIDUAL: 'Individual',
+  COLETIVA: 'Coletiva',
+};
+
+export const ROTULO_PRESENCA: Record<Presenca, string> = {
+  PENDENTE: 'Pendente',
+  PRESENTE: 'Compareceu',
+  FALTA_JUSTIFICADA: 'Falta justificada',
+  FALTA_INJUSTIFICADA: 'Falta',
 };

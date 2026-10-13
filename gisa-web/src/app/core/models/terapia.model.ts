@@ -34,13 +34,13 @@ interface TerapiaBase {
   // true quando todos os pacientes justificaram a falta (especialista livre no horário).
   horarioLiberado: boolean;
   pacientes: PacienteTerapia[];
+  // Preenchido só quando a terapia foi cancelada.
+  motivoCancelamento?: string | null;
 }
 
 // Item de GET /terapias, GET /terapias/{id} e resposta de POST/PATCH (inclusive presença e status).
 export interface Terapia extends TerapiaBase {
   especialistas: EspecialistaTerapia[];
-  // Preenchido só quando a terapia foi cancelada.
-  motivoCancelamento: string | null;
 }
 
 // Item de GET /terapias/minhas (sem o próprio especialista logado).

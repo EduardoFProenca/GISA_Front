@@ -1,5 +1,5 @@
 <div class="painel">
-  <h3>Atividades </h3>
+  <h3>{{ titulo }}</h3>
   <ul>
     @for (item of atividades; track item.descricao) {
       <li>
@@ -22,6 +22,8 @@
           </div>
         }
       </li>
+    } @empty {
+      <li class="vazio">{{ vazio }}</li>
     }
   </ul>
 </div>

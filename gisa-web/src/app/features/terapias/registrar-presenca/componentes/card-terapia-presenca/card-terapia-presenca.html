@@ -1,0 +1,33 @@
+<article class="card-consulta" [class.cancelada]="cancelada()" [class.liberada]="horarioLiberado()">
+  <header class="card-topo">
+    <div>
+      <strong class="horario">{{ horario() }}</strong>
+      <span class="meta">{{ meta() }}</span>
+    </div>
+    @if (horarioLiberado()) {
+    <span class="badge" data-status="LIBERADA" title="Todos os pacientes justificaram a falta">Horário liberado</span>
+    } @else {
+    <span class="badge" [attr.data-status]="terapia().status">{{ rotuloStatus() }}</span>
+    }
+  </header>
+
+  @if (terapia().motivoCancelamento; as motivo) {
+  <p class="motivo">Cancelada: {{ motivo }}</p>
+  }
+
+  <ul class="lista-pacientes">
+    @for (p of terapia().pacientes; track p.idCadastro) {
+    <li>
+      <app-linha-paciente-presenca
+        [paciente]="p"
+        [bloqueado]="bloqueado(p)"
+        (marcarPresente)="marcar(p, 'PRESENTE')"
+        (marcarFalta)="marcar(p, 'FALTA_INJUSTIFICADA')"
+        (marcarFaltaJustificada)="marcar(p, 'FALTA_JUSTIFICADA', $event)"
+        (desfazer)="marcar(p, 'PENDENTE')" />
+    </li>
+    } @empty {
+    <li class="vazio">Nenhum paciente vinculado a esta terapia.</li>
+    }
+  </ul>
+</article>

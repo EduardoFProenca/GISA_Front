@@ -1,0 +1,35 @@
+<div class="secao">
+  <h3>Terapias</h3>
+
+  @if (erro()) {
+  <p class="aviso erro-msg">{{ erro() }}</p>
+  } @else if (carregando() && terapias().length === 0) {
+  <p class="aviso">Carregando terapias...</p>
+  } @else {
+  <ul class="lista">
+    @for (t of terapias(); track t.idTerapia) {
+    <li>
+      <div class="linha-topo">
+        <span class="quando">{{ data(t.data) }} · {{ horario(t) }}</span>
+        <span class="status" [attr.data-status]="t.status">{{ status[t.status] }}</span>
+      </div>
+      <p class="detalhe">
+        {{ especialistas(t) }}
+        @if (t.modalidade === 'COLETIVA') { · coletiva }
+        · Presença: {{ presencaDoPaciente(t) }}
+      </p>
+      @if (rotaTerapias()) {
+      <a class="link" [routerLink]="[rotaTerapias(), t.idTerapia]">Ver terapia</a>
+      }
+    </li>
+    } @empty {
+    <p class="aviso">Nenhuma terapia registrada.</p>
+    }
+  </ul>
+
+  @if (total() > itensPorPagina) {
+  <app-paginacao [totalItens]="total()" [itensPorPagina]="itensPorPagina" [paginaAtual]="pagina()"
+    (paginaAlterada)="mudarPagina($event)" />
+  }
+  }
+</div>

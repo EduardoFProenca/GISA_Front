@@ -13,6 +13,7 @@ import { mensagemDeErro } from '../../../core/http/erro-api';
 import { lerContextoPacientes } from '../contexto-pacientes';
 import { dadosPessoaisDe, enderecoParaForm } from '../paciente-form.util';
 import { HistoricoPaciente } from './historico-paciente/historico-paciente';
+import { TerapiasPaciente } from './terapias-paciente/terapias-paciente';
 import { formatarCelular, formatarCpf } from '../../../shared/utils/formatacao.util';
 import { dataCurta } from '../../../shared/utils/data.util';
 import {
@@ -24,7 +25,7 @@ import {
 
 @Component({
   selector: 'app-detalhe-paciente',
-  imports: [CabecalhoPagina, ConfirmDialog, DadosPessoais, Contato, HistoricoPaciente],
+  imports: [CabecalhoPagina, ConfirmDialog, DadosPessoais, Contato, HistoricoPaciente, TerapiasPaciente],
   templateUrl: './detalhe-paciente.html',
   styleUrl: './detalhe-paciente.scss'
 })
@@ -46,6 +47,9 @@ export class DetalhePaciente implements OnInit {
   podeEditar = !this.contexto.somenteLeitura && this.auth.temPermissao('EDITAR_PACIENTE');
   podeInativar = !this.contexto.somenteLeitura && this.auth.temPermissao('INATIVAR_PACIENTE');
   podeVerHistorico = this.auth.temPermissao('VISUALIZAR_HISTORICO_PACIENTE');
+  podeVerTerapias = this.auth.temPermissao('VISUALIZAR_TERAPIAS');
+  // /administrador/pacientes -> /administrador/terapias. No painel só leitura não há telas de terapia.
+  rotaTerapias = this.contexto.somenteLeitura ? '' : this.contexto.rotaBase.replace(/\/pacientes$/, '/terapias');
 
   carregando = signal(true);
   erro = signal('');

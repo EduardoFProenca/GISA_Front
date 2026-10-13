@@ -1,17 +1,17 @@
-<app-header tituloPortal="Portal da Recepção" subtituloPortal="APAE — Cidade do Sudeste" [mostrarBotaoMenu]="true" />
+<app-header tituloPortal="Portal da Recepção" subtituloPortal="Recepção" [mostrarBotaoMenu]="true" />
 
 <div class="corpo">
     <br>
   <main class="conteudo">
     <div class="stats-grid">
-      <app-card-estatistica titulo="Pacientes Hoje" [valor]="14" [iconeSvg]="icones.gestaoPacientes" corIcone="#dbeafe" />
-      <app-card-estatistica titulo="Presenças Confirmadas" [valor]="11" [iconeSvg]="icones.gestaoConsultas" corIcone="#dcfce7" />
-      <app-card-estatistica titulo="Recusas do Mês" [valor]="3" [iconeSvg]="icones.cadastrarPaciente" corIcone="#fef3c7" />
+      <app-card-estatistica titulo="Terapias Hoje" [valor]="resumo()?.terapias ?? '—'" [iconeSvg]="icones.calendario" corIcone="#dbeafe" />
+      <app-card-estatistica titulo="Presenças Confirmadas" [valor]="resumo()?.presentes ?? '—'" [iconeSvg]="icones.gestaoConsultas" corIcone="#dcfce7" />
+      <app-card-estatistica titulo="Presenças Pendentes" [valor]="resumo()?.pendentes ?? '—'" [iconeSvg]="icones.pessoa" corIcone="#fef3c7" />
     </div>
 
     <div class="conteudo-principal">
       <app-painel-acoes [acoes]="acoesRapidas" />
-      <app-atividades-recentes [atividades]="atividadesRecentes" />
+      <app-atividades-recentes [atividades]="terapiasHoje()" titulo="Terapias de hoje" vazio="Nenhuma terapia agendada para hoje." />
     </div>
   </main>
 </div>

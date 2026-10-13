@@ -1,20 +1,25 @@
-<app-header tituloPortal="Eduardo F P" subtituloPortal="Portal do Especialista" />
+<app-header tituloPortal="Especialista" subtituloPortal="Portal do Especialista" />
 <br>
 <div class="corpo">
 
     <main class="conteudo">
+        @if (aviso()) {
+        <p class="aviso-painel">{{ aviso() }}</p>
+        }
+
         <div class="stats-grid">
-            <app-card-estatistica titulo="Terapias Hoje" [valor]="6" [iconeSvg]="icones.calendario"
+            <app-card-estatistica titulo="Terapias Hoje" [valor]="resumo()?.terapias ?? '—'" [iconeSvg]="icones.calendario"
                 corIcone="#dbeafe" />
-            <app-card-estatistica titulo="Terapias Hoje" [valor]="6" [iconeSvg]="icones.calendario"
-                corIcone="#dbeafe" />
-            <app-card-estatistica titulo="Terapias Hoje" [valor]="6" [iconeSvg]="icones.calendario"
-                corIcone="#dbeafe" />
+            <app-card-estatistica titulo="Pacientes Presentes" [valor]="resumo()?.presentes ?? '—'"
+                [iconeSvg]="icones.gestaoConsultas" corIcone="#dcfce7" />
+            <app-card-estatistica titulo="Presenças Pendentes" [valor]="resumo()?.pendentes ?? '—'"
+                [iconeSvg]="icones.pessoa" corIcone="#fef3c7" />
         </div>
 
         <div class="conteudo-principal">
             <app-painel-acoes [acoes]="acoesRapidas" />
-            <app-atividades-recentes [atividades]="atividadesRecentes" />
+            <app-atividades-recentes [atividades]="terapiasHoje()" titulo="Minhas terapias de hoje"
+                vazio="Nenhuma terapia para hoje." />
         </div>
     </main>
 </div>
