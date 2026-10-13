@@ -3,10 +3,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { PacienteLista, PacienteResumo } from '../core/models/paciente-resumo.model';
 import { PacienteDetalhe, PacienteEdicaoPayload } from '../core/models/paciente-detalhe.model';
-import { CadastroPacienteResponse, PacienteCadastroPayload } from '../core/models/paciente-cadastro.model';
-import { PaginaSpring } from '../core/models/profissional-resumo.model';
+import { CadastroPacienteResponse, PacienteCadastroPayload, PacienteResumo } from '../core/models/paciente.model';
+import { Pagina, PaginaApi, normalizarPagina } from '../core/models/comum.model';
 import { PACIENTES_EXEMPLO, paraLista } from '../core/data/pacientes-exemplo';
 
 @Injectable({ providedIn: 'root' })
@@ -21,7 +20,7 @@ export class PacienteService {
   listar(): Observable<PacienteResumo[]> {
     const params = new HttpParams().set('page', 0).set('size', 1000);
     return this.http
-      .get<PaginaSpring<PacienteResumo>>(this.base, { params })
+      .get<PaginaApi<PacienteResumo>>(this.base, { params })
       .pipe(map((pagina) => pagina.content));
   }
 
@@ -29,7 +28,7 @@ export class PacienteService {
     return this.http.post<CadastroPacienteResponse>(this.base, dados);
   }
 
-  listarPaginado(pagina: number, tamanho: number): Observable<PaginaSpring<PacienteLista>> {
+  listarPaginado(pagina: number, tamanho: number): Observable<Pagina<PacienteResumo>> {
     if (environment.usarDadosExemplo) {
       const todos = PACIENTES_EXEMPLO.map(paraLista).sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
       const inicio = pagina * tamanho;
@@ -46,7 +45,9 @@ export class PacienteService {
       .set('page', pagina)
       .set('size', tamanho)
       .set('sort', 'nome,asc');
-    return this.http.get<PaginaSpring<PacienteLista>>(this.base, { params });
+    return this.http
+      .get<PaginaApi<PacienteResumo>>(this.base, { params })
+      .pipe(map((resposta) => normalizarPagina(resposta)));
   }
 
   // ATENÇÃO: GET /pacientes/{id} ainda não consta na documentação da API (endpoint assumido).

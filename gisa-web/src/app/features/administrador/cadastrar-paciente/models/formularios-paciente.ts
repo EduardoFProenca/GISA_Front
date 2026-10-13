@@ -1,6 +1,7 @@
 import { ComErros } from '../../../../shared/components/com-erros';
-import { GrauParentesco, TipoEscola } from '../../../../core/models/paciente.model';
-import { EscolaCadastrada } from '../../../../core/models/escola.model';
+import { GrauParentesco } from '../../../../core/models/paciente.model';
+import { TipoEscola } from '../../../../core/models/escola.model';
+import { Escola } from '../../../../core/models/escola.model';
 import { CidSelecionado } from '../../../../services/cid';
 import { ContatoForm, DadosPessoaisForm } from '../../cadastrar-profissional/models/formularios-cadastro';
 
@@ -14,7 +15,7 @@ export interface InfoEscolaForm extends ComErros {
   nome: string;
   tipoEscola: TipoEscola | '';
   telefone: string;
-  escolaSelecionada: EscolaCadastrada | null;
+  escolaSelecionada: Escola | null;
 }
 
 export interface InfoProntuarioForm extends ComErros {

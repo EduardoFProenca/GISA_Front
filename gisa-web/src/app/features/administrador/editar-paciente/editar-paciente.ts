@@ -22,8 +22,9 @@ import { PacienteValidadorService } from '../cadastrar-paciente/services/pacient
 import { PacienteCadastroPayloadService } from '../cadastrar-paciente/services/paciente-payload';
 import { PacienteErrosApiService } from '../cadastrar-paciente/services/paciente-erros-api';
 
-import { Cid, GrauParentesco, StatusPaciente } from '../../../core/models/paciente.model';
-import { EscolaCadastrada } from '../../../core/models/escola.model';
+import { GrauParentesco, StatusPaciente } from '../../../core/models/paciente.model';
+import { Cid } from '../../../core/models/cid.model';
+import { Escola } from '../../../core/models/escola.model';
 import { PacienteDetalhe, PacienteEdicaoPayload } from '../../../core/models/paciente-detalhe.model';
 import { PacienteService } from '../../../services/paciente';
 import { EscolaService } from '../../../services/escola';
@@ -107,7 +108,7 @@ export class EditarPaciente implements OnInit {
   prontuarioInicial = computed(() => this.paciente()?.prontuario);
   cidsIniciais = computed<Cid[]>(() => this.paciente()?.cids ?? []);
 
-  escolaInicial = computed<EscolaCadastrada | null>(() => {
+  escolaInicial = computed<Escola | null>(() => {
     const e = this.paciente()?.escola;
     return e ? { idEscola: e.idEscola, nome: e.nome, tipoEscola: e.tipoEscola, telefone: e.telefone } : null;
   });
@@ -189,7 +190,7 @@ export class EditarPaciente implements OnInit {
 
     this.salvando.set(true);
 
-    let escola: EscolaCadastrada | null;
+    let escola: Escola | null;
     try {
       escola = await this.resolverEscola(f.infoEscola);
     } catch (e) {
@@ -234,13 +235,13 @@ export class EditarPaciente implements OnInit {
 
   // Escola escolhida na lista -> usa o id. Escola nova (digitada) -> cadastra antes de salvar.
   // Campo vazio -> paciente sem escola.
-  private async resolverEscola(ie: InfoEscolaForm): Promise<EscolaCadastrada | null> {
+  private async resolverEscola(ie: InfoEscolaForm): Promise<Escola | null> {
     if (ie.escolaSelecionada) return ie.escolaSelecionada;
     if (vazio(ie.nome)) return null;
 
     // Com os exemplos ligados nada é gravado na API: a escola nova só existe na ficha em memória.
     if (this.pacienteService.modoExemplo) {
-      const local: EscolaCadastrada = {
+      const local: Escola = {
         idEscola: Date.now(),
         nome: ie.nome.trim(),
         tipoEscola: ie.tipoEscola as 'PUBLICA' | 'PARTICULAR',
@@ -262,7 +263,7 @@ export class EditarPaciente implements OnInit {
   }
 
   // Ficha como ficará depois da edição (usada para atualizar os exemplos em memória).
-  private montarVisao(original: PacienteDetalhe, f: FormulariosPaciente, escola: EscolaCadastrada | null): PacienteDetalhe {
+  private montarVisao(original: PacienteDetalhe, f: FormulariosPaciente, escola: Escola | null): PacienteDetalhe {
     const dp = f.dadosPessoais;
     const ct = f.contato;
     const pr = f.infoProntuario;

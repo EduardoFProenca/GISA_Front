@@ -1,4 +1,4 @@
-import { ProfissionalDetalhe } from '../../../core/models/profissional-detalhe.model';
+import { Profissional, ProfissionalDetalhe } from '../../../core/models/profissional.model';
 import {
   cargoParaValor,
   especialidadeParaValor,
@@ -7,7 +7,7 @@ import {
   paraFormularios,
 } from './profissional-detalhe.util';
 
-const profissional = {
+const profissional: Profissional = {
   pessoa: {
     idCadastro: 7,
     nome: 'Roberto Almeida',
@@ -32,6 +32,7 @@ const profissional = {
   },
   email: 'roberto@apae.org',
   cargo: { idCargo: 2, nome: 'Médico', codigoCBO: '225125', tituloCBO: 'Médico clínico' },
+  usuario: null,
 };
 
 describe('profissional-detalhe.util', () => {

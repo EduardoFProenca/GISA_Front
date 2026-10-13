@@ -1,5 +1,8 @@
-import { Cid, GrauParentesco, StatusPaciente, TipoEscola } from './paciente.model';
-import { PacienteCadastroPayload } from './paciente-cadastro.model';
+// LEGADO: formato inventado antes de existir GET /pacientes/{id}. Substituído por Paciente
+// (paciente.model.ts) na Etapa 1, junto com as telas de detalhe e edição.
+import { GrauParentesco, PacienteCadastroPayload, StatusPaciente } from './paciente.model';
+import { Cid } from './cid.model';
+import { TipoEscola } from './escola.model';
 
 export interface EnderecoDetalhe {
   cep: string;

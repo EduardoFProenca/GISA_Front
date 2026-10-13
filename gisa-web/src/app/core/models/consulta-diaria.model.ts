@@ -1,3 +1,4 @@
+// LEGADO: formato antigo, sem correspondência na API. Substituído por terapia.model.ts na Etapa 3.
 import { Modalidade, StatusTerapia } from './consulta.model';
 
 export enum StatusPresenca {

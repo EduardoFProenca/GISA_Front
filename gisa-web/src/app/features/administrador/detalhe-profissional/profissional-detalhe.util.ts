@@ -1,4 +1,4 @@
-import { ProfissionalDetalhe } from '../../../core/models/profissional-detalhe.model';
+import { ProfissionalDetalhe } from '../../../core/models/profissional.model';
 import { soDigitos } from '../../../shared/utils/texto.util';
 
 export interface FormulariosDetalhe {

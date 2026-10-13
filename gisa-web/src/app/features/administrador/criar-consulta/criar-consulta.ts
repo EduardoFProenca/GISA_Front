@@ -8,8 +8,8 @@ import { SucessoDialog } from '../../../shared/components/sucesso-dialog/sucesso
 import { PacienteService } from '../../../services/paciente';
 import { ProfissionalService } from '../../../services/profissional';
 import { TerapiaService } from '../../../services/terapia';
-import { PacienteResumo } from '../../../core/models/paciente-resumo.model';
-import { ProfissionalResumo } from '../../../core/models/profissional-resumo.model';
+import { PacienteResumo } from '../../../core/models/paciente.model';
+import { ProfissionalResumo } from '../../../core/models/profissional.model';
 import { Modalidade, NovaTerapia } from '../../../core/models/consulta.model';
 
 // Chave de erro da API -> campo da tela

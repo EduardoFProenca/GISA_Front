@@ -1,6 +1,6 @@
 // Pacientes FICTÍCIOS (nomes, CPFs e telefones inventados) para demonstração das telas.
 // Usados enquanto environment.usarDadosExemplo = true (ver PacienteService).
-import { PacienteLista } from '../models/paciente-resumo.model';
+import { PacienteResumo } from '../models/paciente.model';
 import { PacienteDetalhe } from '../models/paciente-detalhe.model';
 
 export function calcularIdade(dataNascimento: string, hoje: Date = new Date()): number {
@@ -11,7 +11,7 @@ export function calcularIdade(dataNascimento: string, hoje: Date = new Date()): 
   return idade;
 }
 
-export function paraLista(p: PacienteDetalhe): PacienteLista {
+export function paraLista(p: PacienteDetalhe): PacienteResumo {
   return {
     idCadastro: p.idCadastro,
     nome: p.nome,

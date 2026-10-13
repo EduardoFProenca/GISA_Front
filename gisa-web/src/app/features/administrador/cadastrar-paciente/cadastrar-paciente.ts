@@ -15,8 +15,8 @@ import { InfoCid } from './formularios/info-cid/info-cid';
 
 import { PacienteService } from '../../../services/paciente';
 import { EscolaService } from '../../../services/escola';
-import { TipoEscola } from '../../../core/models/paciente.model';
-import { CadastroPacienteResponse } from '../../../core/models/paciente-cadastro.model';
+import { TipoEscola } from '../../../core/models/escola.model';
+import { CadastroPacienteResponse } from '../../../core/models/paciente.model';
 import { soDigitos, vazio } from '../../../shared/utils/texto.util';
 import { FormulariosPaciente, listaErros } from './models/formularios-paciente';
 import { PacienteValidadorService } from './services/paciente-validador';

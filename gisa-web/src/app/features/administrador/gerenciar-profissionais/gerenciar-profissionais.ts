@@ -6,7 +6,7 @@ import { ICONES } from '../../../shared/icons';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { Paginacao } from '../../../shared/components/paginacao/paginacao';
 import { ProfissionalService } from '../../../services/profissional';
-import { ProfissionalResumo } from '../../../core/models/profissional-resumo.model';
+import { ProfissionalResumo } from '../../../core/models/profissional.model';
 
 @Component({
   selector: 'app-gerenciar-profissionais',

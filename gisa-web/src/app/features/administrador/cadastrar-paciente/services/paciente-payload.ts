@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { soDigitos } from '../../../../shared/utils/texto.util';
 import { GrauParentesco } from '../../../../core/models/paciente.model';
-import { Endereco } from '../../../../core/models/profissional.model';
-import { PacienteCadastroPayload, ResponsavelPayload } from '../../../../core/models/paciente-cadastro.model';
+import { Endereco, EstadoCivil, Sexo } from '../../../../core/models/comum.model';
+import { PacienteCadastroPayload, ResponsavelPayload } from '../../../../core/models/paciente.model';
 import { EnderecoForm, FormulariosPaciente, ResponsavelItem } from '../models/formularios-paciente';
 
 @Injectable({ providedIn: 'root' })
@@ -17,8 +17,8 @@ export class PacienteCadastroPayloadService {
       nome: dp.nome.trim(),
       cpf: soDigitos(dp.cpf),
       dataNascimento: dp.dataNascimento,
-      sexo: dp.sexo,
-      estadoCivil: dp.estadoCivil,
+      sexo: dp.sexo as Sexo,
+      estadoCivil: dp.estadoCivil as EstadoCivil,
       celular: soDigitos(dp.celular) || undefined,
       numCNS: soDigitos(dp.numCNS) || undefined,
       enderecos: [this.montarEndereco(f.contato)],
@@ -40,8 +40,8 @@ export class PacienteCadastroPayloadService {
       nome: r.nome.trim(),
       cpf: soDigitos(r.cpf),
       dataNascimento: r.dataNascimento,
-      sexo: r.sexo,
-      estadoCivil: r.estadoCivil,
+      sexo: r.sexo as Sexo,
+      estadoCivil: r.estadoCivil as EstadoCivil,
       celular: soDigitos(r.celular) || undefined,
       ocupacao: r.ocupacao.trim() || undefined,
       grauParentesco: r.grauParentesco as GrauParentesco,

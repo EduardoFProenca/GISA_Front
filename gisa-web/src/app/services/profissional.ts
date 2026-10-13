@@ -10,27 +10,21 @@ import {
   ProfissionalComUsuario,
   EspecialistaComUsuario,
   EspecialistaPJComUsuario,
-  CadastroResponse
-} from '../core/models/profissional.model';
-import {
-  PaginaApi,
-  PaginaSpring,
-  ProfissionalResumo,
-  normalizarPagina,
-} from '../core/models/profissional-resumo.model';
-import {
-  EspecialistaApi,
-  EspecialistaPJApi,
-  ProfissionalApi,
+  CadastroResponse,
+  Especialista,
+  EspecialistaPJ,
+  Profissional,
   ProfissionalDetalhe,
-} from '../core/models/profissional-detalhe.model';
+  ProfissionalResumo,
+} from '../core/models/profissional.model';
+import { Pagina, PaginaApi, normalizarPagina } from '../core/models/comum.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProfissionalService {
   private http = inject(HttpClient);
   private base = `${environment.apiUrl}`;
 
-  listarPaginado(pagina: number, tamanho: number = 9): Observable<PaginaSpring<ProfissionalResumo>> {
+  listarPaginado(pagina: number, tamanho: number = 9): Observable<Pagina<ProfissionalResumo>> {
     const params = new HttpParams()
       .set('page', pagina)
       .set('size', tamanho);
@@ -42,7 +36,7 @@ export class ProfissionalService {
   // GET /profissionais/{id}; depois tenta /especialistas/pj/{id} e /especialistas/{id}
   // (a API devolve 404 quando o profissional não é daquele tipo).
   buscarDetalhe(id: number): Observable<ProfissionalDetalhe> {
-    return this.http.get<ProfissionalApi>(`${this.base}/profissionais/${id}`).pipe(
+    return this.http.get<Profissional>(`${this.base}/profissionais/${id}`).pipe(
       switchMap((profissional) =>
         this.buscarEspecialista(id).pipe(map((extra) => ({ profissional, ...extra })))
       )
@@ -51,14 +45,14 @@ export class ProfissionalService {
 
   private buscarEspecialista(
     id: number
-  ): Observable<{ especialista: EspecialistaApi | null; pj: EspecialistaPJApi | null }> {
+  ): Observable<{ especialista: Especialista | null; pj: EspecialistaPJ | null }> {
     const naoEncontrado = (e: HttpErrorResponse) => e.status === 404;
 
-    return this.http.get<EspecialistaPJApi>(`${this.base}/especialistas/pj/${id}`).pipe(
+    return this.http.get<EspecialistaPJ>(`${this.base}/especialistas/pj/${id}`).pipe(
       map((pj) => ({ especialista: pj.especialista, pj })),
       catchError((erroPJ: HttpErrorResponse) => {
         if (!naoEncontrado(erroPJ)) return throwError(() => erroPJ);
-        return this.http.get<EspecialistaApi>(`${this.base}/especialistas/${id}`).pipe(
+        return this.http.get<Especialista>(`${this.base}/especialistas/${id}`).pipe(
           map((especialista) => ({ especialista, pj: null })),
           catchError((erro: HttpErrorResponse) =>
             naoEncontrado(erro) ? of({ especialista: null, pj: null }) : throwError(() => erro)

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, computed, inject, signal } from '@angular/core';
 import { ComErros } from '../../../../../shared/components/com-erros';
-import { Cid } from '../../../../../core/models/paciente.model';
+import { Cid } from '../../../../../core/models/cid.model';
 import { CidSelecionado, CidService } from '../../../../../services/cid';
 import { OpcaoSelectBusca, SelectBusca } from '../../../../../shared/components/select-busca/select-busca';
 

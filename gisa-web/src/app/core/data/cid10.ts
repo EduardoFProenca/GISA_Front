@@ -1,4 +1,4 @@
-import { Cid } from '../models/paciente.model';
+import { Cid } from '../models/cid.model';
 
 // Lista INICIAL de CIDs frequentes no público da APAE (deficiência intelectual,
 // transtornos do desenvolvimento, paralisia cerebral, síndromes genéticas, epilepsia etc.).

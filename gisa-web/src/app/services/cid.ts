@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { Cid } from '../core/models/paciente.model';
+import { Cid } from '../core/models/cid.model';
 import { CID10 } from '../core/data/cid10';
 
 // CID que já está na lista do formulário. `novo` = ainda não existe na base do GISA

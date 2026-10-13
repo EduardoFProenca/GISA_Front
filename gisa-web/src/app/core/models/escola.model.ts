@@ -1,6 +1,8 @@
-import { TipoEscola } from './paciente.model';
+// Escolas (ver ESCOLAS.md).
 
-export interface EscolaCadastrada {
+export type TipoEscola = 'PUBLICA' | 'PARTICULAR';
+
+export interface Escola {
   idEscola: number;
   nome: string;
   tipoEscola: TipoEscola;

@@ -2,7 +2,7 @@ import { Component, Input, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ICONES } from '../../../../shared/icons';
-import { PacienteLista } from '../../../../core/models/paciente-resumo.model';
+import { PacienteResumo } from '../../../../core/models/paciente.model';
 import { StatusPaciente } from '../../../../core/models/paciente.model';
 import { ROTA_BASE_ADMIN } from '../../../../core/routing/contexto-pacientes';
 import { soDigitos } from '../../../../shared/utils/texto.util';
@@ -20,7 +20,7 @@ const ROTULO_STATUS: Record<StatusPaciente, string> = {
   styleUrl: './card-paciente.scss'
 })
 export class CardPacienteComponent {
-  @Input() paciente!: PacienteLista;
+  @Input() paciente!: PacienteResumo;
   @Input() somenteLeitura = false;
   @Input() rotaBase = ROTA_BASE_ADMIN;
   icones = ICONES;

@@ -1,3 +1,4 @@
+// LEGADO: formato antigo, sem correspondência na API. Substituído por terapia.model.ts na Etapa 3.
 // Segue a classe "Terapia" do diagrama ClasseAPAE (a "Consulta" da tela).
 
 export enum Modalidade {

@@ -2,7 +2,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { lerContextoPacientes } from '../../../core/routing/contexto-pacientes';
 import { ICONES } from '../../../shared/icons';
-import { PacienteLista } from '../../../core/models/paciente-resumo.model';
+import { PacienteResumo } from '../../../core/models/paciente.model';
 import { PacienteService } from '../../../services/paciente';
 import { CardPacienteComponent } from './card-paciente/card-paciente';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
@@ -36,7 +36,7 @@ export class GerenciarPacientes implements OnInit {
   carregando = signal(false);
   erro = signal('');
   termoBusca = signal('');
-  pacientes = signal<PacienteLista[]>([]);
+  pacientes = signal<PacienteResumo[]>([]);
   totalElementos = signal(0);
   paginaAtual = signal(1);
   itensPorPagina = 6; // 3 cards por linha x 2 linhas
@@ -75,7 +75,7 @@ export class GerenciarPacientes implements OnInit {
   }
 
   // Ignora maiúsculas/acentos no nome; CPF casa com ou sem máscara.
-  private bateComBusca(p: PacienteLista): boolean {
+  private bateComBusca(p: PacienteResumo): boolean {
     const normalizar = (t: string) =>
       t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
     const termo = this.termoBusca().trim();

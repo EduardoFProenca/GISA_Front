@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Subject, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { ComErros } from '../../../../../shared/components/com-erros';
-import { TipoEscola } from '../../../../../core/models/paciente.model';
-import { EscolaCadastrada } from '../../../../../core/models/escola.model';
+import { TipoEscola } from '../../../../../core/models/escola.model';
+import { Escola } from '../../../../../core/models/escola.model';
 import { EscolaService } from '../../../../../services/escola';
 import { formatarCelular } from '../../../../../shared/utils/formatacao.util';
 
@@ -26,11 +26,11 @@ export class InfoEscola extends ComErros {
 
   // Escola já cadastrada escolhida na lista. Se null e houver nome, a escola é nova
   // e será cadastrada (POST /escolas) antes do paciente.
-  escolaSelecionada: EscolaCadastrada | null = null;
-  sugestoes = signal<EscolaCadastrada[]>([]);
+  escolaSelecionada: Escola | null = null;
+  sugestoes = signal<Escola[]>([]);
 
   // Edição: o paciente já tem escola cadastrada.
-  @Input() set escolaInicial(e: EscolaCadastrada | null | undefined) {
+  @Input() set escolaInicial(e: Escola | null | undefined) {
     if (!e) return;
     this.nome = e.nome;
     this.tipoEscola = e.tipoEscola;
@@ -52,8 +52,8 @@ export class InfoEscola extends ComErros {
         distinctUntilChanged(),
         switchMap((t) =>
           t.length < 2
-            ? of([] as EscolaCadastrada[])
-            : this.escolaService.buscarPorNome(t).pipe(catchError(() => of([] as EscolaCadastrada[])))
+            ? of([] as Escola[])
+            : this.escolaService.buscarPorNome(t).pipe(catchError(() => of([] as Escola[])))
         ),
         takeUntilDestroyed()
       )

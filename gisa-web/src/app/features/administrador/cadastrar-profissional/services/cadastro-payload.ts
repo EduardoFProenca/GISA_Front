@@ -1,15 +1,19 @@
 import { Injectable } from '@angular/core';
 import { soDigitos } from '../../../../shared/utils/texto.util';
-import { Cargo, Perfil } from '../../../../core/models/cargo.model';
+import { Cargo } from '../../../../core/models/cargo.model';
+import { PerfilResumo } from '../../../../core/models/perfil.model';
+
+// Só idCargo e nome são usados: aceita tanto a listagem completa quanto referências.
+type CargoRef = Pick<Cargo, 'idCargo' | 'nome'>;
 import { Especialidade } from '../../../../core/models/especialidade.model';
 import {
   DadosBaseProfissional,
   DadosEspecialista,
   DadosEspecialistaPJ,
   DadosUsuario,
-  Endereco,
   Jornada,
 } from '../../../../core/models/profissional.model';
+import { Endereco, EstadoCivil, Sexo } from '../../../../core/models/comum.model';
 import { FormulariosCadastro } from '../models/formularios-cadastro';
 import { CadastroValidadorService } from './cadastro-validador';
 
@@ -17,13 +21,13 @@ import { CadastroValidadorService } from './cadastro-validador';
 export class CadastroPayloadService {
   constructor(private validador: CadastroValidadorService) {}
 
-  idCargoPorNome(cargos: Cargo[], nomeCargo: string): number {
+  idCargoPorNome(cargos: CargoRef[], nomeCargo: string): number {
     const alvo = nomeCargo.replace(/_/g, ' ').toLowerCase();
     const encontrado = cargos.find((c) => c.nome.toLowerCase() === alvo);
     return encontrado?.idCargo ?? cargos[0]?.idCargo ?? 0;
   }
 
-  idPerfilPorNome(perfis: Perfil[], nomePerfil: string): number {
+  idPerfilPorNome(perfis: PerfilResumo[], nomePerfil: string): number {
     const alvo = nomePerfil.replace(/_/g, ' ').toLowerCase();
     const encontrado = perfis.find((p) => p.nome.toLowerCase() === alvo);
     return encontrado?.idPerfil ?? perfis[0]?.idPerfil ?? 0;
@@ -42,23 +46,23 @@ export class CadastroPayloadService {
     };
   }
 
-  montarDadosBase(f: FormulariosCadastro, cargos: Cargo[]): DadosBaseProfissional {
+  montarDadosBase(f: FormulariosCadastro, cargos: CargoRef[]): DadosBaseProfissional {
     const dp = f.dadosPessoais;
     return {
       nome: dp.nome.trim(),
       cpf: soDigitos(dp.cpf),
       dataNascimento: dp.dataNascimento,
-      sexo: dp.sexo,
+      sexo: dp.sexo as Sexo,
       celular: soDigitos(dp.celular),
       numCNS: soDigitos(dp.numCNS) || undefined,
-      estadoCivil: dp.estadoCivil,
+      estadoCivil: dp.estadoCivil as EstadoCivil,
       enderecos: [this.montarEndereco(f)],
       email: dp.email.trim(),
       idCargo: this.idCargoPorNome(cargos, f.infoProfissional.cargo),
     };
   }
 
-  montarUsuario(f: FormulariosCadastro, perfis: Perfil[]): DadosUsuario | null {
+  montarUsuario(f: FormulariosCadastro, perfis: PerfilResumo[]): DadosUsuario | null {
     const iu = f.infoUsuario;
     if (!iu.temAcessoSistema) return null;
     return { senha: iu.senha, idPerfil: this.idPerfilPorNome(perfis, iu.perfil) };
