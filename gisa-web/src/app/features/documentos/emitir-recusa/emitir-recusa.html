@@ -7,7 +7,7 @@
 
     <label for="buscaPaciente">Preencher com um paciente cadastrado (opcional)</label>
     <app-select-busca
-      [opcoes]="opcoesPacientes()"
+      [buscar]="buscarPacientes"
       [value]="idPaciente()"
       (valueChange)="preencherComPaciente($event)"
       placeholder="Digite o nome ou o CPF do paciente"

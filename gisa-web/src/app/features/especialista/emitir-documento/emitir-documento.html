@@ -10,7 +10,7 @@
 
     <label for="paciente">Paciente <span class="obrigatorio">*</span></label>
     <app-select-busca
-      [opcoes]="opcoes()"
+      [buscar]="buscarPacientes"
       [value]="idPaciente()"
       (valueChange)="escolher($event)"
       placeholder="Digite o nome ou o CPF do paciente"

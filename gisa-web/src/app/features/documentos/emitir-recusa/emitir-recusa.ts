@@ -1,10 +1,11 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '../../../core/auth/auth';
 import { mensagemDeErro } from '../../../core/http/erro-api';
 import { PacienteService } from '../../../core/services/paciente';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
-import { OpcaoSelectBusca, SelectBusca } from '../../../shared/components/select-busca/select-busca';
+import { SelectBusca } from '../../../shared/components/select-busca/select-busca';
+import { buscaPacientes } from '../../../shared/components/select-busca/buscas';
 import { Mascara } from '../../../shared/directives/mascara.directive';
 import { DadosFolhaDocumento, FolhaDocumento } from '../../../shared/documentos/folha-documento/folha-documento';
 import { imprimirDocumento } from '../../../shared/documentos/impressao';
@@ -22,12 +23,12 @@ import { soDigitos } from '../../../shared/utils/texto.util';
   templateUrl: './emitir-recusa.html',
   styleUrl: './emitir-recusa.scss',
 })
-export class EmitirRecusa implements OnInit {
+export class EmitirRecusa {
   private pacienteService = inject(PacienteService);
   private auth = inject(Auth);
 
   // Preencher a partir de um paciente cadastrado (opcional)
-  opcoesPacientes = signal<OpcaoSelectBusca[]>([]);
+  readonly buscarPacientes = buscaPacientes(this.pacienteService);
   idPaciente = signal<number | null>(null);
   carregandoPaciente = signal(false);
 
@@ -41,17 +42,6 @@ export class EmitirRecusa implements OnInit {
 
   previa = signal(false);
   folha = computed<DadosFolhaDocumento | null>(() => (this.previa() ? this.montarFolha() : null));
-
-  ngOnInit() {
-    this.pacienteService.listar({ size: 1000, sort: 'nome,asc' }).subscribe({
-      next: ({ content }) =>
-        this.opcoesPacientes.set(
-          content.map((p) => ({ id: p.idCadastro, label: `${p.nome} · CPF ${formatarCpf(p.cpf)}`, rotuloSelecionado: p.nome }))
-        ),
-      // A busca é só um atalho: sem ela, os dados continuam podendo ser digitados.
-      error: () => this.opcoesPacientes.set([]),
-    });
-  }
 
   preencherComPaciente(id: number | string | null) {
     this.idPaciente.set(id as number | null);

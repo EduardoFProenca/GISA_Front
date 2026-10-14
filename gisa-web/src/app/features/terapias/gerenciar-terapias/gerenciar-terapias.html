@@ -17,13 +17,13 @@
   <div class="painel-busca">
     <div class="filtros-pessoas">
       <app-select-busca
-        [opcoes]="opcoesPacientes()"
+        [buscar]="buscarPacientes"
         [value]="idPaciente()"
         (valueChange)="filtrarPaciente($event)"
         placeholder="Filtrar por paciente"
         semResultados="Nenhum paciente encontrado" />
       <app-select-busca
-        [opcoes]="opcoesEspecialistas()"
+        [buscar]="buscarEspecialistas"
         [value]="idEspecialista()"
         (valueChange)="filtrarEspecialista($event)"
         placeholder="Filtrar por especialista"

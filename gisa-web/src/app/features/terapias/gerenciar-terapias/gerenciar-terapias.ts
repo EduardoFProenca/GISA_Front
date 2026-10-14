@@ -7,7 +7,8 @@ import { FiltroAvancado, EstadoFiltroAvancado, OpcaoFiltroAvancado } from '../..
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { Paginacao } from '../../../shared/components/paginacao/paginacao';
 import { FormDialog } from '../../../shared/components/form-dialog/form-dialog';
-import { SelectBusca, OpcaoSelectBusca } from '../../../shared/components/select-busca/select-busca';
+import { SelectBusca } from '../../../shared/components/select-busca/select-busca';
+import { buscaEspecialistas, buscaPacientes } from '../../../shared/components/select-busca/buscas';
 import { ICONES } from '../../../shared/icons';
 import { paraIso } from '../../../shared/utils/data.util';
 import { COR_STATUS_TERAPIA, ROTULO_STATUS_TERAPIA } from '../../../shared/utils/rotulos.util';
@@ -89,8 +90,9 @@ export class GerenciarTerapias implements OnInit {
   ];
 
   // Filtros
-  opcoesPacientes = signal<OpcaoSelectBusca[]>([]);
-  opcoesEspecialistas = signal<OpcaoSelectBusca[]>([]);
+  // Buscas na API conforme a digitação (não carregam todos os pacientes/especialistas).
+  readonly buscarPacientes = buscaPacientes(this.pacienteService);
+  readonly buscarEspecialistas = buscaEspecialistas(this.profissionalService);
   idPaciente = signal<number | null>(null);
   idEspecialista = signal<number | null>(null);
   private filtroAvancado = signal<EstadoFiltroAvancado | null>(null);
@@ -118,12 +120,6 @@ export class GerenciarTerapias implements OnInit {
   });
 
   ngOnInit() {
-    this.pacienteService.listar({ size: 1000 }).subscribe({
-      next: (p) => this.opcoesPacientes.set(p.content.map((x) => ({ id: x.idCadastro, label: x.nome }))),
-    });
-    this.profissionalService.listarEspecialistas().subscribe({
-      next: (lista) => this.opcoesEspecialistas.set(lista.map((x) => ({ id: x.idProfissional, label: x.nome }))),
-    });
     this.carregar();
   }
 

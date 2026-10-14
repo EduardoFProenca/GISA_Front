@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, debounceTime, distinctUntilChanged, of, switchMap } from 'rxjs';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { SelectBusca, OpcaoSelectBusca } from '../../../shared/components/select-busca/select-busca';
+import { buscaEspecialistas, buscaPacientes } from '../../../shared/components/select-busca/buscas';
 import { PacienteService } from '../../../core/services/paciente';
 import { ProfissionalService } from '../../../core/services/profissional';
 import { TerapiaService } from '../../../core/services/terapia';
@@ -63,7 +64,11 @@ export class FormTerapia implements OnInit {
   private proximoUid = 1;
   private novoItem = (id: number | null = null): PessoaItem => ({ uid: this.proximoUid++, id });
 
-  // Opções dos selects
+  // Selects buscam na API conforme a digitação. Só pacientes matriculados e especialistas ativos
+  // podem ser agendados.
+  readonly buscarPacientes = buscaPacientes(this.pacienteService, { somenteMatriculados: true });
+  readonly buscarEspecialistas = buscaEspecialistas(this.profissionalService);
+  // Nomes dos participantes que já estão na terapia (edição), para os campos mostrarem quem é.
   opcoesPacientes = signal<OpcaoSelectBusca[]>([]);
   opcoesEspecialistas = signal<OpcaoSelectBusca[]>([]);
 
@@ -139,34 +144,9 @@ export class FormTerapia implements OnInit {
   // ---------- carregamento ----------
 
   ngOnInit() {
-    // Só pacientes matriculados e especialistas ativos podem ser agendados.
-    this.pacienteService.listar({ size: 1000 }).subscribe({
-      next: ({ content }) =>
-        this.acrescentarOpcoes(
-          this.opcoesPacientes,
-          content.filter((p) => p.statusPaciente === 'MATRICULADO').map((p) => ({ id: p.idCadastro, label: p.nome }))
-        ),
-      error: () => this.erro.set('Não foi possível carregar a lista de pacientes.'),
-    });
-
-    this.profissionalService.listarEspecialistas().subscribe({
-      next: (lista) =>
-        this.acrescentarOpcoes(this.opcoesEspecialistas, lista.map((e) => ({ id: e.idProfissional, label: e.nome }))),
-      error: () => this.erro.set('Não foi possível carregar a lista de especialistas.'),
-    });
-
     if (this.editando) this.carregarTerapia(this.idTerapia!);
   }
 
-  // Junta opções sem repetir (na edição, os participantes atuais entram mesmo se a lista ainda não chegou).
-  private acrescentarOpcoes(alvo: typeof this.opcoesPacientes, novas: OpcaoSelectBusca[]) {
-    alvo.update((atuais) => {
-      const ids = new Set(atuais.map((o) => o.id));
-      const juntas = [...atuais, ...novas.filter((o) => !ids.has(o.id))];
-      return juntas.sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'));
-    });
-    this.cacheOpcoes.clear();
-  }
 
   private carregarTerapia(id: number) {
     this.terapiaService.buscar(id).subscribe({
@@ -186,8 +166,8 @@ export class FormTerapia implements OnInit {
   }
 
   private preencher(t: Terapia) {
-    this.acrescentarOpcoes(this.opcoesPacientes, t.pacientes.map((p) => ({ id: p.idCadastro, label: p.nome })));
-    this.acrescentarOpcoes(this.opcoesEspecialistas, t.especialistas.map((e) => ({ id: e.idCadastro, label: e.nome })));
+    this.opcoesPacientes.set(t.pacientes.map((p) => ({ id: p.idCadastro, label: p.nome })));
+    this.opcoesEspecialistas.set(t.especialistas.map((e) => ({ id: e.idCadastro, label: e.nome })));
     this.pacientes.set(t.pacientes.map((p) => this.novoItem(p.idCadastro)));
     this.especialistas.set(t.especialistas.map((e) => this.novoItem(e.idCadastro)));
     this.data.set(t.data);
@@ -208,7 +188,6 @@ export class FormTerapia implements OnInit {
   removerPessoa(tipo: TipoPessoa, uid: number) {
     if (this.lista(tipo)().length <= 1) return;
     this.lista(tipo).update((l) => l.filter((x) => x.uid !== uid));
-    this.cacheOpcoes.delete(`${tipo}:${uid}`);
     this.limparErro(`${tipo}-${uid}`);
   }
 
@@ -224,24 +203,17 @@ export class FormTerapia implements OnInit {
       .map((x) => x.id as number);
   }
 
-  private cacheOpcoes = new Map<string, { base: OpcaoSelectBusca[]; chave: string; lista: OpcaoSelectBusca[] }>();
+  // Pessoas já escolhidas nos OUTROS campos do mesmo tipo (não aparecem de novo na busca).
+  // Mesma referência enquanto nada muda, para não recalcular o select a cada ciclo.
+  private escolhidosCache = new Map<string, { chave: string; ids: number[] }>();
 
-  // Opções de um select, sem as pessoas já escolhidas nos OUTROS selects do mesmo tipo.
-  // Devolve a MESMA referência enquanto nada mudou: o SelectBusca reseta o texto digitado
-  // sempre que recebe um array novo em [opcoes].
-  opcoesDisponiveis(tipo: TipoPessoa, uid: number): OpcaoSelectBusca[] {
-    const base = tipo === 'paciente' ? this.opcoesPacientes() : this.opcoesEspecialistas();
-    const usados = this.idsEscolhidos(tipo, uid);
-    if (usados.length === 0) return base;
-
-    const chave = usados.join(',');
-    const chaveCache = `${tipo}:${uid}`;
-    const guardado = this.cacheOpcoes.get(chaveCache);
-    if (guardado && guardado.base === base && guardado.chave === chave) return guardado.lista;
-
-    const lista = base.filter((o) => !usados.includes(o.id as number));
-    this.cacheOpcoes.set(chaveCache, { base, chave, lista });
-    return lista;
+  outrosEscolhidos(tipo: TipoPessoa, uid: number): number[] {
+    const ids = this.idsEscolhidos(tipo, uid);
+    const chave = ids.join(',');
+    const guardado = this.escolhidosCache.get(`${tipo}:${uid}`);
+    if (guardado && guardado.chave === chave) return guardado.ids;
+    this.escolhidosCache.set(`${tipo}:${uid}`, { chave, ids });
+    return ids;
   }
 
   limparErro(campo: string) {
@@ -352,7 +324,6 @@ export class FormTerapia implements OnInit {
     // Agendar outra: mantém data e horário, limpa as pessoas.
     this.pacientes.set([this.novoItem()]);
     this.especialistas.set([this.novoItem()]);
-    this.cacheOpcoes.clear();
     this.erros.set({});
     this.conflitos.set([]);
   }

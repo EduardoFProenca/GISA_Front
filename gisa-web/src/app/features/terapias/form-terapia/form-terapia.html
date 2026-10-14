@@ -32,7 +32,9 @@
         <div class="item-extra">
           <div class="linha-extra">
             <app-select-busca
-              [opcoes]="opcoesDisponiveis($any(tipo), item.uid)"
+              [opcoes]="tipo === 'paciente' ? opcoesPacientes() : opcoesEspecialistas()"
+              [buscar]="tipo === 'paciente' ? buscarPacientes : buscarEspecialistas"
+              [ocultarIds]="outrosEscolhidos($any(tipo), item.uid)"
               [value]="item.id"
               (valueChange)="aoMudarPessoa($any(tipo), item.uid, $event)"
               [placeholder]="tipo === 'paciente' ? 'Digite ou selecione o paciente' : 'Digite ou selecione o especialista'"

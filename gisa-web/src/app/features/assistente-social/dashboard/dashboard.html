@@ -1,18 +1,16 @@
-<app-header tituloPortal="Portal do Assistente Social" subtituloPortal="APAE — Cidade do Sudeste" />
+<app-header tituloPortal="Assistente Social" subtituloPortal="Portal do Assistente Social" />
 
 <div class="corpo-dashboard">
-
   <main class="conteudo">
     <div class="stats-grid">
-      <app-card-estatistica titulo="Casos Ativos" [valor]="27" [icone]="icones.gestaoPacientes" corIcone="#dbeafe" />
-      <app-card-estatistica titulo="Visitas do Mês" [valor]="15" [icone]="icones.calendario" corIcone="#fef3c7" />
+      <app-card-estatistica titulo="Pacientes cadastrados" [valor]="totalPacientes()" [icone]="icones.gestaoPacientes" corIcone="#dbeafe" />
     </div>
 
     <div class="conteudo-principal">
       <app-painel-acoes [acoes]="acoesRapidas" />
 
-      <app-atividades-recentes [atividades]="atividadesRecentes" />
-
+      <app-atividades-recentes [atividades]="recentes()" titulo="Cadastrados recentemente"
+        vazio="Nenhum paciente cadastrado ainda." />
     </div>
   </main>
 </div>

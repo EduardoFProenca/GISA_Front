@@ -12,10 +12,14 @@
 
   @if (aberto() && !disabled) {
     <ul class="lista-opcoes" [class.acima]="abrirAcima()" [style.max-height.px]="alturaMaxima()">
-      @for (opcao of opcoesFiltradas; track opcao.id) {
-        <li (mousedown)="selecionar(opcao)">{{ opcao.label }}</li>
-      } @empty {
-        <li class="sem-resultados">{{ semResultados }}</li>
+      @if (buscando() && !opcoesFiltradas.length) {
+        <li class="sem-resultados">Buscando...</li>
+      } @else {
+        @for (opcao of opcoesFiltradas; track opcao.id) {
+          <li (mousedown)="selecionar(opcao)">{{ opcao.label }}</li>
+        } @empty {
+          <li class="sem-resultados">{{ semResultados }}</li>
+        }
       }
       @if (restantes > 0) {
         <li class="sem-resultados">+ {{ restantes }} resultados. Continue digitando para refinar.</li>

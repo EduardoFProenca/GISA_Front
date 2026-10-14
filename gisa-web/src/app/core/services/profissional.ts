@@ -52,13 +52,6 @@ export class ProfissionalService {
       .pipe(map((resposta) => normalizarPagina(resposta)));
   }
 
-  // Especialistas e PJ ativos (para escolher quem atende uma terapia).
-  listarEspecialistas(): Observable<ProfissionalResumo[]> {
-    return this.listar({ tipo: ['ESPECIALISTA', 'ESPECIALISTA_PJ'], statusCadastro: 'ATIVO', size: 1000 }).pipe(
-      map((p) => p.content)
-    );
-  }
-
   // Começa por /especialistas/{id}: 200 = especialista (já traz o profissional);
   // 400 = é PJ -> /especialistas/pj/{id}; 404 = profissional comum -> /profissionais/{id}.
   buscarDetalhe(id: number): Observable<ProfissionalDetalhe> {
