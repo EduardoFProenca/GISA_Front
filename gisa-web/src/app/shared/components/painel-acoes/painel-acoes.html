@@ -3,7 +3,7 @@
   <div class="grid-acoes">
     @for (acao of acoes; track acao.rota) {
       <a class="card-acao" [routerLink]="acao.rota">
-       <div class="q-icon" [innerHTML]="sanitizarIcone(acao.iconeSvg)"></div>
+       <div class="q-icon"><ng-icon [name]="acao.icone" /></div>
         <div>
           <strong>{{ acao.titulo }}</strong>
           <p>{{ acao.descricao }}</p>

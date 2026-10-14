@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, signal } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
 import { FormsModule } from '@angular/forms';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ICONES } from '../../icons';
 
 export interface OpcaoFiltroAvancado {
@@ -21,12 +21,11 @@ export interface EstadoFiltroAvancado {
 // Uso: <app-filtro-avancado [statusDisponiveis]="..." [periodosDisponiveis]="..." (filtroAlterado)="..." />
 @Component({
   selector: 'app-filtro-avancado',
-  imports: [FormsModule],
+  imports: [NgIcon, FormsModule],
   templateUrl: './filtro-avancado.html',
   styleUrl: './filtro-avancado.scss',
 })
 export class FiltroAvancado implements OnChanges {
-  private sanitizer = inject(DomSanitizer);
 
   @Input() statusDisponiveis: OpcaoFiltroAvancado[] = [];
   @Input() periodosDisponiveis: OpcaoFiltroAvancado[] = [];
@@ -45,10 +44,6 @@ export class FiltroAvancado implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     // Se o componente pai recarregar as opções, mantemos a seleção atual — nada a sincronizar aqui.
-  }
-
-  sanitizarIcone(svg: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(svg);
   }
 
   get totalFiltrosAtivos(): number {

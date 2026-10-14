@@ -2,9 +2,7 @@
   <div class="header-esquerda" style="display: flex; align-items: center; gap: 0.75rem;">
     @if (mostrarBotaoMenu) {
       <button type="button" class="btn-icone" (click)="layout.toggleMenu()" aria-label="Abrir ou fechar menu">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
-        </svg>
+        <ng-icon [name]="icones.menu" size="20" />
       </button>
     }
     <div>
@@ -18,7 +16,7 @@
     <div class="notificacoes">
       <button type="button" class="btn-icone" aria-label="Notificações" aria-haspopup="true"
         [attr.aria-expanded]="painelAberto()" (click)="alternarPainel()">
-        <span [innerHTML]="sanitizarIcone(icones.sino)"></span>
+        <span><ng-icon [name]="icones.sino" /></span>
         @if (notificacoes.naoLidas() > 0) {
           <span class="badge">{{ notificacoes.naoLidas() > 9 ? '9+' : notificacoes.naoLidas() }}</span>
         }
@@ -53,7 +51,7 @@
     }
 
     <button type="button" class="btn-sair" (click)="sair()">
-      <span [innerHTML]="sanitizarIcone(icones.sair)"></span>
+      <span><ng-icon [name]="icones.sair" /></span>
       Sair
     </button>
   </div>

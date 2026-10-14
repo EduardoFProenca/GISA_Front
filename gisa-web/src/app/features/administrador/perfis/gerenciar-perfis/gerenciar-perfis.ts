@@ -1,4 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
+import { ICONES } from '../../../../shared/icons';
 import { Router, RouterLink } from '@angular/router';
 import { CabecalhoPagina } from '../../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { Perfil, PerfilDetalhe, Permissao } from '../../../../core/models/perfil.model';
@@ -9,11 +11,12 @@ import { DialogPerfil } from '../dialog-perfil/dialog-perfil';
 // GET /perfis (sem paginação, ordenado por nome).
 @Component({
   selector: 'app-gerenciar-perfis',
-  imports: [RouterLink, CabecalhoPagina, DialogPerfil],
+  imports: [NgIcon, RouterLink, CabecalhoPagina, DialogPerfil],
   templateUrl: './gerenciar-perfis.html',
   styleUrl: '../../tabelas-apoio.scss',
 })
 export class GerenciarPerfis implements OnInit {
+  readonly icones = ICONES;
   private perfilService = inject(PerfilService);
   private router = inject(Router);
 

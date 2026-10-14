@@ -2,6 +2,8 @@ import { Component, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Mascara } from '../../../shared/directives/mascara.directive';
+import { NgIcon } from '@ng-icons/core';
+import { ICONES } from '../../../shared/icons';
 import { Router } from '@angular/router';
 import { timeout } from 'rxjs';
 import { Auth } from '../../../core/auth/auth';
@@ -16,11 +18,12 @@ const AVISO_DEMORA_MS = 5_000;
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, Mascara],
+  imports: [FormsModule, Mascara, NgIcon],
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
 export class LoginComponent {
+  readonly icones = ICONES;
   usuario: string = '';
   senha: string = '';
 

@@ -1,7 +1,13 @@
 //deve valer pro sistema inteiro
 
 
+// Altura da faixa do topo: cabeçalho das páginas, cabeçalho dos dashboards e nome no menu lateral.
+:root {
+  --altura-topo: 72px;
+}
+
 body{
+  margin: 0; // sem a margem padrão de 8px do navegador (criava uma moldura em volta do app)
   background: #f4f6f9;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
@@ -266,5 +272,14 @@ fieldset.secao {
   .btn-secundario {
     background: #e0e7ff;
     color: #3730a3;
+  }
+}
+
+// Conteúdo dos dashboards (tela "Início" de cada painel), abaixo do app-header.
+.corpo-dashboard {
+  padding: 1.5rem 2rem 2.5rem;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
   }
 }

@@ -1,12 +1,12 @@
 import { Component, HostListener, inject, Input } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Auth } from '../../../core/auth/auth';
 import { Layout } from '../../../core/layout/layout';
 
 export interface ItemMenu {
   label: string;
-  iconeSvg: string;
+  icone: string;
   rota: string;
   // true = só fica destacado na rota exata (use no item "Início").
   exato?: boolean;
@@ -20,7 +20,7 @@ const LARGURA_CELULAR_PX = 768;
 // No celular vira gaveta sobre o conteúdo, com fundo escurecido.
 @Component({
   selector: 'app-menu',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [NgIcon, RouterLink, RouterLinkActive],
   templateUrl: './menu.html',
   styleUrl: './menu.scss'
 })
@@ -32,7 +32,6 @@ export class Menu {
   layout = inject(Layout);
   private auth = inject(Auth);
 
-  constructor(private sanitizer: DomSanitizer) {}
 
   get menuFechado(): boolean {
     return !this.layout.menuAberto();
@@ -45,10 +44,6 @@ export class Menu {
   iniciaGrupo(indice: number): boolean {
     const grupo = this.itens[indice].grupo;
     return !!grupo && grupo !== this.itens[indice - 1]?.grupo;
-  }
-
-  sanitizarIcone(svg: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(svg);
   }
 
   fechar() {

@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
 import { ICONES } from '../../../../shared/icons';
 import { Terapia } from '../../../../core/models/terapia.model';
 import { ROTULO_MODALIDADE, ROTULO_STATUS_TERAPIA } from '../../../../shared/utils/rotulos.util';
@@ -30,7 +30,7 @@ function nomeCurto(nome: string): string {
 
 @Component({
   selector: 'app-card-terapia',
-  imports: [],
+  imports: [NgIcon],
   templateUrl: './card-terapia.html',
   styleUrl: './card-terapia.scss',
 })
@@ -47,11 +47,6 @@ export class CardTerapia {
   @Output() cancelar = new EventEmitter<number>();
 
   icones = ICONES;
-  private sanitizer = inject(DomSanitizer);
-
-  sanitizarIcone(svg: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(svg);
-  }
 
   // --- Tipo e status ---
 

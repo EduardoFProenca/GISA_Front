@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
 import { FormsModule } from '@angular/forms';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ICONES } from '../../icons';
 
 export interface OpcaoFiltro {
@@ -16,7 +16,7 @@ export interface EstadoBusca {
 
 @Component({
   selector: 'app-busca-filtro',
-  imports: [FormsModule],
+  imports: [NgIcon, FormsModule],
   templateUrl: './busca-filtro.html',
   styleUrl: './busca-filtro.scss',
 })
@@ -29,11 +29,6 @@ export class BuscaFiltro {
   termo: string = '';
   filtrosSelecionados: Record<string, string> = {};
 
-  constructor(private sanitizer: DomSanitizer) {}
-
-  sanitizarIcone(svg: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(svg);
-  }
 
   emitirMudanca() {
     this.buscaAlterada.emit({

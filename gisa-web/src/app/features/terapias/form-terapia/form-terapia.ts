@@ -1,4 +1,6 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
+import { ICONES } from '../../../shared/icons';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -37,11 +39,12 @@ interface PessoaItem {
 // Modalidade é calculada pela API: 1 paciente = individual; mais de um = coletiva.
 @Component({
   selector: 'app-form-terapia',
-  imports: [FormsModule, CabecalhoPagina, SucessoDialog, SelectBusca],
+  imports: [NgIcon, FormsModule, CabecalhoPagina, SucessoDialog, SelectBusca],
   templateUrl: './form-terapia.html',
   styleUrl: './form-terapia.scss',
 })
 export class FormTerapia implements OnInit {
+  readonly icones = ICONES;
   private pacienteService = inject(PacienteService);
   private profissionalService = inject(ProfissionalService);
   private terapiaService = inject(TerapiaService);

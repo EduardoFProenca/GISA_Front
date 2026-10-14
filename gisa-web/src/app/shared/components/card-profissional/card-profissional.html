@@ -8,13 +8,11 @@
       <strong>{{ profissional.nome }}</strong>
       <div class="acoes-prof">
         <button type="button" class="btn-editar" title="Ver histórico" (click)="abrirHistorico($event)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/>
-          </svg>
+          <ng-icon [name]="icones.historico" />
         </button>
         @if (podeEditar) {
           <button type="button" class="btn-editar" title="Editar" (click)="abrirEdicao($event)">
-            <span [innerHTML]="sanitizarIcone(icones.editar)"></span>
+            <span><ng-icon [name]="icones.editar" /></span>
           </button>
         }
       </div>

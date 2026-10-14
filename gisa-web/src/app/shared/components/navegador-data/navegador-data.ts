@@ -1,13 +1,16 @@
 import { Component, computed, input, output } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
+import { ICONES } from '../../icons';
 import { dataExtenso, hojeIso, somarDias } from '../../utils/data.util';
 
 @Component({
   selector: 'app-navegador-data',
-  imports: [],
+  imports: [NgIcon],
   templateUrl: './navegador-data.html',
   styleUrl: './navegador-data.scss',
 })
 export class NavegadorData {
+  readonly icones = ICONES;
   // yyyy-MM-dd
   data = input.required<string>();
   dataAlterada = output<string>();

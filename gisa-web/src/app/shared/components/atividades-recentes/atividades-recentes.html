@@ -12,8 +12,8 @@
           <div class="acoes-atividade">
             @for (acao of item.acoes; track acao.label) {
               <button (click)="acao.acao()" [title]="acao.label">
-                @if (acao.iconeSvg) {
-                  <span [innerHTML]="sanitizarIcone(acao.iconeSvg)"></span>
+                @if (acao.icone) {
+                  <span><ng-icon [name]="acao.icone" /></span>
                 } @else {
                   {{ acao.label }}
                 }

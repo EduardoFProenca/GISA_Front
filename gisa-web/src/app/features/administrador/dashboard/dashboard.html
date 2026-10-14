@@ -1,15 +1,17 @@
 <app-header tituloPortal="Administrador" subtituloPortal="Portal do Administrador" />
-<br>
-<div class="stats-grid">
-  <app-card-estatistica titulo="Total de Pacientes" [valor]="totalPacientes()"
-    [iconeSvg]="icones.gestaoPacientes" corIcone="#dbeafe" />
-  <app-card-estatistica titulo="Total de Profissionais" [valor]="totalProfissionais()"
-    [iconeSvg]="icones.gestaoProfissionais" corIcone="#dcfce7" />
-  <app-card-estatistica titulo="Profissionais Ativos" [valor]="profissionaisAtivos()"
-    [iconeSvg]="icones.cadastrarProfissional" corIcone="#fef3c7" />
-</div>
 
-<div class="conteudo-principal">
-  <app-painel-acoes [acoes]="acoesRapidas" />
-  <app-atividades-recentes [atividades]="terapiasHoje()" titulo="Terapias de hoje" vazio="Nenhuma terapia agendada para hoje." />
+<div class="corpo-dashboard">
+  <div class="stats-grid">
+    <app-card-estatistica titulo="Total de Pacientes" [valor]="totalPacientes()"
+      [icone]="icones.gestaoPacientes" corIcone="#dbeafe" />
+    <app-card-estatistica titulo="Total de Profissionais" [valor]="totalProfissionais()"
+      [icone]="icones.gestaoProfissionais" corIcone="#dcfce7" />
+    <app-card-estatistica titulo="Profissionais Ativos" [valor]="profissionaisAtivos()"
+      [icone]="icones.cadastrarProfissional" corIcone="#fef3c7" />
+  </div>
+
+  <div class="conteudo-principal">
+    <app-painel-acoes [acoes]="acoesRapidas" />
+    <app-atividades-recentes [atividades]="terapiasHoje()" titulo="Terapias de hoje" vazio="Nenhuma terapia agendada para hoje." />
+  </div>
 </div>

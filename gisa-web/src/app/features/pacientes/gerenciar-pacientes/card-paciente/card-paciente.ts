@@ -1,6 +1,6 @@
 import { Component, Input, inject } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
 import { Router } from '@angular/router';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ICONES } from '../../../../shared/icons';
 import { PacienteResumo } from '../../../../core/models/paciente.model';
 import { ROTA_BASE_ADMIN } from '../../contexto-pacientes';
@@ -10,7 +10,7 @@ import { ROTULO_STATUS_PACIENTE } from '../../../../shared/utils/rotulos.util';
 
 @Component({
   selector: 'app-card-paciente',
-  imports: [],
+  imports: [NgIcon],
   templateUrl: './card-paciente.html',
   styleUrl: './card-paciente.scss'
 })
@@ -22,11 +22,6 @@ export class CardPacienteComponent {
 
   private router = inject(Router);
 
-  constructor(private sanitizer: DomSanitizer) {}
-
-  sanitizarIcone(svg: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(svg);
-  }
 
   // A API devolve o CPF sem máscara.
   get cpfFormatado(): string {

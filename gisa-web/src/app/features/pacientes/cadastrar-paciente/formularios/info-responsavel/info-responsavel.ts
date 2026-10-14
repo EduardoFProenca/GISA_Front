@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, ViewChild, inject } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
 import { FormsModule } from '@angular/forms';
 import { Mascara } from '../../../../../shared/directives/mascara.directive';
 import { ComErros } from '../../../../../shared/components/com-erros';
@@ -15,7 +16,7 @@ export type { ResponsavelItem };
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-responsavel',
-  imports: [FormsModule, Mascara, Contato],
+  imports: [NgIcon, FormsModule, Mascara, Contato],
   templateUrl: './info-responsavel.html',
   styleUrl: './info-responsavel.scss'
 })

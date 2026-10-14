@@ -25,7 +25,7 @@
             <strong>{{ c.nome }}</strong>
             <small><span class="codigo">{{ codigo(c.codigoCBO) }}</span> {{ c.tituloCBO }}</small>
           </div>
-          <span class="seta" aria-hidden="true">›</span>
+          <ng-icon class="seta" [name]="icones.proximo" aria-hidden="true" />
         </a>
       </li>
       } @empty {

@@ -1,5 +1,7 @@
 <div class="shell">
+  @if (!naInicio()) {
   <app-menu [itens]="itens()" />
+  }
 
   <div class="conteudo-shell">
     <router-outlet />

@@ -1,15 +1,14 @@
 <app-header tituloPortal="Especialista" subtituloPortal="Portal do Especialista" />
 
-<div class="corpo">
-  <br>
+<div class="corpo-dashboard">
 
   <main class="conteudo">
     <!-- Resumo do dia -->
     <div class="stats-grid">
-      <app-card-estatistica titulo="Pacientes do Dia" [valor]="carregando() ? '—' : resumo().total" [iconeSvg]="icones.gestaoPacientes" corIcone="#dbeafe" />
-      <app-card-estatistica titulo="Atendidos" [valor]="carregando() ? '—' : resumo().atendidos" [iconeSvg]="icones.gestaoConsultas" corIcone="#dcfce7" />
-      <app-card-estatistica titulo="Aguardando na Fila" [valor]="carregando() ? '—' : resumo().aguardando" [iconeSvg]="icones.calendario" corIcone="#fef3c7" />
-      <app-card-estatistica titulo="Faltas" [valor]="carregando() ? '—' : resumo().faltas" [iconeSvg]="icones.gestaoAtividades" corIcone="#fee2e2" />
+      <app-card-estatistica titulo="Pacientes do Dia" [valor]="carregando() ? '—' : resumo().total" [icone]="icones.gestaoPacientes" corIcone="#dbeafe" />
+      <app-card-estatistica titulo="Atendidos" [valor]="carregando() ? '—' : resumo().atendidos" [icone]="icones.gestaoConsultas" corIcone="#dcfce7" />
+      <app-card-estatistica titulo="Aguardando na Fila" [valor]="carregando() ? '—' : resumo().aguardando" [icone]="icones.calendario" corIcone="#fef3c7" />
+      <app-card-estatistica titulo="Faltas" [valor]="carregando() ? '—' : resumo().faltas" [icone]="icones.gestaoAtividades" corIcone="#fee2e2" />
     </div>
 
     @if (aviso()) {
@@ -18,6 +17,8 @@
 
     <div class="conteudo-principal">
       <div class="coluna">
+        <app-painel-acoes [acoes]="acoesRapidas" />
+
         <!-- Próximo paciente -->
         <section class="painel destaque">
           <div class="painel-topo">

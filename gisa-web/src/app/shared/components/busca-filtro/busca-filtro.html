@@ -1,6 +1,6 @@
 <div class="busca-filtro">
   <div class="campo-busca">
-    <span class="icone-busca" [innerHTML]="sanitizarIcone(icones.buscar)"></span>
+    <span class="icone-busca"><ng-icon [name]="icones.buscar" /></span>
     <input
       type="text"
       [(ngModel)]="termo"
@@ -23,5 +23,5 @@
     </div>
   }
 
-  <span class="icone-filtro" [innerHTML]="sanitizarIcone(icones.filtro)" title="Filtros disponíveis"></span>
+  <span class="icone-filtro" title="Filtros disponíveis"><ng-icon [name]="icones.filtro" /></span>
 </div>

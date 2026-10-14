@@ -1,15 +1,18 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
+import { ICONES } from '../../icons';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { Layout } from '../../../core/layout/layout';
 
 @Component({
   selector: 'app-cabecalho-pagina',
-  imports: [],
+  imports: [NgIcon],
   templateUrl: './cabecalho-pagina.html',
   styleUrl: './cabecalho-pagina.scss',
 })
 export class CabecalhoPagina {
+  readonly icones = ICONES;
   private router = inject(Router);
   private location = inject(Location);
   layout = inject(Layout);

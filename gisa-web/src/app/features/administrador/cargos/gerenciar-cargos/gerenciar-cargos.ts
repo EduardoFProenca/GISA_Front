@@ -1,4 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
+import { ICONES } from '../../../../shared/icons';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -13,11 +15,12 @@ import { formatarCodigoCbo } from '../cbo.util';
 // GET /cargos (sem paginação, ordenado por nome), com busca por trecho do nome.
 @Component({
   selector: 'app-gerenciar-cargos',
-  imports: [FormsModule, RouterLink, CabecalhoPagina, DialogCargo],
+  imports: [NgIcon, FormsModule, RouterLink, CabecalhoPagina, DialogCargo],
   templateUrl: './gerenciar-cargos.html',
   styleUrl: '../../tabelas-apoio.scss',
 })
 export class GerenciarCargos {
+  readonly icones = ICONES;
   private cargoService = inject(CargoService);
   private router = inject(Router);
 

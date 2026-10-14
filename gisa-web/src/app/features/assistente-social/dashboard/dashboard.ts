@@ -15,7 +15,7 @@ export class DashboardAssistenteSocial {
   icones = ICONES;
 
   acoesRapidas: AcaoRapida[] = [
-    { titulo: 'Visualizar Pacientes', descricao: 'Consultar dados de um paciente', iconeSvg: ICONES.gestaoPacientes, rota: '/assistente-social/pacientes' },
+    { titulo: 'Visualizar Pacientes', descricao: 'Consultar dados de um paciente', icone: ICONES.gestaoPacientes, rota: '/assistente-social/pacientes' },
   ];
 
   // TODO: preencher com o histórico de atividades quando a API tiver o endpoint.

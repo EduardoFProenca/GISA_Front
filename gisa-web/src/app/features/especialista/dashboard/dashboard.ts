@@ -10,6 +10,7 @@ import { MSG_RECURSO_PENDENTE, mensagemDeErroRecurso } from '../../../core/servi
 import { PacienteService } from '../../../core/services/paciente';
 import { CardEstatistica } from '../../../shared/components/card-estatistica/card-estatistica';
 import { Header } from '../../../shared/components/header/header';
+import { AcaoRapida, PainelAcoesComponent } from '../../../shared/components/painel-acoes/painel-acoes';
 import { ICONES } from '../../../shared/icons';
 import { dataCurta, dataHoraLocal, hojeIso } from '../../../shared/utils/data.util';
 import { formatarCpf } from '../../../shared/utils/formatacao.util';
@@ -39,7 +40,7 @@ interface ResultadoBusca {
 
 @Component({
   selector: 'app-dashboard-especialista',
-  imports: [CardEstatistica, Header, RouterLink],
+  imports: [CardEstatistica, Header, PainelAcoesComponent, RouterLink],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
@@ -50,6 +51,13 @@ export class DashboardEspecialista implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   icones = ICONES;
+
+  acoesRapidas: AcaoRapida[] = [
+    { titulo: 'Minha Agenda', descricao: 'Semana e atendimentos', icone: ICONES.calendario, rota: '/especialista/agenda' },
+    { titulo: 'Minhas Terapias do Dia', descricao: 'Registrar presença', icone: ICONES.gestaoConsultas, rota: '/especialista/minhas-terapias' },
+    { titulo: 'Todas as Terapias', descricao: 'Consultar e agendar', icone: ICONES.gestaoAtividades, rota: '/especialista/terapias' },
+  ];
+
   readonly rotuloStatus = ROTULO_STATUS_AGENDA;
   readonly rotuloModalidade = ROTULO_MODALIDADE;
   readonly rotuloSolicitacao = ROTULO_SOLICITACAO;

@@ -8,7 +8,7 @@
       <strong>{{ paciente.nome }}</strong>
       @if (!somenteLeitura) {
         <button type="button" class="btn-editar" title="Editar" (click)="abrirEdicao($event)">
-          <span [innerHTML]="sanitizarIcone(icones.editar)"></span>
+          <span><ng-icon [name]="icones.editar" /></span>
         </button>
       }
     </div>

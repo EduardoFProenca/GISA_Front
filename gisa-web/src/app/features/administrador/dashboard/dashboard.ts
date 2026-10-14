@@ -30,15 +30,15 @@ export class DashboardAdministrador implements OnInit {
   profissionaisAtivos = signal<number | string>('—');
 
   acoesRapidas: AcaoRapida[] = [
-    { titulo: 'Cadastrar Paciente', descricao: 'Novo registro no sistema', iconeSvg: ICONES.cadastrarPaciente, rota: '/administrador/pacientes/novo' },
-    { titulo: 'Nova Terapia', descricao: 'Agendar terapia', iconeSvg: ICONES.calendario, rota: '/administrador/terapias/nova' },
-    { titulo: 'Gestão de Pacientes', descricao: 'Ver todos os pacientes', iconeSvg: ICONES.gestaoPacientes, rota: '/administrador/pacientes' },
-    { titulo: 'Cadastrar Profissional', descricao: 'Adicionar ao corpo clínico', iconeSvg: ICONES.cadastrarProfissional, rota: '/administrador/profissionais/novo' },
-    { titulo: 'Gestão de Terapias', descricao: 'Visualizar e gerenciar', iconeSvg: ICONES.gestaoConsultas, rota: '/administrador/terapias' },
-    { titulo: 'Gestão de Profissionais', descricao: 'Ver corpo clínico', iconeSvg: ICONES.gestaoProfissionais, rota: '/administrador/profissionais/gerenciar' },
-    { titulo: 'Cargos', descricao: 'Funções internas', iconeSvg: ICONES.gestaoAtividades, rota: '/administrador/cargos' },
-    { titulo: 'CBOs', descricao: 'Classificação de ocupações', iconeSvg: ICONES.filtro, rota: '/administrador/cbos' },
-    { titulo: 'Perfis de Acesso', descricao: 'Permissões dos usuários', iconeSvg: ICONES.pessoa, rota: '/administrador/perfis' },
+    { titulo: 'Cadastrar Paciente', descricao: 'Novo registro no sistema', icone: ICONES.cadastrarPaciente, rota: '/administrador/pacientes/novo' },
+    { titulo: 'Nova Terapia', descricao: 'Agendar terapia', icone: ICONES.calendario, rota: '/administrador/terapias/nova' },
+    { titulo: 'Gestão de Pacientes', descricao: 'Ver todos os pacientes', icone: ICONES.gestaoPacientes, rota: '/administrador/pacientes' },
+    { titulo: 'Cadastrar Profissional', descricao: 'Adicionar ao corpo clínico', icone: ICONES.cadastrarProfissional, rota: '/administrador/profissionais/novo' },
+    { titulo: 'Gestão de Terapias', descricao: 'Visualizar e gerenciar', icone: ICONES.gestaoConsultas, rota: '/administrador/terapias' },
+    { titulo: 'Gestão de Profissionais', descricao: 'Ver corpo clínico', icone: ICONES.gestaoProfissionais, rota: '/administrador/profissionais/gerenciar' },
+    { titulo: 'Cargos', descricao: 'Funções internas', icone: ICONES.cargo, rota: '/administrador/cargos' },
+    { titulo: 'CBOs', descricao: 'Classificação de ocupações', icone: ICONES.lista, rota: '/administrador/cbos' },
+    { titulo: 'Perfis de Acesso', descricao: 'Permissões dos usuários', icone: ICONES.chave, rota: '/administrador/perfis' },
   ];
 
   terapiasHoje = signal<Atividade[]>([]);

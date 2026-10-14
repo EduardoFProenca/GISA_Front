@@ -18,7 +18,11 @@
         <div class="senha-wrapper">
             <input [type]="mostrarSenha() ? 'text' : 'password'" [(ngModel)]="senha" [class.input-erro]="erroSenha()"
                 placeholder="Digite sua senha" name="senha" id="senha">
-            <span class="toggle-senha" (click)="toggleSenha()">{{ mostrarSenha() ? '👁️' : '🙈' }}</span>
+            <button type="button" class="toggle-senha" (click)="toggleSenha()"
+                [attr.aria-label]="mostrarSenha() ? 'Ocultar senha' : 'Mostrar senha'"
+                [title]="mostrarSenha() ? 'Ocultar senha' : 'Mostrar senha'">
+                <ng-icon [name]="mostrarSenha() ? icones.olhoFechado : icones.olho" size="20" />
+            </button>
         </div>
         @if (erroSenha()) {
         <span class="erro-msg">Senha deve ter pelo menos 8 caracteres</span>
@@ -28,7 +32,7 @@
         <span class="erro-msg">{{ erroLogin() }}</span>
         }
 
-        <button (click)="fazerLogin()" [disabled]="carregando()">{{ carregando() ? (demorando() ? 'Aguardando o servidor...' : 'Entrando...') : 'Entrar' }}</button>
+        <button type="button" class="btn-entrar" (click)="fazerLogin()" [disabled]="carregando()">{{ carregando() ? (demorando() ? 'Aguardando o servidor...' : 'Entrando...') : 'Entrar' }}</button>
         <br>
         <!-- <a class="esqueci-senha" (click)="esqueciSenha()">Esqueci a senha</a> -->
     </div>

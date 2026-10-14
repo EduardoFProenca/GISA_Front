@@ -1,5 +1,5 @@
 import { Component, ElementRef, HostListener, Input, inject, signal } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { NgIcon } from '@ng-icons/core';
 import { Auth } from '../../../core/auth/auth';
 import { Layout } from '../../../core/layout/layout';
 import { NotificacaoService, tempoDecorrido } from '../../../core/services/notificacao';
@@ -7,7 +7,7 @@ import { ICONES } from '../../icons';
 
 @Component({
   selector: 'app-header',
-  imports: [],
+  imports: [NgIcon],
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })
@@ -22,8 +22,9 @@ export class Header {
   // Usados enquanto o usuário logado ainda não foi carregado.
   @Input() tituloPortal: string = '';
   @Input() subtituloPortal: string = '';
-  // Botão ☰ que abre/fecha o menu lateral (todos os painéis têm menu).
-  @Input() mostrarBotaoMenu: boolean = true;
+  // Botão ☰ do menu lateral. O header só aparece nos dashboards, onde o menu fica escondido
+  // (navegação pelo Gestão Rápida); nas demais telas o ☰ está no cabeçalho da página.
+  @Input() mostrarBotaoMenu: boolean = false;
 
   // Escondido até a API ter endpoint de notificações: hoje elas só existiriam na sessão
   // do navegador e sumiriam ao recarregar (ver NotificacaoService).
@@ -31,7 +32,6 @@ export class Header {
 
   painelAberto = signal(false);
 
-  constructor(private sanitizer: DomSanitizer) {}
 
   get nome(): string {
     return this.auth.usuarioAtual()?.nome || this.tituloPortal;
@@ -39,10 +39,6 @@ export class Header {
 
   get funcao(): string {
     return this.auth.usuarioAtual()?.perfil.nome || this.subtituloPortal;
-  }
-
-  sanitizarIcone(svg: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(svg);
   }
 
   alternarPainel() {

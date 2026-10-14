@@ -28,7 +28,7 @@
           routerLinkActive="ativo"
           [routerLinkActiveOptions]="{ exact: item.exato ?? false }"
           (click)="aoNavegar()">
-          <span class="menu-icone" [innerHTML]="sanitizarIcone(item.iconeSvg)"></span>
+          <span class="menu-icone"><ng-icon [name]="item.icone" /></span>
           <span class="menu-rotulo">{{ item.label }}</span>
         </a>
       </li>

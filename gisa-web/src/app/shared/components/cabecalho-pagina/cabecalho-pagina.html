@@ -1,15 +1,11 @@
 <header class="cabecalho-pagina">
   <div class="cabecalho-esquerda">
     <button type="button" class="btn-icone" (click)="layout.toggleMenu()" aria-label="Abrir menu">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
-      </svg>
+      <ng-icon [name]="icones.menu" size="20" />
     </button>
 
     <button type="button" class="btn-icone" (click)="voltar()" aria-label="Voltar">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
-      </svg>
+      <ng-icon [name]="icones.voltar" size="20" />
     </button>
 
     <strong class="titulo-pagina">{{ titulo }}</strong>
@@ -18,9 +14,7 @@
     <div class="cabecalho-direita">
     @if (textoAcao) {
       <button type="button" class="btn-acao" (click)="aoClicarAcao()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-        </svg>
+        <ng-icon [name]="icones.adicionar" />
         {{ textoAcao }}
       </button>
     }

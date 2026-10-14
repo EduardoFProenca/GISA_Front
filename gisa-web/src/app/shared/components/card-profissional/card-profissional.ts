@@ -1,6 +1,6 @@
 import { Component, Input, inject } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
 import { Router } from '@angular/router';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ICONES } from '../../icons';
 
 export interface ProfissionalCard {
@@ -13,7 +13,7 @@ export interface ProfissionalCard {
 
 @Component({
   selector: 'app-card-profissional',
-  imports: [],
+  imports: [NgIcon],
   templateUrl: './card-profissional.html',
   styleUrl: './card-profissional.scss',
 })
@@ -24,11 +24,6 @@ export class CardProfissional {
 
   private router = inject(Router);
 
-  constructor(private sanitizer: DomSanitizer) {}
-
-  sanitizarIcone(svg: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(svg);
-  }
 
   abrirDetalhe() {
     this.router.navigateByUrl(`/administrador/profissionais/${this.profissional.id}`);

@@ -1,12 +1,11 @@
 <app-header tituloPortal="Portal da Recepção" subtituloPortal="Recepção" />
 
-<div class="corpo">
-    <br>
+<div class="corpo-dashboard">
   <main class="conteudo">
     <div class="stats-grid">
-      <app-card-estatistica titulo="Terapias Hoje" [valor]="resumo()?.terapias ?? '—'" [iconeSvg]="icones.calendario" corIcone="#dbeafe" />
-      <app-card-estatistica titulo="Presenças Confirmadas" [valor]="resumo()?.presentes ?? '—'" [iconeSvg]="icones.gestaoConsultas" corIcone="#dcfce7" />
-      <app-card-estatistica titulo="Presenças Pendentes" [valor]="resumo()?.pendentes ?? '—'" [iconeSvg]="icones.pessoa" corIcone="#fef3c7" />
+      <app-card-estatistica titulo="Terapias Hoje" [valor]="resumo()?.terapias ?? '—'" [icone]="icones.calendario" corIcone="#dbeafe" />
+      <app-card-estatistica titulo="Presenças Confirmadas" [valor]="resumo()?.presentes ?? '—'" [icone]="icones.gestaoConsultas" corIcone="#dcfce7" />
+      <app-card-estatistica titulo="Presenças Pendentes" [valor]="resumo()?.pendentes ?? '—'" [icone]="icones.pessoa" corIcone="#fef3c7" />
     </div>
 
     <div class="conteudo-principal">

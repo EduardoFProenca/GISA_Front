@@ -1,4 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
+import { ICONES } from '../../../../shared/icons';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -20,11 +22,12 @@ const ORDENACOES = [
 // GET /cbos (paginado). Uma busca só: números = início do código; texto = trecho do título.
 @Component({
   selector: 'app-gerenciar-cbos',
-  imports: [FormsModule, RouterLink, CabecalhoPagina, Paginacao, DialogCbo],
+  imports: [NgIcon, FormsModule, RouterLink, CabecalhoPagina, Paginacao, DialogCbo],
   templateUrl: './gerenciar-cbos.html',
   styleUrl: '../../tabelas-apoio.scss',
 })
 export class GerenciarCbos {
+  readonly icones = ICONES;
   private cargoService = inject(CargoService);
   private router = inject(Router);
 

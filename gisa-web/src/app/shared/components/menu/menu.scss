@@ -31,7 +31,11 @@
 }
 
 .menu-usuario {
-  padding: 1.25rem 1rem;
+  box-sizing: border-box;
+  height: var(--altura-topo); // alinha com o cabeçalho da página ao lado
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
   font-weight: 600;
   border-bottom: 1px solid #f1f5f9;
   white-space: nowrap;

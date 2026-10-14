@@ -21,7 +21,7 @@
             <span class="etiqueta">{{ plural(p.quantidadePermissoes, 'permissão', 'permissões') }}</span>
             <span class="etiqueta inativo">{{ plural(p.quantidadeUsuarios, 'usuário', 'usuários') }}</span>
           </div>
-          <span class="seta" aria-hidden="true">›</span>
+          <ng-icon class="seta" [name]="icones.proximo" aria-hidden="true" />
         </a>
       </li>
       } @empty {

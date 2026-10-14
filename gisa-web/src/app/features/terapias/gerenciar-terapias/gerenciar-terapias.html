@@ -5,13 +5,13 @@
 
   <div class="stats-grid">
     <app-card-estatistica titulo="Terapias encontradas" [valor]="totalElementos()"
-      [iconeSvg]="icones.gestaoConsultas" corIcone="#dbeafe" />
+      [icone]="icones.gestaoConsultas" corIcone="#dbeafe" />
     <app-card-estatistica titulo="Agendadas" [valor]="contadores()['AGENDADA'] ?? '—'"
-      [iconeSvg]="icones.calendario" corIcone="#dbeafe" />
+      [icone]="icones.calendario" corIcone="#dbeafe" />
     <app-card-estatistica titulo="Concluídas" [valor]="contadores()['CONCLUIDA'] ?? '—'"
-      [iconeSvg]="icones.estrela" corIcone="#dcfce7" />
+      [icone]="icones.estrela" corIcone="#dcfce7" />
     <app-card-estatistica titulo="Canceladas" [valor]="contadores()['CANCELADA'] ?? '—'"
-      [iconeSvg]="icones.sino" corIcone="#fee2e2" />
+      [icone]="icones.sino" corIcone="#fee2e2" />
   </div>
 
   <div class="painel-busca">

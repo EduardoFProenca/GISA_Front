@@ -1,9 +1,9 @@
 import { Component, Input } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { NgIcon } from '@ng-icons/core';
 
 export interface AcaoAtividade {
   label: string;
-  iconeSvg?: string;
+  icone?: string;
   acao: () => void;
 }
 
@@ -15,7 +15,7 @@ export interface Atividade {
 
 @Component({
   selector: 'app-atividades-recentes',
-  imports: [],
+  imports: [NgIcon],
   templateUrl: './atividades-recentes.html',
   styleUrl: './atividades-recentes.scss'
 })
@@ -24,9 +24,4 @@ export class AtividadesRecentes {
   @Input() titulo = 'Atividades';
   @Input() vazio = 'Nenhuma atividade.';
 
-  constructor(private sanitizer: DomSanitizer) {}
-
-  sanitizarIcone(svg: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(svg);
-  }
 }
