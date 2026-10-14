@@ -19,6 +19,7 @@ import { Auth } from '../../../core/auth/auth';
 import { mensagemDeErro } from '../../../core/http/erro-api';
 import { CardTerapia } from '../componentes/card-terapia/card-terapia';
 import { lerContextoTerapias } from '../contexto-terapias';
+import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 
 const STATUS: StatusTerapia[] = ['AGENDADA', 'EM_ATENDIMENTO', 'CONCLUIDA', 'CANCELADA'];
 
@@ -58,6 +59,7 @@ function periodoParaFiltro(estado: EstadoFiltroAvancado | null): Pick<FiltroTera
   styleUrl: './gerenciar-terapias.scss',
 })
 export class GerenciarTerapias implements OnInit {
+  private avisoSucesso = inject(AvisoSucessoService);
   private terapiaService = inject(TerapiaService);
   private pacienteService = inject(PacienteService);
   private profissionalService = inject(ProfissionalService);
@@ -216,6 +218,7 @@ export class GerenciarTerapias implements OnInit {
       next: () => {
         this.cancelando.set(false);
         this.terapiaParaCancelar.set(null);
+        this.avisoSucesso.mostrar({ titulo: 'Terapia cancelada', detalhe: alvo.titulo });
         this.carregar();
       },
       error: (err) => {

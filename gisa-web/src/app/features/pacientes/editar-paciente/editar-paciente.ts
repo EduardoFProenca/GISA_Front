@@ -1,4 +1,5 @@
 import { Component, computed, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 import { Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -6,7 +7,6 @@ import { firstValueFrom } from 'rxjs';
 
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
-import { SucessoDialog } from '../../../shared/components/sucesso-dialog/sucesso-dialog';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
 import { Contato } from '../../../shared/components/contato/contato';
 
@@ -39,7 +39,6 @@ import { soDigitos, vazio } from '../../../shared/utils/texto.util';
     FormsModule,
     CabecalhoPagina,
     ConfirmDialog,
-    SucessoDialog,
     DadosPessoais,
     Contato,
     InfoPaciente,
@@ -52,6 +51,7 @@ import { soDigitos, vazio } from '../../../shared/utils/texto.util';
   styleUrl: './editar-paciente.scss'
 })
 export class EditarPaciente implements OnInit {
+  private avisoSucesso = inject(AvisoSucessoService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private location = inject(Location);
@@ -80,7 +80,6 @@ export class EditarPaciente implements OnInit {
   paciente = signal<Paciente | null>(null);
   status = signal<StatusPaciente>('MATRICULADO');
   salvando = signal(false);
-  dialogSucessoAberto = signal(false);
   nomeSalvo = signal('');
   confirmarCancelamentoAberto = signal(false);
 
@@ -172,7 +171,7 @@ export class EditarPaciente implements OnInit {
       );
       this.paciente.set(atualizado);
       this.nomeSalvo.set(atualizado.pessoa.nome);
-      this.dialogSucessoAberto.set(true);
+      this.mostrarSucesso();
     } catch (e) {
       // Os passos de escola e responsáveis já preenchem erroGeral; aqui chegam os do paciente.
       if (!this.erroGeral()) this.erroGeral.set(this.errosApi.tratar(e, f).mensagemGeral);
@@ -289,12 +288,10 @@ export class EditarPaciente implements OnInit {
   }
 
   irParaGerenciarPacientes() {
-    this.dialogSucessoAberto.set(false);
     this.router.navigateByUrl(this.rotaBase);
   }
 
   irParaDetalhes() {
-    this.dialogSucessoAberto.set(false);
     this.router.navigateByUrl(`${this.rotaBase}/${this.id()}`);
   }
 
@@ -305,5 +302,17 @@ export class EditarPaciente implements OnInit {
   confirmarCancelamento() {
     this.confirmarCancelamentoAberto.set(false);
     this.location.back();
+  }
+
+  // Aviso de sucesso com os próximos passos (fim de fluxo).
+  private mostrarSucesso() {
+    this.avisoSucesso.mostrar({
+      titulo: 'Alterações salvas',
+      detalhe: this.nomeSalvo(),
+      acoes: [
+        { texto: 'Voltar à lista', acao: () => this.irParaGerenciarPacientes() },
+        { texto: 'Ver paciente', primaria: true, acao: () => this.irParaDetalhes() },
+      ],
+    });
   }
 }

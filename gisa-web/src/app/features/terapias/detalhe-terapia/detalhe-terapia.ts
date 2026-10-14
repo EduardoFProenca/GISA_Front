@@ -13,6 +13,8 @@ import { ROTULO_MODALIDADE, ROTULO_STATUS_TERAPIA } from '../../../shared/utils/
 import { lerContextoTerapias } from '../contexto-terapias';
 import { CardTerapiaPresenca, PresencaMarcada } from '../registrar-presenca/componentes/card-terapia-presenca/card-terapia-presenca';
 import { horarioTerapia } from '../registrar-presenca/presenca.util';
+import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
+import { AVISO_PRESENCA, AVISO_STATUS, nomePaciente } from '../registrar-presenca/presenca.util';
 
 // Próximo status pelo botão principal (transições da API; cancelar é à parte).
 const PROXIMO: Partial<Record<StatusTerapia, { status: StatusTerapia; texto: string; mensagem: string }>> = {
@@ -35,6 +37,7 @@ const PROXIMO: Partial<Record<StatusTerapia, { status: StatusTerapia; texto: str
   styleUrl: './detalhe-terapia.scss',
 })
 export class DetalheTerapia implements OnInit {
+  private avisoSucesso = inject(AvisoSucessoService);
   private route = inject(ActivatedRoute);
   private terapiaService = inject(TerapiaService);
   private auth = inject(Auth);
@@ -133,6 +136,7 @@ export class DetalheTerapia implements OnInit {
         this.terapia.set(t);
         this.salvando.set(false);
         this.cancelamentoAberto.set(false);
+        this.avisoSucesso.mostrar({ titulo: AVISO_STATUS[status], detalhe: t.titulo });
       },
       error: (err) => {
         this.salvando.set(false);
@@ -152,6 +156,7 @@ export class DetalheTerapia implements OnInit {
         next: (t) => {
           this.terapia.set(t);
           this.salvandoPresenca.set(null);
+          this.avisoSucesso.mostrar({ titulo: AVISO_PRESENCA[marcada.presenca], detalhe: nomePaciente(t, marcada.idPaciente) });
         },
         error: (err) => {
           this.salvandoPresenca.set(null);

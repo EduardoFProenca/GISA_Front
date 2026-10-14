@@ -8,6 +8,7 @@ import { PerfilService } from '../../../../core/services/perfil';
 import { Auth } from '../../../../core/auth/auth';
 import { mensagemDeErro } from '../../../../core/http/erro-api';
 import { DialogPerfil } from '../dialog-perfil/dialog-perfil';
+import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 
 // GET /perfis/{id}: permissões e usuários do perfil. Toda alteração devolve o perfil atualizado,
 // e a tela é redesenhada direto com a resposta.
@@ -18,6 +19,7 @@ import { DialogPerfil } from '../dialog-perfil/dialog-perfil';
   styleUrl: '../../tabelas-apoio.scss',
 })
 export class DetalhePerfil implements OnInit {
+  private avisoSucesso = inject(AvisoSucessoService);
   private perfilService = inject(PerfilService);
   private auth = inject(Auth);
   private router = inject(Router);
@@ -110,6 +112,10 @@ export class DetalhePerfil implements OnInit {
       next: (p) => {
         this.salvandoAdicao.set(false);
         this.adicionarAberto.set(false);
+        this.avisoSucesso.mostrar({
+          titulo: ids.length === 1 ? 'Permissão adicionada' : 'Permissões adicionadas',
+          detalhe: p.nome,
+        });
         this.aplicar(p);
       },
       error: (err) => {
@@ -138,6 +144,7 @@ export class DetalhePerfil implements OnInit {
     this.perfilService.removerPermissao(this.id, p.idPermissao).subscribe({
       next: (perfil) => {
         this.removendo.set(null);
+        this.avisoSucesso.mostrar({ titulo: 'Permissão removida', detalhe: p.nome });
         this.aplicar(perfil);
       },
       error: (err) => {
@@ -154,7 +161,10 @@ export class DetalhePerfil implements OnInit {
     this.excluindo.set(true);
     this.erroAcao.set('');
     this.perfilService.excluir(this.id).subscribe({
-      next: () => this.router.navigateByUrl('/administrador/perfis'),
+      next: () => {
+        this.avisoSucesso.mostrar({ titulo: 'Perfil excluído', detalhe: this.perfil()?.nome });
+        this.router.navigateByUrl('/administrador/perfis');
+      },
       error: (err) => {
         this.excluindo.set(false);
         this.erroAcao.set(mensagemDeErro(err, 'Não foi possível excluir o perfil.'));

@@ -16,6 +16,7 @@ import { ProfissionalDetalhe, TipoProfissional } from '../../../core/models/prof
 import { Auth } from '../../../core/auth/auth';
 import { mensagemDeErro } from '../../../core/http/erro-api';
 import { FormulariosDetalhe, paraFormularios } from './profissional-detalhe.util';
+import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 
 const ROTULO_TIPO: Record<TipoProfissional, string> = {
   PROFISSIONAL: 'Profissional',
@@ -39,6 +40,7 @@ const ROTULO_TIPO: Record<TipoProfissional, string> = {
   styleUrl: './detalhe-profissional.scss',
 })
 export class DetalheProfissional implements OnInit {
+  private avisoSucesso = inject(AvisoSucessoService);
   private route = inject(ActivatedRoute);
   private profissionalService = inject(ProfissionalService);
   private usuarioService = inject(UsuarioService);
@@ -75,7 +77,6 @@ export class DetalheProfissional implements OnInit {
   dialogo = signal<'acesso' | 'senha' | null>(null);
   salvandoDialogo = signal(false);
   erroDialogo = signal('');
-  avisoAcesso = signal('');
   senha = '';
   perfilAcesso = '';
 
@@ -113,13 +114,18 @@ export class DetalheProfissional implements OnInit {
     this.alterandoStatus.set(true);
     this.erroStatus.set('');
 
-    const req: Observable<unknown> = this.ativo()
+    const inativando = this.ativo();
+    const req: Observable<unknown> = inativando
       ? this.profissionalService.inativar(this.id, this.tipo())
       : this.profissionalService.reativar(this.id, this.tipo());
 
     req.subscribe({
       next: () => {
         this.alterandoStatus.set(false);
+        this.avisoSucesso.mostrar({
+          titulo: inativando ? 'Profissional inativado' : 'Profissional reativado',
+          detalhe: this.detalhe()?.profissional.pessoa.nome,
+        });
         this.carregar();
       },
       error: (err) => {
@@ -135,7 +141,6 @@ export class DetalheProfissional implements OnInit {
     this.senha = '';
     this.perfilAcesso = '';
     this.erroDialogo.set('');
-    this.avisoAcesso.set('');
     this.dialogo.set(tipo);
   }
 
@@ -165,10 +170,10 @@ export class DetalheProfissional implements OnInit {
       next: () => {
         this.salvandoDialogo.set(false);
         this.dialogo.set(null);
-        this.avisoAcesso.set(
+        this.avisoSucesso.mostrar(
           tipo === 'acesso'
-            ? 'Acesso concedido. O login é feito com o CPF e a senha informada.'
-            : 'Senha redefinida. As sessões abertas desse usuário foram encerradas.'
+            ? { titulo: 'Acesso concedido', detalhe: 'O login é feito com o CPF e a senha informada.' }
+            : { titulo: 'Senha redefinida', detalhe: 'As sessões abertas desse usuário foram encerradas.' }
         );
         if (tipo === 'acesso') this.carregar();
       },

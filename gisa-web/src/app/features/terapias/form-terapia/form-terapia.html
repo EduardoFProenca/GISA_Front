@@ -115,12 +115,3 @@
   }
 </div>
 
-<app-sucesso-dialog
-  [aberto]="dialogSucessoAberto()"
-  [titulo]="editando ? 'Terapia atualizada!' : 'Terapia agendada!'"
-  [mensagem]="editando ? 'As alterações foram salvas.' : 'A terapia foi agendada no sistema.'"
-  textoPrimario="Ver detalhes"
-  [textoSecundario]="editando ? 'Voltar à lista' : 'Agendar outra'"
-  (verDetalhes)="verDetalhes()"
-  (continuar)="continuar()">
-</app-sucesso-dialog>

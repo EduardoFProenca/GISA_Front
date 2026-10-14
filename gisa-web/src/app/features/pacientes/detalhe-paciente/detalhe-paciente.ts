@@ -22,6 +22,7 @@ import {
   ROTULO_STATUS_PACIENTE,
   ROTULO_TIPO_ESCOLA,
 } from '../../../shared/utils/rotulos.util';
+import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 
 @Component({
   selector: 'app-detalhe-paciente',
@@ -30,6 +31,7 @@ import {
   styleUrl: './detalhe-paciente.scss'
 })
 export class DetalhePaciente implements OnInit {
+  private avisoSucesso = inject(AvisoSucessoService);
   private route = inject(ActivatedRoute);
   private pacienteService = inject(PacienteService);
   private auth = inject(Auth);
@@ -109,13 +111,18 @@ export class DetalhePaciente implements OnInit {
     this.confirmacaoAberta.set(false);
     this.alterandoStatus.set(true);
 
-    const requisicao: Observable<unknown> = this.ativo()
+    const inativando = this.ativo();
+    const requisicao: Observable<unknown> = inativando
       ? this.pacienteService.inativar(this.id())
       : this.pacienteService.reativar(this.id());
 
     requisicao.subscribe({
       next: () => {
         this.alterandoStatus.set(false);
+        this.avisoSucesso.mostrar({
+          titulo: inativando ? 'Paciente inativado' : 'Paciente reativado',
+          detalhe: this.paciente()?.pessoa.nome,
+        });
         this.carregar();
         this.historico()?.recarregar();
       },

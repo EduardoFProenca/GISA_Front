@@ -17,6 +17,8 @@ import { mensagemDeErro } from '../../../core/http/erro-api';
 import { ResumoPresencaDia } from './componentes/resumo-presenca-dia/resumo-presenca-dia';
 import { CardTerapiaPresenca, PresencaMarcada } from './componentes/card-terapia-presenca/card-terapia-presenca';
 import { TerapiaDoDia, calcularResumo, filtrarPorSituacao, filtrarTerapias, substituirTerapia } from './presenca.util';
+import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
+import { AVISO_PRESENCA, nomePaciente } from './presenca.util';
 
 // Máximo aceito pela API em uma página.
 const TAMANHO_DIA = 100;
@@ -30,6 +32,7 @@ const TAMANHO_DIA = 100;
   styleUrl: './registrar-presenca.scss',
 })
 export class RegistrarPresenca implements OnInit {
+  private avisoSucesso = inject(AvisoSucessoService);
   private terapiaService = inject(TerapiaService);
   private auth = inject(Auth);
   private route = inject(ActivatedRoute);
@@ -126,6 +129,10 @@ export class RegistrarPresenca implements OnInit {
         next: (atualizada) => {
           this.terapias.update((lista) => substituirTerapia(lista, atualizada));
           this.salvando.set(null);
+          this.avisoSucesso.mostrar({
+            titulo: AVISO_PRESENCA[marcada.presenca],
+            detalhe: nomePaciente(atualizada, marcada.idPaciente),
+          });
         },
         error: (err) => {
           this.salvando.set(null);

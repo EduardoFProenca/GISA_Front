@@ -1,4 +1,4 @@
-import { Terapia, TerapiaDoEspecialista } from '../../../core/models/terapia.model';
+import { Presenca, StatusTerapia, Terapia, TerapiaDoEspecialista } from '../../../core/models/terapia.model';
 import { hojeIso } from '../../../shared/utils/data.util';
 
 // Terapia da listagem geral ou de /terapias/minhas: a diferença é só como os especialistas vêm.
@@ -85,4 +85,24 @@ export function especialistasTexto(t: TerapiaDoDia): string {
       : 'Sem especialista';
   }
   return t.outrosEspecialistas.length ? `com ${t.outrosEspecialistas.join(', ')}` : 'Atendimento individual do especialista';
+}
+
+// Títulos do aviso de sucesso (AvisoSucessoService) ao marcar presença e ao mudar o status.
+export const AVISO_PRESENCA: Record<Presenca, string> = {
+  PRESENTE: 'Presença registrada',
+  FALTA_JUSTIFICADA: 'Falta justificada registrada',
+  FALTA_INJUSTIFICADA: 'Falta registrada',
+  PENDENTE: 'Marcação desfeita',
+};
+
+export const AVISO_STATUS: Record<StatusTerapia, string> = {
+  AGENDADA: 'Terapia agendada',
+  EM_ATENDIMENTO: 'Atendimento iniciado',
+  CONCLUIDA: 'Terapia concluída',
+  CANCELADA: 'Terapia cancelada',
+};
+
+// Nome do paciente da terapia (para o detalhe do aviso).
+export function nomePaciente(t: { pacientes: { idCadastro: number; nome: string }[] }, idPaciente: number): string {
+  return t.pacientes.find((p) => p.idCadastro === idPaciente)?.nome ?? '';
 }

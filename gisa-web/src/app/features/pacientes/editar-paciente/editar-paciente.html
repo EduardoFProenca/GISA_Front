@@ -87,12 +87,3 @@
 ></app-confirm-dialog>
 
 <!-- Modal de Sucesso ao Salvar -->
-<app-sucesso-dialog
-  [aberto]="dialogSucessoAberto()"
-  titulo="Alterações salvas com sucesso!"
-  [mensagem]="'Os dados de ' + nomeSalvo() + ' foram atualizados.'"
-  textoPrimario="Ver Detalhes"
-  textoSecundario="Gestão de Pacientes"
-  (verDetalhes)="irParaDetalhes()"
-  (continuar)="irParaGerenciarPacientes()"
-></app-sucesso-dialog>

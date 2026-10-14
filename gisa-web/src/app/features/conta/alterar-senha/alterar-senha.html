@@ -40,7 +40,6 @@
     </label>
 
     @if (erro()) { <p class="erro-msg erro-geral">{{ erro() }}</p> }
-    @if (sucesso()) { <p class="sucesso" role="status">Senha alterada.</p> }
 
     <button type="submit" class="btn-salvar" [disabled]="salvando()">
       {{ salvando() ? 'Salvando...' : 'Alterar senha' }}

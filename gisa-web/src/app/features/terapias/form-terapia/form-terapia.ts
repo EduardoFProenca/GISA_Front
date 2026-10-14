@@ -1,4 +1,6 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
+import { dataCurta } from '../../../shared/utils/data.util';
 import { NgIcon } from '@ng-icons/core';
 import { ICONES } from '../../../shared/icons';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
@@ -7,7 +9,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, debounceTime, distinctUntilChanged, of, switchMap } from 'rxjs';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { SelectBusca, OpcaoSelectBusca } from '../../../shared/components/select-busca/select-busca';
-import { SucessoDialog } from '../../../shared/components/sucesso-dialog/sucesso-dialog';
 import { PacienteService } from '../../../core/services/paciente';
 import { ProfissionalService } from '../../../core/services/profissional';
 import { TerapiaService } from '../../../core/services/terapia';
@@ -39,11 +40,12 @@ interface PessoaItem {
 // Modalidade é calculada pela API: 1 paciente = individual; mais de um = coletiva.
 @Component({
   selector: 'app-form-terapia',
-  imports: [NgIcon, FormsModule, CabecalhoPagina, SucessoDialog, SelectBusca],
+  imports: [NgIcon, FormsModule, CabecalhoPagina, SelectBusca],
   templateUrl: './form-terapia.html',
   styleUrl: './form-terapia.scss',
 })
 export class FormTerapia implements OnInit {
+  private avisoSucesso = inject(AvisoSucessoService);
   readonly icones = ICONES;
   private pacienteService = inject(PacienteService);
   private profissionalService = inject(ProfissionalService);
@@ -85,7 +87,6 @@ export class FormTerapia implements OnInit {
   erros = signal<Record<string, string>>({});
   erro = signal('');
   salvando = signal(false);
-  dialogSucessoAberto = signal(false);
   idSalvo = signal<number | null>(null);
 
   // ---------- verificação de conflitos em tempo real ----------
@@ -297,7 +298,7 @@ export class FormTerapia implements OnInit {
       next: (t) => {
         this.salvando.set(false);
         this.idSalvo.set(t.idTerapia);
-        this.dialogSucessoAberto.set(true);
+        this.mostrarSucesso();
       },
       error: (err) => this.tratarErroApi(err),
     });
@@ -340,12 +341,10 @@ export class FormTerapia implements OnInit {
   // ---------- diálogo de sucesso ----------
 
   verDetalhes() {
-    this.dialogSucessoAberto.set(false);
     this.router.navigate([this.rotaBase, this.idSalvo()]);
   }
 
   continuar() {
-    this.dialogSucessoAberto.set(false);
     if (this.editando) {
       this.router.navigateByUrl(this.rotaBase);
       return;
@@ -360,5 +359,17 @@ export class FormTerapia implements OnInit {
 
   cancelar() {
     this.router.navigateByUrl(this.rotaBase);
+  }
+
+  // Aviso de sucesso com os próximos passos (fim de fluxo).
+  private mostrarSucesso() {
+    this.avisoSucesso.mostrar({
+      titulo: this.editando ? 'Terapia atualizada' : 'Terapia agendada',
+      detalhe: `${dataCurta(this.data())}, ${this.horaInicio()} – ${this.horaTermino()}`,
+      acoes: [
+        { texto: this.editando ? 'Voltar à lista' : 'Agendar outra', acao: () => this.continuar() },
+        { texto: 'Ver terapia', primaria: true, acao: () => this.verDetalhes() },
+      ],
+    });
   }
 }

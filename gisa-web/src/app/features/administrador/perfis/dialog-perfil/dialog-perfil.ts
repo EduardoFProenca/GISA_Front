@@ -4,6 +4,7 @@ import { FormDialog } from '../../../../shared/components/form-dialog/form-dialo
 import { PerfilDetalhe, PerfilResumo, Permissao } from '../../../../core/models/perfil.model';
 import { PerfilService } from '../../../../core/services/perfil';
 import { aplicarErrosApi } from '../../../../core/http/erro-api';
+import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 
 // Criar perfil (nome + permissões iniciais) ou renomear (perfil informado: só o nome).
 // As permissões de um perfil existente são geridas na tela de detalhe, uma a uma.
@@ -14,6 +15,7 @@ import { aplicarErrosApi } from '../../../../core/http/erro-api';
   styleUrl: '../../tabelas-apoio.scss',
 })
 export class DialogPerfil {
+  private avisoSucesso = inject(AvisoSucessoService);
   private perfilService = inject(PerfilService);
 
   aberto = input(false);
@@ -73,6 +75,7 @@ export class DialogPerfil {
     req.subscribe({
       next: (p) => {
         this.salvando.set(false);
+        this.avisoSucesso.mostrar({ titulo: atual ? 'Perfil renomeado' : 'Perfil criado', detalhe: p.nome });
         this.salvo.emit(p);
       },
       error: (err) => {

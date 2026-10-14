@@ -25,13 +25,3 @@
     <hr>
     <app-contato subtitulo="Opcional. Se informar, preencha o endereço completo." />
   </div>
-
-  <app-sucesso-dialog
-    [aberto]="dialogSucessoAberto"
-    titulo="Profissional cadastrado com sucesso!"
-    [mensagem]="nomeCadastrado + ' foi salvo(a) no sistema.'"
-    textoPrimario="Ver detalhes"
-    textoSecundario="Continuar cadastrando"
-    (verDetalhes)="aoVerDetalhesCadastrado()"
-    (continuar)="aoContinuarCadastrando()">
-  </app-sucesso-dialog>

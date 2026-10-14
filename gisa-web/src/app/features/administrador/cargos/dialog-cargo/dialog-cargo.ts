@@ -6,6 +6,7 @@ import { Cargo, Cbo } from '../../../../core/models/cargo.model';
 import { CargoService } from '../../../../core/services/cargo';
 import { aplicarErrosApi } from '../../../../core/http/erro-api';
 import { SeletorCbo } from '../seletor-cbo/seletor-cbo';
+import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 
 // Criar (cargo = null) ou editar cargo. No PATCH só vai o que mudou.
 @Component({
@@ -14,6 +15,7 @@ import { SeletorCbo } from '../seletor-cbo/seletor-cbo';
   templateUrl: './dialog-cargo.html',
 })
 export class DialogCargo {
+  private avisoSucesso = inject(AvisoSucessoService);
   private cargoService = inject(CargoService);
 
   aberto = input(false);
@@ -72,6 +74,7 @@ export class DialogCargo {
     req.subscribe({
       next: (c) => {
         this.salvando.set(false);
+        this.avisoSucesso.mostrar({ titulo: atual ? 'Cargo atualizado' : 'Cargo cadastrado', detalhe: c.nome });
         this.salvo.emit(c);
       },
       error: (err) => {

@@ -7,6 +7,7 @@ import { CargoService } from '../../../../core/services/cargo';
 import { mensagemDeErro } from '../../../../core/http/erro-api';
 import { DialogCbo } from '../dialog-cbo/dialog-cbo';
 import { formatarCodigoCbo } from '../../cargos/cbo.util';
+import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 
 // GET /cbos/{codigo}: título e cargos que usam o CBO.
 @Component({
@@ -16,6 +17,7 @@ import { formatarCodigoCbo } from '../../cargos/cbo.util';
   styleUrl: '../../tabelas-apoio.scss',
 })
 export class DetalheCbo implements OnInit {
+  private avisoSucesso = inject(AvisoSucessoService);
   private cargoService = inject(CargoService);
   private router = inject(Router);
   readonly codigoCbo = inject(ActivatedRoute).snapshot.paramMap.get('codigo') ?? '';
@@ -62,7 +64,10 @@ export class DetalheCbo implements OnInit {
     this.excluindo.set(true);
     this.erroAcao.set('');
     this.cargoService.excluirCbo(this.codigoCbo).subscribe({
-      next: () => this.router.navigateByUrl('/administrador/cbos'),
+      next: () => {
+        this.avisoSucesso.mostrar({ titulo: 'CBO excluído', detalhe: this.cbo()?.tituloCBO });
+        this.router.navigateByUrl('/administrador/cbos');
+      },
       error: (err) => {
         this.excluindo.set(false);
         this.erroAcao.set(mensagemDeErro(err, 'Não foi possível excluir o CBO.'));

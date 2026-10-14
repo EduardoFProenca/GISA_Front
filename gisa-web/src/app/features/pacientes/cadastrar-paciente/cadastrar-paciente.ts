@@ -1,4 +1,5 @@
 import { Component, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
+import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { lerContextoPacientes } from '../contexto-pacientes';
@@ -6,7 +7,6 @@ import { firstValueFrom } from 'rxjs';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
 import { Contato } from '../../../shared/components/contato/contato';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
-import { SucessoDialog } from '../../../shared/components/sucesso-dialog/sucesso-dialog';
 
 import { InfoPaciente } from './formularios/info-paciente/info-paciente';
 import { InfoEscola } from './formularios/info-escola/info-escola';
@@ -26,11 +26,12 @@ import { PacienteErrosApiService } from './services/paciente-erros-api';
 
 @Component({
   selector: 'app-cadastrar-paciente',
-  imports: [DadosPessoais, Contato, CabecalhoPagina, InfoPaciente, InfoEscola, InfoResponsavel, InfoProntuario, InfoCid, SucessoDialog],
+  imports: [DadosPessoais, Contato, CabecalhoPagina, InfoPaciente, InfoEscola, InfoResponsavel, InfoProntuario, InfoCid],
   styleUrl: './cadastrar-paciente.scss',
   templateUrl: './cadastrar-paciente.html',
 })
 export class CadastrarPaciente {
+  private avisoSucesso = inject(AvisoSucessoService);
   @ViewChild(DadosPessoais) dadosPessoais!: DadosPessoais;
   @ViewChild(Contato) contato!: Contato; // endereço do paciente (o do responsável fica dentro de InfoResponsavel)
   @ViewChild(InfoPaciente) infoPaciente!: InfoPaciente;
@@ -51,8 +52,6 @@ export class CadastrarPaciente {
 
   salvando = false;
   erro = '';
-
-  dialogSucessoAberto = false;
   nomeCadastrado = '';
   idCadastrado: number | null = null;
 
@@ -120,7 +119,7 @@ export class CadastrarPaciente {
         this.salvando = false;
         this.nomeCadastrado = res?.nome || this.dadosPessoais.nome;
         this.idCadastrado = res?.idCadastro ?? null;
-        this.dialogSucessoAberto = true;
+        this.mostrarSucesso();
         this.cdr.markForCheck();
       },
       error: (err: HttpErrorResponse) => {
@@ -156,14 +155,24 @@ export class CadastrarPaciente {
   }
 
   aoContinuarCadastrando() {
-    this.dialogSucessoAberto = false;
     this.limparFormulario();
   }
 
   aoVerDetalhesCadastrado() {
-    this.dialogSucessoAberto = false;
     if (this.idCadastrado != null) {
       this.router.navigateByUrl(`${this.rotaBase}/${this.idCadastrado}`);
     }
+  }
+
+  // Aviso de sucesso com os próximos passos (fim de fluxo).
+  private mostrarSucesso() {
+    this.avisoSucesso.mostrar({
+      titulo: 'Paciente cadastrado',
+      detalhe: this.nomeCadastrado,
+      acoes: [
+        { texto: 'Cadastrar outro', acao: () => this.aoContinuarCadastrando() },
+        { texto: 'Ver paciente', primaria: true, acao: () => this.aoVerDetalhesCadastrado() },
+      ],
+    });
   }
 }

@@ -1,0 +1,118 @@
+// Sem ações: aparece no alto da tela, não escurece e não bloqueia cliques.
+.camada {
+  position: fixed;
+  inset: 0;
+  z-index: 1100; // acima do loading (1000) e dos diálogos
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 5.5rem 1rem 1rem;
+  pointer-events: none;
+
+  // Com ações: modal (fundo levemente escurecido, centralizado, bloqueia a página).
+  &.modal {
+    align-items: center;
+    padding-top: 1rem;
+    background: rgba(15, 23, 42, 0.25);
+    pointer-events: auto;
+  }
+}
+
+.aviso {
+  pointer-events: auto;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 0.25rem 0.75rem;
+  width: 100%;
+  max-width: 380px;
+  box-sizing: border-box;
+  padding: 1rem 1.15rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+  text-align: left;
+  animation: entrar 0.18s ease-out;
+}
+
+.marca {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #15803d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding-top: 0.15rem;
+  min-width: 0;
+
+  strong {
+    font-size: 0.95rem;
+    color: #0f172a;
+  }
+
+  span {
+    font-size: 0.85rem;
+    color: #64748b;
+    overflow-wrap: anywhere;
+  }
+}
+
+.acoes {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+
+  button {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.5rem 0.9rem;
+    background: white;
+    color: #334155;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transform: none;
+
+    &:hover {
+      background: #f8fafc;
+      border-color: #e2e8f0;
+      transform: none;
+      box-shadow: none;
+    }
+
+    &.primaria {
+      background: #0891b2;
+      border-color: #0891b2;
+      color: white;
+
+      &:hover {
+        background: #0e7490;
+        border-color: #0e7490;
+      }
+    }
+  }
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aviso {
+    animation: none;
+  }
+}

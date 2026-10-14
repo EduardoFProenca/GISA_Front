@@ -7,6 +7,7 @@ import { CargoService } from '../../../../core/services/cargo';
 import { mensagemDeErro } from '../../../../core/http/erro-api';
 import { DialogCargo } from '../dialog-cargo/dialog-cargo';
 import { formatarCodigoCbo } from '../cbo.util';
+import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 
 // GET /cargos/{id}: CBO e profissionais do cargo (ativos e inativos).
 @Component({
@@ -16,6 +17,7 @@ import { formatarCodigoCbo } from '../cbo.util';
   styleUrl: '../../tabelas-apoio.scss',
 })
 export class DetalheCargo implements OnInit {
+  private avisoSucesso = inject(AvisoSucessoService);
   private cargoService = inject(CargoService);
   private router = inject(Router);
   readonly id = Number(inject(ActivatedRoute).snapshot.paramMap.get('id'));
@@ -59,7 +61,10 @@ export class DetalheCargo implements OnInit {
     this.excluindo.set(true);
     this.erroAcao.set('');
     this.cargoService.excluir(this.id).subscribe({
-      next: () => this.router.navigateByUrl('/administrador/cargos'),
+      next: () => {
+        this.avisoSucesso.mostrar({ titulo: 'Cargo excluído', detalhe: this.cargo()?.nome });
+        this.router.navigateByUrl('/administrador/cargos');
+      },
       error: (err) => {
         this.excluindo.set(false);
         this.erroAcao.set(mensagemDeErro(err, 'Não foi possível excluir o cargo.'));

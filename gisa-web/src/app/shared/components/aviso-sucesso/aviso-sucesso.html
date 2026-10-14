@@ -1,0 +1,21 @@
+@if (aviso(); as a) {
+<div class="camada" [class.modal]="comAcoes()">
+  <div class="aviso" [attr.role]="comAcoes() ? 'dialog' : 'status'" [attr.aria-modal]="comAcoes() || null"
+    aria-live="polite" aria-labelledby="aviso-titulo">
+    <span class="marca" aria-hidden="true"><ng-icon [name]="icones.confirmado" size="16" strokeWidth="3" /></span>
+
+    <div class="texto">
+      <strong id="aviso-titulo">{{ a.titulo }}</strong>
+      @if (a.detalhe) { <span>{{ a.detalhe }}</span> }
+    </div>
+
+    @if (comAcoes()) {
+    <div class="acoes">
+      @for (acao of a.acoes; track acao.texto) {
+      <button type="button" [class.primaria]="acao.primaria" (click)="servico.executar(acao)">{{ acao.texto }}</button>
+      }
+    </div>
+    }
+  </div>
+</div>
+}

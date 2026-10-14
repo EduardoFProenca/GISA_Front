@@ -1,4 +1,5 @@
 import { Component, ViewChild, inject, OnInit, ChangeDetectorRef, signal } from '@angular/core';
+import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
@@ -7,7 +8,6 @@ import { InfoEspecialista } from './formularios/info-especialista/info-especiali
 import { InfoUsuario } from './formularios/info-usuario/info-usuario';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { InfoProfissional } from './formularios/info-profissional/info-profissional';
-import { SucessoDialog } from '../../../shared/components/sucesso-dialog/sucesso-dialog';
 import { ProfissionalService } from '../../../core/services/profissional';
 import { CadastroResponse } from '../../../core/models/profissional.model';
 import { mensagemDeErro } from '../../../core/http/erro-api';
@@ -19,11 +19,12 @@ import { CadastroErrosApiService } from './services/cadastro-erros-api';
 
 @Component({
   selector: 'app-cadastrar-profissional',
-  imports: [DadosPessoais, Contato, InfoEspecialista, InfoUsuario, CabecalhoPagina, InfoProfissional, SucessoDialog],
+  imports: [DadosPessoais, Contato, InfoEspecialista, InfoUsuario, CabecalhoPagina, InfoProfissional],
   templateUrl: './cadastrar-profissional.html',
   styleUrl: './cadastrar-profissional.scss',
 })
 export class CadastroProfissional implements OnInit {
+  private avisoSucesso = inject(AvisoSucessoService);
   @ViewChild(DadosPessoais) dadosPessoais!: DadosPessoais;
   @ViewChild(Contato) contato!: Contato;
   @ViewChild(InfoProfissional) infoProfissional!: InfoProfissional;
@@ -41,8 +42,6 @@ export class CadastroProfissional implements OnInit {
 
   salvando = false;
   erro = '';
-
-  dialogSucessoAberto = false;
   nomeCadastrado = '';
   idCadastrado: number | null = null;
 
@@ -113,7 +112,7 @@ export class CadastroProfissional implements OnInit {
         this.salvando = false;
         this.nomeCadastrado = res?.nome || this.dadosPessoais.nome;
         this.idCadastrado = res?.idCadastro ?? null;
-        this.dialogSucessoAberto = true;
+        this.mostrarSucesso();
         this.cdr.markForCheck();
       },
       error: (err: HttpErrorResponse) => {
@@ -157,14 +156,24 @@ export class CadastroProfissional implements OnInit {
   }
 
   aoContinuarCadastrando() {
-    this.dialogSucessoAberto = false;
     this.limparFormulario();
   }
 
   aoVerDetalhesCadastrado() {
-    this.dialogSucessoAberto = false;
     if (this.idCadastrado != null) {
       this.router.navigate(['/administrador/profissionais', this.idCadastrado]);
     }
+  }
+
+  // Aviso de sucesso com os próximos passos (fim de fluxo).
+  private mostrarSucesso() {
+    this.avisoSucesso.mostrar({
+      titulo: 'Profissional cadastrado',
+      detalhe: this.nomeCadastrado,
+      acoes: [
+        { texto: 'Cadastrar outro', acao: () => this.aoContinuarCadastrando() },
+        { texto: 'Ver profissional', primaria: true, acao: () => this.aoVerDetalhesCadastrado() },
+      ],
+    });
   }
 }

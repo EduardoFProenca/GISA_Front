@@ -1,10 +1,10 @@
 import { Component, computed, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
-import { SucessoDialog } from '../../../shared/components/sucesso-dialog/sucesso-dialog';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
 import { Contato } from '../../../shared/components/contato/contato';
 import { InfoProfissional } from '../cadastrar-profissional/formularios/info-profissional/info-profissional';
@@ -25,7 +25,6 @@ import { FormulariosDetalhe, paraFormularios } from '../detalhe-profissional/pro
   imports: [
     CabecalhoPagina,
     ConfirmDialog,
-    SucessoDialog,
     DadosPessoais,
     Contato,
     InfoProfissional,
@@ -36,6 +35,7 @@ import { FormulariosDetalhe, paraFormularios } from '../detalhe-profissional/pro
   styleUrl: './editar-profissional.scss',
 })
 export class EditarProfissional implements OnInit {
+  private avisoSucesso = inject(AvisoSucessoService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private location = inject(Location);
@@ -58,7 +58,6 @@ export class EditarProfissional implements OnInit {
   erro = signal('');
   erroGeral = signal('');
   salvando = signal(false);
-  dialogSucessoAberto = signal(false);
   confirmarCancelamentoAberto = signal(false);
   nomeSalvo = signal('');
 
@@ -127,7 +126,7 @@ export class EditarProfissional implements OnInit {
         f.infoUsuario.possuiAcesso = true;
       }
       this.nomeSalvo.set(f.dadosPessoais.nome.trim());
-      this.dialogSucessoAberto.set(true);
+      this.mostrarSucesso();
     } catch (err) {
       this.erroGeral.set(this.errosApi.tratar(err, f).mensagemGeral);
     } finally {
@@ -136,17 +135,27 @@ export class EditarProfissional implements OnInit {
   }
 
   irParaGerenciarProfissionais() {
-    this.dialogSucessoAberto.set(false);
     this.router.navigate(['/administrador/profissionais/gerenciar']);
   }
 
   irParaDetalhes() {
-    this.dialogSucessoAberto.set(false);
     this.router.navigate(['/administrador/profissionais', this.id]);
   }
 
   confirmarCancelamento() {
     this.confirmarCancelamentoAberto.set(false);
     this.location.back();
+  }
+
+  // Aviso de sucesso com os próximos passos (fim de fluxo).
+  private mostrarSucesso() {
+    this.avisoSucesso.mostrar({
+      titulo: 'Alterações salvas',
+      detalhe: this.nomeSalvo(),
+      acoes: [
+        { texto: 'Voltar à lista', acao: () => this.irParaGerenciarProfissionais() },
+        { texto: 'Ver profissional', primaria: true, acao: () => this.irParaDetalhes() },
+      ],
+    });
   }
 }

@@ -6,6 +6,7 @@ import { aplicarErrosApi } from '../../../core/http/erro-api';
 import { UsuarioService } from '../../../core/services/usuario';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { ICONES } from '../../../shared/icons';
+import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 
 const MIN_SENHA = 8;
 const MAX_SENHA = 30;
@@ -22,6 +23,7 @@ type Campo = 'senhaAtual' | 'novaSenha' | 'confirmacaoNovaSenha';
   styleUrl: './alterar-senha.scss',
 })
 export class AlterarSenha {
+  private avisoSucesso = inject(AvisoSucessoService);
   private usuarioService = inject(UsuarioService);
   readonly nome = inject(Auth).usuarioAtual()?.nome ?? '';
   readonly icones = ICONES;
@@ -35,11 +37,9 @@ export class AlterarSenha {
 
   erros = signal<Partial<Record<Campo, string>>>({});
   erro = signal('');
-  sucesso = signal(false);
   salvando = signal(false);
 
   limparErro(campo: Campo) {
-    this.sucesso.set(false);
     this.erros.update((e) => {
       const { [campo]: _, ...resto } = e;
       return resto;
@@ -66,7 +66,6 @@ export class AlterarSenha {
   salvar() {
     if (this.salvando()) return;
     this.erro.set('');
-    this.sucesso.set(false);
     if (!this.validar()) return;
 
     this.salvando.set(true);
@@ -82,7 +81,7 @@ export class AlterarSenha {
           this.senhaAtual = '';
           this.novaSenha = '';
           this.confirmacaoNovaSenha = '';
-          this.sucesso.set(true);
+          this.avisoSucesso.mostrar({ titulo: 'Senha alterada', detalhe: 'Use a nova senha no próximo login.' });
         },
         error: (err) => {
           this.salvando.set(false);

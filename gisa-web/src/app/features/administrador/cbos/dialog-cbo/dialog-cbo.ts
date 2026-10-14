@@ -5,6 +5,7 @@ import { Cbo } from '../../../../core/models/cargo.model';
 import { CargoService } from '../../../../core/services/cargo';
 import { aplicarErrosApi } from '../../../../core/http/erro-api';
 import { apenasDigitos, formatarCodigoCbo } from '../../cargos/cbo.util';
+import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 
 // Criar (cbo = null) ou editar CBO. Na edição só o título muda: o código identifica o registro.
 @Component({
@@ -13,6 +14,7 @@ import { apenasDigitos, formatarCodigoCbo } from '../../cargos/cbo.util';
   templateUrl: './dialog-cbo.html',
 })
 export class DialogCbo {
+  private avisoSucesso = inject(AvisoSucessoService);
   private cargoService = inject(CargoService);
 
   aberto = input(false);
@@ -66,6 +68,7 @@ export class DialogCbo {
     req.subscribe({
       next: (c) => {
         this.salvando.set(false);
+        this.avisoSucesso.mostrar({ titulo: atual ? 'CBO atualizado' : 'CBO cadastrado', detalhe: `${formatarCodigoCbo(c.codigoCBO)} · ${c.tituloCBO}` });
         this.salvo.emit(c);
       },
       error: (err) => {

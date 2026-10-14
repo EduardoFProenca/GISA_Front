@@ -6,6 +6,7 @@ import { Cbo } from '../../../../core/models/cargo.model';
 import { CargoService } from '../../../../core/services/cargo';
 import { aplicarErrosApi } from '../../../../core/http/erro-api';
 import { apenasDigitos, filtroDeBuscaCbo, rotuloCbo } from '../cbo.util';
+import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 
 // Autocomplete de CBO com busca no servidor (GET /cbos é paginado). Se o CBO não existir,
 // permite cadastrá-lo ali mesmo (POST /cbos) e já o seleciona (fluxo do CARGOS.md).
@@ -16,6 +17,7 @@ import { apenasDigitos, filtroDeBuscaCbo, rotuloCbo } from '../cbo.util';
   styleUrl: './seletor-cbo.scss',
 })
 export class SeletorCbo {
+  private avisoSucesso = inject(AvisoSucessoService);
   private cargoService = inject(CargoService);
   private elemento = inject<ElementRef<HTMLElement>>(ElementRef);
 
@@ -112,6 +114,7 @@ export class SeletorCbo {
     this.cargoService.criarCbo({ codigoCBO, tituloCBO }).subscribe({
       next: (cbo) => {
         this.salvandoNovo.set(false);
+        this.avisoSucesso.mostrar({ titulo: 'CBO cadastrado', detalhe: rotuloCbo(cbo) });
         this.resultados.set([]);
         this.escolher(cbo);
       },
