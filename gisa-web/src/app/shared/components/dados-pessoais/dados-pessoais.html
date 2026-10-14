@@ -70,7 +70,7 @@
 
   <div class="campo">
     <label for="numCNS">Número CNS</label>
-    <input type="text" id="numCNS" name="numCNS" [(ngModel)]="numCNS" placeholder="000 0000 0000 0000"
+    <input type="text" id="numCNS" appMascara="cns" inputmode="numeric" name="numCNS" [(ngModel)]="numCNS" placeholder="000 0000 0000 0000"
       [disabled]="somenteLeitura">
   </div>
 </div>

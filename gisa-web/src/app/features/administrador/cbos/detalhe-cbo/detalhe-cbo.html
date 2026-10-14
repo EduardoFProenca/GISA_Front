@@ -9,8 +9,8 @@
   <div class="painel">
     <h3>{{ c.tituloCBO }}</h3>
     <div class="info-bloco">
-      <p><strong>Código:</strong> <span class="codigo">{{ codigo(c.codigoCBO) }}</span></p>
-      <p><strong>Cargos que usam este CBO:</strong> {{ c.cargos.length }}</p>
+      <app-campo-detalhe rotulo="Código"><span class="codigo">{{ codigo(c.codigoCBO) }}</span></app-campo-detalhe>
+      <app-campo-detalhe rotulo="Cargos que usam este CBO">{{ c.cargos.length }}</app-campo-detalhe>
     </div>
 
     <div class="acoes-situacao">

@@ -2,9 +2,9 @@ import { soDigitos } from './texto.util';
 
 // Máscaras dos campos digitáveis. O valor guardado no formulário fica formatado;
 // os payloads removem a formatação (soDigitos) antes de enviar para a API.
-export type TipoMascara = 'cpf' | 'cnpj' | 'celular' | 'cep';
+export type TipoMascara = 'cpf' | 'cnpj' | 'celular' | 'cep' | 'cns' | 'cbo';
 
-const MAXIMO_DIGITOS: Record<TipoMascara, number> = { cpf: 11, cnpj: 14, celular: 11, cep: 8 };
+const MAXIMO_DIGITOS: Record<TipoMascara, number> = { cpf: 11, cnpj: 14, celular: 11, cep: 8, cns: 15, cbo: 6 };
 
 // Formata o que já foi digitado, mesmo incompleto: '1234' -> '123.4'.
 export function aplicarMascara(tipo: TipoMascara, valor: string | null | undefined): string {
@@ -16,6 +16,12 @@ export function aplicarMascara(tipo: TipoMascara, valor: string | null | undefin
       return montar(d, [2, 3, 3, 4, 2], ['', '.', '.', '/', '-']);
     case 'cep':
       return montar(d, [5, 3], ['', '-']);
+    // Cartão SUS: 000 0000 0000 0000
+    case 'cns':
+      return montar(d, [3, 4, 4, 4], ['', ' ', ' ', ' ']);
+    // CBO: 0000-00
+    case 'cbo':
+      return montar(d, [4, 2], ['', '-']);
     case 'celular': {
       if (!d) return '';
       if (d.length <= 2) return `(${d}`;

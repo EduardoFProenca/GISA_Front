@@ -22,6 +22,9 @@ export class CabecalhoPagina {
   @Input() mostrarCancelar: boolean = false;
   @Input() textoAcao: string = '';
   @Input() rotaAcao: string = '';
+  // Ação secundária (botão vazado, à esquerda da principal), ex.: "Abrir prontuário".
+  @Input() textoAcaoSecundaria: string = '';
+  @Input() rotaAcaoSecundaria: string = '';
   @Output() salvar = new EventEmitter<void>();
   @Output() cancelar = new EventEmitter<void>();
   // Botão de ação sem rotaAcao (ex.: abrir um diálogo).
@@ -37,6 +40,10 @@ export class CabecalhoPagina {
 
   aoClicarCancelar() {
     this.cancelar.emit();
+  }
+
+  aoClicarAcaoSecundaria() {
+    if (this.rotaAcaoSecundaria) this.router.navigateByUrl(this.rotaAcaoSecundaria);
   }
 
   aoClicarAcao() {

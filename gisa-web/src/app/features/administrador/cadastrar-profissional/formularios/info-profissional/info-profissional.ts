@@ -1,3 +1,4 @@
+import { formatarCbo } from '../../../../../shared/utils/formatacao.util';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ComErros } from '../../../../../shared/components/com-erros';
@@ -26,7 +27,7 @@ export class InfoProfissional extends ComErros implements OnInit {
 
   get cbo(): string {
     const c = this.cargoSelecionado;
-    return c ? `${c.codigoCBO} — ${c.tituloCBO}` : '';
+    return c ? `${formatarCbo(c.codigoCBO)} · ${c.tituloCBO}` : '';
   }
 
   ngOnInit() {

@@ -10,7 +10,7 @@ import { Cargo } from '../../../../core/models/cargo.model';
 import { CargoService } from '../../../../core/services/cargo';
 import { mensagemDeErro } from '../../../../core/http/erro-api';
 import { DialogCargo } from '../dialog-cargo/dialog-cargo';
-import { formatarCodigoCbo } from '../cbo.util';
+import { formatarCbo } from '../../../../shared/utils/formatacao.util';
 
 // GET /cargos (sem paginação, ordenado por nome), com busca por trecho do nome.
 @Component({
@@ -24,7 +24,7 @@ export class GerenciarCargos {
   private cargoService = inject(CargoService);
   private router = inject(Router);
 
-  readonly codigo = formatarCodigoCbo;
+  readonly codigo = formatarCbo;
 
   termo = '';
   cargos = signal<Cargo[]>([]);

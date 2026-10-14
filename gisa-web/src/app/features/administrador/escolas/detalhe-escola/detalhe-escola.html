@@ -9,9 +9,9 @@
   <div class="painel">
     <h3>{{ e.nome }}</h3>
     <div class="info-bloco">
-      <p><strong>Tipo:</strong> {{ rotuloTipo[e.tipoEscola] }}</p>
-      <p><strong>Telefone:</strong> {{ e.telefone ? telefone(e.telefone) : 'não informado' }}</p>
-      <p><strong>Pacientes vinculados:</strong> {{ e.quantidadePacientes }}</p>
+      <app-campo-detalhe rotulo="Tipo">{{ rotuloTipo[e.tipoEscola] }}</app-campo-detalhe>
+      <app-campo-detalhe rotulo="Telefone">{{ e.telefone ? telefone(e.telefone) : 'não informado' }}</app-campo-detalhe>
+      <app-campo-detalhe rotulo="Pacientes vinculados">{{ e.quantidadePacientes }}</app-campo-detalhe>
     </div>
 
     <div class="acoes-situacao">

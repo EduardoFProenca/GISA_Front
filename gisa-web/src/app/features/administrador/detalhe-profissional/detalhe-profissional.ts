@@ -1,3 +1,4 @@
+import { CampoDetalhe } from '../../../shared/components/campo-detalhe/campo-detalhe';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -12,7 +13,7 @@ import { UsuarioService } from '../../../core/services/usuario';
 import { ProfissionalDetalhe, TipoProfissional } from '../../../core/models/profissional.model';
 import { Auth } from '../../../core/auth/auth';
 import { mensagemDeErro } from '../../../core/http/erro-api';
-import { formatarCelular, formatarCep, formatarCnpj, formatarCpf } from '../../../shared/utils/formatacao.util';
+import { formatarCbo, formatarCelular, formatarCep, formatarCnpj, formatarCns, formatarCpf } from '../../../shared/utils/formatacao.util';
 import { dataCurta, horaCurta } from '../../../shared/utils/data.util';
 import { ROTULO_DIA_SEMANA, ROTULO_ESTADO_CIVIL, ROTULO_SEXO } from '../../../shared/utils/rotulos.util';
 import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
@@ -25,7 +26,7 @@ const ROTULO_TIPO: Record<TipoProfissional, string> = {
 
 @Component({
   selector: 'app-detalhe-profissional',
-  imports: [
+  imports: [CampoDetalhe, 
     FormsModule,
     CabecalhoPagina,
     ConfirmDialog,
@@ -50,6 +51,8 @@ export class DetalheProfissional implements OnInit {
 
   readonly cpf = formatarCpf;
   readonly cnpj = formatarCnpj;
+  readonly cbo = formatarCbo;
+  readonly cns = formatarCns;
   readonly celular = formatarCelular;
   readonly cep = formatarCep;
   readonly data = dataCurta;

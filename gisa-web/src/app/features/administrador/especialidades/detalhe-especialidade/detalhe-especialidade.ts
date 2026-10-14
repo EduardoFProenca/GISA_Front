@@ -1,3 +1,4 @@
+import { CampoDetalhe } from '../../../../shared/components/campo-detalhe/campo-detalhe';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CabecalhoPagina } from '../../../../shared/components/cabecalho-pagina/cabecalho-pagina';
@@ -12,7 +13,7 @@ import { DialogEspecialidade } from '../dialog-especialidade/dialog-especialidad
 // GET /especialidades/{id}: especialistas e PJ vinculados (ativos e inativos).
 @Component({
   selector: 'app-detalhe-especialidade',
-  imports: [RouterLink, CabecalhoPagina, ConfirmDialog, DialogEspecialidade],
+  imports: [CampoDetalhe, RouterLink, CabecalhoPagina, ConfirmDialog, DialogEspecialidade],
   templateUrl: './detalhe-especialidade.html',
   styleUrl: '../../tabelas-apoio.scss',
 })

@@ -1,9 +1,10 @@
-import { filtroDeBuscaCbo, formatarCodigoCbo, rotuloCbo } from './cbo.util';
+import { filtroDeBuscaCbo, rotuloCbo } from './cbo.util';
+import { formatarCbo } from '../../../shared/utils/formatacao.util';
 
 describe('cbo.util', () => {
   it('formata o código com a máscara usual', () => {
-    expect(formatarCodigoCbo('251510')).toBe('2515-10');
-    expect(formatarCodigoCbo('2515')).toBe('2515');
+    expect(formatarCbo('251510')).toBe('2515-10');
+    expect(formatarCbo('2515')).toBe('2515');
   });
 
   it('monta o rótulo com código e título', () => {

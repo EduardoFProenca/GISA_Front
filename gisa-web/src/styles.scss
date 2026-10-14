@@ -355,15 +355,28 @@ fieldset.secao {
 
 // ---------- Telas de detalhe (paciente, profissional) ----------
 
+// Bloco de dados de uma tela de detalhe. Os <app-campo-detalhe> (rótulo acima do valor) ficam
+// lado a lado em colunas; qualquer outro conteúdo (subtítulo, lista, aviso) ocupa a linha inteira.
 .info-bloco {
   background-color: #f8fafc;
   padding: 1rem 1.25rem;
   border-radius: 8px;
   border: 1px solid #e2e8f0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: 0.9rem 1.5rem;
   text-align: left;
+
+  > :not(app-campo-detalhe) {
+    grid-column: 1 / -1;
+  }
+
+  // Subtítulo dentro do bloco (ex.: "Pessoa Jurídica").
+  > .subtitulo-bloco {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
 
   p {
     margin: 0;
@@ -374,6 +387,10 @@ fieldset.secao {
       color: #0f172a;
     }
   }
+}
+
+.info-bloco + .info-bloco {
+  margin-top: 0.75rem;
 }
 
 .aviso-ok {

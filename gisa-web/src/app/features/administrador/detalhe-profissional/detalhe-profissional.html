@@ -11,11 +11,11 @@
     <div class="secao">
         <h3>Situação do Profissional</h3>
         <div class="info-bloco">
-            <p><strong>Tipo:</strong> {{ rotuloTipo() }}</p>
-            <p><strong>Cadastro:</strong> {{ ativo() ? 'Ativo' : 'Inativo' }}</p>
+            <app-campo-detalhe rotulo="Tipo">{{ rotuloTipo() }}</app-campo-detalhe>
+            <app-campo-detalhe rotulo="Cadastro">{{ ativo() ? 'Ativo' : 'Inativo' }}</app-campo-detalhe>
             @if (usuario(); as u) {
-            <p><strong>Perfil de acesso:</strong> {{ u.perfil.nome }}</p>
-            <p><strong>Permissões ({{ u.permissoes.length }}):</strong> {{ u.permissoes.length ? '' : 'nenhuma' }}</p>
+            <app-campo-detalhe rotulo="Perfil de acesso">{{ u.perfil.nome }}</app-campo-detalhe>
+            <app-campo-detalhe rotulo="Permissões ({{ u.permissoes.length }})">{{ u.permissoes.length ? '' : 'nenhuma' }}</app-campo-detalhe>
             @if (u.permissoes.length) {
             <ul class="lista-permissoes">
                 @for (p of u.permissoes; track p.idPermissao) {
@@ -24,7 +24,7 @@
             </ul>
             }
             } @else {
-            <p><strong>Acesso ao sistema:</strong> não possui</p>
+            <app-campo-detalhe rotulo="Acesso ao sistema">não possui</app-campo-detalhe>
             }
         </div>
 
@@ -53,14 +53,14 @@
     <div class="secao">
         <h3>Dados Pessoais</h3>
         <div class="info-bloco">
-            <p><strong>Nome:</strong> {{ d.profissional.pessoa.nome }}</p>
-            <p><strong>CPF:</strong> {{ cpf(d.profissional.pessoa.cpf) }}</p>
-            <p><strong>E-mail:</strong> {{ d.profissional.email || '—' }}</p>
-            <p><strong>Data de nascimento:</strong> {{ data(d.profissional.pessoa.dataNascimento) }}</p>
-            <p><strong>Sexo:</strong> {{ rotuloSexo[d.profissional.pessoa.sexo] }}</p>
-            <p><strong>Estado civil:</strong> {{ rotuloEstadoCivil[d.profissional.pessoa.estadoCivil] }}</p>
-            <p><strong>Celular:</strong> {{ celular(d.profissional.pessoa.celular) || '—' }}</p>
-            <p><strong>Cartão SUS (CNS):</strong> {{ d.profissional.pessoa.numCNS || '—' }}</p>
+            <app-campo-detalhe rotulo="Nome">{{ d.profissional.pessoa.nome }}</app-campo-detalhe>
+            <app-campo-detalhe rotulo="CPF">{{ cpf(d.profissional.pessoa.cpf) }}</app-campo-detalhe>
+            <app-campo-detalhe rotulo="E-mail">{{ d.profissional.email || '—' }}</app-campo-detalhe>
+            <app-campo-detalhe rotulo="Data de nascimento">{{ data(d.profissional.pessoa.dataNascimento) }}</app-campo-detalhe>
+            <app-campo-detalhe rotulo="Sexo">{{ rotuloSexo[d.profissional.pessoa.sexo] }}</app-campo-detalhe>
+            <app-campo-detalhe rotulo="Estado civil">{{ rotuloEstadoCivil[d.profissional.pessoa.estadoCivil] }}</app-campo-detalhe>
+            <app-campo-detalhe rotulo="Celular">{{ celular(d.profissional.pessoa.celular) || '—' }}</app-campo-detalhe>
+            <app-campo-detalhe rotulo="Cartão SUS (CNS)">{{ cns(d.profissional.pessoa.numCNS) || '—' }}</app-campo-detalhe>
         </div>
     </div>
     <br>
@@ -70,8 +70,8 @@
     <div class="secao">
         <h3>Profissional</h3>
         <div class="info-bloco">
-            <p><strong>Cargo:</strong> {{ d.profissional.cargo.nome || '—' }}</p>
-            <p><strong>CBO:</strong> {{ d.profissional.cargo.codigoCBO }}{{ d.profissional.cargo.tituloCBO ? ' · ' + d.profissional.cargo.tituloCBO : '' }}</p>
+            <app-campo-detalhe rotulo="Cargo">{{ d.profissional.cargo.nome || '—' }}</app-campo-detalhe>
+            <app-campo-detalhe rotulo="CBO">{{ cbo(d.profissional.cargo.codigoCBO) }}{{ d.profissional.cargo.tituloCBO ? ' · ' + d.profissional.cargo.tituloCBO : '' }}</app-campo-detalhe>
         </div>
     </div>
 
@@ -82,27 +82,26 @@
     <div class="secao">
         <h3>Especialista</h3>
         <div class="info-bloco">
-            <p><strong>Registro no conselho:</strong> {{ esp.registroConselho || '—' }}</p>
-            <p><strong>Especialidades:</strong>
+            <app-campo-detalhe rotulo="Registro no conselho">{{ esp.registroConselho || '—' }}</app-campo-detalhe>
+            <app-campo-detalhe rotulo="Especialidades">
                 @for (e of esp.especialidades; track e.idEspecialidade; let ultimo = $last) {
                 {{ e.nome }}{{ ultimo ? '' : ', ' }}
                 } @empty { — }
-            </p>
-            <p><strong>Jornada:</strong></p>
-            @for (j of esp.jornadas; track $index) {
-            <p class="jornada">{{ rotuloDia[j.diaSemana] }}: {{ hora(j.horaInicio) }} às {{ hora(j.horaTermino) }}</p>
-            } @empty {
-            <p class="jornada">Nenhuma jornada informada.</p>
-            }
+            </app-campo-detalhe>
+            <app-campo-detalhe rotulo="Jornada">
+                @for (j of esp.jornadas; track $index) {
+                <div>{{ rotuloDia[j.diaSemana] }}: {{ hora(j.horaInicio) }} às {{ hora(j.horaTermino) }}</div>
+                } @empty { Nenhuma jornada informada. }
+            </app-campo-detalhe>
         </div>
 
         @if (d.pj; as pj) {
         <div class="info-bloco">
-            <p><strong>Pessoa Jurídica (PJ)</strong></p>
-            <p><strong>CNPJ:</strong> {{ cnpj(pj.cnpj) }}</p>
-            <p><strong>Razão social:</strong> {{ pj.razaoSocial }}</p>
-            <p><strong>Nome fantasia:</strong> {{ pj.nomeFantasia || '—' }}</p>
-            <p><strong>Inscrição estadual:</strong> {{ pj.inscricaoEstadual || '—' }}</p>
+            <p class="subtitulo-bloco">Pessoa Jurídica (PJ)</p>
+            <app-campo-detalhe rotulo="CNPJ">{{ cnpj(pj.cnpj) }}</app-campo-detalhe>
+            <app-campo-detalhe rotulo="Razão social">{{ pj.razaoSocial }}</app-campo-detalhe>
+            <app-campo-detalhe rotulo="Nome fantasia">{{ pj.nomeFantasia || '—' }}</app-campo-detalhe>
+            <app-campo-detalhe rotulo="Inscrição estadual">{{ pj.inscricaoEstadual || '—' }}</app-campo-detalhe>
         </div>
         }
     </div>
@@ -115,10 +114,10 @@
         <h3>Endereço</h3>
         @if (d.profissional.pessoa.enderecos[0]; as e) {
         <div class="info-bloco">
-            <p><strong>Endereço:</strong> {{ e.rua }}, {{ e.numero }}{{ e.complemento ? ' (' + e.complemento + ')' : '' }}</p>
-            <p><strong>Bairro:</strong> {{ e.bairro }}</p>
-            <p><strong>Cidade:</strong> {{ e.cidade }}/{{ e.estado }}</p>
-            <p><strong>CEP:</strong> {{ cep(e.cep) }}</p>
+            <app-campo-detalhe rotulo="Endereço">{{ e.rua }}, {{ e.numero }}{{ e.complemento ? ' (' + e.complemento + ')' : '' }}</app-campo-detalhe>
+            <app-campo-detalhe rotulo="Bairro">{{ e.bairro }}</app-campo-detalhe>
+            <app-campo-detalhe rotulo="Cidade">{{ e.cidade }}/{{ e.estado }}</app-campo-detalhe>
+            <app-campo-detalhe rotulo="CEP">{{ cep(e.cep) }}</app-campo-detalhe>
         </div>
         } @else {
         <p>Sem endereço informado.</p>

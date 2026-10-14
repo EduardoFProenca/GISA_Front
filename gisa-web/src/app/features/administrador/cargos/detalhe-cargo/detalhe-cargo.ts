@@ -1,3 +1,4 @@
+import { CampoDetalhe } from '../../../../shared/components/campo-detalhe/campo-detalhe';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CabecalhoPagina } from '../../../../shared/components/cabecalho-pagina/cabecalho-pagina';
@@ -6,13 +7,13 @@ import { Cargo, CargoDetalhe } from '../../../../core/models/cargo.model';
 import { CargoService } from '../../../../core/services/cargo';
 import { mensagemDeErro } from '../../../../core/http/erro-api';
 import { DialogCargo } from '../dialog-cargo/dialog-cargo';
-import { formatarCodigoCbo } from '../cbo.util';
+import { formatarCbo } from '../../../../shared/utils/formatacao.util';
 import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 
 // GET /cargos/{id}: CBO e profissionais do cargo (ativos e inativos).
 @Component({
   selector: 'app-detalhe-cargo',
-  imports: [RouterLink, CabecalhoPagina, ConfirmDialog, DialogCargo],
+  imports: [CampoDetalhe, RouterLink, CabecalhoPagina, ConfirmDialog, DialogCargo],
   templateUrl: './detalhe-cargo.html',
   styleUrl: '../../tabelas-apoio.scss',
 })
@@ -22,7 +23,7 @@ export class DetalheCargo implements OnInit {
   private router = inject(Router);
   readonly id = Number(inject(ActivatedRoute).snapshot.paramMap.get('id'));
 
-  readonly codigo = formatarCodigoCbo;
+  readonly codigo = formatarCbo;
 
   cargo = signal<CargoDetalhe | null>(null);
   carregando = signal(true);

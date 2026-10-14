@@ -1,3 +1,4 @@
+import { CampoDetalhe } from '../../../../shared/components/campo-detalhe/campo-detalhe';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CabecalhoPagina } from '../../../../shared/components/cabecalho-pagina/cabecalho-pagina';
@@ -17,7 +18,7 @@ import { DialogEscola } from '../dialog-escola/dialog-escola';
 // GET /escolas/{id} + pacientes da escola (GET /pacientes?idEscola=, exige VISUALIZAR_PACIENTES).
 @Component({
   selector: 'app-detalhe-escola',
-  imports: [RouterLink, CabecalhoPagina, ConfirmDialog, Paginacao, DialogEscola],
+  imports: [CampoDetalhe, RouterLink, CabecalhoPagina, ConfirmDialog, Paginacao, DialogEscola],
   templateUrl: './detalhe-escola.html',
   styleUrl: '../../tabelas-apoio.scss',
 })

@@ -1,3 +1,4 @@
+import { CampoDetalhe } from '../../../shared/components/campo-detalhe/campo-detalhe';
 import { Component, computed, inject, OnInit, signal, viewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -7,11 +8,12 @@ import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm
 import { Paciente } from '../../../core/models/paciente.model';
 import { PacienteService } from '../../../core/services/paciente';
 import { Auth } from '../../../core/auth/auth';
+import { PAINEIS } from '../../../core/auth/permissoes';
 import { mensagemDeErro } from '../../../core/http/erro-api';
 import { lerContextoPacientes } from '../contexto-pacientes';
 import { HistoricoPaciente } from './historico-paciente/historico-paciente';
 import { TerapiasPaciente } from './terapias-paciente/terapias-paciente';
-import { formatarCelular, formatarCep, formatarCpf } from '../../../shared/utils/formatacao.util';
+import { formatarCelular, formatarCep, formatarCns, formatarCpf } from '../../../shared/utils/formatacao.util';
 import { dataCurta } from '../../../shared/utils/data.util';
 import {
   ROTULO_ESTADO_CIVIL,
@@ -25,7 +27,7 @@ import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 
 @Component({
   selector: 'app-detalhe-paciente',
-  imports: [CabecalhoPagina, ConfirmDialog, HistoricoPaciente, TerapiasPaciente],
+  imports: [CampoDetalhe, CabecalhoPagina, ConfirmDialog, HistoricoPaciente, TerapiasPaciente],
   templateUrl: './detalhe-paciente.html',
   styleUrl: './detalhe-paciente.scss'
 })
@@ -43,6 +45,7 @@ export class DetalhePaciente implements OnInit {
   readonly cpf = formatarCpf;
   readonly celular = formatarCelular;
   readonly cep = formatarCep;
+  readonly cns = formatarCns;
   readonly data = dataCurta;
   readonly rotuloSexo = ROTULO_SEXO;
   readonly rotuloEstadoCivil = ROTULO_ESTADO_CIVIL;
@@ -74,6 +77,13 @@ export class DetalhePaciente implements OnInit {
   });
 
   dataCadastro = computed(() => dataCurta(this.paciente()?.dataCadastro));
+
+  // O prontuário (atendimento) só existe no painel do especialista.
+  rotaProntuario = computed(() =>
+    this.rotaBase.startsWith(PAINEIS.ESPECIALISTA + '/') && this.paciente()
+      ? `${PAINEIS.ESPECIALISTA}/atendimento/${this.id()}`
+      : ''
+  );
 
   ngOnInit(): void {
     // Recarrega também se só o :id da rota mudar (a tela é reaproveitada pelo roteador).

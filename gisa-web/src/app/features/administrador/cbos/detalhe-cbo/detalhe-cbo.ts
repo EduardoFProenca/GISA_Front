@@ -1,3 +1,4 @@
+import { CampoDetalhe } from '../../../../shared/components/campo-detalhe/campo-detalhe';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CabecalhoPagina } from '../../../../shared/components/cabecalho-pagina/cabecalho-pagina';
@@ -6,13 +7,13 @@ import { Cbo, CboDetalhe } from '../../../../core/models/cargo.model';
 import { CargoService } from '../../../../core/services/cargo';
 import { mensagemDeErro } from '../../../../core/http/erro-api';
 import { DialogCbo } from '../dialog-cbo/dialog-cbo';
-import { formatarCodigoCbo } from '../../cargos/cbo.util';
+import { formatarCbo } from '../../../../shared/utils/formatacao.util';
 import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 
 // GET /cbos/{codigo}: título e cargos que usam o CBO.
 @Component({
   selector: 'app-detalhe-cbo',
-  imports: [RouterLink, CabecalhoPagina, ConfirmDialog, DialogCbo],
+  imports: [CampoDetalhe, RouterLink, CabecalhoPagina, ConfirmDialog, DialogCbo],
   templateUrl: './detalhe-cbo.html',
   styleUrl: '../../tabelas-apoio.scss',
 })
@@ -22,7 +23,7 @@ export class DetalheCbo implements OnInit {
   private router = inject(Router);
   readonly codigoCbo = inject(ActivatedRoute).snapshot.paramMap.get('codigo') ?? '';
 
-  readonly codigo = formatarCodigoCbo;
+  readonly codigo = formatarCbo;
 
   cbo = signal<CboDetalhe | null>(null);
   carregando = signal(true);
@@ -37,7 +38,7 @@ export class DetalheCbo implements OnInit {
   podeExcluir = computed(() => this.cbo()?.cargos.length === 0);
   mensagemExclusao = computed(() => {
     const c = this.cbo();
-    return c ? `O CBO ${formatarCodigoCbo(c.codigoCBO)} (${c.tituloCBO}) será excluído definitivamente.` : '';
+    return c ? `O CBO ${formatarCbo(c.codigoCBO)} (${c.tituloCBO}) será excluído definitivamente.` : '';
   });
 
   ngOnInit() {

@@ -1,3 +1,4 @@
+import { CampoDetalhe } from '../../../../shared/components/campo-detalhe/campo-detalhe';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -18,7 +19,7 @@ import { formatarCpf } from '../../../../shared/utils/formatacao.util';
 // As travas (próprio acesso, último administrador ativo) são da API; aqui só evitamos o caso óbvio.
 @Component({
   selector: 'app-detalhe-usuario',
-  imports: [FormsModule, RouterLink, CabecalhoPagina, ConfirmDialog, FormDialog],
+  imports: [CampoDetalhe, FormsModule, RouterLink, CabecalhoPagina, ConfirmDialog, FormDialog],
   templateUrl: './detalhe-usuario.html',
   styleUrl: '../../tabelas-apoio.scss',
 })

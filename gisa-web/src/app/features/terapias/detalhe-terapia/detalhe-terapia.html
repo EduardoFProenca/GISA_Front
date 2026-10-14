@@ -12,13 +12,13 @@
   <div class="secao">
     <h3>{{ t.titulo }}</h3>
     <div class="info-bloco">
-      <p><strong>Quando:</strong> {{ quando() }}</p>
-      <p><strong>Modalidade:</strong> {{ rotuloModalidade() }}</p>
-      <p><strong>Status:</strong> {{ rotuloStatus() }}
+      <app-campo-detalhe rotulo="Quando">{{ quando() }}</app-campo-detalhe>
+      <app-campo-detalhe rotulo="Modalidade">{{ rotuloModalidade() }}</app-campo-detalhe>
+      <app-campo-detalhe rotulo="Status">{{ rotuloStatus() }}
         @if (t.horarioLiberado) { · horário liberado (todos os pacientes justificaram a falta) }
-      </p>
+      </app-campo-detalhe>
       @if (t.motivoCancelamento) {
-      <p><strong>Motivo do cancelamento:</strong> {{ t.motivoCancelamento }}</p>
+      <app-campo-detalhe rotulo="Motivo do cancelamento">{{ t.motivoCancelamento }}</app-campo-detalhe>
       }
     </div>
 
@@ -46,8 +46,7 @@
     <h3>Especialistas</h3>
     @for (e of t.especialistas; track e.idCadastro) {
     <div class="info-bloco">
-      <p><strong>{{ e.nome }}</strong></p>
-      <p>{{ e.especialidades.join(', ') || 'Sem especialidade informada' }}</p>
+      <app-campo-detalhe [rotulo]="e.especialidades.join(', ') || 'Sem especialidade informada'">{{ e.nome }}</app-campo-detalhe>
     </div>
     }
   </div>

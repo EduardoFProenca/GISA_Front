@@ -1,3 +1,4 @@
+import { CampoDetalhe } from '../../../shared/components/campo-detalhe/campo-detalhe';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -32,7 +33,7 @@ const PROXIMO: Partial<Record<StatusTerapia, { status: StatusTerapia; texto: str
 
 @Component({
   selector: 'app-detalhe-terapia',
-  imports: [FormsModule, RouterLink, CabecalhoPagina, ConfirmDialog, FormDialog, CardTerapiaPresenca],
+  imports: [CampoDetalhe, FormsModule, RouterLink, CabecalhoPagina, ConfirmDialog, FormDialog, CardTerapiaPresenca],
   templateUrl: './detalhe-terapia.html',
   styleUrl: './detalhe-terapia.scss',
 })

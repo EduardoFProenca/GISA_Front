@@ -12,6 +12,10 @@
   </div>
 
     <div class="cabecalho-direita">
+    @if (textoAcaoSecundaria) {
+      <button type="button" class="btn-acao-secundaria" (click)="aoClicarAcaoSecundaria()">{{ textoAcaoSecundaria }}</button>
+    }
+
     @if (textoAcao) {
       <button type="button" class="btn-acao" (click)="aoClicarAcao()">
         <ng-icon [name]="icones.adicionar" />

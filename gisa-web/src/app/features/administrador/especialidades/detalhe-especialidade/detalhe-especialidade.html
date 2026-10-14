@@ -9,8 +9,8 @@
   <div class="painel">
     <h3>{{ e.nome }}</h3>
     <div class="info-bloco">
-      <p><strong>Descrição:</strong> {{ e.descricao || 'não informada' }}</p>
-      <p><strong>Especialistas nesta especialidade:</strong> {{ e.especialistas.length }}</p>
+      <app-campo-detalhe rotulo="Descrição">{{ e.descricao || 'não informada' }}</app-campo-detalhe>
+      <app-campo-detalhe rotulo="Especialistas nesta especialidade">{{ e.especialistas.length }}</app-campo-detalhe>
     </div>
 
     <div class="acoes-situacao">

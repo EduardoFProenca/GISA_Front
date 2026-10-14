@@ -9,11 +9,11 @@
   <div class="painel">
     <h3>{{ c.nome }}</h3>
     <div class="info-bloco">
-      <p><strong>CBO:</strong>
+      <app-campo-detalhe rotulo="CBO">
         <a [routerLink]="['/administrador/cbos', c.codigoCBO]"><span class="codigo">{{ codigo(c.codigoCBO) }}</span></a>
         {{ c.tituloCBO }}
-      </p>
-      <p><strong>Profissionais neste cargo:</strong> {{ c.profissionais.length }}</p>
+      </app-campo-detalhe>
+      <app-campo-detalhe rotulo="Profissionais neste cargo">{{ c.profissionais.length }}</app-campo-detalhe>
     </div>
 
     <div class="acoes-situacao">

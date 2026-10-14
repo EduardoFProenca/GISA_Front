@@ -30,3 +30,9 @@ export function formatarCns(valor: string | null | undefined): string {
   const d = soDigitos(valor);
   return d.length === 15 ? d.replace(/(\d{3})(\d{4})(\d{4})(\d{4})/, '$1 $2 $3 $4') : (valor ?? '');
 }
+
+// CBO: '251510' -> '2515-10' (formato usual; a API recebe só os dígitos).
+export function formatarCbo(valor: string | null | undefined): string {
+  const d = soDigitos(valor);
+  return d.length === 6 ? `${d.slice(0, 4)}-${d.slice(4)}` : (valor ?? '');
+}

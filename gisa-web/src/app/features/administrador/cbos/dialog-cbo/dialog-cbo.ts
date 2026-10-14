@@ -1,21 +1,25 @@
+import { Mascara } from '../../../../shared/directives/mascara.directive';
 import { Component, effect, inject, input, output, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FormDialog } from '../../../../shared/components/form-dialog/form-dialog';
 import { Cbo } from '../../../../core/models/cargo.model';
 import { CargoService } from '../../../../core/services/cargo';
+import { CboCatalogoService, OcupacaoCbo } from '../../../../core/services/cbo-catalogo';
 import { aplicarErrosApi } from '../../../../core/http/erro-api';
-import { apenasDigitos, formatarCodigoCbo } from '../../cargos/cbo.util';
+import { formatarCbo } from '../../../../shared/utils/formatacao.util';
+import { soDigitos } from '../../../../shared/utils/texto.util';
 import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 
 // Criar (cbo = null) ou editar CBO. Na edição só o título muda: o código identifica o registro.
 @Component({
   selector: 'app-dialog-cbo',
-  imports: [FormsModule, FormDialog],
+  imports: [FormsModule, FormDialog, Mascara],
   templateUrl: './dialog-cbo.html',
 })
 export class DialogCbo {
   private avisoSucesso = inject(AvisoSucessoService);
   private cargoService = inject(CargoService);
+  private catalogoService = inject(CboCatalogoService);
 
   aberto = input(false);
   cbo = input<Cbo | null>(null);
@@ -29,27 +33,47 @@ export class DialogCbo {
   erro = signal('');
   salvando = signal(false);
 
+  // Tabela oficial da CBO 2002: completa o título pelo código e confere se o código existe.
+  private oficial = signal<Map<string, OcupacaoCbo> | null>(null);
+  private tituloAutomatico = '';
+
   constructor() {
+    this.catalogoService.catalogo().subscribe({ next: (m) => this.oficial.set(m), error: () => {} });
     effect(() => {
       if (!this.aberto()) return;
       const c = this.cbo();
       untracked(() => {
-        this.codigo.set(c ? formatarCodigoCbo(c.codigoCBO) : '');
+        this.codigo.set(c ? formatarCbo(c.codigoCBO) : '');
         this.titulo.set(c?.tituloCBO ?? '');
         this.erros.set({});
         this.erro.set('');
+        this.tituloAutomatico = '';
       });
     });
+  }
+
+  // Código completo: preenche o título oficial (sem apagar um título que o usuário digitou).
+  aoMudarCodigo(valor: string) {
+    this.codigo.set(valor);
+    const ocupacao = this.oficial()?.get(soDigitos(valor));
+    const titulo = this.titulo().trim();
+    if (ocupacao && (!titulo || titulo === this.tituloAutomatico)) {
+      this.titulo.set(ocupacao.tituloCBO);
+      this.tituloAutomatico = ocupacao.tituloCBO;
+    }
   }
 
   salvar() {
     if (this.salvando()) return;
     const atual = this.cbo();
-    const codigoCBO = apenasDigitos(this.codigo());
+    const codigoCBO = soDigitos(this.codigo());
     const tituloCBO = this.titulo().trim();
 
     const erros: Record<string, string> = {};
     if (!atual && codigoCBO.length !== 6) erros['codigoCBO'] = 'O código deve ter 6 dígitos (ex.: 2515-10).';
+    else if (!atual && this.oficial() && !this.oficial()!.has(codigoCBO)) {
+      erros['codigoCBO'] = 'Código não encontrado na CBO 2002 oficial.';
+    }
     if (!tituloCBO) erros['tituloCBO'] = 'Informe o título do CBO.';
     this.erros.set(erros);
     this.erro.set('');
@@ -68,7 +92,7 @@ export class DialogCbo {
     req.subscribe({
       next: (c) => {
         this.salvando.set(false);
-        this.avisoSucesso.mostrar({ titulo: atual ? 'CBO atualizado' : 'CBO cadastrado', detalhe: `${formatarCodigoCbo(c.codigoCBO)} · ${c.tituloCBO}` });
+        this.avisoSucesso.mostrar({ titulo: atual ? 'CBO atualizado' : 'CBO cadastrado', detalhe: `${formatarCbo(c.codigoCBO)} · ${c.tituloCBO}` });
         this.salvo.emit(c);
       },
       error: (err) => {

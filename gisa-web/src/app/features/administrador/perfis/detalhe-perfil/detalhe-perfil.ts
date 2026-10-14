@@ -1,3 +1,4 @@
+import { CampoDetalhe } from '../../../../shared/components/campo-detalhe/campo-detalhe';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CabecalhoPagina } from '../../../../shared/components/cabecalho-pagina/cabecalho-pagina';
@@ -14,7 +15,7 @@ import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 // e a tela é redesenhada direto com a resposta.
 @Component({
   selector: 'app-detalhe-perfil',
-  imports: [CabecalhoPagina, ConfirmDialog, FormDialog, DialogPerfil],
+  imports: [CampoDetalhe, CabecalhoPagina, ConfirmDialog, FormDialog, DialogPerfil],
   templateUrl: './detalhe-perfil.html',
   styleUrl: '../../tabelas-apoio.scss',
 })

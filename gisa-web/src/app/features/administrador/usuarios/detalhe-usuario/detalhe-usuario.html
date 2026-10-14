@@ -14,14 +14,14 @@
       </span>
     </h3>
     <div class="info-bloco">
-      <p><strong>CPF:</strong> {{ cpf(u.cpf) }}</p>
-      <p><strong>Tipo de cadastro:</strong> {{ rotuloTipo[u.tipoCadastro] }}</p>
-      @if (u.cargo) { <p><strong>Cargo:</strong> {{ u.cargo.nome }}</p> }
-      @if (u.email) { <p><strong>E-mail:</strong> {{ u.email }}</p> }
+      <app-campo-detalhe rotulo="CPF">{{ cpf(u.cpf) }}</app-campo-detalhe>
+      <app-campo-detalhe rotulo="Tipo de cadastro">{{ rotuloTipo[u.tipoCadastro] }}</app-campo-detalhe>
+      @if (u.cargo) { <app-campo-detalhe rotulo="Cargo">{{ u.cargo.nome }}</app-campo-detalhe> }
+      @if (u.email) { <app-campo-detalhe rotulo="E-mail">{{ u.email }}</app-campo-detalhe> }
       @if (podeVerPerfis) {
-      <p><strong>Perfil de acesso:</strong> <a [routerLink]="['/administrador/perfis', u.perfil.idPerfil]">{{ u.perfil.nome }}</a></p>
+      <app-campo-detalhe rotulo="Perfil de acesso"><a [routerLink]="['/administrador/perfis', u.perfil.idPerfil]">{{ u.perfil.nome }}</a></app-campo-detalhe>
       } @else {
-      <p><strong>Perfil de acesso:</strong> {{ u.perfil.nome }}</p>
+      <app-campo-detalhe rotulo="Perfil de acesso">{{ u.perfil.nome }}</app-campo-detalhe>
       }
       @if (u.tipoCadastro !== 'PESSOA' && podeVerCadastro) {
       <p><a [routerLink]="['/administrador/profissionais', u.idCadastro]">Ver cadastro completo</a></p>

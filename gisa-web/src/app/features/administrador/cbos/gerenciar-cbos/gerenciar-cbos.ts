@@ -12,7 +12,8 @@ import { Pagina } from '../../../../core/models/comum.model';
 import { CargoService } from '../../../../core/services/cargo';
 import { mensagemDeErro } from '../../../../core/http/erro-api';
 import { DialogCbo } from '../dialog-cbo/dialog-cbo';
-import { filtroDeBuscaCbo, formatarCodigoCbo } from '../../cargos/cbo.util';
+import { filtroDeBuscaCbo } from '../../cargos/cbo.util';
+import { formatarCbo } from '../../../../shared/utils/formatacao.util';
 
 const ORDENACOES = [
   { valor: 'codigoCBO,asc', label: 'Por código' },
@@ -31,7 +32,7 @@ export class GerenciarCbos {
   private cargoService = inject(CargoService);
   private router = inject(Router);
 
-  readonly codigo = formatarCodigoCbo;
+  readonly codigo = formatarCbo;
   readonly ordenacoes = ORDENACOES;
   readonly itensPorPagina = 10;
 

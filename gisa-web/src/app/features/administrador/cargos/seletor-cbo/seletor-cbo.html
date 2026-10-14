@@ -3,6 +3,8 @@
     [class.input-erro]="comErro()"
     [ngModel]="termo()" (ngModelChange)="aoDigitar($event)" (focus)="aoFocar()" />
 
+  @if (erroOficial()) { <span class="erro-msg">{{ erroOficial() }}</span> }
+
   @if (aberto() && !cadastrando()) {
   <ul class="opcoes">
     @if (buscando()) {
@@ -14,10 +16,20 @@
         (click)="escolher(cbo)">{{ rotulo(cbo) }}</button>
     </li>
     } @empty {
-    <li class="info">Nenhum CBO encontrado.</li>
+    <li class="info">Nenhum CBO cadastrado com esse termo.</li>
     }
     @if (totalResultados() > resultados().length) {
     <li class="info">+{{ totalResultados() - resultados().length }} resultados. Refine a busca.</li>
+    }
+    @if (oficiais().length) {
+    <li class="info titulo-grupo">Tabela oficial (ainda não cadastrados)</li>
+    @for (o of oficiais(); track o.codigoCBO) {
+    <li>
+      <button type="button" class="opcao" (click)="usarOficial(o)">
+        {{ formatarCbo(o.codigoCBO) }} · {{ o.tituloCBO }} <small>· cadastrar e usar</small>
+      </button>
+    </li>
+    }
     }
     <li>
       <button type="button" class="opcao novo" (click)="abrirCadastro()">+ Cadastrar novo CBO</button>
@@ -32,9 +44,9 @@
     <div class="linha">
       <div class="campo-codigo">
         <label for="novoCodigoCbo">Código</label>
-        <input id="novoCodigoCbo" type="text" inputmode="numeric" maxlength="7" placeholder="0000-00"
+        <input id="novoCodigoCbo" type="text" appMascara="cbo" inputmode="numeric" placeholder="0000-00"
           [class.input-erro]="errosNovo()['codigoCBO']"
-          [ngModel]="novoCodigo()" (ngModelChange)="novoCodigo.set($event)" />
+          [ngModel]="novoCodigo()" (ngModelChange)="aoMudarNovoCodigo($event)" />
       </div>
       <div class="campo-titulo">
         <label for="novoTituloCbo">Título</label>

@@ -56,15 +56,6 @@ h3 {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   padding: 2rem 2.5rem;
 }
-// Linhas da jornada do especialista, recuadas sob "Jornada:".
-.jornada {
-  padding-left: 1rem;
-}
-
-.info-bloco + .info-bloco {
-  margin-top: 0.75rem;
-}
-
 // Permissões do perfil, uma por linha, em duas colunas quando houver espaço.
 .lista-permissoes {
   margin: 0;

@@ -11,8 +11,8 @@
       @if (ehMeuPerfil()) { <span class="etiqueta">Seu perfil</span> }
     </h3>
     <div class="info-bloco">
-      <p><strong>Permissões:</strong> {{ p.permissoes.length }}</p>
-      <p><strong>Usuários com este perfil:</strong> {{ p.usuarios.length }}</p>
+      <app-campo-detalhe rotulo="Permissões">{{ p.permissoes.length }}</app-campo-detalhe>
+      <app-campo-detalhe rotulo="Usuários com este perfil">{{ p.usuarios.length }}</app-campo-detalhe>
     </div>
 
     <div class="acoes-situacao">
