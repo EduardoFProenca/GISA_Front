@@ -13,6 +13,7 @@ import {
 import { Pagina, PaginaApi, normalizarPagina } from '../models/comum.model';
 import { Auth } from '../auth/auth';
 import { montarParams } from './params.util';
+import { comCarregamento } from '../http/carregamento';
 
 // Senhas e usuários de acesso (ver USUARIOS.md). Toda troca de senha encerra as sessões abertas daquele usuário.
 @Injectable({ providedIn: 'root' })
@@ -39,7 +40,7 @@ export class UsuarioService {
   }
 
   buscar(idCadastro: number): Observable<UsuarioDetalhe> {
-    return this.http.get<UsuarioDetalhe>(`${this.base}/${idCadastro}`);
+    return this.http.get<UsuarioDetalhe>(`${this.base}/${idCadastro}`, { context: comCarregamento() });
   }
 
   // Vale na próxima requisição do usuário, sem novo login.

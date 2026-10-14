@@ -13,6 +13,7 @@ import {
 import { Pagina, PaginaApi, ParametrosPagina, normalizarPagina } from '../models/comum.model';
 import { EventoPaciente, FiltroHistoricoPaciente } from '../models/historico.model';
 import { montarParams } from './params.util';
+import { comCarregamento } from '../http/carregamento';
 
 export interface FiltroPacientes extends ParametrosPagina {
   // Trecho do CPF (máscara ignorada) e/ou do nome; com os dois, o paciente precisa atender aos dois.
@@ -36,7 +37,7 @@ export class PacienteService {
   }
 
   buscar(id: number): Observable<Paciente> {
-    return this.http.get<Paciente>(`${this.base}/${id}`);
+    return this.http.get<Paciente>(`${this.base}/${id}`, { context: comCarregamento() });
   }
 
   cadastrar(dados: PacienteCadastroPayload): Observable<CadastroPacienteResponse> {

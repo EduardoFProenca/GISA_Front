@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { AtualizacaoEscolaPayload, Escola, EscolaDetalhe, FiltroEscolas, NovaEscolaPayload } from '../models/escola.model';
 import { Pagina, PaginaApi, normalizarPagina } from '../models/comum.model';
 import { montarParams } from './params.util';
+import { comCarregamento } from '../http/carregamento';
 
 // Escolas (ver ESCOLAS.md). O autocomplete e o cadastro rápido servem ao formulário do paciente
 // (quem cadastra/edita pacientes); listagem, detalhe, edição e exclusão são da gestão (GERENCIAR_ESCOLAS).
@@ -32,7 +33,7 @@ export class EscolaService {
   }
 
   buscar(id: number): Observable<EscolaDetalhe> {
-    return this.http.get<EscolaDetalhe>(`${this.base}/${id}`);
+    return this.http.get<EscolaDetalhe>(`${this.base}/${id}`, { context: comCarregamento() });
   }
 
   atualizar(id: number, dados: AtualizacaoEscolaPayload): Observable<EscolaDetalhe> {

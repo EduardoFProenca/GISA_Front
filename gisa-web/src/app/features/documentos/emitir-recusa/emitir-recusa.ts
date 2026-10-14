@@ -30,7 +30,6 @@ export class EmitirRecusa {
   // Preencher a partir de um paciente cadastrado (opcional)
   readonly buscarPacientes = buscaPacientes(this.pacienteService);
   idPaciente = signal<number | null>(null);
-  carregandoPaciente = signal(false);
 
   // Formulário
   nome = '';
@@ -46,17 +45,14 @@ export class EmitirRecusa {
   preencherComPaciente(id: number | string | null) {
     this.idPaciente.set(id as number | null);
     if (id === null) return;
-    this.carregandoPaciente.set(true);
     this.pacienteService.buscar(id as number).subscribe({
       next: (p) => {
         this.nome = p.pessoa.nome;
         this.cpf = formatarCpf(p.pessoa.cpf);
         this.dataNascimento = p.pessoa.dataNascimento;
         this.erros.set({});
-        this.carregandoPaciente.set(false);
       },
       error: (err) => {
-        this.carregandoPaciente.set(false);
         this.erro.set(mensagemDeErro(err, 'Não foi possível carregar o paciente.'));
       },
     });

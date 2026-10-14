@@ -1,18 +1,18 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable } from 'rxjs';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { FormDialog } from '../../../shared/components/form-dialog/form-dialog';
-import { OpcoesProfissional, OpcoesProfissionalService } from '../cadastrar-profissional/services/opcoes-profissional';
+import { Perfil } from '../../../core/models/perfil.model';
+import { PerfilService } from '../../../core/services/perfil';
 import { ProfissionalService, tipoDoDetalhe } from '../../../core/services/profissional';
 import { UsuarioService } from '../../../core/services/usuario';
 import { ProfissionalDetalhe, TipoProfissional } from '../../../core/models/profissional.model';
 import { Auth } from '../../../core/auth/auth';
 import { mensagemDeErro } from '../../../core/http/erro-api';
-import { formatarCnpj } from './profissional-detalhe.util';
-import { formatarCelular, formatarCep, formatarCpf } from '../../../shared/utils/formatacao.util';
+import { formatarCelular, formatarCep, formatarCnpj, formatarCpf } from '../../../shared/utils/formatacao.util';
 import { dataCurta, horaCurta } from '../../../shared/utils/data.util';
 import { ROTULO_DIA_SEMANA, ROTULO_ESTADO_CIVIL, ROTULO_SEXO } from '../../../shared/utils/rotulos.util';
 import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
@@ -39,7 +39,7 @@ export class DetalheProfissional implements OnInit {
   private route = inject(ActivatedRoute);
   private profissionalService = inject(ProfissionalService);
   private usuarioService = inject(UsuarioService);
-  private opcoesService = inject(OpcoesProfissionalService);
+  private perfilService = inject(PerfilService);
   private auth = inject(Auth);
 
   id = Number(this.route.snapshot.paramMap.get('id'));
@@ -61,7 +61,8 @@ export class DetalheProfissional implements OnInit {
   carregando = signal(true);
   erro = signal('');
   detalhe = signal<ProfissionalDetalhe | null>(null);
-  opcoes = signal<OpcoesProfissional>({ cargos: [], perfis: [], especialidades: [] });
+  // Perfis do select "Conceder acesso": carregados só quando o diálogo abre.
+  perfis = signal<Perfil[]>([]);
 
   tipo = computed(() => {
     const d = this.detalhe();
@@ -95,10 +96,9 @@ export class DetalheProfissional implements OnInit {
   private carregar() {
     this.carregando.set(true);
     this.erro.set('');
-    forkJoin({ detalhe: this.profissionalService.buscarDetalhe(this.id), opcoes: this.opcoesService.carregar() })
+    this.profissionalService.buscarDetalhe(this.id)
       .subscribe({
-        next: ({ detalhe, opcoes }) => {
-          this.opcoes.set(opcoes);
+        next: (detalhe) => {
           this.detalhe.set(detalhe);
           this.carregando.set(false);
         },
@@ -144,6 +144,12 @@ export class DetalheProfissional implements OnInit {
     this.perfilAcesso = '';
     this.erroDialogo.set('');
     this.dialogo.set(tipo);
+    if (tipo === 'acesso' && !this.perfis().length) {
+      this.perfilService.listar().subscribe({
+        next: (lista) => this.perfis.set(lista),
+        error: (err) => this.erroDialogo.set(mensagemDeErro(err, 'Não foi possível carregar os perfis.')),
+      });
+    }
   }
 
   confirmarDialogo() {

@@ -3,7 +3,7 @@
 </app-cabecalho-pagina>
 
 @if (carregando()) {
-<p class="aviso">Carregando...</p>
+<!-- carregando: overlay global (app-loading-spinner) -->
 } @else if (erro()) {
 <p class="erro-msg">{{ erro() }}</p>
 } @else if (formularios(); as f) {

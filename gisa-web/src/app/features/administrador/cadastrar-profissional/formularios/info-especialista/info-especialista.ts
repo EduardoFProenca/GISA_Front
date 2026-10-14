@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 import { FormsModule } from '@angular/forms';
 import { Mascara } from '../../../../../shared/directives/mascara.directive';
 import { ComErros } from '../../../../../shared/components/com-erros';
+import { SeletorHora } from '../../../../../shared/components/seletor-hora/seletor-hora';
 import { Especialidade } from '../../../../../core/models/especialidade.model';
 import { JornadaForm, OpcaoEspecialidade } from '../../models/formularios-cadastro';
 
@@ -11,7 +12,7 @@ export type Jornada = JornadaForm;
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-especialista',
-  imports: [FormsModule, Mascara],
+  imports: [FormsModule, Mascara, SeletorHora],
   templateUrl: './info-especialista.html',
   styleUrl: './info-especialista.scss',
 })

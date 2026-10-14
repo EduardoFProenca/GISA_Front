@@ -2,7 +2,7 @@
 
 <div class="pagina-apoio">
   @if (carregando()) {
-  <p class="carregando">Carregando escola...</p>
+  <!-- carregando: overlay global (app-loading-spinner) -->
   } @else if (erro()) {
   <p class="erro-msg erro-geral">{{ erro() }}</p>
   } @else if (escola(); as e) {

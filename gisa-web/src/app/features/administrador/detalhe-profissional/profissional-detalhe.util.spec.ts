@@ -1,9 +1,6 @@
 import { Profissional, ProfissionalDetalhe } from '../../../core/models/profissional.model';
-import {
-  formatarCelular,
-  formatarCpf,
-  paraFormularios,
-} from './profissional-detalhe.util';
+import { formatarCelular, formatarCpf } from '../../../shared/utils/formatacao.util';
+import { paraFormularios } from './profissional-detalhe.util';
 
 const profissional: Profissional = {
   pessoa: {

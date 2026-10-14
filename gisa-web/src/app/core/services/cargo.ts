@@ -15,6 +15,7 @@ import {
 } from '../models/cargo.model';
 import { Pagina, PaginaApi, normalizarPagina } from '../models/comum.model';
 import { montarParams } from './params.util';
+import { comCarregamento } from '../http/carregamento';
 
 // Cargos e CBOs (ver CARGOS.md). Os DELETE excluem de fato e só valem sem vínculos.
 @Injectable({ providedIn: 'root' })
@@ -30,7 +31,7 @@ export class CargoService {
   }
 
   buscar(id: number): Observable<CargoDetalhe> {
-    return this.http.get<CargoDetalhe>(`${this.base}/${id}`);
+    return this.http.get<CargoDetalhe>(`${this.base}/${id}`, { context: comCarregamento() });
   }
 
   criar(dados: NovoCargoPayload): Observable<Cargo> {
@@ -55,7 +56,7 @@ export class CargoService {
   }
 
   buscarCbo(codigo: string): Observable<CboDetalhe> {
-    return this.http.get<CboDetalhe>(`${this.baseCbos}/${encodeURIComponent(codigo)}`);
+    return this.http.get<CboDetalhe>(`${this.baseCbos}/${encodeURIComponent(codigo)}`, { context: comCarregamento() });
   }
 
   criarCbo(dados: NovoCboPayload): Observable<Cbo> {

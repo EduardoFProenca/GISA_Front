@@ -51,11 +51,13 @@
                     <option [value]="dia.valor">{{ dia.label }}</option>
                     }
                 </select>
-                <input type="time" name="inicio-{{ $index }}" [(ngModel)]="jornada.horaInicio"
-                    [class.input-erro]="erros['jornadas'] && !jornada.horaInicio" (input)="limparErro('jornadas')">
+                <app-seletor-hora [value]="jornada.horaInicio" [disabled]="somenteLeitura"
+                    (valueChange)="jornada.horaInicio = $event; limparErro('jornadas')"
+                    [comErro]="!!erros['jornadas'] && !jornada.horaInicio" />
                 <span class="separador">até</span>
-                <input type="time" name="termino-{{ $index }}" [(ngModel)]="jornada.horaTermino"
-                    [class.input-erro]="erros['jornadas'] && !jornada.horaTermino" (input)="limparErro('jornadas')">
+                <app-seletor-hora [value]="jornada.horaTermino" [disabled]="somenteLeitura"
+                    (valueChange)="jornada.horaTermino = $event; limparErro('jornadas')"
+                    [comErro]="!!erros['jornadas'] && !jornada.horaTermino" />
                 <button type="button" class="remover-item" (click)="removerJornada($index)" title="Remover">✕</button>
             </div>
             }

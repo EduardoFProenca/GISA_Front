@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClient, HttpContext, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { environment } from '../../../environments/environment';
-import { CarregamentoService, SEM_CARREGAMENTO, carregamentoInterceptor } from './carregamento';
+import { CarregamentoService, SEM_CARREGAMENTO, carregamentoInterceptor, comCarregamento } from './carregamento';
 
 describe('carregamentoInterceptor', () => {
   let http: HttpClient;
@@ -37,6 +37,14 @@ describe('carregamentoInterceptor', () => {
     http.post(`${api}/auth/login`, {}).subscribe();
     http.post('https://viacep.com.br/ws/18010000/json/', {}).subscribe();
     http.post(`${api}/terapias/verificar-conflitos`, {}, { context: new HttpContext().set(SEM_CARREGAMENTO, true) }).subscribe();
+    expect(carregamento.ativo()).toBe(false);
+  });
+
+  it('mostra "Carregando..." nas leituras que pedem o overlay', () => {
+    http.get(`${api}/pacientes/1`, { context: comCarregamento() }).subscribe();
+    expect(carregamento.ativo()).toBe(true);
+    expect(carregamento.mensagem()).toBe('Carregando...');
+    controle.expectOne(`${api}/pacientes/1`).flush({});
     expect(carregamento.ativo()).toBe(false);
   });
 });

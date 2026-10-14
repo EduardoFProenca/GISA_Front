@@ -17,6 +17,7 @@ import {
 import { Pagina, PaginaApi, normalizarPagina } from '../models/comum.model';
 import { montarParams } from './params.util';
 import { SEM_CARREGAMENTO } from '../http/carregamento';
+import { comCarregamento } from '../http/carregamento';
 
 // Terapias (ver TERAPIAS.md). "Consulta" nas telas antigas = Terapia.
 @Injectable({ providedIn: 'root' })
@@ -39,7 +40,7 @@ export class TerapiaService {
   }
 
   buscar(id: number): Observable<Terapia> {
-    return this.http.get<Terapia>(`${this.base}/${id}`);
+    return this.http.get<Terapia>(`${this.base}/${id}`, { context: comCarregamento() });
   }
 
   criar(dados: NovaTerapiaPayload): Observable<Terapia> {

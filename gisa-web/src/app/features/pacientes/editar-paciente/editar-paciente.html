@@ -8,7 +8,7 @@
 
 <div class="card-form">
   @if (carregando()) {
-    <p class="aviso">Carregando paciente...</p>
+    <!-- carregando: overlay global (app-loading-spinner) -->
   } @else if (erro()) {
     <p class="aviso erro-msg">{{ erro() }}</p>
   } @else if (paciente()) {

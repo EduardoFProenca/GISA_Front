@@ -2,7 +2,7 @@
 
 <div class="pagina-prontuario">
   @if (carregando()) {
-    <p class="mensagem">Carregando prontuário...</p>
+    <!-- carregando: overlay global (app-loading-spinner) -->
   } @else if (erro()) {
     <p class="mensagem erro" role="alert">{{ erro() }}</p>
     <div class="acoes-erro">

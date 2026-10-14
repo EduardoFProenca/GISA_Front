@@ -23,6 +23,7 @@ import {
 } from '../models/profissional.model';
 import { Pagina, PaginaApi, normalizarPagina } from '../models/comum.model';
 import { montarParams } from './params.util';
+import { comCarregamento } from '../http/carregamento';
 
 // Rota de cada tipo de cadastro (as rotas de especialista recusam PJ e vice-versa).
 const ROTA_POR_TIPO: Record<TipoProfissional, string> = {
@@ -63,16 +64,16 @@ export class ProfissionalService {
   // Começa por /especialistas/{id}: 200 = especialista (já traz o profissional);
   // 400 = é PJ -> /especialistas/pj/{id}; 404 = profissional comum -> /profissionais/{id}.
   buscarDetalhe(id: number): Observable<ProfissionalDetalhe> {
-    return this.http.get<Especialista>(this.url('ESPECIALISTA', id)).pipe(
+    return this.http.get<Especialista>(this.url('ESPECIALISTA', id), { context: comCarregamento() }).pipe(
       map((especialista): ProfissionalDetalhe => ({ profissional: especialista.profissional, especialista, pj: null })),
       catchError((err: HttpErrorResponse) => {
         if (err.status === 400) {
-          return this.http.get<EspecialistaPJ>(this.url('ESPECIALISTA_PJ', id)).pipe(
+          return this.http.get<EspecialistaPJ>(this.url('ESPECIALISTA_PJ', id), { context: comCarregamento() }).pipe(
             map((pj): ProfissionalDetalhe => ({ profissional: pj.especialista.profissional, especialista: pj.especialista, pj }))
           );
         }
         if (err.status === 404) {
-          return this.http.get<Profissional>(this.url('PROFISSIONAL', id)).pipe(
+          return this.http.get<Profissional>(this.url('PROFISSIONAL', id), { context: comCarregamento() }).pipe(
             map((profissional): ProfissionalDetalhe => ({ profissional, especialista: null, pj: null }))
           );
         }

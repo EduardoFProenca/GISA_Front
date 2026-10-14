@@ -10,6 +10,7 @@ import {
   PerfilDetalhe,
   Permissao,
 } from '../models/perfil.model';
+import { comCarregamento } from '../http/carregamento';
 
 // Perfis de acesso e permissões (ver PERFIS.md). As rotas que alteram o perfil devolvem os
 // detalhes atualizados, para a tela ser redesenhada direto com a resposta.
@@ -24,7 +25,7 @@ export class PerfilService {
   }
 
   buscar(id: number): Observable<PerfilDetalhe> {
-    return this.http.get<PerfilDetalhe>(`${this.base}/${id}`);
+    return this.http.get<PerfilDetalhe>(`${this.base}/${id}`, { context: comCarregamento() });
   }
 
   criar(dados: NovoPerfilPayload): Observable<PerfilDetalhe> {

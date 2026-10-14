@@ -3,7 +3,7 @@
 </app-cabecalho-pagina>
 
 @if (carregando()) {
-<p class="aviso">Carregando...</p>
+<!-- carregando: overlay global (app-loading-spinner) -->
 } @else if (erro()) {
 <p class="erro-msg">{{ erro() }}</p>
 } @else if (detalhe()) {
@@ -15,12 +15,14 @@
             <p><strong>Cadastro:</strong> {{ ativo() ? 'Ativo' : 'Inativo' }}</p>
             @if (usuario(); as u) {
             <p><strong>Perfil de acesso:</strong> {{ u.perfil.nome }}</p>
-            <p><strong>Permissões:</strong>
-                {{ u.permissoes.length ? '' : 'nenhuma' }}
-                @for (p of u.permissoes; track p.idPermissao; let ultimo = $last) {
-                {{ p.descricao }}{{ ultimo ? '' : ', ' }}
+            <p><strong>Permissões ({{ u.permissoes.length }}):</strong> {{ u.permissoes.length ? '' : 'nenhuma' }}</p>
+            @if (u.permissoes.length) {
+            <ul class="lista-permissoes">
+                @for (p of u.permissoes; track p.idPermissao) {
+                <li>{{ p.descricao }}</li>
                 }
-            </p>
+            </ul>
+            }
             } @else {
             <p><strong>Acesso ao sistema:</strong> não possui</p>
             }
@@ -147,7 +149,7 @@
         <label for="perfilAcesso">Perfil</label>
         <select id="perfilAcesso" name="perfilAcesso" [(ngModel)]="perfilAcesso">
             <option value="" disabled>Selecione o perfil</option>
-            @for (p of opcoes().perfis; track p.idPerfil) {
+            @for (p of perfis(); track p.idPerfil) {
             <option [value]="'' + p.idPerfil">{{ p.nome }}</option>
             }
         </select>

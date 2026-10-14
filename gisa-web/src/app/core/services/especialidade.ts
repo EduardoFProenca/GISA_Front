@@ -8,6 +8,7 @@ import {
   EspecialidadeDetalhe,
   NovaEspecialidade,
 } from '../models/especialidade.model';
+import { comCarregamento } from '../http/carregamento';
 
 // Especialidades (ver ESPECIALISTAS.md). A listagem é aberta a qualquer usuário logado;
 // o resto exige GERENCIAR_ESPECIALIDADES.
@@ -22,7 +23,7 @@ export class EspecialidadeService {
   }
 
   buscar(id: number): Observable<EspecialidadeDetalhe> {
-    return this.http.get<EspecialidadeDetalhe>(`${this.base}/${id}`);
+    return this.http.get<EspecialidadeDetalhe>(`${this.base}/${id}`, { context: comCarregamento() });
   }
 
   criar(dados: NovaEspecialidade): Observable<Especialidade> {
