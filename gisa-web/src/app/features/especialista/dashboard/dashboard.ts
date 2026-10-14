@@ -5,7 +5,9 @@ import { mensagemDeErro } from '../../../core/http/erro-api';
 import { AgendaEspecialistaService } from '../../../core/services/agenda-especialista';
 import { CardEstatistica } from '../../../shared/components/card-estatistica/card-estatistica';
 import { Header } from '../../../shared/components/header/header';
-import { AcaoRapida, PainelAcoesComponent } from '../../../shared/components/painel-acoes/painel-acoes';
+import { PainelAcoesComponent } from '../../../shared/components/painel-acoes/painel-acoes';
+import { Auth } from '../../../core/auth/auth';
+import { acoesRapidasDoPainel } from '../../../core/layout/menus';
 import { ICONES } from '../../../shared/icons';
 import { hojeIso } from '../../../shared/utils/data.util';
 import { ROTULO_MODALIDADE } from '../../../shared/utils/rotulos.util';
@@ -20,16 +22,13 @@ import { ROTULO_STATUS_AGENDA, proximoPaciente, resumoDoDia, statusAgenda } from
 export class DashboardEspecialista implements OnInit {
   private agendaService = inject(AgendaEspecialistaService);
   private router = inject(Router);
+  private auth = inject(Auth);
   private destroyRef = inject(DestroyRef);
 
   icones = ICONES;
 
-  acoesRapidas: AcaoRapida[] = [
-    { titulo: 'Minha Agenda', descricao: 'Semana e atendimentos', icone: ICONES.calendario, rota: '/especialista/agenda' },
-    { titulo: 'Minhas Terapias do Dia', descricao: 'Pacientes e horários de hoje', icone: ICONES.gestaoConsultas, rota: '/especialista/minhas-terapias' },
-    { titulo: 'Emitir Atestado', descricao: 'Texto livre ou modelo', icone: ICONES.atestado, rota: '/especialista/atestado' },
-    { titulo: 'Emitir Receita', descricao: 'Imprimir receita do paciente', icone: ICONES.receita, rota: '/especialista/receita' },
-  ];
+  // Mesmo catálogo do menu lateral, filtrado pelas permissões (core/layout/menus.ts).
+  acoesRapidas = acoesRapidasDoPainel('ESPECIALISTA', (f) => this.auth.temPermissao(f));
 
   readonly rotuloStatus = ROTULO_STATUS_AGENDA;
   readonly rotuloModalidade = ROTULO_MODALIDADE;

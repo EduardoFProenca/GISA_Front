@@ -1,15 +1,10 @@
 import { Routes } from '@angular/router';
 import { AlterarSenha } from '../conta/alterar-senha/alterar-senha';
-import { exigePermissao } from '../../core/auth/auth-guard';
 import { LayoutPainel } from '../../core/layout/layout-painel/layout-painel';
 import { DashboardRecepcao } from './dashboard/dashboard';
-import { pacientesRoutes } from '../pacientes/pacientes.routes';
-import { terapiasRoutes } from '../terapias/terapias.routes';
-import { EmitirRecusa } from '../documentos/emitir-recusa/emitir-recusa';
-import { RegistrarPresenca } from '../terapias/registrar-presenca/registrar-presenca';
+import { telasComunsRoutes } from '../telas-comuns.routes';
 
-const presenca = exigePermissao('VISUALIZAR_TERAPIAS');
-
+// A Recepção não tem telas próprias: só as comuns que as permissões dela liberam.
 export const recepcaoRoutes: Routes = [
   {
     path: '',
@@ -18,15 +13,7 @@ export const recepcaoRoutes: Routes = [
     children: [
       { path: '', component: DashboardRecepcao },
       { path: 'minha-senha', component: AlterarSenha },
-      { path: 'pacientes', children: pacientesRoutes('/recepcao/pacientes') },
-      { path: 'terapias', children: terapiasRoutes('/recepcao/terapias', 'Controle de Agendamentos') },
-      {
-        path: 'presenca',
-        component: RegistrarPresenca,
-        canActivate: presenca.canActivate,
-        data: { ...presenca.data, modo: 'geral', rotaTerapias: '/recepcao/terapias' },
-      },
-      { path: 'recusa', component: EmitirRecusa, ...exigePermissao('EMITIR_RECUSA') },
+      ...telasComunsRoutes('RECEPCAO'),
     ],
   },
 ];

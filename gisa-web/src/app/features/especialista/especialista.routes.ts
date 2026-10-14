@@ -3,11 +3,15 @@ import { AlterarSenha } from '../conta/alterar-senha/alterar-senha';
 import { LayoutPainel } from '../../core/layout/layout-painel/layout-painel';
 import { exigePermissao, permissaoGuard } from '../../core/auth/auth-guard';
 import { DetalheTerapia } from '../terapias/detalhe-terapia/detalhe-terapia';
+import { FormTerapia } from '../terapias/form-terapia/form-terapia';
 import { DashboardEspecialista } from './dashboard/dashboard';
 import { AgendaEspecialista } from './agenda/agenda-especialista';
 import { AtendimentoEspecialista } from './atendimento/atendimento';
 import { EmitirDocumento } from './emitir-documento/emitir-documento';
 import { RegistrarPresenca } from '../terapias/registrar-presenca/registrar-presenca';
+import { telasComunsRoutes } from '../telas-comuns.routes';
+
+const minhasTerapias = { rotaBaseTerapias: '/especialista/minhas-terapias', tituloTerapias: 'Minhas Terapias do Dia' };
 
 const telas: Routes = [
   { path: '', component: DashboardEspecialista },
@@ -23,14 +27,15 @@ const telas: Routes = [
   {
     path: 'minhas-terapias',
     component: RegistrarPresenca,
-    data: { modo: 'minhas', rotaTerapias: '/especialista/terapias' },
+    data: { modo: 'minhas', rotaTerapias: '/especialista/minhas-terapias' },
   },
-  // Só o detalhe: "Voltar para a lista" leva às terapias do dia.
-  {
-    path: 'terapias/:id',
-    component: DetalheTerapia,
-    data: { rotaBaseTerapias: '/especialista/minhas-terapias', tituloTerapias: 'Minhas Terapias do Dia' },
-  },
+  // Detalhe de uma terapia própria ("Voltar para a lista" leva às terapias do dia). Fica fora de
+  // 'terapias/...', que é a listagem geral e exige VISUALIZAR_TERAPIAS.
+  { path: 'minhas-terapias/:id', component: DetalheTerapia, data: minhasTerapias },
+  { path: 'minhas-terapias/:id/editar', component: FormTerapia, canActivate: [permissaoGuard], data: { ...minhasTerapias, funcionalidades: ['EDITAR_TERAPIA'] } },
+
+  // Pacientes, terapias e recusa, conforme as permissões do perfil.
+  ...telasComunsRoutes('ESPECIALISTA'),
 ];
 
 // Todas as telas do painel ficam dentro do layout com o menu lateral.

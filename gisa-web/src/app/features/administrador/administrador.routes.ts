@@ -14,7 +14,6 @@ import { GerenciarCbos } from './cbos/gerenciar-cbos/gerenciar-cbos';
 import { DetalheCbo } from './cbos/detalhe-cbo/detalhe-cbo';
 import { GerenciarPerfis } from './perfis/gerenciar-perfis/gerenciar-perfis';
 import { DetalhePerfil } from './perfis/detalhe-perfil/detalhe-perfil';
-import { EmitirRecusa } from '../documentos/emitir-recusa/emitir-recusa';
 import { Auditoria } from './auditoria/auditoria';
 import { GerenciarUsuarios } from './usuarios/gerenciar-usuarios/gerenciar-usuarios';
 import { DetalheUsuario } from './usuarios/detalhe-usuario/detalhe-usuario';
@@ -22,8 +21,7 @@ import { GerenciarEscolas } from './escolas/gerenciar-escolas/gerenciar-escolas'
 import { DetalheEscola } from './escolas/detalhe-escola/detalhe-escola';
 import { GerenciarEspecialidades } from './especialidades/gerenciar-especialidades/gerenciar-especialidades';
 import { DetalheEspecialidade } from './especialidades/detalhe-especialidade/detalhe-especialidade';
-import { pacientesRoutes } from '../pacientes/pacientes.routes';
-import { terapiasRoutes } from '../terapias/terapias.routes';
+import { telasComunsRoutes } from '../telas-comuns.routes';
 
 const telas: Routes = [
   { path: '', component: DashboardAdministrador },
@@ -50,16 +48,13 @@ const telas: Routes = [
   { path: 'escolas', component: GerenciarEscolas, ...exigePermissao('GERENCIAR_ESCOLAS') },
   { path: 'escolas/:id', component: DetalheEscola, ...exigePermissao('GERENCIAR_ESCOLAS') },
 
-  // Documentos: o admin emite só a recusa (atestado e receita são do especialista).
-  { path: 'recusa', component: EmitirRecusa, ...exigePermissao('EMITIR_RECUSA') },
-
   // Segurança (USUARIOS.md e AUDITORIA.md)
   { path: 'usuarios', component: GerenciarUsuarios, ...exigePermissao('GERENCIAR_USUARIOS') },
   { path: 'usuarios/:id', component: DetalheUsuario, ...exigePermissao('GERENCIAR_USUARIOS') },
   { path: 'auditoria', component: Auditoria, ...exigePermissao('VISUALIZAR_AUDITORIA') },
 
-  { path: 'pacientes', children: pacientesRoutes('/administrador/pacientes') },
-  { path: 'terapias', children: terapiasRoutes('/administrador/terapias') },
+  // Pacientes, terapias e recusa, conforme as permissões do perfil.
+  ...telasComunsRoutes('ADMINISTRADOR'),
 ];
 
 // Todas as telas do painel ficam dentro do layout com o menu lateral.

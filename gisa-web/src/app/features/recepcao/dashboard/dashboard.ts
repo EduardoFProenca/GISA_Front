@@ -7,7 +7,8 @@ import { Header } from '../../../shared/components/header/header';
 import { ICONES } from '../../../shared/icons';
 import { hojeIso } from '../../../shared/utils/data.util';
 import { TerapiaService } from '../../../core/services/terapia';
-import { ACOES_RAPIDAS_RECEPCIONISTA } from '../acoes-rapidas';
+import { Auth } from '../../../core/auth/auth';
+import { acoesRapidasDoPainel } from '../../../core/layout/menus';
 import { calcularResumo, ResumoPresenca } from '../../terapias/registrar-presenca/presenca.util';
 import { terapiasDeHoje } from '../../terapias/terapias-hoje';
 
@@ -20,9 +21,11 @@ import { terapiasDeHoje } from '../../terapias/terapias-hoje';
 export class DashboardRecepcao implements OnInit {
   private terapiaService = inject(TerapiaService);
   private router = inject(Router);
+  private auth = inject(Auth);
 
   icones = ICONES;
-  acoesRapidas = ACOES_RAPIDAS_RECEPCIONISTA;
+  // Mesmo catálogo do menu lateral, filtrado pelas permissões (core/layout/menus.ts).
+  acoesRapidas = acoesRapidasDoPainel('RECEPCAO', (f) => this.auth.temPermissao(f));
 
   resumo = signal<ResumoPresenca | null>(null);
   terapiasHoje = signal<Atividade[]>([]);

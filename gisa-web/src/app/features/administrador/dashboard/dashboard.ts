@@ -1,6 +1,8 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CardEstatistica } from '../../../shared/components/card-estatistica/card-estatistica';
-import { PainelAcoesComponent, AcaoRapida } from '../../../shared/components/painel-acoes/painel-acoes';
+import { PainelAcoesComponent } from '../../../shared/components/painel-acoes/painel-acoes';
+import { Auth } from '../../../core/auth/auth';
+import { acoesRapidasDoPainel } from '../../../core/layout/menus';
 import { AtividadesRecentes, Atividade } from '../../../shared/components/atividades-recentes/atividades-recentes';
 import { Header } from '../../../shared/components/header/header';
 import { ICONES } from '../../../shared/icons';
@@ -21,6 +23,7 @@ export class DashboardAdministrador implements OnInit {
   private profissionalService = inject(ProfissionalService);
   private terapiaService = inject(TerapiaService);
   private router = inject(Router);
+  private auth = inject(Auth);
 
   icones = ICONES;
 
@@ -29,22 +32,8 @@ export class DashboardAdministrador implements OnInit {
   totalProfissionais = signal<number | string>('—');
   profissionaisAtivos = signal<number | string>('—');
 
-  acoesRapidas: AcaoRapida[] = [
-    { titulo: 'Cadastrar Paciente', descricao: 'Novo registro no sistema', icone: ICONES.cadastrarPaciente, rota: '/administrador/pacientes/novo' },
-    { titulo: 'Nova Terapia', descricao: 'Agendar terapia', icone: ICONES.calendario, rota: '/administrador/terapias/nova' },
-    { titulo: 'Gestão de Pacientes', descricao: 'Ver todos os pacientes', icone: ICONES.gestaoPacientes, rota: '/administrador/pacientes' },
-    { titulo: 'Cadastrar Profissional', descricao: 'Adicionar ao corpo clínico', icone: ICONES.cadastrarProfissional, rota: '/administrador/profissionais/novo' },
-    { titulo: 'Gestão de Terapias', descricao: 'Visualizar e gerenciar', icone: ICONES.gestaoConsultas, rota: '/administrador/terapias' },
-    { titulo: 'Gestão de Profissionais', descricao: 'Ver corpo clínico', icone: ICONES.gestaoProfissionais, rota: '/administrador/profissionais/gerenciar' },
-    { titulo: 'Cargos', descricao: 'Funções internas', icone: ICONES.cargo, rota: '/administrador/cargos' },
-    { titulo: 'CBOs', descricao: 'Classificação de ocupações', icone: ICONES.lista, rota: '/administrador/cbos' },
-    { titulo: 'Especialidades', descricao: 'Áreas de atendimento', icone: ICONES.especialidade, rota: '/administrador/especialidades' },
-    { titulo: 'Escolas', descricao: 'Escolas dos pacientes', icone: ICONES.escola, rota: '/administrador/escolas' },
-    { titulo: 'Usuários do Sistema', descricao: 'Quem acessa e com qual perfil', icone: ICONES.usuarios, rota: '/administrador/usuarios' },
-    { titulo: 'Perfis de Acesso', descricao: 'Permissões dos usuários', icone: ICONES.chave, rota: '/administrador/perfis' },
-    { titulo: 'Emitir Recusa', descricao: 'Declaração de recusa de atendimento', icone: ICONES.recusa, rota: '/administrador/recusa' },
-    { titulo: 'Auditoria', descricao: 'Logins, alterações e consultas', icone: ICONES.auditoria, rota: '/administrador/auditoria' },
-  ];
+  // Mesmo catálogo do menu lateral, filtrado pelas permissões (core/layout/menus.ts).
+  acoesRapidas = acoesRapidasDoPainel('ADMINISTRADOR', (f) => this.auth.temPermissao(f));
 
   terapiasHoje = signal<Atividade[]>([]);
 

@@ -46,12 +46,12 @@ export class DetalhePaciente implements OnInit {
 
   id = signal(0);
   rotaBase = this.contexto.rotaBase;
-  podeEditar = !this.contexto.somenteLeitura && this.auth.temPermissao('EDITAR_PACIENTE');
-  podeInativar = !this.contexto.somenteLeitura && this.auth.temPermissao('INATIVAR_PACIENTE');
+  podeEditar = this.auth.temPermissao('EDITAR_PACIENTE');
+  podeInativar = this.auth.temPermissao('INATIVAR_PACIENTE');
   podeVerHistorico = this.auth.temPermissao('VISUALIZAR_HISTORICO_PACIENTE');
   podeVerTerapias = this.auth.temPermissao('VISUALIZAR_TERAPIAS');
-  // /administrador/pacientes -> /administrador/terapias. No painel só leitura não há telas de terapia.
-  rotaTerapias = this.contexto.somenteLeitura ? '' : this.contexto.rotaBase.replace(/\/pacientes$/, '/terapias');
+  // /administrador/pacientes -> /administrador/terapias (todo painel monta as duas).
+  rotaTerapias = this.contexto.rotaBase.replace(/\/pacientes$/, '/terapias');
 
   carregando = signal(true);
   erro = signal('');

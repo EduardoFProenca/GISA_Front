@@ -2,13 +2,13 @@ import { Routes } from '@angular/router';
 import { AlterarSenha } from '../conta/alterar-senha/alterar-senha';
 import { LayoutPainel } from '../../core/layout/layout-painel/layout-painel';
 import { DashboardAssistenteSocial } from './dashboard/dashboard';
-import { pacientesRoutes } from '../pacientes/pacientes.routes';
+import { telasComunsRoutes } from '../telas-comuns.routes';
 
-// O Assistente Social não tem telas próprias: usa as de pacientes em modo somente leitura.
+// O Assistente Social não tem telas próprias: só as comuns que as permissões dele liberam.
 const telas: Routes = [
   { path: '', component: DashboardAssistenteSocial },
   { path: 'minha-senha', component: AlterarSenha },
-  { path: 'pacientes', children: pacientesRoutes('/assistente-social/pacientes', true) },
+  ...telasComunsRoutes('ASSISTENTE_SOCIAL'),
 ];
 
 // Todas as telas do painel ficam dentro do layout com o menu lateral.

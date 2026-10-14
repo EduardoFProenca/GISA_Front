@@ -2,7 +2,9 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { PacienteService } from '../../../core/services/paciente';
 import { CardEstatistica } from '../../../shared/components/card-estatistica/card-estatistica';
-import { PainelAcoesComponent, AcaoRapida } from '../../../shared/components/painel-acoes/painel-acoes';
+import { PainelAcoesComponent } from '../../../shared/components/painel-acoes/painel-acoes';
+import { Auth } from '../../../core/auth/auth';
+import { acoesRapidasDoPainel } from '../../../core/layout/menus';
 import { AtividadesRecentes, Atividade } from '../../../shared/components/atividades-recentes/atividades-recentes';
 import { Header } from '../../../shared/components/header/header';
 import { ICONES } from '../../../shared/icons';
@@ -19,12 +21,12 @@ const QTD_RECENTES = 6;
 export class DashboardAssistenteSocial implements OnInit {
   private pacienteService = inject(PacienteService);
   private router = inject(Router);
+  private auth = inject(Auth);
 
   icones = ICONES;
 
-  acoesRapidas: AcaoRapida[] = [
-    { titulo: 'Visualizar Pacientes', descricao: 'Consultar dados de um paciente', icone: ICONES.gestaoPacientes, rota: '/assistente-social/pacientes' },
-  ];
+  // Mesmo catálogo do menu lateral, filtrado pelas permissões (core/layout/menus.ts).
+  acoesRapidas = acoesRapidasDoPainel('ASSISTENTE_SOCIAL', (f) => this.auth.temPermissao(f));
 
   // '—' enquanto carrega ou se a chamada falhar.
   totalPacientes = signal<number | string>('—');

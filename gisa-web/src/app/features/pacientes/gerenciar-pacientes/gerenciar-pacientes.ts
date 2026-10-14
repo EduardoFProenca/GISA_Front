@@ -25,8 +25,8 @@ export class GerenciarPacientes implements OnInit {
   private contexto = lerContextoPacientes(inject(ActivatedRoute));
 
   rotaBase = this.contexto.rotaBase;
-  podeCadastrar = !this.contexto.somenteLeitura && this.auth.temPermissao('CADASTRAR_PACIENTE');
-  podeEditar = !this.contexto.somenteLeitura && this.auth.temPermissao('EDITAR_PACIENTE');
+  podeCadastrar = this.auth.temPermissao('CADASTRAR_PACIENTE');
+  podeEditar = this.auth.temPermissao('EDITAR_PACIENTE');
 
   icones = ICONES;
 
