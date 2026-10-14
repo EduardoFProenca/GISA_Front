@@ -59,8 +59,13 @@ export class SelectBusca implements OnChanges {
   @Input() disabled: boolean = false;
   // Máximo de opções exibidas de uma vez (listas grandes, como CID). Padrão: todas.
   @Input() limite: number = Infinity;
+  // Texto livre: o que foi digitado vale mesmo sem escolher um item (ex.: escola nova).
+  // O texto não é apagado ao sair do campo e chega por (textoChange). [texto] é o valor inicial.
+  @Input() textoLivre: boolean = false;
+  @Input() texto: string = '';
 
   @Output() valueChange = new EventEmitter<number | string | null>();
+  @Output() textoChange = new EventEmitter<string>();
 
   termo = signal('');
   aberto = signal(false);
@@ -104,7 +109,7 @@ export class SelectBusca implements OnChanges {
       this.indice = this.opcoes.map((o) => this.normalizar(`${o.label} ${o.termosBusca ?? ''}`));
       this.cache = null;
     }
-    if (changes['value'] || changes['opcoes']) {
+    if (changes['value'] || changes['opcoes'] || changes['texto']) {
       this.sincronizarTermoComValor();
     }
   }
@@ -115,7 +120,8 @@ export class SelectBusca implements OnChanges {
 
   private sincronizarTermoComValor() {
     const selecionada = this.value === null ? undefined : this.conhecidas.get(this.value);
-    this.termo.set(selecionada ? this.rotulo(selecionada) : '');
+    if (selecionada) this.termo.set(this.rotulo(selecionada));
+    else this.termo.set(this.textoLivre ? this.texto : '');
   }
 
   private rotulo(opcao: OpcaoSelectBusca): string {
@@ -159,6 +165,10 @@ export class SelectBusca implements OnChanges {
 
   aoDigitar(texto: string) {
     this.termo.set(texto);
+    if (this.textoLivre) {
+      this.texto = texto;
+      this.textoChange.emit(texto);
+    }
     this.abrir(false);
     if (this.remoto) this.busca$.next(texto);
     // Enquanto o usuário digita e o texto não bate mais com a opção escolhida, limpamos a seleção.
@@ -194,6 +204,10 @@ export class SelectBusca implements OnChanges {
     this.conhecidas.set(opcao.id, opcao);
     this.termo.set(this.rotulo(opcao));
     this.aberto.set(false);
+    if (this.textoLivre) {
+      this.texto = this.rotulo(opcao);
+      this.textoChange.emit(this.texto);
+    }
     this.valueChange.emit(opcao.id);
   }
 

@@ -6,7 +6,7 @@
 <p class="aviso">Carregando...</p>
 } @else if (erro()) {
 <p class="erro-msg">{{ erro() }}</p>
-} @else if (formularios(); as f) {
+} @else if (detalhe()) {
 <div class="card-form">
     <div class="secao">
         <h3>Situação do Profissional</h3>
@@ -47,22 +47,82 @@
     <hr>
     <br>
 
-    <app-dados-pessoais [dadosIniciais]="f.dadosPessoais" [bloquearCpfSexoNascimento]="true" [somenteLeitura]="true">
-    </app-dados-pessoais>
+    @if (detalhe(); as d) {
+    <div class="secao">
+        <h3>Dados Pessoais</h3>
+        <div class="info-bloco">
+            <p><strong>Nome:</strong> {{ d.profissional.pessoa.nome }}</p>
+            <p><strong>CPF:</strong> {{ cpf(d.profissional.pessoa.cpf) }}</p>
+            <p><strong>E-mail:</strong> {{ d.profissional.email || '—' }}</p>
+            <p><strong>Data de nascimento:</strong> {{ data(d.profissional.pessoa.dataNascimento) }}</p>
+            <p><strong>Sexo:</strong> {{ rotuloSexo[d.profissional.pessoa.sexo] }}</p>
+            <p><strong>Estado civil:</strong> {{ rotuloEstadoCivil[d.profissional.pessoa.estadoCivil] }}</p>
+            <p><strong>Celular:</strong> {{ celular(d.profissional.pessoa.celular) || '—' }}</p>
+            <p><strong>Cartão SUS (CNS):</strong> {{ d.profissional.pessoa.numCNS || '—' }}</p>
+        </div>
+    </div>
     <br>
     <hr>
+    <br>
 
-    <app-info-profissional [dadosIniciais]="f.infoProfissional" [cargos]="opcoes().cargos"
-        [somenteLeitura]="true"></app-info-profissional>
+    <div class="secao">
+        <h3>Profissional</h3>
+        <div class="info-bloco">
+            <p><strong>Cargo:</strong> {{ d.profissional.cargo.nome || '—' }}</p>
+            <p><strong>CBO:</strong> {{ d.profissional.cargo.codigoCBO }}{{ d.profissional.cargo.tituloCBO ? ' · ' + d.profissional.cargo.tituloCBO : '' }}</p>
+        </div>
+    </div>
+
+    @if (d.especialista; as esp) {
     <br>
     <hr>
+    <br>
+    <div class="secao">
+        <h3>Especialista</h3>
+        <div class="info-bloco">
+            <p><strong>Registro no conselho:</strong> {{ esp.registroConselho || '—' }}</p>
+            <p><strong>Especialidades:</strong>
+                @for (e of esp.especialidades; track e.idEspecialidade; let ultimo = $last) {
+                {{ e.nome }}{{ ultimo ? '' : ', ' }}
+                } @empty { — }
+            </p>
+            <p><strong>Jornada:</strong></p>
+            @for (j of esp.jornadas; track $index) {
+            <p class="jornada">{{ rotuloDia[j.diaSemana] }}: {{ hora(j.horaInicio) }} às {{ hora(j.horaTermino) }}</p>
+            } @empty {
+            <p class="jornada">Nenhuma jornada informada.</p>
+            }
+        </div>
 
-    <app-info-especialista [dadosIniciais]="f.infoEspecialista" [especialidadesDisponiveis]="opcoes().especialidades"
-        [somenteLeitura]="true"></app-info-especialista>
+        @if (d.pj; as pj) {
+        <div class="info-bloco">
+            <p><strong>Pessoa Jurídica (PJ)</strong></p>
+            <p><strong>CNPJ:</strong> {{ cnpj(pj.cnpj) }}</p>
+            <p><strong>Razão social:</strong> {{ pj.razaoSocial }}</p>
+            <p><strong>Nome fantasia:</strong> {{ pj.nomeFantasia || '—' }}</p>
+            <p><strong>Inscrição estadual:</strong> {{ pj.inscricaoEstadual || '—' }}</p>
+        </div>
+        }
+    </div>
+    }
     <br>
     <hr>
+    <br>
 
-    <app-contato [dadosIniciais]="f.contato" [somenteLeitura]="true"></app-contato>
+    <div class="secao">
+        <h3>Endereço</h3>
+        @if (d.profissional.pessoa.enderecos[0]; as e) {
+        <div class="info-bloco">
+            <p><strong>Endereço:</strong> {{ e.rua }}, {{ e.numero }}{{ e.complemento ? ' (' + e.complemento + ')' : '' }}</p>
+            <p><strong>Bairro:</strong> {{ e.bairro }}</p>
+            <p><strong>Cidade:</strong> {{ e.cidade }}/{{ e.estado }}</p>
+            <p><strong>CEP:</strong> {{ cep(e.cep) }}</p>
+        </div>
+        } @else {
+        <p>Sem endereço informado.</p>
+        }
+    </div>
+    }
 </div>
 }
 

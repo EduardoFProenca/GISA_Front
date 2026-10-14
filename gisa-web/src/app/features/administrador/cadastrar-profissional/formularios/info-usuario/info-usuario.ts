@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ComErros } from '../../../../../shared/components/com-erros';
 import { PerfilResumo } from '../../../../../core/models/perfil.model';
@@ -13,7 +13,9 @@ export interface InfoUsuarioValor {
   perfil: string;
 }
 
+// Eager: os erros (ComErros) chegam depois da resposta da API e precisam aparecer.
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-usuario',
   imports: [FormsModule],
   templateUrl: './info-usuario.html',

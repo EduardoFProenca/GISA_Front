@@ -1,0 +1,7 @@
+<div class="seletor-hora">
+  <app-select-busca [opcoes]="horas" [value]="hora()" (valueChange)="escolherHora($event)"
+    placeholder="Hora" semResultados="Hora inválida" [comErro]="comErro()" [disabled]="disabled()" />
+  <span class="separador">:</span>
+  <app-select-busca [opcoes]="minutos" [value]="minuto()" (valueChange)="escolherMinuto($event)"
+    placeholder="Min" semResultados="Minuto inválido" [comErro]="comErro()" [disabled]="disabled()" />
+</div>

@@ -1,0 +1,15 @@
+.seletor-hora {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  app-select-busca {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.separador {
+  font-weight: 700;
+  color: #6b7280;
+}

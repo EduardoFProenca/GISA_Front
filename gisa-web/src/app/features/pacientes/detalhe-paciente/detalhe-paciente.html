@@ -39,12 +39,18 @@
     <br><hr><br>
 
     <!-- Dados Pessoais -->
-    <app-dados-pessoais
-      [dadosIniciais]="dadosPessoais()"
-      [bloquearCpfSexoNascimento]="true"
-      [exibirEmail]="false"
-      [somenteLeitura]="true"
-    ></app-dados-pessoais>
+    <div class="secao">
+      <h3>Dados Pessoais</h3>
+      <div class="info-bloco">
+        <p><strong>Nome:</strong> {{ p.pessoa.nome }}</p>
+        <p><strong>CPF:</strong> {{ cpf(p.pessoa.cpf) }}</p>
+        <p><strong>Data de nascimento:</strong> {{ data(p.pessoa.dataNascimento) }}</p>
+        <p><strong>Sexo:</strong> {{ rotuloSexo[p.pessoa.sexo] }}</p>
+        <p><strong>Estado civil:</strong> {{ rotuloEstadoCivil[p.pessoa.estadoCivil] }}</p>
+        <p><strong>Celular:</strong> {{ celular(p.pessoa.celular) || '—' }}</p>
+        <p><strong>Cartão SUS (CNS):</strong> {{ p.pessoa.numCNS || '—' }}</p>
+      </div>
+    </div>
 
     <br><hr><br>
 
@@ -113,10 +119,19 @@
     <br><hr><br>
 
     <!-- Contato e Endereço -->
-    <app-contato
-      [dadosIniciais]="contato()"
-      [somenteLeitura]="true"
-    ></app-contato>
+    <div class="secao">
+      <h3>Endereço</h3>
+      @if (p.pessoa.enderecos[0]; as e) {
+        <div class="info-bloco">
+          <p><strong>Endereço:</strong> {{ e.rua }}, {{ e.numero }}{{ e.complemento ? ' (' + e.complemento + ')' : '' }}</p>
+          <p><strong>Bairro:</strong> {{ e.bairro }}</p>
+          <p><strong>Cidade:</strong> {{ e.cidade }}/{{ e.estado }}</p>
+          <p><strong>CEP:</strong> {{ cep(e.cep) }}</p>
+        </div>
+      } @else {
+        <p>Sem endereço informado.</p>
+      }
+    </div>
 
     @if (podeVerTerapias) {
       <br><hr><br>

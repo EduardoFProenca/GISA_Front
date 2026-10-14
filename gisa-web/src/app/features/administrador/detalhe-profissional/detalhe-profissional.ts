@@ -5,17 +5,16 @@ import { Observable, forkJoin } from 'rxjs';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { FormDialog } from '../../../shared/components/form-dialog/form-dialog';
-import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
-import { Contato } from '../../../shared/components/contato/contato';
-import { InfoProfissional } from '../cadastrar-profissional/formularios/info-profissional/info-profissional';
-import { InfoEspecialista } from '../cadastrar-profissional/formularios/info-especialista/info-especialista';
 import { OpcoesProfissional, OpcoesProfissionalService } from '../cadastrar-profissional/services/opcoes-profissional';
 import { ProfissionalService, tipoDoDetalhe } from '../../../core/services/profissional';
 import { UsuarioService } from '../../../core/services/usuario';
 import { ProfissionalDetalhe, TipoProfissional } from '../../../core/models/profissional.model';
 import { Auth } from '../../../core/auth/auth';
 import { mensagemDeErro } from '../../../core/http/erro-api';
-import { FormulariosDetalhe, paraFormularios } from './profissional-detalhe.util';
+import { formatarCnpj } from './profissional-detalhe.util';
+import { formatarCelular, formatarCep, formatarCpf } from '../../../shared/utils/formatacao.util';
+import { dataCurta, horaCurta } from '../../../shared/utils/data.util';
+import { ROTULO_DIA_SEMANA, ROTULO_ESTADO_CIVIL, ROTULO_SEXO } from '../../../shared/utils/rotulos.util';
 import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 
 const ROTULO_TIPO: Record<TipoProfissional, string> = {
@@ -31,10 +30,6 @@ const ROTULO_TIPO: Record<TipoProfissional, string> = {
     CabecalhoPagina,
     ConfirmDialog,
     FormDialog,
-    DadosPessoais,
-    Contato,
-    InfoProfissional,
-    InfoEspecialista,
   ],
   templateUrl: './detalhe-profissional.html',
   styleUrl: './detalhe-profissional.scss',
@@ -53,11 +48,19 @@ export class DetalheProfissional implements OnInit {
   podeInativar = this.auth.temPermissao('INATIVAR_PROFISSIONAL');
   podeGerenciarUsuarios = this.auth.temPermissao('GERENCIAR_USUARIOS');
 
-  // Os formulários filhos só leem dadosIniciais no ngOnInit: renderizam depois de carregar.
+  readonly cpf = formatarCpf;
+  readonly cnpj = formatarCnpj;
+  readonly celular = formatarCelular;
+  readonly cep = formatarCep;
+  readonly data = dataCurta;
+  readonly hora = horaCurta;
+  readonly rotuloSexo = ROTULO_SEXO;
+  readonly rotuloEstadoCivil = ROTULO_ESTADO_CIVIL;
+  readonly rotuloDia = ROTULO_DIA_SEMANA;
+
   carregando = signal(true);
   erro = signal('');
   detalhe = signal<ProfissionalDetalhe | null>(null);
-  formularios = signal<FormulariosDetalhe | null>(null);
   opcoes = signal<OpcoesProfissional>({ cargos: [], perfis: [], especialidades: [] });
 
   tipo = computed(() => {
@@ -97,7 +100,6 @@ export class DetalheProfissional implements OnInit {
         next: ({ detalhe, opcoes }) => {
           this.opcoes.set(opcoes);
           this.detalhe.set(detalhe);
-          this.formularios.set(paraFormularios(detalhe));
           this.carregando.set(false);
         },
         error: (err) => {

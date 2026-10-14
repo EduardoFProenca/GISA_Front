@@ -1,9 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ComErros } from '../../../../../shared/components/com-erros';
 import { Cargo } from '../../../../../core/models/cargo.model';
 
+// Eager: os erros (ComErros) chegam depois da resposta da API e precisam aparecer.
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-profissional',
   imports: [FormsModule],
   templateUrl: './info-profissional.html',

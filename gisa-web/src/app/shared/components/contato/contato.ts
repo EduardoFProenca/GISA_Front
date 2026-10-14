@@ -1,11 +1,13 @@
-import { Component, ElementRef, Input, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Mascara } from '../../directives/mascara.directive';
 import { ComErros } from '../com-erros';
 import { CepService } from '../../../core/services/cep';
 import { soDigitos } from '../../utils/texto.util';
 
+// Eager: os erros (ComErros) chegam depois da resposta da API e precisam aparecer.
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-contato',
   imports: [FormsModule, Mascara],
   templateUrl: './contato.html',

@@ -4,20 +4,19 @@ import { Observable } from 'rxjs';
 
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
-import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
-import { Contato } from '../../../shared/components/contato/contato';
 import { Paciente } from '../../../core/models/paciente.model';
 import { PacienteService } from '../../../core/services/paciente';
 import { Auth } from '../../../core/auth/auth';
 import { mensagemDeErro } from '../../../core/http/erro-api';
 import { lerContextoPacientes } from '../contexto-pacientes';
-import { dadosPessoaisDe, enderecoParaForm } from '../paciente-form.util';
 import { HistoricoPaciente } from './historico-paciente/historico-paciente';
 import { TerapiasPaciente } from './terapias-paciente/terapias-paciente';
-import { formatarCelular, formatarCpf } from '../../../shared/utils/formatacao.util';
+import { formatarCelular, formatarCep, formatarCpf } from '../../../shared/utils/formatacao.util';
 import { dataCurta } from '../../../shared/utils/data.util';
 import {
+  ROTULO_ESTADO_CIVIL,
   ROTULO_PARENTESCO,
+  ROTULO_SEXO,
   ROTULO_STATUS_CADASTRO,
   ROTULO_STATUS_PACIENTE,
   ROTULO_TIPO_ESCOLA,
@@ -26,7 +25,7 @@ import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 
 @Component({
   selector: 'app-detalhe-paciente',
-  imports: [CabecalhoPagina, ConfirmDialog, DadosPessoais, Contato, HistoricoPaciente, TerapiasPaciente],
+  imports: [CabecalhoPagina, ConfirmDialog, HistoricoPaciente, TerapiasPaciente],
   templateUrl: './detalhe-paciente.html',
   styleUrl: './detalhe-paciente.scss'
 })
@@ -43,6 +42,10 @@ export class DetalhePaciente implements OnInit {
   readonly rotuloEscola = ROTULO_TIPO_ESCOLA;
   readonly cpf = formatarCpf;
   readonly celular = formatarCelular;
+  readonly cep = formatarCep;
+  readonly data = dataCurta;
+  readonly rotuloSexo = ROTULO_SEXO;
+  readonly rotuloEstadoCivil = ROTULO_ESTADO_CIVIL;
 
   id = signal(0);
   rotaBase = this.contexto.rotaBase;
@@ -71,11 +74,6 @@ export class DetalhePaciente implements OnInit {
   });
 
   dataCadastro = computed(() => dataCurta(this.paciente()?.dataCadastro));
-  dadosPessoais = computed(() => {
-    const p = this.paciente();
-    return p ? dadosPessoaisDe(p.pessoa) : {};
-  });
-  contato = computed(() => enderecoParaForm(this.paciente()?.pessoa.enderecos[0]));
 
   ngOnInit(): void {
     // Recarrega também se só o :id da rota mudar (a tela é reaproveitada pelo roteador).

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Mascara } from '../../../../../shared/directives/mascara.directive';
 import { ComErros } from '../../../../../shared/components/com-erros';
@@ -7,7 +7,9 @@ import { JornadaForm, OpcaoEspecialidade } from '../../models/formularios-cadast
 
 export type Jornada = JornadaForm;
 
+// Eager: os erros (ComErros) chegam depois da resposta da API e precisam aparecer.
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-especialista',
   imports: [FormsModule, Mascara],
   templateUrl: './info-especialista.html',

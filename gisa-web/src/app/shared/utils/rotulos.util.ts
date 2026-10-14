@@ -1,5 +1,5 @@
 // Rótulos de exibição dos enums da API.
-import { EstadoCivil, StatusCadastro } from '../../core/models/comum.model';
+import { EstadoCivil, Sexo, StatusCadastro } from '../../core/models/comum.model';
 import { GrauParentesco, StatusPaciente } from '../../core/models/paciente.model';
 import { TipoEscola } from '../../core/models/escola.model';
 import { TipoCadastro } from '../../core/models/auth.model';
@@ -84,4 +84,21 @@ export const ROTULO_PRESENCA: Record<Presenca, string> = {
   PRESENTE: 'Compareceu',
   FALTA_JUSTIFICADA: 'Falta justificada',
   FALTA_INJUSTIFICADA: 'Falta',
+};
+
+export const ROTULO_SEXO: Record<Sexo, string> = {
+  F: 'Feminino',
+  M: 'Masculino',
+  O: 'Outro',
+};
+
+// diaSemana da API: 1 = Segunda ... 7 = Domingo.
+export const ROTULO_DIA_SEMANA: Record<number, string> = {
+  1: 'Segunda',
+  2: 'Terça',
+  3: 'Quarta',
+  4: 'Quinta',
+  5: 'Sexta',
+  6: 'Sábado',
+  7: 'Domingo',
 };

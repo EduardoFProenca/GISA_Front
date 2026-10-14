@@ -16,7 +16,8 @@ import { TerapiaService } from '../../../core/services/terapia';
 import { ConflitoHorario, NovaTerapiaPayload, Terapia } from '../../../core/models/terapia.model';
 import { aplicarErrosApi, campoDaChave } from '../../../core/http/erro-api';
 import { ROTULO_MODALIDADE } from '../../../shared/utils/rotulos.util';
-import { paraIsoMinuto } from '../../../shared/utils/data.util';
+import { hojeIso, paraIsoMinuto } from '../../../shared/utils/data.util';
+import { SeletorHora } from '../../../shared/components/seletor-hora/seletor-hora';
 import { lerContextoTerapias } from '../contexto-terapias';
 
 // Chave de erro da API -> campo da tela
@@ -41,7 +42,7 @@ interface PessoaItem {
 // Modalidade é calculada pela API: 1 paciente = individual; mais de um = coletiva.
 @Component({
   selector: 'app-form-terapia',
-  imports: [NgIcon, FormsModule, CabecalhoPagina, SelectBusca],
+  imports: [NgIcon, FormsModule, CabecalhoPagina, SelectBusca, SeletorHora],
   templateUrl: './form-terapia.html',
   styleUrl: './form-terapia.scss',
 })
@@ -85,11 +86,22 @@ export class FormTerapia implements OnInit {
 
   // A API recusa agendar (ou remarcar) para um horário que já passou. Na edição, manter o
   // horário original é permitido (trocar só os participantes, por exemplo).
-  private horarioOriginal = '';
+  private horarioOriginal = signal('');
   horarioPassado = computed(() => {
     if (!this.data() || !this.horaInicio()) return false;
     const horario = `${this.data()}T${this.horaInicio()}`;
-    return horario !== this.horarioOriginal && horario < paraIsoMinuto(new Date());
+    return horario !== this.horarioOriginal() && horario < paraIsoMinuto(new Date());
+  });
+  // Mesmo critério só com a data: avisa assim que a data é escolhida, antes do horário.
+  dataPassada = computed(() => {
+    const data = this.data();
+    return !!data && data !== this.horarioOriginal().slice(0, 10) && data < hojeIso();
+  });
+  // O calendário do navegador já esconde os dias passados (exceto a data original, na edição).
+  dataMinima = computed(() => {
+    const original = this.horarioOriginal().slice(0, 10);
+    const hoje = hojeIso();
+    return original && original < hoje ? original : hoje;
   });
 
   // Estado da tela
@@ -179,7 +191,7 @@ export class FormTerapia implements OnInit {
     this.data.set(t.data);
     this.horaInicio.set(t.horaInicio.slice(0, 5));
     this.horaTermino.set(t.horaTermino.slice(0, 5));
-    this.horarioOriginal = `${t.data}T${t.horaInicio.slice(0, 5)}`;
+    this.horarioOriginal.set(`${t.data}T${t.horaInicio.slice(0, 5)}`);
   }
 
   // ---------- listas de pessoas ----------
@@ -249,7 +261,9 @@ export class FormTerapia implements OnInit {
     else if (this.horaInicio() && this.horaTermino() <= this.horaInicio()) {
       e['horaTermino'] = 'O término deve ser depois do início.';
     }
-    if (!e['data'] && !e['horaInicio'] && this.horarioPassado()) {
+    if (!e['data'] && this.dataPassada()) {
+      e['data'] = 'Esta data já passou. Escolha uma data futura.';
+    } else if (!e['data'] && !e['horaInicio'] && this.horarioPassado()) {
       e['horaInicio'] = 'Este horário já passou. Escolha um horário futuro.';
     }
 

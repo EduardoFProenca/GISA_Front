@@ -3,15 +3,13 @@
 
   <div class="linha-tripla">
     <div class="campo">
-      <label for="escolaNome">Nome da Escola</label>
-      <input type="text" id="escolaNome" name="escolaNome" [(ngModel)]="nome" list="escolas-sugestoes"
-        autocomplete="off" placeholder="Digite para buscar ou cadastrar"
-        [class.input-erro]="erros['nome'] || erros['escola']" (input)="aoDigitarNome()">
-      <datalist id="escolas-sugestoes">
-        @for (escola of sugestoes(); track escola.idEscola) {
-          <option [value]="escola.nome"></option>
-        }
-      </datalist>
+      <label>Nome da Escola</label>
+      <app-select-busca [buscar]="buscarEscolas" [opcoes]="opcoesConhecidas"
+        [value]="escolaSelecionada?.idEscola ?? null" (valueChange)="aoEscolher($event)"
+        [textoLivre]="true" [texto]="nome" (textoChange)="aoDigitarNome($event)"
+        placeholder="Digite para buscar ou cadastrar"
+        semResultados="Nenhuma escola encontrada: ela será cadastrada como nova"
+        [comErro]="!!(erros['nome'] || erros['escola'])" />
       @if (escolaSelecionada) {
         <span class="dica-escola">Escola já cadastrada.</span>
       } @else if (escolaNova) {
