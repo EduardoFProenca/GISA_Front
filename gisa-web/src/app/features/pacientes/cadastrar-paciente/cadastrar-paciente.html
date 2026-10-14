@@ -13,11 +13,11 @@
 
   <app-dados-pessoais [exibirEmail]="false" [celularObrigatorio]="false" />
   <br><hr>
-  <app-contato />
+  <app-contato #contatoPaciente />
   <br><hr>
   <app-info-paciente />
   <br><hr>
-  <app-info-responsavel />
+  <app-info-responsavel [contatoPaciente]="contatoPaciente" />
   <br><hr>
   <app-info-escola />
   <br><hr>

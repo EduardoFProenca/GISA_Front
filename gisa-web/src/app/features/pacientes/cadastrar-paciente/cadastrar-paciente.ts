@@ -16,6 +16,8 @@ import { InfoCid } from './formularios/info-cid/info-cid';
 
 import { PacienteService } from '../../../core/services/paciente';
 import { EscolaService } from '../../../core/services/escola';
+import { ResponsavelService } from '../../../core/services/responsavel';
+import { Endereco } from '../../../core/models/comum.model';
 import { TipoEscola } from '../../../core/models/escola.model';
 import { CadastroPacienteResponse } from '../../../core/models/paciente.model';
 import { soDigitos, vazio } from '../../../shared/utils/texto.util';
@@ -42,6 +44,7 @@ export class CadastrarPaciente {
 
   private pacienteService = inject(PacienteService);
   private escolaService = inject(EscolaService);
+  private responsavelService = inject(ResponsavelService);
   private router = inject(Router);
   private rotaBase = lerContextoPacientes(inject(ActivatedRoute)).rotaBase;
   private cdr = inject(ChangeDetectorRef);
@@ -92,7 +95,41 @@ export class CadastrarPaciente {
     }
 
     const dados = this.payload.montar(f, idEscola);
-    this.pacienteService.cadastrar(dados).subscribe(this.handlersPadrao());
+    let res: CadastroPacienteResponse;
+    try {
+      res = await firstValueFrom(this.pacienteService.cadastrar(dados));
+    } catch (e) {
+      const resultado = this.errosApi.tratar(e as HttpErrorResponse, this.formularios);
+      this.finalizarComErro(resultado.mensagemGeral);
+      return;
+    }
+
+    // O paciente já foi salvo: falha aqui só vira aviso.
+    const aviso = await this.atualizarReaproveitados(f, dados.enderecos[0]);
+    this.salvando = false;
+    this.nomeCadastrado = res?.nome || this.dadosPessoais.nome;
+    this.idCadastrado = res?.idCadastro ?? null;
+    this.erro = aviso;
+    this.mostrarSucesso();
+    this.cdr.markForCheck();
+  }
+
+  // Responsáveis já cadastrados: reativa os inativos e grava o endereço de quem não tinha.
+  // Devolve '' ou o aviso do que falhou.
+  private async atualizarReaproveitados(f: FormulariosPaciente, enderecoPaciente: Endereco): Promise<string> {
+    const falharam: string[] = [];
+    for (const item of f.infoResponsavel.listaResponsaveis) {
+      const dados = this.payload.atualizacaoPosVinculo(item, enderecoPaciente);
+      if (!dados || !item.idResponsavel) continue;
+      try {
+        await firstValueFrom(this.responsavelService.atualizar(item.idResponsavel, dados));
+      } catch {
+        falharam.push(item.nome.trim());
+      }
+    }
+    return falharam.length
+      ? `Paciente salvo, mas não foi possível atualizar o cadastro de ${falharam.join(', ')} (reativação ou endereço).`
+      : '';
   }
 
   // Escola escolhida na lista -> usa o id. Escola nova (digitada) -> cadastra antes do paciente.
@@ -111,22 +148,6 @@ export class CadastrarPaciente {
     // Se o cadastro do paciente falhar, uma nova tentativa reaproveita esta escola (sem duplicar).
     ie.escolaSelecionada = criada;
     return criada.idEscola;
-  }
-
-  private handlersPadrao() {
-    return {
-      next: (res: CadastroPacienteResponse) => {
-        this.salvando = false;
-        this.nomeCadastrado = res?.nome || this.dadosPessoais.nome;
-        this.idCadastrado = res?.idCadastro ?? null;
-        this.mostrarSucesso();
-        this.cdr.markForCheck();
-      },
-      error: (err: HttpErrorResponse) => {
-        const resultado = this.errosApi.tratar(err, this.formularios);
-        this.finalizarComErro(resultado.mensagemGeral);
-      },
-    };
   }
 
   private finalizarComErro(mensagem: string) {

@@ -203,8 +203,11 @@ export class EditarPaciente implements OnInit {
   }
 
   private async adicionarResponsaveisNovos(f: FormulariosPaciente) {
+    const enderecoPaciente = this.payload.montarEndereco(f.contato);
+
     for (const item of f.infoResponsavel.listaResponsaveis) {
-      if (item.idResponsavel) continue;
+      // Já vinculado (ou vinculado numa tentativa anterior deste salvamento).
+      if (item.idResponsavel && !item.reaproveitado) continue;
       try {
         const p = await firstValueFrom(
           this.pacienteService.adicionarResponsavel(this.id(), this.payload.montarResponsavel(item))
@@ -212,6 +215,12 @@ export class EditarPaciente implements OnInit {
         // Guarda o id: se um passo seguinte falhar, a nova tentativa não cadastra de novo.
         const cpf = soDigitos(item.cpf);
         item.idResponsavel = p.responsaveis.find((v) => v.responsavel.cpf === cpf)?.responsavel.idCadastro;
+
+        const posVinculo = this.payload.atualizacaoPosVinculo(item, enderecoPaciente);
+        item.reaproveitado = false;
+        if (posVinculo && item.idResponsavel) {
+          await firstValueFrom(this.responsavelService.atualizar(item.idResponsavel, posVinculo));
+        }
       } catch (e) {
         this.marcarErroResponsavel(f, item, e);
         throw e;

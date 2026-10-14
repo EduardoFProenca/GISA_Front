@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { soDigitos, vazio } from '../../../../shared/utils/texto.util';
 import { ComErros } from '../../../../shared/components/com-erros';
 import { ContatoForm, FormulariosPaciente, ResponsavelItem, listaErros } from '../models/formularios-paciente';
+import { mesmoEnderecoForm } from '../../paciente-form.util';
 
 const OBRIGATORIO = 'Campo obrigatório.';
 
@@ -136,6 +137,18 @@ export class PacienteValidadorService {
     const cpfPaciente = soDigitos(f.dadosPessoais.cpf);
     if (cpfPaciente.length === 11 && ir.listaResponsaveis.some((r) => soDigitos(r.cpf) === cpfPaciente)) {
       marcar(ir, 'responsaveis', 'O CPF do paciente não pode ser o mesmo de um responsável.');
+    }
+
+    // Responsável já cadastrado que reside com o paciente precisa ter o mesmo endereço dele
+    // (o endereço do paciente pode ter sido mudado depois de o responsável ser adicionado).
+    const emOutroEndereco = ir.listaResponsaveis.filter(
+      (r) => r.reaproveitado && !r.naoResideComPaciente && r.enderecoCadastro && !mesmoEnderecoForm(r.enderecoCadastro, f.contato)
+    );
+    if (emOutroEndereco.length) {
+      const nomes = emOutroEndereco.map((r) => r.nome.trim()).join(', ');
+      marcar(ir, 'responsaveis',
+        `O endereço do paciente é diferente do de ${nomes}, que reside com ele. ` +
+        'Use o mesmo endereço ou marque que o responsável não reside com o paciente.');
     }
   }
 

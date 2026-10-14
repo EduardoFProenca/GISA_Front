@@ -47,6 +47,15 @@ export interface ResponsavelItem {
   grauParentesco: GrauParentesco | '';
   naoResideComPaciente: boolean;
   endereco: EnderecoForm | null; // só preenchido quando naoResideComPaciente = true
+
+  // Responsável já cadastrado, escolhido na busca e ainda não vinculado a este paciente: vai com
+  // idResponsavel no POST e a API mantém os dados dele (por isso os campos ficam bloqueados).
+  reaproveitado?: boolean;
+  // Cadastro inativo: é reativado depois de vinculado.
+  inativo?: boolean;
+  // Endereço que o responsável reaproveitado já tem (null = nenhum). Se ele reside com o paciente,
+  // é o paciente que passa a usar este endereço.
+  enderecoCadastro?: EnderecoForm | null;
 }
 
 export interface InfoResponsavelForm extends ComErros {

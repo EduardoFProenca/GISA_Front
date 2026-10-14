@@ -44,7 +44,7 @@
     <br><hr><br>
 
     <!-- Contato e Endereço -->
-    <app-contato
+    <app-contato #contatoPaciente
       [dadosIniciais]="contato()"
     ></app-contato>
 
@@ -56,7 +56,7 @@
     <br><hr><br>
 
     <!-- Responsáveis (adicionar, editar e remover) -->
-    <app-info-responsavel [responsaveisIniciais]="responsaveisIniciais()" />
+    <app-info-responsavel [responsaveisIniciais]="responsaveisIniciais()" [contatoPaciente]="contatoPaciente" />
 
     <br><hr><br>
 

@@ -17,6 +17,12 @@
               @if (resp.ocupacao) { • <span><strong>Profissão:</strong> {{ resp.ocupacao }}</span> }
               @if (resp.naoResideComPaciente) { • <span>Não reside com o paciente</span> }
             </div>
+            @if (resp.reaproveitado) {
+              <div class="tags-resp">
+                <span class="tag">Cadastro existente</span>
+                @if (resp.inativo) { <span class="tag tag-alerta">Inativo · será reativado ao salvar</span> }
+              </div>
+            }
           </div>
           <div class="acoes-card">
             <button type="button" class="btn-editar" (click)="editarResponsavel($index)" title="Editar Responsável"
@@ -36,10 +42,35 @@
     <div class="formulario-card">
       <h4>{{ indexEdicao !== null ? 'Editar Responsável' : 'Cadastrar Novo Responsável' }}</h4>
 
+      @if (!novoResponsavel.idResponsavel) {
+        <div class="campo busca-existente">
+          <label>Já é responsável por outro paciente? Busque o cadastro</label>
+          <app-select-busca [buscar]="buscarResponsaveis" [ocultarIds]="idsNaLista" [value]="null"
+            placeholder="Digite o nome ou o CPF do responsável" semResultados="Nenhum responsável encontrado"
+            (valueChange)="usarExistente($event)" />
+          @if (carregandoExistente) { <span class="legenda-busca">Carregando o cadastro...</span> }
+          @else { <span class="legenda-busca">Ou preencha abaixo para cadastrar um novo responsável.</span> }
+          @if (errosCard['busca']) { <span class="erro-msg">{{ errosCard['busca'] }}</span> }
+        </div>
+      }
+
+      @if (novoResponsavel.reaproveitado) {
+        <div class="aviso-resp">
+          <p>
+            <strong>Cadastro existente.</strong> Os dados pessoais ficam como estão no cadastro do responsável
+            (valem para todos os pacientes dele). Informe o parentesco e se ele reside com o paciente.
+          </p>
+          @if (novoResponsavel.inativo) { <p>Este cadastro está inativo e será reativado ao salvar.</p> }
+          <button type="button" class="link-acao" (click)="desfazerSelecao()">Cadastrar outro responsável</button>
+        </div>
+      } @else if (vinculadoAntes) {
+        <p class="aviso-resp">Alterações nos dados deste responsável valem também para outros pacientes vinculados a ele.</p>
+      }
+
       <div class="linha-form">
         <div class="campo">
           <label for="respNome">Nome do Responsável <span class="obrigatorio">*</span></label>
-          <input type="text" id="respNome" name="respNome" [(ngModel)]="novoResponsavel.nome"
+          <input type="text" id="respNome" name="respNome" [(ngModel)]="novoResponsavel.nome" [disabled]="!!novoResponsavel.reaproveitado"
             placeholder="Digite o nome completo" [class.input-erro]="errosCard['nome']"
             (input)="limparErroCard('nome')">
           @if (errosCard['nome']) { <span class="erro-msg">{{ errosCard['nome'] }}</span> }
@@ -48,8 +79,14 @@
         <div class="campo">
           <label for="respCpf">CPF <span class="obrigatorio">*</span></label>
           <input type="text" id="respCpf" appMascara="cpf" inputmode="numeric" name="respCpf" [(ngModel)]="novoResponsavel.cpf" [disabled]="!!novoResponsavel.idResponsavel"
-            placeholder="000.000.000-00" [class.input-erro]="errosCard['cpf']" (input)="limparErroCard('cpf')">
+            placeholder="000.000.000-00" [class.input-erro]="errosCard['cpf']" (input)="aoMudarCpf()">
           @if (errosCard['cpf']) { <span class="erro-msg">{{ errosCard['cpf'] }}</span> }
+          @if (cpfJaCadastrado) {
+            <span class="aviso-cpf">
+              Este CPF já é de <strong>{{ cpfJaCadastrado.nome }}</strong>.
+              <button type="button" class="link-acao" (click)="usarExistente(cpfJaCadastrado.idCadastro)">Usar este cadastro</button>
+            </span>
+          }
         </div>
       </div>
 
@@ -75,7 +112,7 @@
 
         <div class="campo">
           <label for="respEstadoCivil">Estado Civil <span class="obrigatorio">*</span></label>
-          <select id="respEstadoCivil" name="respEstadoCivil" [(ngModel)]="novoResponsavel.estadoCivil"
+          <select id="respEstadoCivil" name="respEstadoCivil" [(ngModel)]="novoResponsavel.estadoCivil" [disabled]="!!novoResponsavel.reaproveitado"
             [class.input-erro]="errosCard['estadoCivil']" (change)="limparErroCard('estadoCivil')">
             <option value="" disabled selected>Selecione</option>
             <option value="SOLTEIRO">Solteiro(a)</option>
@@ -91,7 +128,7 @@
       <div class="linha-tripla">
         <div class="campo">
           <label for="respCelular">Celular / WhatsApp</label>
-          <input type="text" id="respCelular" appMascara="celular" inputmode="numeric" name="respCelular" [(ngModel)]="novoResponsavel.celular"
+          <input type="text" id="respCelular" appMascara="celular" inputmode="numeric" name="respCelular" [(ngModel)]="novoResponsavel.celular" [disabled]="!!novoResponsavel.reaproveitado"
             placeholder="(00) 00000-0000" [class.input-erro]="errosCard['celular']"
             (input)="limparErroCard('celular')">
           @if (errosCard['celular']) { <span class="erro-msg">{{ errosCard['celular'] }}</span> }
@@ -99,7 +136,7 @@
 
         <div class="campo">
           <label for="respOcupacao">Ocupação / Profissão</label>
-          <input type="text" id="respOcupacao" name="respOcupacao" [(ngModel)]="novoResponsavel.ocupacao"
+          <input type="text" id="respOcupacao" name="respOcupacao" [(ngModel)]="novoResponsavel.ocupacao" [disabled]="!!novoResponsavel.reaproveitado"
             placeholder="Ex: Professor...">
         </div>
 
@@ -124,9 +161,15 @@
         </label>
       </div>
 
+      @if (errosCard['residencia']) { <span class="erro-msg">{{ errosCard['residencia'] }}</span> }
+
       @if (novoResponsavel.naoResideComPaciente) {
-        <app-contato titulo="Endereço do Responsável" subtitulo=""
-          [dadosIniciais]="novoResponsavel.endereco ?? undefined" />
+        @if (novoResponsavel.reaproveitado && novoResponsavel.enderecoCadastro) {
+          <p class="endereco-resp"><strong>Endereço do responsável:</strong> {{ enderecoEmTexto(novoResponsavel.enderecoCadastro) }}</p>
+        } @else {
+          <app-contato titulo="Endereço do Responsável" subtitulo=""
+            [dadosIniciais]="novoResponsavel.endereco ?? undefined" />
+        }
       }
 
       <div class="acoes-form">
@@ -140,3 +183,13 @@
     <button type="button" class="add-item" (click)="abrirFormulario()">+ Adicionar responsável</button>
   }
 </div>
+
+<app-confirm-dialog
+  [aberto]="confirmarEnderecoAberto"
+  titulo="Endereço do paciente"
+  [mensagem]="mensagemEndereco"
+  textoConfirmar="Usar no paciente"
+  textoCancelar="Voltar"
+  (confirmar)="confirmarTrocaEndereco()"
+  (cancelar)="cancelarTrocaEndereco()"
+/>
