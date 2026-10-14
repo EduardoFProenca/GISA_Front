@@ -20,9 +20,4 @@ export class DashboardAssistenteSocial {
 
   // TODO: preencher com o histórico de atividades quando a API tiver o endpoint.
   atividadesRecentes: Atividade[] = [];
-
-  itensMenu = [
-    { label: 'Início', iconeSvg: ICONES.calendario, rota: '/assistente-social' },
-    { label: 'Pacientes', iconeSvg: ICONES.gestaoPacientes, rota: '/assistente-social/pacientes' },
-  ];
 }

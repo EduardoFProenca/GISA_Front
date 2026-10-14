@@ -12,7 +12,11 @@ export class NavegadorData {
   data = input.required<string>();
   dataAlterada = output<string>();
 
-  extenso = computed(() => dataExtenso(this.data()));
+  // "Terça-feira, 13 de outubro de 2026": só a primeira letra maiúscula.
+  extenso = computed(() => {
+    const texto = dataExtenso(this.data());
+    return texto.charAt(0).toUpperCase() + texto.slice(1);
+  });
   ehHoje = computed(() => this.data() === hojeIso());
 
   mudarDia(dias: number) {

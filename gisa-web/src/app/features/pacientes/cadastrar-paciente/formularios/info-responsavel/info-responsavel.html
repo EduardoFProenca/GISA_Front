@@ -47,7 +47,7 @@
 
         <div class="campo">
           <label for="respCpf">CPF <span class="obrigatorio">*</span></label>
-          <input type="text" id="respCpf" name="respCpf" [(ngModel)]="novoResponsavel.cpf" [disabled]="!!novoResponsavel.idResponsavel"
+          <input type="text" id="respCpf" appMascara="cpf" inputmode="numeric" name="respCpf" [(ngModel)]="novoResponsavel.cpf" [disabled]="!!novoResponsavel.idResponsavel"
             placeholder="000.000.000-00" [class.input-erro]="errosCard['cpf']" (input)="limparErroCard('cpf')">
           @if (errosCard['cpf']) { <span class="erro-msg">{{ errosCard['cpf'] }}</span> }
         </div>
@@ -91,7 +91,7 @@
       <div class="linha-tripla">
         <div class="campo">
           <label for="respCelular">Celular / WhatsApp</label>
-          <input type="text" id="respCelular" name="respCelular" [(ngModel)]="novoResponsavel.celular"
+          <input type="text" id="respCelular" appMascara="celular" inputmode="numeric" name="respCelular" [(ngModel)]="novoResponsavel.celular"
             placeholder="(00) 00000-0000" [class.input-erro]="errosCard['celular']"
             (input)="limparErroCard('celular')">
           @if (errosCard['celular']) { <span class="erro-msg">{{ errosCard['celular'] }}</span> }

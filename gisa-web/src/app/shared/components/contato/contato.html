@@ -7,9 +7,11 @@
   <div class="linha-form">
     <div class="campo">
       <label for="cep">CEP <span class="obrigatorio">*</span></label>
-      <input type="text" id="cep" name="cep" [(ngModel)]="cep" placeholder="00000-000"
-        [class.input-erro]="erros['cep']" (input)="limparErro('cep')">
+      <input type="text" id="cep" appMascara="cep" inputmode="numeric" name="cep" [(ngModel)]="cep" placeholder="00000-000"
+        [class.input-erro]="erros['cep']" (ngModelChange)="aoMudarCep()">
       @if (erros['cep']) { <span class="erro-msg">{{ erros['cep'] }}</span> }
+      @else if (buscandoCep()) { <span class="info-cep">Buscando endereço...</span> }
+      @else if (avisoCep()) { <span class="info-cep aviso">{{ avisoCep() }}</span> }
     </div>
     <div class="campo campo-largo">
       <label for="endereco">Endereço <span class="obrigatorio">*</span></label>

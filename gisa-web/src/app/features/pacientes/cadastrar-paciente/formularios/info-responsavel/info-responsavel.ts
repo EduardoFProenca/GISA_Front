@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Mascara } from '../../../../../shared/directives/mascara.directive';
 import { ComErros } from '../../../../../shared/components/com-erros';
 import { Contato } from '../../../../../shared/components/contato/contato';
 import { GrauParentesco } from '../../../../../core/models/paciente.model';
@@ -14,7 +15,7 @@ export type { ResponsavelItem };
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-responsavel',
-  imports: [FormsModule, Contato],
+  imports: [FormsModule, Mascara, Contato],
   templateUrl: './info-responsavel.html',
   styleUrl: './info-responsavel.scss'
 })

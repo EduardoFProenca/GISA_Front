@@ -29,7 +29,7 @@ export class GerenciarProfissionais implements OnInit {
   private auth = inject(Auth);
 
   icones = ICONES;
-  itensPorPagina = 6;
+  itensPorPagina = 9; // padrão da API: 3 cards por linha x 3 linhas
 
   // Pode cadastrar se tiver ao menos uma das permissões de cadastro.
   podeCadastrar =

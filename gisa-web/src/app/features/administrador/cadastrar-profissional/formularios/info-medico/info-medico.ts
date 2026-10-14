@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Mascara } from '../../../../../shared/directives/mascara.directive';
 
 @Component({
   selector: 'app-info-medico',
   standalone: true,          
-  imports: [FormsModule],
+  imports: [FormsModule, Mascara],
   templateUrl: './info-medico.html',
   styleUrl: './info-medico.scss',
 })

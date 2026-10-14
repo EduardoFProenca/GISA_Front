@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { exigePermissao } from '../../core/auth/auth-guard';
-import { LayoutRecepcao } from './layout-recepcao/layout-recepcao';
+import { LayoutPainel } from '../../core/layout/layout-painel/layout-painel';
 import { DashboardRecepcao } from './dashboard/dashboard';
 import { pacientesRoutes } from '../pacientes/pacientes.routes';
 import { terapiasRoutes } from '../terapias/terapias.routes';
@@ -12,7 +12,8 @@ const presenca = exigePermissao('VISUALIZAR_TERAPIAS');
 export const recepcaoRoutes: Routes = [
   {
     path: '',
-    component: LayoutRecepcao,
+    component: LayoutPainel,
+    data: { painel: 'RECEPCAO' },
     children: [
       { path: '', component: DashboardRecepcao },
       { path: 'pacientes', children: pacientesRoutes('/recepcao/pacientes') },

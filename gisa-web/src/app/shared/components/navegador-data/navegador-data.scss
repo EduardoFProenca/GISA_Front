@@ -17,11 +17,12 @@
   flex-wrap: wrap;
 
   strong {
-    text-transform: capitalize;
     color: #0f172a;
   }
 
   input[type='date'] {
+    width: auto; // o global é 100% e jogava o campo para a linha de baixo
+    margin: 0;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     padding: 0.35rem 0.6rem;

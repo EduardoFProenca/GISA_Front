@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Mascara } from '../../directives/mascara.directive';
 import { ComErros } from '../com-erros';
 
 export interface DadosPessoaisValor {
@@ -15,7 +16,7 @@ export interface DadosPessoaisValor {
 
 @Component({
   selector: 'app-dados-pessoais',
-  imports: [FormsModule],
+  imports: [FormsModule, Mascara],
   templateUrl: './dados-pessoais.html',
   styleUrl: './dados-pessoais.scss',
 })

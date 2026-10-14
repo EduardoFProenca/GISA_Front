@@ -12,6 +12,11 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+const ALTURA_LISTA_PX = 220;
+const ALTURA_MINIMA_PX = 120;
+// Folga entre a lista e a borda da janela.
+const MARGEM_TELA_PX = 12;
+
 export interface OpcaoSelectBusca {
   id: number | string;
   label: string;
@@ -43,6 +48,9 @@ export class SelectBusca implements OnChanges {
 
   termo = signal('');
   aberto = signal(false);
+  // Perto do fim da tela a lista abre para cima, e a altura se ajusta ao espaço livre.
+  abrirAcima = signal(false);
+  alturaMaxima = signal(ALTURA_LISTA_PX);
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['value'] || changes['opcoes']) {
@@ -80,17 +88,32 @@ export class SelectBusca implements OnChanges {
 
   aoFocar() {
     if (this.disabled) return;
-    this.aberto.set(true);
+    this.abrir();
   }
 
   aoDigitar(texto: string) {
     this.termo.set(texto);
-    this.aberto.set(true);
+    this.abrir();
     // Enquanto o usuário digita e o texto não bate mais com a opção escolhida, limpamos a seleção.
     const selecionada = this.opcoes.find((o) => o.id === this.value);
     if (!selecionada || this.rotulo(selecionada) !== texto) {
       this.valueChange.emit(null);
     }
+  }
+
+  private abrir() {
+    if (!this.aberto()) this.posicionarLista();
+    this.aberto.set(true);
+  }
+
+  private posicionarLista() {
+    if (typeof window === 'undefined') return;
+    const campo = this.elementRef.nativeElement.getBoundingClientRect();
+    const abaixo = window.innerHeight - campo.bottom - MARGEM_TELA_PX;
+    const acima = campo.top - MARGEM_TELA_PX;
+    const paraCima = abaixo < ALTURA_LISTA_PX && acima > abaixo;
+    this.abrirAcima.set(paraCima);
+    this.alturaMaxima.set(Math.max(ALTURA_MINIMA_PX, Math.min(ALTURA_LISTA_PX, paraCima ? acima : abaixo)));
   }
 
   selecionar(opcao: OpcaoSelectBusca) {

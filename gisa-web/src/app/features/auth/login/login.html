@@ -8,10 +8,10 @@
         <h6>Informe seu CPF de cadastro e senha para continuar</h6>
 
         <label for="usuario">CPF de Cadastro:</label>
-        <input type="text" [(ngModel)]="usuario" [class.input-erro]="erroUsuario()" placeholder="Digite seu CPF numérico"
+        <input type="text" [(ngModel)]="usuario" appMascara="cpf" inputmode="numeric" [class.input-erro]="erroUsuario()" placeholder="000.000.000-00"
             name="usuario" id="usuario">
         @if (erroUsuario()) {
-        <span class="erro-msg">CPF deve ter pelo menos 11 caracteres</span>
+        <span class="erro-msg">O CPF deve ter 11 dígitos</span>
         }
 
         <label for="senha">Sua Senha:</label>

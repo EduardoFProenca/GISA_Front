@@ -22,8 +22,12 @@ export class Header {
   // Usados enquanto o usuário logado ainda não foi carregado.
   @Input() tituloPortal: string = '';
   @Input() subtituloPortal: string = '';
-  // Mostra o botão ☰ que abre/fecha o menu lateral (só nos portais que têm menu).
-  @Input() mostrarBotaoMenu: boolean = false;
+  // Botão ☰ que abre/fecha o menu lateral (todos os painéis têm menu).
+  @Input() mostrarBotaoMenu: boolean = true;
+
+  // Escondido até a API ter endpoint de notificações: hoje elas só existiriam na sessão
+  // do navegador e sumiriam ao recarregar (ver NotificacaoService).
+  readonly exibirNotificacoes = false;
 
   painelAberto = signal(false);
 

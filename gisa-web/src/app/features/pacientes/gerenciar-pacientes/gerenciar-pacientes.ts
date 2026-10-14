@@ -36,7 +36,7 @@ export class GerenciarPacientes implements OnInit {
   pacientes = signal<PacienteResumo[]>([]);
   totalElementos = signal(0);
   paginaAtual = signal(1);
-  itensPorPagina = 6; // 3 cards por linha x 2 linhas
+  itensPorPagina = 9; // padrão da API: 3 cards por linha x 3 linhas
 
   ngOnInit(): void {
     this.carregar();

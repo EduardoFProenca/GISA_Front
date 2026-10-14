@@ -14,6 +14,7 @@
   </div>
 
   <div class="header-direita">
+    @if (exibirNotificacoes) {
     <div class="notificacoes">
       <button type="button" class="btn-icone" aria-label="Notificações" aria-haspopup="true"
         [attr.aria-expanded]="painelAberto()" (click)="alternarPainel()">
@@ -49,6 +50,7 @@
         </div>
       }
     </div>
+    }
 
     <button type="button" class="btn-sair" (click)="sair()">
       <span [innerHTML]="sanitizarIcone(icones.sair)"></span>

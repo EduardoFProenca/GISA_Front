@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
@@ -16,6 +16,7 @@ import {
 } from '../models/terapia.model';
 import { Pagina, PaginaApi, normalizarPagina } from '../models/comum.model';
 import { montarParams } from './params.util';
+import { SEM_CARREGAMENTO } from '../http/carregamento';
 
 // Terapias (ver TERAPIAS.md). "Consulta" nas telas antigas = Terapia.
 @Injectable({ providedIn: 'root' })
@@ -50,9 +51,11 @@ export class TerapiaService {
     return this.http.patch<Terapia>(`${this.base}/${id}`, dados);
   }
 
-  // Aviso antecipado: não grava nem reserva o horário.
+  // Aviso antecipado: não grava nem reserva o horário. Roda em segundo plano (sem loading global).
   verificarConflitos(dados: VerificarConflitosPayload): Observable<VerificacaoConflitos> {
-    return this.http.post<VerificacaoConflitos>(`${this.base}/verificar-conflitos`, dados);
+    return this.http.post<VerificacaoConflitos>(`${this.base}/verificar-conflitos`, dados, {
+      context: new HttpContext().set(SEM_CARREGAMENTO, true),
+    });
   }
 
   alterarStatus(id: number, dados: AlterarStatusTerapiaPayload): Observable<Terapia> {

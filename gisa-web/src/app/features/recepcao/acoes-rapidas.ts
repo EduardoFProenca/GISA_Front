@@ -1,7 +1,7 @@
 import { AcaoRapida } from '../../shared/components/painel-acoes/painel-acoes';
 import { ICONES } from '../../shared/icons';
 
-// Fonte única das ações da Recepção: usada pelo painel do dashboard e pelo menu lateral.
+// Ações rápidas do dashboard da Recepção (o menu lateral fica em core/layout/menus.ts).
 export const ACOES_RAPIDAS_RECEPCIONISTA: AcaoRapida[] = [
   { titulo: 'Terapias do Dia', descricao: 'Registrar presença ou falta', iconeSvg: ICONES.gestaoConsultas, rota: '/recepcao/presenca' },
   { titulo: 'Controle de Agendamentos', descricao: 'Agendar, remarcar e cancelar', iconeSvg: ICONES.calendario, rota: '/recepcao/terapias' },

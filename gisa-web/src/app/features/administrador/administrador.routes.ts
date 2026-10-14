@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { LayoutPainel } from '../../core/layout/layout-painel/layout-painel';
 import { exigePermissao } from '../../core/auth/auth-guard';
 import { DashboardAdministrador } from './dashboard/dashboard';
 import { CadastroProfissional } from './cadastrar-profissional/cadastrar-profissional';
@@ -15,7 +16,7 @@ import { DetalhePerfil } from './perfis/detalhe-perfil/detalhe-perfil';
 import { pacientesRoutes } from '../pacientes/pacientes.routes';
 import { terapiasRoutes } from '../terapias/terapias.routes';
 
-export const administradorRoutes: Routes = [
+const telas: Routes = [
   { path: '', component: DashboardAdministrador },
   { path: 'profissionais/novo', component: CadastroProfissional },
   { path: 'profissionais/gerenciar', component: GerenciarProfissionais, ...exigePermissao('VISUALIZAR_PROFISSIONAIS') },
@@ -33,4 +34,9 @@ export const administradorRoutes: Routes = [
 
   { path: 'pacientes', children: pacientesRoutes('/administrador/pacientes') },
   { path: 'terapias', children: terapiasRoutes('/administrador/terapias') },
+];
+
+// Todas as telas do painel ficam dentro do layout com o menu lateral.
+export const administradorRoutes: Routes = [
+  { path: '', component: LayoutPainel, data: { painel: 'ADMINISTRADOR' }, children: telas },
 ];

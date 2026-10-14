@@ -11,7 +11,7 @@
   >
 
   @if (aberto() && !disabled) {
-    <ul class="lista-opcoes">
+    <ul class="lista-opcoes" [class.acima]="abrirAcima()" [style.max-height.px]="alturaMaxima()">
       @for (opcao of opcoesFiltradas; track opcao.id) {
         <li (mousedown)="selecionar(opcao)">{{ opcao.label }}</li>
       } @empty {

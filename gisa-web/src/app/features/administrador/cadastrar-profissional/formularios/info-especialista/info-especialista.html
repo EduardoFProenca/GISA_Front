@@ -76,7 +76,7 @@
         <div class="linha-form bloco-pj">
             <div class="campo">
                 <label for="cnpj">CNPJ <span class="obrigatorio">*</span></label>
-                <input type="text" id="cnpj" name="cnpj" [(ngModel)]="cnpj" [disabled]="bloquearTipo" placeholder="00.000.000/0000-00"
+                <input type="text" id="cnpj" appMascara="cnpj" inputmode="numeric" name="cnpj" [(ngModel)]="cnpj" [disabled]="bloquearTipo" placeholder="00.000.000/0000-00"
                     [class.input-erro]="erros['cnpj']" (input)="limparErro('cnpj')">
                 @if (erros['cnpj']) { <span class="erro-msg">{{ erros['cnpj'] }}</span> }
             </div>

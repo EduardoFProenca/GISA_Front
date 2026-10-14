@@ -54,7 +54,7 @@
   <div class="linha-form bloco-pj">
     <div class="campo">
       <label for="cnpj">CNPJ *</label>
-      <input type="text" id="cnpj" name="cnpj" [(ngModel)]="cnpj" placeholder="00.000.000/0000-00">
+      <input type="text" id="cnpj" appMascara="cnpj" inputmode="numeric" name="cnpj" [(ngModel)]="cnpj" placeholder="00.000.000/0000-00">
     </div>
     <div class="campo">
       <label for="razaoSocial">Razão Social *</label>

@@ -14,23 +14,23 @@
 
 .linha-form {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 1.5rem;
   margin-bottom: 1rem;
 
   @media (max-width: 640px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 .linha-tripla {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
   gap: 1.5rem;
   margin-bottom: 1rem;
 
   @media (max-width: 640px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -114,7 +114,7 @@
 }
 
 .linha-cid {
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
 }
 
 // Campo fechado: só leitura, vem do CID escolhido.

@@ -1,11 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { Mascara } from '../../../shared/directives/mascara.directive';
 import { Router } from '@angular/router';
 import { timeout } from 'rxjs';
 import { Auth } from '../../../core/auth/auth';
 import { motivoSemPainel } from '../../../core/auth/permissoes';
 import { lerErroApi, mensagemDeErro } from '../../../core/http/erro-api';
+import { soDigitos } from '../../../shared/utils/texto.util';
 
 // Render (plano gratuito) pode levar quase 1 minuto para acordar na primeira chamada.
 const TEMPO_LIMITE_MS = 60_000;
@@ -14,7 +16,7 @@ const AVISO_DEMORA_MS = 5_000;
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, Mascara],
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
@@ -35,7 +37,7 @@ export class LoginComponent {
   constructor(private router: Router) { }
 
   fazerLogin() {
-    const usuarioValido = this.validarCampo(this.usuario, 3);
+    const usuarioValido = soDigitos(this.usuario).length === 11;
     const senhaValida = this.validarCampo(this.senha, 8);
 
     if (!usuarioValido) this.mostrarErro('usuario');
@@ -50,7 +52,7 @@ export class LoginComponent {
     const aviso = setTimeout(() => this.demorando.set(true), AVISO_DEMORA_MS);
 
     this.auth
-      .login({ cpf: this.usuario, senha: this.senha })
+      .login({ cpf: soDigitos(this.usuario), senha: this.senha })
       .pipe(timeout(TEMPO_LIMITE_MS))
       .subscribe({
         next: (usuario) => {

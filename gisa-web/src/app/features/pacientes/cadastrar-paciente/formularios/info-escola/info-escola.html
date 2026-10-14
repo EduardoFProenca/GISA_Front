@@ -35,7 +35,7 @@
 
     <div class="campo">
       <label for="telefoneEscola">Telefone da Escola</label>
-      <input type="text" id="telefoneEscola" name="telefoneEscola" [(ngModel)]="telefone"
+      <input type="text" id="telefoneEscola" appMascara="celular" inputmode="numeric" name="telefoneEscola" [(ngModel)]="telefone"
         [disabled]="!!escolaSelecionada" placeholder="(00) 0000-0000">
     </div>
   </div>

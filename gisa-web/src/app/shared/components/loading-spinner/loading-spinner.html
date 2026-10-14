@@ -1,1 +1,8 @@
-<p>loading-spinner works!</p>
+@if (visivel()) {
+<div class="overlay" role="status" aria-live="polite">
+  <div class="caixa">
+    <span class="spinner" aria-hidden="true"></span>
+    <span>{{ mensagem() }}</span>
+  </div>
+</div>
+}

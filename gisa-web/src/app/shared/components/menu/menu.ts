@@ -10,6 +10,8 @@ export interface ItemMenu {
   rota: string;
   // true = só fica destacado na rota exata (use no item "Início").
   exato?: boolean;
+  // Título da seção; aparece antes do primeiro item de cada grupo.
+  grupo?: string;
 }
 
 const LARGURA_CELULAR_PX = 768;
@@ -38,6 +40,11 @@ export class Menu {
 
   get nome(): string {
     return this.auth.usuarioAtual()?.nome || this.nomeUsuario;
+  }
+
+  iniciaGrupo(indice: number): boolean {
+    const grupo = this.itens[indice].grupo;
+    return !!grupo && grupo !== this.itens[indice - 1]?.grupo;
   }
 
   sanitizarIcone(svg: string): SafeHtml {

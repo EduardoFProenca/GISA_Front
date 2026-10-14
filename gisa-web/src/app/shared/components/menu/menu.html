@@ -8,15 +8,20 @@
   [class.fechado]="menuFechado"
   [attr.aria-hidden]="menuFechado"
   [attr.inert]="menuFechado ? '' : null">
+  <!-- Largura fixa: só a moldura (nav) anima, o texto não se rearranja ao abrir/fechar. -->
+  <div class="menu-conteudo">
 
   @if (nome) {
-    <div class="menu-usuario">
+    <div class="menu-usuario" [title]="nome">
       <span>{{ nome }}</span>
     </div>
   }
 
   <ul>
-    @for (item of itens; track item.rota) {
+    @for (item of itens; track item.rota; let i = $index) {
+      @if (iniciaGrupo(i)) {
+        <li class="grupo" role="presentation">{{ item.grupo }}</li>
+      }
       <li>
         <a
           [routerLink]="item.rota"
@@ -24,9 +29,10 @@
           [routerLinkActiveOptions]="{ exact: item.exato ?? false }"
           (click)="aoNavegar()">
           <span class="menu-icone" [innerHTML]="sanitizarIcone(item.iconeSvg)"></span>
-          {{ item.label }}
+          <span class="menu-rotulo">{{ item.label }}</span>
         </a>
       </li>
     }
   </ul>
+  </div>
 </nav>

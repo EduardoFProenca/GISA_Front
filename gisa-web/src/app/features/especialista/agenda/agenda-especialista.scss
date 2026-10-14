@@ -232,7 +232,7 @@
 .item-agenda {
   @include btn-reset;
   display: grid;
-  grid-template-columns: 8.5rem 1fr auto;
+  grid-template-columns: 8.5rem minmax(0, 1fr) auto;
   align-items: center;
   gap: 1rem;
   width: 100%;
@@ -267,7 +267,7 @@
   }
 
   @media (max-width: 600px) {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: minmax(0, 1fr) auto;
 
     .horario {
       grid-column: 1 / -1;
@@ -321,7 +321,7 @@
 .detalhes {
   margin: 0;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 0.9rem 1.25rem;
 
   dt {
@@ -338,7 +338,7 @@
   }
 
   @media (max-width: 480px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

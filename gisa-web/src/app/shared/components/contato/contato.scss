@@ -31,26 +31,26 @@
     font-weight: 400;
     color: #94a3b8;
     width: 100%;
-    margin-left: 2.25rem;
+    margin-top: -0.35rem; // cola no título (o h3 usa gap entre os itens)
   }
 }
 
 .linha-form {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
   gap: 1.5rem;
   margin-bottom: 1rem;
 
   @media (max-width: 640px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 .linha-tripla {
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
 
   @media (max-width: 640px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -62,4 +62,14 @@
 
 .icone-label {
   margin-right: 0.3rem;
+}
+.info-cep {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: #64748b;
+
+  &.aviso {
+    color: #b45309;
+  }
 }

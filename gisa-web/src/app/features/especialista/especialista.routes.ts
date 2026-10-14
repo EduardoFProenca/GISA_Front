@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { LayoutPainel } from '../../core/layout/layout-painel/layout-painel';
 import { exigePermissao } from '../../core/auth/auth-guard';
 import { DashboardEspecialista } from './dashboard/dashboard';
 import { AgendaEspecialista } from './agenda/agenda-especialista';
@@ -8,7 +9,7 @@ import { terapiasRoutes } from '../terapias/terapias.routes';
 
 const minhas = exigePermissao('VISUALIZAR_TERAPIAS');
 
-export const especialistaRoutes: Routes = [
+const telas: Routes = [
   { path: '', component: DashboardEspecialista },
   { path: 'agenda', component: AgendaEspecialista, ...minhas },
   // Prontuário / atendimento do paciente. O atestado abre em drawer dentro desta tela.
@@ -20,4 +21,9 @@ export const especialistaRoutes: Routes = [
     data: { ...minhas.data, modo: 'minhas', rotaTerapias: '/especialista/terapias' },
   },
   { path: 'terapias', children: terapiasRoutes('/especialista/terapias', 'Terapias') },
+];
+
+// Todas as telas do painel ficam dentro do layout com o menu lateral.
+export const especialistaRoutes: Routes = [
+  { path: '', component: LayoutPainel, data: { painel: 'ESPECIALISTA' }, children: telas },
 ];

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { Mascara } from '../../../../../shared/directives/mascara.directive';
 import { Subject, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { ComErros } from '../../../../../shared/components/com-erros';
@@ -11,7 +12,7 @@ import { formatarCelular } from '../../../../../shared/utils/formatacao.util';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [FormsModule],
+  imports: [FormsModule, Mascara],
   selector: 'app-info-escola',
   styleUrl: './info-escola.scss',
   templateUrl: './info-escola.html',
