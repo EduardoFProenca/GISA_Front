@@ -1,7 +1,6 @@
 <app-header tituloPortal="Especialista" subtituloPortal="Portal do Especialista" />
 
 <div class="corpo-dashboard">
-
   <main class="conteudo">
     <!-- Resumo do dia -->
     <div class="stats-grid">
@@ -16,106 +15,33 @@
     }
 
     <div class="conteudo-principal">
-      <div class="coluna">
-        <app-painel-acoes [acoes]="acoesRapidas" />
+      <app-painel-acoes [acoes]="acoesRapidas" />
 
-        <!-- Próximo paciente -->
-        <section class="painel destaque">
-          <div class="painel-topo">
-            <h3>Próximo Paciente</h3>
-            <span class="links"><a class="link" routerLink="/especialista/minhas-terapias">Minhas terapias</a><a class="link" routerLink="/especialista/agenda">Ver agenda completa</a></span>
-          </div>
+      <!-- Próximo paciente -->
+      <section class="painel destaque">
+        <div class="painel-topo">
+          <h3>Próximo Paciente</h3>
+          <a class="link" routerLink="/especialista/agenda">Ver agenda</a>
+        </div>
 
-          @if (carregando()) {
-            <p class="vazio">Carregando atendimentos...</p>
-          } @else if (proximo(); as p) {
-            <div class="proximo">
-              <div class="avatar" aria-hidden="true">{{ p.pacienteNome.charAt(0) }}</div>
-              <div class="proximo-info">
-                <strong class="proximo-nome">{{ p.pacienteNome }}</strong>
-                <span class="proximo-detalhe">
-                  {{ p.horaInicio }} – {{ p.horaTermino }} · {{ rotuloModalidade[p.modalidade] }}
-                </span>
-                <span class="selo" [class]="'selo st-' + statusDe(p)">{{ rotuloStatus[statusDe(p)] }}</span>
-              </div>
-              <button type="button" class="btn-primario" (click)="abrirProntuario(p.idPaciente, p.idTerapia)">
-                Iniciar Atendimento / Abrir Prontuário
-              </button>
+        @if (carregando()) {
+          <p class="vazio">Carregando atendimentos...</p>
+        } @else if (proximo(); as p) {
+          <div class="proximo">
+            <div class="avatar" aria-hidden="true">{{ p.pacienteNome.charAt(0) }}</div>
+            <div class="proximo-info">
+              <strong class="proximo-nome">{{ p.pacienteNome }}</strong>
+              <span class="proximo-detalhe">
+                {{ p.horaInicio }} – {{ p.horaTermino }} · {{ rotuloModalidade[p.modalidade] }}
+              </span>
+              <span class="selo" [class]="'selo st-' + statusDe(p)">{{ rotuloStatus[statusDe(p)] }}</span>
             </div>
-          } @else {
-            <p class="vazio">Não há mais atendimentos previstos para hoje.</p>
-          }
-        </section>
-
-        <!-- Busca rápida -->
-        <section class="painel">
-          <h3>Busca Rápida de Assistidos</h3>
-          <label for="busca-assistido" class="rotulo-busca">Nome, CPF ou matrícula única</label>
-          <input
-            id="busca-assistido"
-            type="text"
-            autocomplete="off"
-            placeholder="Digite para localizar um paciente"
-            [value]="termoBusca()"
-            (input)="aoDigitarBusca($any($event.target).value)"
-          />
-
-          @if (erroBusca()) {
-            <p class="aviso-painel">{{ erroBusca() }}</p>
-          }
-
-          @if (mostrarResultados() && !buscandoPacientes()) {
-            <ul class="resultados">
-              @for (p of resultados(); track p.idCadastro) {
-                <li>
-                  <button type="button" class="resultado" (click)="abrirProntuario(p.idCadastro)">
-                    <span>
-                      <strong>{{ p.nome }}</strong>
-                      <small>CPF {{ cpf(p.cpf) }} · Matrícula {{ matricula(p.idCadastro) }}</small>
-                    </span>
-                    <span class="abrir">Abrir prontuário ›</span>
-                  </button>
-                </li>
-              } @empty {
-                <li class="vazio">Nenhum paciente encontrado.</li>
-              }
-            </ul>
-          }
-        </section>
-      </div>
-
-      <!-- Solicitações de remarcação -->
-      <section class="painel">
-        <h3>Solicitações de Remarcação</h3>
-        @if (avaliadas() > 0) {
-          <p class="resumo-solicitacoes">
-            {{ avaliadas() }} {{ avaliadas() === 1 ? 'solicitação avaliada' : 'solicitações avaliadas' }} pela Secretaria/Coordenação
-          </p>
-        }
-
-        @if (carregandoSolicitacoes()) {
-          <p class="vazio">Carregando...</p>
-        } @else if (erroSolicitacoes()) {
-          <p class="vazio">{{ erroSolicitacoes() }}</p>
+          </div>
+          <button type="button" class="btn-primario" (click)="abrirProntuario(p.idPaciente, p.idTerapia)">
+            Abrir Prontuário
+          </button>
         } @else {
-          <ul class="solicitacoes">
-            @for (s of solicitacoes(); track s.idSolicitacao) {
-              <li>
-                <div class="solicitacao-topo">
-                  <strong>{{ s.titulo }}</strong>
-                  <span class="selo" [class]="'selo sol-' + s.status">{{ rotuloSolicitacao[s.status] }}</span>
-                </div>
-                <small>
-                  {{ dataCurta(s.data) }} {{ s.horaInicio }} → {{ dataCurta(s.novaData) }} {{ s.novaHoraInicio }}
-                </small>
-                @if (s.parecer) {
-                  <p class="parecer">{{ s.parecer }}</p>
-                }
-              </li>
-            } @empty {
-              <li class="vazio">Nenhuma solicitação de remarcação.</li>
-            }
-          </ul>
+          <p class="vazio">Não há mais atendimentos previstos para hoje.</p>
         }
       </section>
     </div>

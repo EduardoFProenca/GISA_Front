@@ -20,9 +20,6 @@
     @if (erro()) {
       <p class="mensagem erro" role="alert">{{ erro() }}</p>
     }
-    @if (aviso()) {
-      <p class="mensagem sucesso" role="status">{{ aviso() }}</p>
-    }
 
     <!-- Calendário mensal -->
     <div class="calendario" [class.carregando]="carregando()">
@@ -129,9 +126,6 @@
 
       <div class="acoes-modal">
         <button type="button" class="btn-secundario" (click)="fecharDetalhe()">Fechar</button>
-        <button type="button" class="btn-secundario" [disabled]="!podeRemarcar(a)" (click)="abrirRemarcacao(a)">
-          Solicitar Remarcação
-        </button>
         <button type="button" class="btn-primario" [disabled]="!podeAbrirProntuario(a)" (click)="abrirProntuario(a)">
           Iniciar Atendimento / Abrir Prontuário
         </button>
@@ -140,9 +134,3 @@
   </div>
 }
 
-<app-modal-remarcacao
-  [aberto]="remarcando() !== null"
-  [alvo]="alvoRemarcacao()"
-  (fechar)="remarcando.set(null)"
-  (solicitada)="aoSolicitarRemarcacao()"
-/>

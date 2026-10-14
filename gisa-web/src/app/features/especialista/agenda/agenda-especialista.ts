@@ -1,13 +1,11 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ItemAgenda, StatusAgenda } from '../../../core/models/agenda-especialista.model';
-import { AlvoRemarcacao } from '../../../core/models/remarcacao.model';
 import { mensagemDeErro } from '../../../core/http/erro-api';
 import { AgendaEspecialistaService } from '../../../core/services/agenda-especialista';
 import { EspecialistaLogadoService } from '../../../core/services/especialista-logado';
 import { BuscaFiltro, EstadoBusca, OpcaoFiltro } from '../../../shared/components/busca-filtro/busca-filtro';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
-import { ModalRemarcacao } from '../../../shared/components/modal-remarcacao/modal-remarcacao';
 import { dataCurta, dataExtenso, hojeIso, somarDias } from '../../../shared/utils/data.util';
 import { ROTULO_MODALIDADE } from '../../../shared/utils/rotulos.util';
 import {
@@ -29,7 +27,7 @@ const MAX_CHIPS_POR_DIA = 3;
 // Agenda do especialista logado (RF04 / CS01). Dados: GET /terapias/minhas.
 @Component({
   selector: 'app-agenda-especialista',
-  imports: [CabecalhoPagina, BuscaFiltro, ModalRemarcacao],
+  imports: [CabecalhoPagina, BuscaFiltro],
   templateUrl: './agenda-especialista.html',
   styleUrl: './agenda-especialista.scss',
 })
@@ -82,8 +80,6 @@ export class AgendaEspecialista implements OnInit {
   filtroModalidade = signal('');
 
   detalhe = signal<ItemAgenda | null>(null);
-  remarcando = signal<ItemAgenda | null>(null);
-  aviso = signal('');
   especialidade = signal('');
 
   // --- derivados ---
@@ -95,12 +91,6 @@ export class AgendaEspecialista implements OnInit {
   porDia = computed(() => agruparPorDia(this.visiveis()));
   diasDaLista = computed(() => (this.visao() === 'semana' ? diasDaSemana(this.selecionada()) : [this.selecionada()]));
   totalNaLista = computed(() => this.diasDaLista().reduce((n, d) => n + (this.porDia().get(d)?.length ?? 0), 0));
-  alvoRemarcacao = computed<AlvoRemarcacao | null>(() => {
-    const a = this.remarcando();
-    return a
-      ? { idTerapia: a.idTerapia, pacienteNome: a.pacienteNome, data: a.data, horaInicio: a.horaInicio, horaTermino: a.horaTermino }
-      : null;
-  });
 
   // Evita que uma resposta antiga sobrescreva a de um mês escolhido depois.
   private requisicao = 0;
@@ -190,7 +180,6 @@ export class AgendaEspecialista implements OnInit {
   // --- detalhe e ações ---
   abrirDetalhe(a: ItemAgenda, evento?: Event) {
     evento?.stopPropagation();
-    this.aviso.set('');
     this.detalhe.set(a);
   }
 
@@ -202,25 +191,8 @@ export class AgendaEspecialista implements OnInit {
     return statusAgenda(a) !== 'CANCELADA';
   }
 
-  // Só dá para pedir remarcação de sessão que ainda vai acontecer.
-  podeRemarcar(a: ItemAgenda): boolean {
-    const s = statusAgenda(a);
-    return s === 'AGENDADA' || s === 'PRESENTE';
-  }
-
   abrirProntuario(a: ItemAgenda) {
     this.fecharDetalhe();
     this.router.navigate(['/especialista/atendimento', a.idPaciente], { queryParams: { terapia: a.idTerapia } });
-  }
-
-  abrirRemarcacao(a: ItemAgenda) {
-    this.fecharDetalhe();
-    this.remarcando.set(a);
-  }
-
-  aoSolicitarRemarcacao() {
-    const a = this.remarcando();
-    this.remarcando.set(null);
-    this.aviso.set(`Solicitação de remarcação enviada${a ? ` (${a.pacienteNome})` : ''}. Status: pendente.`);
   }
 }

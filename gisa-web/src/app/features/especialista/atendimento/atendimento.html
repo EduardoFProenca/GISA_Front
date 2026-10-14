@@ -16,35 +16,25 @@
       <a class="btn-secundario" routerLink="/especialista/agenda">Voltar para Agenda</a>
 
       <div class="grupo">
-        @if (alvoRemarcacao()) {
-          <button type="button" class="btn-secundario" (click)="abrirRemarcacao()">Solicitar Remarcação</button>
-        }
         <button *temPermissao="'EMITIR_ATESTADO'" type="button" class="btn-secundario" (click)="documentoAberto.set('ATESTADO')">
           Emitir Atestado
         </button>
         <button *temPermissao="'EMITIR_RECEITA'" type="button" class="btn-secundario" (click)="documentoAberto.set('RECEITA')">
           Emitir Receita
         </button>
-        <button type="button" class="btn-primario" [disabled]="salvando()" (click)="salvarEvolucao()">
-          {{ salvando() ? 'Salvando...' : 'Salvar Evolução' }}
-        </button>
       </div>
     </div>
 
-    @if (aviso()) {
-      <p class="mensagem sucesso" role="status">{{ aviso() }}</p>
-    }
-    @if (erroSalvar()) {
-      <p class="mensagem erro" role="alert">{{ erroSalvar() }}</p>
+    @if (sessao(); as s) {
+      <p class="sessao">
+        Sessão: <strong>{{ s.titulo }}</strong> · {{ dataCurta(s.data) }}, {{ horaCurta(s.horaInicio) }} – {{ horaCurta(s.horaTermino) }}
+      </p>
     }
 
     <div class="painel">
       <div class="abas" role="tablist">
         <button type="button" role="tab" [class.ativa]="aba() === 'historico'" [attr.aria-selected]="aba() === 'historico'" (click)="trocarAba('historico')">
           Histórico Unificado
-        </button>
-        <button type="button" role="tab" [class.ativa]="aba() === 'atendimento'" [attr.aria-selected]="aba() === 'atendimento'" (click)="trocarAba('atendimento')">
-          Atendimento Atual
         </button>
         <button type="button" role="tab" [class.ativa]="aba() === 'terapias'" [attr.aria-selected]="aba() === 'terapias'" (click)="trocarAba('terapias')">
           Terapias e Programas
@@ -55,61 +45,6 @@
         @switch (aba()) {
           @case ('historico') {
             <app-aba-historico [eventos]="eventos()" [cids]="p.cids" [carregando]="carregandoHistorico()" [erro]="erroHistorico()" />
-          }
-
-          @case ('atendimento') {
-            @if (sessao(); as s) {
-              <p class="sessao">
-                Sessão: <strong>{{ s.titulo }}</strong> · {{ dataCurta(s.data) }}, {{ horaCurta(s.horaInicio) }} – {{ horaCurta(s.horaTermino) }}
-              </p>
-            }
-
-            <section class="secao">
-              <h3>Registro do Atendimento do Dia</h3>
-              <p class="legenda-obrigatorio"><span class="obrigatorio">*</span> Campo obrigatório</p>
-
-              <label for="evolucao">Evolução clínica (PTS) <span class="obrigatorio">*</span></label>
-              <textarea
-                id="evolucao"
-                rows="6"
-                placeholder="Descreva a evolução clínica do paciente neste atendimento (Projeto Terapêutico Singular)"
-                [(ngModel)]="evolucao.evolucaoPts"
-                [class.input-erro]="erros['evolucaoPts']"
-                (ngModelChange)="limparErro('evolucaoPts')"
-              ></textarea>
-              @if (erros['evolucaoPts']) {
-                <span class="erro-msg">{{ erros['evolucaoPts'] }}</span>
-              }
-
-              <label for="metas">Metas do atendimento</label>
-              <textarea
-                id="metas"
-                rows="3"
-                placeholder="Metas definidas ou revisadas neste atendimento"
-                [(ngModel)]="evolucao.metas"
-              ></textarea>
-            </section>
-
-            <section class="secao">
-              <h3>Anotações e Condutas Médicas</h3>
-
-              <label for="condutas">Diagnóstico e condutas</label>
-              <textarea
-                id="condutas"
-                rows="4"
-                placeholder="Diagnóstico, hipóteses e condutas adotadas"
-                [(ngModel)]="evolucao.condutas"
-              ></textarea>
-
-              <label for="orientacoes">Orientações aos cuidadores</label>
-              <textarea
-                id="orientacoes"
-                rows="3"
-                placeholder="Orientações para o responsável / cuidadores"
-                [(ngModel)]="evolucao.orientacoesCuidadores"
-              ></textarea>
-            </section>
-
           }
 
           @case ('terapias') {
@@ -126,9 +61,3 @@
     (fechar)="documentoAberto.set(null)" />
 }
 
-<app-modal-remarcacao
-  [aberto]="remarcando()"
-  [alvo]="alvoRemarcacao()"
-  (fechar)="remarcando.set(false)"
-  (solicitada)="aoSolicitarRemarcacao()"
-/>

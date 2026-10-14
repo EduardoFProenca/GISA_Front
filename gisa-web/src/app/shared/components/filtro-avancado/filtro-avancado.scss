@@ -2,7 +2,7 @@
   display: flex;
   align-items: flex-start;
   flex-wrap: wrap;
-  gap: 1.75rem;
+  gap: 1.25rem 2.5rem; // sem divisor: o espaço separa os grupos, numa linha ou em duas
   padding-top: 1.25rem;
   margin-top: 1.25rem;
   border-top: 1px solid #eef1f6;
@@ -38,17 +38,6 @@
   letter-spacing: 0.04em;
   color: #64748b;
   text-transform: uppercase;
-}
-
-.divisor {
-  width: 1px;
-  align-self: stretch;
-  background: linear-gradient(to bottom, transparent, #e2e8f0 15%, #e2e8f0 85%, transparent);
-  min-height: 48px;
-
-  @media (max-width: 760px) {
-    display: none;
-  }
 }
 
 // --- Pills de status, com indicador de cor por significado ---

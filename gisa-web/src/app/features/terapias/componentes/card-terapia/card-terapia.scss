@@ -14,7 +14,8 @@
   background: white;
   border: 1px solid #e5e7eb;
   border-left: 4px solid var(--cor-status);
-  border-radius: 12px;
+  // Faixa de status reta: os cantos do lado dela não são arredondados.
+  border-radius: 0 12px 12px 0;
   padding: 1rem 1.15rem 0.85rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: box-shadow 0.15s ease, border-color 0.15s ease;
@@ -62,12 +63,6 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-
-  // O svg entra por innerHTML, então precisa de ::ng-deep para receber estilo.
-  ::ng-deep svg {
-    width: 22px;
-    height: 22px;
-  }
 }
 
 .titulos {

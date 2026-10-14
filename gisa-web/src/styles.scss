@@ -9,7 +9,8 @@
 body{
   margin: 0; // sem a margem padrão de 8px do navegador (criava uma moldura em volta do app)
   background: #f4f6f9;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  // Inter (pacote @fontsource-variable/inter, embutido no app: sem chamada externa).
+  font-family: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 
@@ -74,7 +75,7 @@ label {
   color: #374151;
   margin-bottom: 0.4rem;
   margin-top: 1.1rem;
-  font-family: 'DM Sans', sans-serif;
+  font-family: inherit;
   display: block;
 
   .obrigatorio {
@@ -136,6 +137,7 @@ label {
 // botões
 ///========================================
 button {
+  font-family: inherit; // botões não herdam a fonte por padrão
   color: rgb(255, 255, 255);
   background: rgba(203, 217, 233, 0.733);
   padding: 10px 20px;

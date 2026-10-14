@@ -8,7 +8,8 @@
   background: white;
   border: 1px solid #e5e7eb;
   border-left: 4px solid var(--cor-status);
-  border-radius: 12px;
+  // Faixa de status reta: os cantos do lado dela não são arredondados.
+  border-radius: 0 12px 12px 0;
   padding: 1rem 1.15rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: background 0.2s, opacity 0.2s;
