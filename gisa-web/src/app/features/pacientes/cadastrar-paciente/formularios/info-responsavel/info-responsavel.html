@@ -55,7 +55,7 @@
       }
 
       @if (novoResponsavel.reaproveitado) {
-        <div class="aviso-resp">
+        <div class="aviso-info">
           <p>
             <strong>Cadastro existente.</strong> Os dados pessoais ficam como estão no cadastro do responsável
             (valem para todos os pacientes dele). Informe o parentesco e se ele reside com o paciente.
@@ -64,7 +64,7 @@
           <button type="button" class="link-acao" (click)="desfazerSelecao()">Cadastrar outro responsável</button>
         </div>
       } @else if (vinculadoAntes) {
-        <p class="aviso-resp">Alterações nos dados deste responsável valem também para outros pacientes vinculados a ele.</p>
+        <p class="aviso-info">Alterações nos dados deste responsável valem também para outros pacientes vinculados a ele.</p>
       }
 
       <div class="linha-form">
@@ -82,7 +82,7 @@
             placeholder="000.000.000-00" [class.input-erro]="errosCard['cpf']" (input)="aoMudarCpf()">
           @if (errosCard['cpf']) { <span class="erro-msg">{{ errosCard['cpf'] }}</span> }
           @if (cpfJaCadastrado) {
-            <span class="aviso-cpf">
+            <span class="aviso-info aviso-cpf">
               Este CPF já é de <strong>{{ cpfJaCadastrado.nome }}</strong>.
               <button type="button" class="link-acao" (click)="usarExistente(cpfJaCadastrado.idCadastro)">Usar este cadastro</button>
             </span>
@@ -165,7 +165,7 @@
 
       @if (novoResponsavel.naoResideComPaciente) {
         @if (novoResponsavel.reaproveitado && novoResponsavel.enderecoCadastro) {
-          <p class="endereco-resp"><strong>Endereço do responsável:</strong> {{ enderecoEmTexto(novoResponsavel.enderecoCadastro) }}</p>
+          <p class="aviso-info"><strong>Endereço do responsável:</strong> {{ enderecoEmTexto(novoResponsavel.enderecoCadastro) }}</p>
         } @else {
           <app-contato titulo="Endereço do Responsável" subtitulo=""
             [dadosIniciais]="novoResponsavel.endereco ?? undefined" />

@@ -82,6 +82,148 @@ label {
     color: #ef4444;
   }
 }
+
+// Checkbox do sistema: caixa no mesmo tom dos campos, azul com visto quando marcada.
+// (Vem depois de `input` para não herdar largura, padding e fundo dos campos de texto.)
+input[type='checkbox'] {
+  appearance: none;
+  flex-shrink: 0;
+  display: inline-grid;
+  place-content: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: 0;
+  padding: 0;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 5px;
+  background: white;
+  cursor: pointer;
+
+  // Visto (✓) desenhado com clip-path; aparece ao marcar.
+  &::before {
+    content: '';
+    width: 0.7rem;
+    height: 0.7rem;
+    background: white;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    transform: scale(0);
+    transition: transform 0.12s ease-in-out;
+  }
+
+  &:hover {
+    border-color: #3b82f6;
+  }
+
+  &:focus-visible {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  }
+
+  &:checked {
+    background: #3b82f6;
+    border-color: #3b82f6;
+
+    &::before {
+      transform: scale(1);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Opção com checkbox (ex.: "Paciente possui convênio"): bloco com a mesma moldura dos campos,
+// destacado quando marcado.
+.checkbox-inline {
+  display: flex;
+  width: fit-content;
+  box-sizing: border-box;
+  margin: 0.5rem 0 0;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 1rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  background: #f9fafb;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #1a1a2e;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.2s, background 0.2s;
+
+  &:hover {
+    border-color: #d1d5db;
+  }
+
+  &:has(input:checked) {
+    border-color: #93c5fd;
+    background: #eff6ff;
+  }
+
+  &:has(input:disabled) {
+    cursor: not-allowed;
+    opacity: 0.8;
+  }
+}
+///=====================================
+
+// Avisos e pequenos elementos de apoio
+///=====================================
+
+// Caixa de aviso informativo (azul), ex.: "Cadastro existente" no responsável.
+.aviso-info {
+  display: block;
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 0.85rem;
+
+  p {
+    margin: 0 0 0.35rem;
+  }
+}
+
+// Botão com cara de link, para ações dentro de um texto.
+button.link-acao {
+  padding: 0;
+  border: none;
+  background: none;
+  color: #2563eb;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: underline;
+  transform: none;
+
+  &:hover,
+  &:active {
+    background: none;
+    border: none;
+    box-shadow: none;
+    transform: none;
+    filter: none;
+  }
+}
+
+// Etiqueta curta (pílula) ao lado de um nome.
+.tag {
+  border-radius: 999px;
+  padding: 0.1rem 0.55rem;
+  background: #dbeafe;
+  color: #1e40af;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.tag-alerta {
+  background: #fef3c7;
+  color: #92400e;
+}
 ///=====================================
 
 // input-erro vai ser usado em inputs de qualquer tela do sistema
