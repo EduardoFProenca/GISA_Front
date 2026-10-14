@@ -1,3 +1,4 @@
+import { CampoDetalhe } from '../campo-detalhe/campo-detalhe';
 import { Component, Input, inject } from '@angular/core';
 import { NgIcon } from '@ng-icons/core';
 import { Router } from '@angular/router';
@@ -13,7 +14,7 @@ export interface ProfissionalCard {
 
 @Component({
   selector: 'app-card-profissional',
-  imports: [NgIcon],
+  imports: [CampoDetalhe, NgIcon],
   templateUrl: './card-profissional.html',
   styleUrl: './card-profissional.scss',
 })

@@ -1,3 +1,4 @@
+import { CampoDetalhe } from '../../../../shared/components/campo-detalhe/campo-detalhe';
 import { Component, Input, inject } from '@angular/core';
 import { NgIcon } from '@ng-icons/core';
 import { Router } from '@angular/router';
@@ -10,7 +11,7 @@ import { ROTULO_STATUS_PACIENTE } from '../../../../shared/utils/rotulos.util';
 
 @Component({
   selector: 'app-card-paciente',
-  imports: [NgIcon],
+  imports: [CampoDetalhe, NgIcon],
   templateUrl: './card-paciente.html',
   styleUrl: './card-paciente.scss'
 })

@@ -49,23 +49,8 @@
   }
 }
 
-.cargo-prof {
-  margin: 0.2rem 0 0 0;
-  font-size: 0.82rem;
-  color: #475569;
-}
 
-.especialidade-prof {
-  margin: 0.1rem 0 0 0;
-  font-size: 0.82rem;
-  color: #64748b;
-}
 
-.registro-prof {
-  margin: 0.1rem 0 0.5rem 0;
-  font-size: 0.78rem;
-  color: #94a3b8;
-}
 
 .btn-editar {
   width: 40px;
@@ -114,4 +99,11 @@
     background: #fef3c7;
     color: #b45309;
   }
+}
+// Dados do card: rótulo discreto acima do valor (app-campo-detalhe), em colunas.
+.campos-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  gap: 0.5rem 1rem;
+  margin: 0.5rem 0 0.75rem;
 }

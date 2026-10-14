@@ -13,9 +13,12 @@
       }
     </div>
 
-    <p class="cargo-prof">Idade: {{ paciente.idade }} anos | CPF: {{ cpfFormatado }}</p>
-    <p class="especialidade-prof">Resp: {{ nomeResponsavel }}</p>
-    <p class="registro-prof">CID: {{ cidPrincipal }}</p>
+    <div class="campos-card">
+      <app-campo-detalhe rotulo="Idade">{{ paciente.idade }} anos</app-campo-detalhe>
+      <app-campo-detalhe rotulo="CPF">{{ cpfFormatado }}</app-campo-detalhe>
+      <app-campo-detalhe rotulo="Responsável">{{ nomeResponsavel }}</app-campo-detalhe>
+      <app-campo-detalhe rotulo="CID">{{ cidPrincipal }}</app-campo-detalhe>
+    </div>
 
     <span class="status-badge" [class]="classeStatus">
       {{ rotuloStatus }}

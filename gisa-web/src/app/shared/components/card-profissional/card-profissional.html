@@ -17,8 +17,10 @@
         }
       </div>
     </div>
-    <p class="cargo-prof">{{ profissional.cargo }}</p>
-    <p class="crm-prof">Registro: {{ profissional.crm }}</p>
+    <div class="campos-card">
+      <app-campo-detalhe rotulo="Cargo">{{ profissional.cargo }}</app-campo-detalhe>
+      <app-campo-detalhe rotulo="Registro">{{ profissional.crm }}</app-campo-detalhe>
+    </div>
 
     <span class="status-badge" [class]="classeStatus">
       {{ profissional.statusCadastro }}
