@@ -2,6 +2,7 @@ import { Mascara } from '../../../../shared/directives/mascara.directive';
 import { Component, effect, inject, input, output, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FormDialog } from '../../../../shared/components/form-dialog/form-dialog';
+import { OpcaoSelectBusca, SelectBusca } from '../../../../shared/components/select-busca/select-busca';
 import { Cbo } from '../../../../core/models/cargo.model';
 import { CargoService } from '../../../../core/services/cargo';
 import { CboCatalogoService, OcupacaoCbo } from '../../../../core/services/cbo-catalogo';
@@ -13,7 +14,7 @@ import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 // Criar (cbo = null) ou editar CBO. Na edição só o título muda: o código identifica o registro.
 @Component({
   selector: 'app-dialog-cbo',
-  imports: [FormsModule, FormDialog, Mascara],
+  imports: [FormsModule, FormDialog, Mascara, SelectBusca],
   templateUrl: './dialog-cbo.html',
 })
 export class DialogCbo {
@@ -36,9 +37,24 @@ export class DialogCbo {
   // Tabela oficial da CBO 2002: completa o título pelo código e confere se o código existe.
   private oficial = signal<Map<string, OcupacaoCbo> | null>(null);
   private tituloAutomatico = '';
+  // Busca na tabela oficial por código ou nome (como o CID): escolher preenche código e título.
+  opcoesOficiais = signal<OpcaoSelectBusca[]>([]);
+  escolhidoOficial = signal<string | null>(null);
 
   constructor() {
-    this.catalogoService.catalogo().subscribe({ next: (m) => this.oficial.set(m), error: () => {} });
+    this.catalogoService.catalogo().subscribe({
+      next: (m) => {
+        this.oficial.set(m);
+        this.opcoesOficiais.set(
+          [...m.values()].map((o) => ({
+            id: o.codigoCBO,
+            label: `${formatarCbo(o.codigoCBO)} · ${o.tituloCBO}`,
+            termosBusca: o.codigoCBO,
+          }))
+        );
+      },
+      error: () => {},
+    });
     effect(() => {
       if (!this.aberto()) return;
       const c = this.cbo();
@@ -48,8 +64,20 @@ export class DialogCbo {
         this.erros.set({});
         this.erro.set('');
         this.tituloAutomatico = '';
+        this.escolhidoOficial.set(null);
       });
     });
+  }
+
+  escolherOficial(codigo: number | string | null) {
+    this.escolhidoOficial.set(codigo === null ? null : String(codigo));
+    if (codigo === null) return;
+    const ocupacao = this.oficial()?.get(String(codigo));
+    if (!ocupacao) return;
+    this.codigo.set(formatarCbo(ocupacao.codigoCBO));
+    this.titulo.set(ocupacao.tituloCBO);
+    this.tituloAutomatico = ocupacao.tituloCBO;
+    this.erros.set({});
   }
 
   // Código completo: preenche o título oficial (sem apagar um título que o usuário digitou).

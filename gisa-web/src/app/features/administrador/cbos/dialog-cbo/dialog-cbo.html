@@ -1,11 +1,20 @@
 <app-form-dialog
   [aberto]="aberto()"
   [titulo]="cbo() ? 'Editar CBO' : 'Novo CBO'"
-  [descricao]="cbo() ? 'O código não pode ser alterado. Para corrigir um código errado, cadastre o CBO certo, mova os cargos para ele e exclua o antigo.' : 'Classificação Brasileira de Ocupações: digite o código oficial de 6 dígitos e o título é preenchido pela tabela da CBO 2002.'"
+  [descricao]="cbo() ? 'O código não pode ser alterado. Para corrigir um código errado, cadastre o CBO certo, mova os cargos para ele e exclua o antigo.' : 'Classificação Brasileira de Ocupações: busque a ocupação pelo nome ou código na tabela oficial (CBO 2002), ou digite o código abaixo.'"
   [erro]="erro()"
   [salvando]="salvando()"
   (confirmar)="salvar()"
   (cancelar)="cancelar.emit()">
+  @if (!cbo()) {
+  <div>
+    <label>Buscar na CBO oficial</label>
+    <app-select-busca [opcoes]="opcoesOficiais()" [value]="escolhidoOficial()" (valueChange)="escolherOficial($event)"
+      [limite]="50" [disabled]="!opcoesOficiais().length"
+      [placeholder]="opcoesOficiais().length ? 'Digite o código ou o nome. Ex: 2515-10 ou psicólogo' : 'Carregando a tabela da CBO...'"
+      semResultados="Nenhuma ocupação encontrada" />
+  </div>
+  }
   <div>
     <label for="codigoCbo">Código <span class="obrigatorio">*</span></label>
     <input id="codigoCbo" name="codigoCbo" type="text" appMascara="cbo" inputmode="numeric" placeholder="0000-00"
