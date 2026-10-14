@@ -1,0 +1,20 @@
+<app-form-dialog
+  [aberto]="aberto()"
+  [titulo]="especialidade() ? 'Editar especialidade' : 'Nova especialidade'"
+  [descricao]="especialidade() ? 'A mudança de nome aparece em todos os especialistas desta especialidade.' : ''"
+  [erro]="erro()"
+  [salvando]="salvando()"
+  (confirmar)="salvar()"
+  (cancelar)="cancelar.emit()">
+  <div>
+    <label for="nomeEspecialidade">Nome <span class="obrigatorio">*</span></label>
+    <input id="nomeEspecialidade" name="nomeEspecialidade" type="text" maxlength="255" placeholder="Ex.: Musicoterapia"
+      [class.input-erro]="erros()['nome']" [ngModel]="nome()" (ngModelChange)="nome.set($event)" />
+    @if (erros()['nome']) { <span class="erro-msg">{{ erros()['nome'] }}</span> }
+  </div>
+  <div>
+    <label for="descricaoEspecialidade">Descrição</label>
+    <textarea id="descricaoEspecialidade" name="descricaoEspecialidade" rows="3" maxlength="255"
+      placeholder="Opcional" [ngModel]="descricao()" (ngModelChange)="descricao.set($event)"></textarea>
+  </div>
+</app-form-dialog>

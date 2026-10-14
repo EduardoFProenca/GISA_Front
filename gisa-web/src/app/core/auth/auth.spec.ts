@@ -62,12 +62,13 @@ describe('Auth', () => {
     expect(auth.temPermissao('GERENCIAR_USUARIOS')).toBe(true);
   });
 
-  it('exige a permissão do back quando ela existe e libera quando ainda não existe', () => {
-    entrar(usuario('Recepção', ['CADASTRAR_PROFISSIONAL']));
+  it('libera só as funcionalidades cujas permissões o perfil tem', () => {
+    entrar(usuario('Recepção', ['EDITAR_PACIENTE', 'REGISTRAR_PRESENCA']));
 
-    expect(auth.temPermissao('CADASTRAR_PROFISSIONAL')).toBe(true);
-    expect(auth.temPermissao('VISUALIZAR_AUDITORIA')).toBe(false);
+    expect(auth.temPermissao('EDITAR_PACIENTE')).toBe(true);
     expect(auth.temPermissao('REGISTRAR_PRESENCA')).toBe(true);
+    expect(auth.temPermissao('CADASTRAR_PACIENTE')).toBe(false);
+    expect(auth.temPermissao('VISUALIZAR_AUDITORIA')).toBe(false);
   });
 
   it('perfil "Especialista" em cadastro que não é de especialista não abre o painel do especialista', () => {

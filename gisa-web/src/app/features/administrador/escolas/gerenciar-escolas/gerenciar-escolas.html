@@ -1,0 +1,52 @@
+<app-cabecalho-pagina titulo="Escolas" textoAcao="Nova Escola" (acao)="dialogAberto.set(true)" />
+
+<div class="pagina-apoio">
+  <div class="painel">
+    <p class="descricao-pagina">
+      Escolas que aparecem no cadastro dos pacientes. Só é possível excluir uma escola sem pacientes vinculados.
+    </p>
+
+    <div class="barra-busca">
+      <input type="search" placeholder="Buscar escola pelo nome..." aria-label="Buscar escola pelo nome"
+        [(ngModel)]="termo" (ngModelChange)="aoDigitar()" />
+      <select aria-label="Tipo da escola" [(ngModel)]="tipo" (ngModelChange)="aoFiltrar()">
+        <option value="">Todos os tipos</option>
+        @for (t of tipos; track t) {
+        <option [value]="t">{{ rotuloTipo[t] }}</option>
+        }
+      </select>
+    </div>
+
+    @if (erro()) {
+    <p class="erro-msg erro-geral">{{ erro() }}</p>
+    } @else if (carregando() && !pagina().content.length) {
+    <p class="carregando">Carregando escolas...</p>
+    } @else {
+    <ul class="tabela">
+      @for (e of pagina().content; track e.idEscola) {
+      <li>
+        <a class="linha" [routerLink]="['/administrador/escolas', e.idEscola]">
+          <div class="principal">
+            <strong>{{ e.nome }}</strong>
+            <small>{{ rotuloTipo[e.tipoEscola] }}@if (e.telefone) { · {{ telefone(e.telefone) }} }</small>
+          </div>
+          <div class="contadores">
+            <span class="etiqueta" [class.inativo]="!e.quantidadePacientes">
+              {{ e.quantidadePacientes }} {{ e.quantidadePacientes === 1 ? 'paciente' : 'pacientes' }}
+            </span>
+          </div>
+          <ng-icon class="seta" [name]="icones.proximo" aria-hidden="true" />
+        </a>
+      </li>
+      } @empty {
+      <li class="vazio">{{ termo.trim() ? 'Nenhuma escola encontrada para "' + termo.trim() + '".' : 'Nenhuma escola encontrada.' }}</li>
+      }
+    </ul>
+    }
+  </div>
+
+  <app-paginacao [totalItens]="pagina().totalElements" [itensPorPagina]="itensPorPagina"
+    [paginaAtual]="paginaAtual()" (paginaAlterada)="mudarPagina($event)" />
+</div>
+
+<app-dialog-escola [aberto]="dialogAberto()" (salvo)="aoSalvar($event)" (cancelar)="dialogAberto.set(false)" />

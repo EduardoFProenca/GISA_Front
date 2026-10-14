@@ -16,7 +16,7 @@ import { TerapiaService } from '../../../core/services/terapia';
 import { ConflitoHorario, NovaTerapiaPayload, Terapia } from '../../../core/models/terapia.model';
 import { aplicarErrosApi, campoDaChave } from '../../../core/http/erro-api';
 import { ROTULO_MODALIDADE } from '../../../shared/utils/rotulos.util';
-import { hojeIso } from '../../../shared/utils/data.util';
+import { paraIsoMinuto } from '../../../shared/utils/data.util';
 import { lerContextoTerapias } from '../contexto-terapias';
 
 // Chave de erro da API -> campo da tela
@@ -83,8 +83,14 @@ export class FormTerapia implements OnInit {
     ROTULO_MODALIDADE[this.idsEscolhidos('paciente').length > 1 ? 'COLETIVA' : 'INDIVIDUAL']
   );
 
-  // A API não impede datas passadas: só avisamos.
-  dataPassada = computed(() => !!this.data() && this.data() < hojeIso());
+  // A API recusa agendar (ou remarcar) para um horário que já passou. Na edição, manter o
+  // horário original é permitido (trocar só os participantes, por exemplo).
+  private horarioOriginal = '';
+  horarioPassado = computed(() => {
+    if (!this.data() || !this.horaInicio()) return false;
+    const horario = `${this.data()}T${this.horaInicio()}`;
+    return horario !== this.horarioOriginal && horario < paraIsoMinuto(new Date());
+  });
 
   // Estado da tela
   carregando = signal(this.editando);
@@ -173,6 +179,7 @@ export class FormTerapia implements OnInit {
     this.data.set(t.data);
     this.horaInicio.set(t.horaInicio.slice(0, 5));
     this.horaTermino.set(t.horaTermino.slice(0, 5));
+    this.horarioOriginal = `${t.data}T${t.horaInicio.slice(0, 5)}`;
   }
 
   // ---------- listas de pessoas ----------
@@ -241,6 +248,9 @@ export class FormTerapia implements OnInit {
     if (!this.horaTermino()) e['horaTermino'] = OBRIGATORIO;
     else if (this.horaInicio() && this.horaTermino() <= this.horaInicio()) {
       e['horaTermino'] = 'O término deve ser depois do início.';
+    }
+    if (!e['data'] && !e['horaInicio'] && this.horarioPassado()) {
+      e['horaInicio'] = 'Este horário já passou. Escolha um horário futuro.';
     }
 
     this.erros.set(e);

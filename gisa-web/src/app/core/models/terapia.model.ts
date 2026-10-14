@@ -55,11 +55,11 @@ export interface FiltroMinhasTerapias extends ParametrosPagina {
   data?: string;
   inicio?: string;
   fim?: string;
+  idPaciente?: number;
 }
 
 // Filtros de GET /terapias. ID sem terapias devolve página vazia.
 export interface FiltroTerapias extends FiltroMinhasTerapias {
-  idPaciente?: number;
   idEspecialista?: number;
 }
 

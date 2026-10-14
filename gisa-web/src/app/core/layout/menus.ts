@@ -20,8 +20,11 @@ const MENUS: Record<Painel, ItemMenuPainel[]> = {
     { label: 'Profissionais', icone: ICONES.gestaoProfissionais, rota: '/administrador/profissionais/gerenciar', funcionalidade: 'VISUALIZAR_PROFISSIONAIS', grupo: 'Equipe' },
     { label: 'Cargos', icone: ICONES.cargo, rota: '/administrador/cargos', funcionalidade: 'GERENCIAR_CARGOS', grupo: 'Configurações' },
     { label: 'CBOs', icone: ICONES.lista, rota: '/administrador/cbos', funcionalidade: 'GERENCIAR_CARGOS', grupo: 'Configurações' },
+    { label: 'Especialidades', icone: ICONES.especialidade, rota: '/administrador/especialidades', funcionalidade: 'GERENCIAR_ESPECIALIDADES', grupo: 'Configurações' },
+    { label: 'Escolas', icone: ICONES.escola, rota: '/administrador/escolas', funcionalidade: 'GERENCIAR_ESCOLAS', grupo: 'Configurações' },
     { label: 'Perfis de Acesso', icone: ICONES.chave, rota: '/administrador/perfis', funcionalidade: 'GERENCIAR_PERFIS', grupo: 'Configurações' },
     { label: 'Emitir Recusa', icone: ICONES.recusa, rota: '/administrador/recusa', funcionalidade: 'EMITIR_RECUSA', grupo: 'Documentos' },
+    { label: 'Usuários do Sistema', icone: ICONES.usuarios, rota: '/administrador/usuarios', funcionalidade: 'GERENCIAR_USUARIOS', grupo: 'Segurança' },
     { label: 'Auditoria', icone: ICONES.auditoria, rota: '/administrador/auditoria', funcionalidade: 'VISUALIZAR_AUDITORIA', grupo: 'Segurança' },
   ],
   RECEPCAO: [
@@ -31,9 +34,9 @@ const MENUS: Record<Painel, ItemMenuPainel[]> = {
     { label: 'Emitir Recusa', icone: ICONES.recusa, rota: '/recepcao/recusa', funcionalidade: 'EMITIR_RECUSA' },
   ],
   ESPECIALISTA: [
-    { label: 'Minha Agenda', icone: ICONES.calendario, rota: '/especialista/agenda', funcionalidade: 'VISUALIZAR_TERAPIAS' },
-    { label: 'Minhas Terapias do Dia', icone: ICONES.gestaoConsultas, rota: '/especialista/minhas-terapias', funcionalidade: 'VISUALIZAR_TERAPIAS' },
-    { label: 'Todas as Terapias', icone: ICONES.gestaoAtividades, rota: '/especialista/terapias', funcionalidade: 'VISUALIZAR_TERAPIAS' },
+    // Agenda e terapias do dia usam /terapias/minhas (basta ser especialista; sem VISUALIZAR_TERAPIAS).
+    { label: 'Minha Agenda', icone: ICONES.calendario, rota: '/especialista/agenda' },
+    { label: 'Minhas Terapias do Dia', icone: ICONES.gestaoConsultas, rota: '/especialista/minhas-terapias' },
     { label: 'Emitir Atestado', icone: ICONES.atestado, rota: '/especialista/atestado', funcionalidade: 'EMITIR_ATESTADO' },
     { label: 'Emitir Receita', icone: ICONES.receita, rota: '/especialista/receita', funcionalidade: 'EMITIR_RECEITA' },
   ],

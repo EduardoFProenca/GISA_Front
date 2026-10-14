@@ -1,4 +1,4 @@
-import { Presenca, Terapia } from '../../../core/models/terapia.model';
+import { Presenca, Terapia, TerapiaDoEspecialista } from '../../../core/models/terapia.model';
 
 // Regra institucional (CS06): o assistido precisa de pelo menos 75% de presença nas sessões do mês.
 // ATENÇÃO: só PRESENTE conta como comparecimento; falta justificada entra como falta.
@@ -40,19 +40,23 @@ function frequencia(rotulo: string, presencas: Presenca[]): Frequencia {
   };
 }
 
-// `terapias` = as do mês do paciente (GET /terapias?idPaciente=...). Canceladas não contam.
-// O agrupamento usa a primeira especialidade do primeiro especialista da terapia.
-export function calcularFrequenciaMes(terapias: Terapia[], idPaciente: number): FrequenciaMes {
+// `terapias` = as do mês do paciente (GET /terapias?idPaciente=... ou, para o especialista,
+// GET /terapias/minhas?idPaciente=...). Canceladas não contam.
+// O agrupamento usa a primeira especialidade do primeiro especialista da terapia; /minhas não traz
+// especialidades, então ali só existe a linha geral.
+export function calcularFrequenciaMes(terapias: (Terapia | TerapiaDoEspecialista)[], idPaciente: number): FrequenciaMes {
   const validas = terapias.filter((t) => t.status !== 'CANCELADA');
   const linhas = validas.flatMap((t) => {
     const p = t.pacientes.find((x) => x.idCadastro === idPaciente);
     if (!p) return [];
-    const rotulo = t.especialistas.flatMap((e) => e.especialidades)[0] ?? 'Sem especialidade';
+    const rotulo = 'especialistas' in t ? (t.especialistas.flatMap((e) => e.especialidades)[0] ?? 'Sem especialidade') : null;
     return [{ t, presenca: p.presenca, rotulo }];
   });
 
   const grupos = new Map<string, Presenca[]>();
-  for (const l of linhas) grupos.set(l.rotulo, [...(grupos.get(l.rotulo) ?? []), l.presenca]);
+  for (const l of linhas) {
+    if (l.rotulo !== null) grupos.set(l.rotulo, [...(grupos.get(l.rotulo) ?? []), l.presenca]);
+  }
 
   return {
     geral: frequencia('Todas as terapias', linhas.map((l) => l.presenca)),

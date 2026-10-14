@@ -1,0 +1,33 @@
+<app-form-dialog
+  [aberto]="aberto()"
+  [titulo]="escola() ? 'Editar escola' : 'Nova escola'"
+  [descricao]="escola() ? 'A mudança aparece no cadastro de todos os pacientes desta escola.' : ''"
+  [erro]="erro()"
+  [salvando]="salvando()"
+  (confirmar)="salvar()"
+  (cancelar)="cancelar.emit()">
+  <div>
+    <label for="nomeEscola">Nome da escola <span class="obrigatorio">*</span></label>
+    <input id="nomeEscola" name="nomeEscola" type="text" maxlength="255" placeholder="Ex.: E.E. Professor Exemplo"
+      [class.input-erro]="erros()['nome']" [ngModel]="nome()" (ngModelChange)="nome.set($event)" />
+    @if (erros()['nome']) { <span class="erro-msg">{{ erros()['nome'] }}</span> }
+  </div>
+  <div>
+    <label for="tipoEscola">Tipo <span class="obrigatorio">*</span></label>
+    <select id="tipoEscola" name="tipoEscola" [class.input-erro]="erros()['tipoEscola']"
+      [ngModel]="tipoEscola()" (ngModelChange)="tipoEscola.set($event)">
+      <option value="" disabled>Selecione o tipo</option>
+      @for (t of tipos; track t) {
+      <option [value]="t">{{ rotuloTipo[t] }}</option>
+      }
+    </select>
+    @if (erros()['tipoEscola']) { <span class="erro-msg">{{ erros()['tipoEscola'] }}</span> }
+  </div>
+  <div>
+    <label for="telefoneEscola">Telefone</label>
+    <input id="telefoneEscola" name="telefoneEscola" type="text" appMascara="celular" inputmode="numeric"
+      placeholder="(00) 0000-0000" [class.input-erro]="erros()['telefone']"
+      [ngModel]="telefone()" (ngModelChange)="telefone.set($event)" />
+    @if (erros()['telefone']) { <span class="erro-msg">{{ erros()['telefone'] }}</span> }
+  </div>
+</app-form-dialog>

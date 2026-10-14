@@ -2,6 +2,7 @@
 import { EstadoCivil, StatusCadastro } from '../../core/models/comum.model';
 import { GrauParentesco, StatusPaciente } from '../../core/models/paciente.model';
 import { TipoEscola } from '../../core/models/escola.model';
+import { TipoCadastro } from '../../core/models/auth.model';
 import { TipoEventoPaciente } from '../../core/models/historico.model';
 import { Modalidade, Presenca, StatusTerapia } from '../../core/models/terapia.model';
 
@@ -22,6 +23,13 @@ export const ROTULO_PARENTESCO: Record<GrauParentesco, string> = {
   AVO: 'Avô / Avó',
   TUTOR_LEGAL: 'Tutor legal',
   OUTRO: 'Outro',
+};
+
+export const ROTULO_TIPO_CADASTRO: Record<TipoCadastro, string> = {
+  PESSOA: 'Administrador inicial',
+  PROFISSIONAL: 'Profissional',
+  ESPECIALISTA: 'Especialista',
+  ESPECIALISTA_PJ: 'Especialista PJ',
 };
 
 export const ROTULO_TIPO_ESCOLA: Record<TipoEscola, string> = {

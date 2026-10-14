@@ -18,6 +18,8 @@ export interface FiltroPacientes extends ParametrosPagina {
   // Trecho do CPF (máscara ignorada) e/ou do nome; com os dois, o paciente precisa atender aos dois.
   cpf?: string;
   nome?: string;
+  // Pacientes de uma escola (gestão de escolas).
+  idEscola?: number;
 }
 
 // Pacientes (ver PACIENTES.md).

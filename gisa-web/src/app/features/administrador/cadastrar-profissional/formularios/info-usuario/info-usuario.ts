@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ComErros } from '../../../../../shared/components/com-erros';
 import { PerfilResumo } from '../../../../../core/models/perfil.model';
+import { Auth } from '../../../../../core/auth/auth';
 
 export interface InfoUsuarioValor {
   // true = o cadastro já tem usuário de acesso (só o perfil pode mudar; a senha não aparece).
@@ -28,6 +29,10 @@ export class InfoUsuario extends ComErros implements OnInit, InfoUsuarioValor {
   temAcessoSistema: boolean = false;
   senha: string = '';
   perfil: string = '';
+  perfilOriginal?: string;
+
+  // Criar acesso e trocar perfil exigem GERENCIAR_USUARIOS.
+  readonly podeGerenciarAcesso = inject(Auth).temPermissao('GERENCIAR_USUARIOS');
 
   get nomePerfil(): string {
     return this.perfis.find((p) => String(p.idPerfil) === this.perfil)?.nome ?? '';
@@ -35,5 +40,7 @@ export class InfoUsuario extends ComErros implements OnInit, InfoUsuarioValor {
 
   ngOnInit() {
     if (this.dadosIniciais) Object.assign(this, this.dadosIniciais);
+    if (this.possuiAcesso) this.perfilOriginal = this.perfil;
+    if (!this.podeGerenciarAcesso) this.temAcessoSistema = false;
   }
 }

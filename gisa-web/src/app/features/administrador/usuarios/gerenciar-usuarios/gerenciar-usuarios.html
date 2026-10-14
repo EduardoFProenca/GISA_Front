@@ -1,0 +1,63 @@
+<app-cabecalho-pagina titulo="Usuários do Sistema" />
+
+<div class="pagina-apoio">
+  <div class="painel">
+    <p class="descricao-pagina">
+      Pessoas com acesso ao sistema e o perfil de cada uma. Para dar acesso a alguém, abra o cadastro do
+      profissional e use "Conceder acesso ao sistema".
+    </p>
+
+    <div class="barra-busca">
+      <input type="search" placeholder="Buscar por nome ou CPF..." aria-label="Buscar usuário por nome ou CPF"
+        [(ngModel)]="termo" (ngModelChange)="aoDigitar()" />
+      <select aria-label="Perfil" [(ngModel)]="idPerfil" (ngModelChange)="aoFiltrar()">
+        <option value="">Todos os perfis</option>
+        @for (p of perfis(); track p.idPerfil) {
+        <option [value]="'' + p.idPerfil">{{ p.nome }}</option>
+        }
+      </select>
+      <select aria-label="Tipo de cadastro" [(ngModel)]="tipo" (ngModelChange)="aoFiltrar()">
+        <option value="">Todos os tipos</option>
+        @for (t of tipos; track t) {
+        <option [value]="t">{{ rotuloTipo[t] }}</option>
+        }
+      </select>
+      <select aria-label="Situação" [(ngModel)]="status" (ngModelChange)="aoFiltrar()">
+        <option value="">Todas as situações</option>
+        <option value="ATIVO">Ativos</option>
+        <option value="INATIVO">Inativos</option>
+      </select>
+    </div>
+
+    @if (erro()) {
+    <p class="erro-msg erro-geral">{{ erro() }}</p>
+    } @else if (carregando() && !pagina().content.length) {
+    <p class="carregando">Carregando usuários...</p>
+    } @else {
+    <ul class="tabela">
+      @for (u of pagina().content; track u.idCadastro) {
+      <li>
+        <a class="linha" [routerLink]="['/administrador/usuarios', u.idCadastro]">
+          <div class="principal">
+            <strong>{{ u.nome }}</strong>
+            <small>CPF {{ cpf(u.cpf) }} · {{ rotuloTipo[u.tipoCadastro] }}</small>
+          </div>
+          <div class="contadores">
+            @if (u.statusCadastro === 'INATIVO') {
+            <span class="etiqueta inativo">Inativo</span>
+            }
+            <span class="etiqueta">{{ u.perfil.nome }}</span>
+          </div>
+          <ng-icon class="seta" [name]="icones.proximo" aria-hidden="true" />
+        </a>
+      </li>
+      } @empty {
+      <li class="vazio">Nenhum usuário encontrado.</li>
+      }
+    </ul>
+    }
+  </div>
+
+  <app-paginacao [totalItens]="pagina().totalElements" [itensPorPagina]="itensPorPagina"
+    [paginaAtual]="paginaAtual()" (paginaAlterada)="mudarPagina($event)" />
+</div>

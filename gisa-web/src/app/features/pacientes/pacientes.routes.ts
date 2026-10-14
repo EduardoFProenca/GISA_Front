@@ -12,7 +12,7 @@ import { EditarPaciente } from './editar-paciente/editar-paciente';
 export function pacientesRoutes(rotaBase: string, somenteLeitura = false): Routes {
   const rota = (funcionalidade: Funcionalidade) => ({
     canActivate: [permissaoGuard],
-    data: { rotaBasePacientes: rotaBase, somenteLeitura, funcionalidade },
+    data: { rotaBasePacientes: rotaBase, somenteLeitura, funcionalidades: [funcionalidade] },
   });
 
   return [

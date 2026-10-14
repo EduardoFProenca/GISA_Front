@@ -102,6 +102,8 @@ export class CadastroValidadorService {
 
   private validarInfoUsuario(f: FormulariosCadastro, marcar: (a: ComErros, c: string, m?: string) => void) {
     const iu = f.infoUsuario;
+    // Sem GERENCIAR_USUARIOS a seção é só leitura: nada a validar.
+    if (iu.podeGerenciarAcesso === false) return;
     if (iu.possuiAcesso) {
       if (vazio(iu.perfil)) marcar(iu, 'perfil');
       return;

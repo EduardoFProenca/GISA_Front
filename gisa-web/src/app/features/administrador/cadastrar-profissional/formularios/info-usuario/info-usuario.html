@@ -1,7 +1,7 @@
 <fieldset class="secao" [disabled]="somenteLeitura">
   <div class="cabecalho-checkbox">
     <h3>Acesso ao Sistema</h3>
-    @if (!possuiAcesso) {
+    @if (!possuiAcesso && podeGerenciarAcesso) {
       <label class="checkbox-inline">
         <input type="checkbox" name="temAcessoSistema" [(ngModel)]="temAcessoSistema">
         {{ somenteLeitura ? 'Sem acesso ao sistema' : 'Terá acesso ao sistema' }}
@@ -10,7 +10,11 @@
   </div>
 
   @if (possuiAcesso) {
-    <p class="aviso-acesso">Possui acesso ao sistema.</p>
+    <p class="aviso-acesso">
+      Possui acesso ao sistema{{ !podeGerenciarAcesso && nomePerfil ? ' com o perfil ' + nomePerfil : '' }}.
+    </p>
+  } @else if (!podeGerenciarAcesso) {
+    <p class="aviso-acesso">Sem acesso ao sistema. Somente quem gerencia usuários pode conceder acesso.</p>
   }
 
   @if (temAcessoSistema && !possuiAcesso) {
@@ -22,7 +26,7 @@
     </div>
   }
 
-  @if (possuiAcesso || temAcessoSistema) {
+  @if (podeGerenciarAcesso && (possuiAcesso || temAcessoSistema)) {
     <div class="campo">
       <label for="perfil">Perfil <span class="obrigatorio">*</span></label>
       <select id="perfil" name="perfil" [(ngModel)]="perfil" [class.input-erro]="erros['perfil']"

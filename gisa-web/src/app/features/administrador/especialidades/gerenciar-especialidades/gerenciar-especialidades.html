@@ -1,0 +1,43 @@
+<app-cabecalho-pagina titulo="Especialidades" textoAcao="Nova Especialidade" (acao)="dialogAberto.set(true)" />
+
+<div class="pagina-apoio">
+  <div class="painel">
+    <p class="descricao-pagina">
+      Especialidades dos especialistas. Só é possível excluir uma especialidade sem especialistas vinculados.
+    </p>
+
+    <div class="barra-busca">
+      <input type="search" placeholder="Buscar especialidade pelo nome..." aria-label="Buscar especialidade pelo nome"
+        [ngModel]="termo()" (ngModelChange)="termo.set($event)" />
+    </div>
+
+    @if (erro()) {
+    <p class="erro-msg erro-geral">{{ erro() }}</p>
+    } @else if (carregando()) {
+    <p class="carregando">Carregando especialidades...</p>
+    } @else {
+    <ul class="tabela">
+      @for (e of filtradas(); track e.idEspecialidade) {
+      <li>
+        <a class="linha" [routerLink]="['/administrador/especialidades', e.idEspecialidade]">
+          <div class="principal">
+            <strong>{{ e.nome }}</strong>
+            @if (e.descricao) { <small>{{ e.descricao }}</small> }
+          </div>
+          <div class="contadores">
+            <span class="etiqueta" [class.inativo]="!e.quantidadeEspecialistas">
+              {{ e.quantidadeEspecialistas ?? 0 }} {{ e.quantidadeEspecialistas === 1 ? 'especialista' : 'especialistas' }}
+            </span>
+          </div>
+          <ng-icon class="seta" [name]="icones.proximo" aria-hidden="true" />
+        </a>
+      </li>
+      } @empty {
+      <li class="vazio">{{ termo().trim() ? 'Nenhuma especialidade encontrada para "' + termo().trim() + '".' : 'Nenhuma especialidade cadastrada.' }}</li>
+      }
+    </ul>
+    }
+  </div>
+</div>
+
+<app-dialog-especialidade [aberto]="dialogAberto()" (salvo)="aoSalvar($event)" (cancelar)="dialogAberto.set(false)" />

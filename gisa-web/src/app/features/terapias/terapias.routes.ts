@@ -10,7 +10,7 @@ import { DetalheTerapia } from './detalhe-terapia/detalhe-terapia';
 export function terapiasRoutes(rotaBase: string, titulo = 'Gestão de Terapias'): Routes {
   const rota = (funcionalidade: Funcionalidade) => ({
     canActivate: [permissaoGuard],
-    data: { rotaBaseTerapias: rotaBase, tituloTerapias: titulo, funcionalidade },
+    data: { rotaBaseTerapias: rotaBase, tituloTerapias: titulo, funcionalidades: [funcionalidade] },
   });
 
   return [

@@ -81,7 +81,6 @@
         <input type="date" id="data" name="data" [ngModel]="data()" (ngModelChange)="data.set($event); limparErro('data')"
           [class.input-erro]="erros()['data']">
         @if (erros()['data']) { <span class="erro-msg">{{ erros()['data'] }}</span> }
-        @else if (dataPassada()) { <span class="aviso-data">Atenção: esta data já passou.</span> }
       </div>
     </div>
 
@@ -91,6 +90,7 @@
         <input type="time" id="horaInicio" name="horaInicio" [ngModel]="horaInicio()"
           (ngModelChange)="horaInicio.set($event); limparErro('horaInicio')" [class.input-erro]="erros()['horaInicio']">
         @if (erros()['horaInicio']) { <span class="erro-msg">{{ erros()['horaInicio'] }}</span> }
+        @else if (horarioPassado()) { <span class="aviso-data">Este horário já passou.</span> }
       </div>
 
       <div class="campo">

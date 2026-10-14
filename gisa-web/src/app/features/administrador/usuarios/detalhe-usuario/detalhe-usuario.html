@@ -1,0 +1,101 @@
+<app-cabecalho-pagina titulo="Usuário do Sistema" />
+
+<div class="pagina-apoio">
+  @if (carregando()) {
+  <p class="carregando">Carregando usuário...</p>
+  } @else if (erro()) {
+  <p class="erro-msg erro-geral">{{ erro() }}</p>
+  } @else if (usuario(); as u) {
+  <div class="painel">
+    <h3>
+      {{ u.nome }}
+      <span class="etiqueta" [class.inativo]="u.statusCadastro === 'INATIVO'">
+        {{ u.statusCadastro === 'ATIVO' ? 'Ativo' : 'Inativo' }}
+      </span>
+    </h3>
+    <div class="info-bloco">
+      <p><strong>CPF:</strong> {{ cpf(u.cpf) }}</p>
+      <p><strong>Tipo de cadastro:</strong> {{ rotuloTipo[u.tipoCadastro] }}</p>
+      @if (u.cargo) { <p><strong>Cargo:</strong> {{ u.cargo.nome }}</p> }
+      @if (u.email) { <p><strong>E-mail:</strong> {{ u.email }}</p> }
+      @if (podeVerPerfis) {
+      <p><strong>Perfil de acesso:</strong> <a [routerLink]="['/administrador/perfis', u.perfil.idPerfil]">{{ u.perfil.nome }}</a></p>
+      } @else {
+      <p><strong>Perfil de acesso:</strong> {{ u.perfil.nome }}</p>
+      }
+      @if (u.tipoCadastro !== 'PESSOA' && podeVerCadastro) {
+      <p><a [routerLink]="['/administrador/profissionais', u.idCadastro]">Ver cadastro completo</a></p>
+      }
+    </div>
+    @if (u.statusCadastro === 'INATIVO') {
+    <p class="dica">O cadastro está inativo: o usuário existe, mas não consegue fazer login.</p>
+    }
+
+    <div class="acoes-situacao">
+      <button type="button" class="btn-secundario" (click)="abrirDialogo('perfil')">Trocar perfil</button>
+      <button type="button" class="btn-secundario" (click)="abrirDialogo('senha')">Redefinir senha</button>
+      <button type="button" class="btn-inativar" [disabled]="ehVoceMesmo || retirando()"
+        (click)="retiradaAberta.set(true)">{{ retirando() ? 'Retirando...' : 'Retirar acesso' }}</button>
+    </div>
+    @if (ehVoceMesmo) {
+    <p class="dica">Este é o seu usuário: você não pode retirar o seu próprio acesso.</p>
+    }
+    @if (erroAcao()) { <p class="erro-msg">{{ erroAcao() }}</p> }
+  </div>
+
+  <div class="painel">
+    <h3>Permissões do perfil <span class="etiqueta">{{ u.permissoes.length }}</span></h3>
+    <ul class="vinculos">
+      @for (p of u.permissoes; track p.idPermissao) {
+      <li>
+        <div class="permissao">
+          <strong>{{ p.nome }}</strong>
+          <small>{{ p.descricao }}</small>
+        </div>
+      </li>
+      } @empty {
+      <li class="vazio">Este perfil não tem permissões.</li>
+      }
+    </ul>
+  </div>
+  }
+
+</div>
+
+<app-form-dialog
+  [aberto]="dialogo() !== null"
+  [titulo]="dialogo() === 'perfil' ? 'Trocar perfil' : 'Redefinir senha'"
+  [descricao]="dialogo() === 'perfil'
+    ? 'O novo perfil vale na próxima ação do usuário, sem precisar entrar de novo.'
+    : 'Defina uma senha temporária e informe a pessoa. As sessões abertas dela serão encerradas.'"
+  [erro]="erroDialogo()"
+  [salvando]="salvando()"
+  [textoConfirmar]="dialogo() === 'perfil' ? 'Trocar perfil' : 'Redefinir'"
+  (confirmar)="confirmarDialogo()"
+  (cancelar)="dialogo.set(null)">
+  @if (dialogo() === 'perfil') {
+  <div>
+    <label for="perfilUsuario">Perfil</label>
+    <select id="perfilUsuario" name="perfilUsuario" [(ngModel)]="idPerfil">
+      @for (p of perfis(); track p.idPerfil) {
+      <option [value]="'' + p.idPerfil">{{ p.nome }}</option>
+      }
+    </select>
+  </div>
+  } @else if (dialogo() === 'senha') {
+  <div>
+    <label for="novaSenhaUsuario">Nova senha</label>
+    <input type="text" id="novaSenhaUsuario" name="novaSenhaUsuario" [(ngModel)]="novaSenha"
+      placeholder="Entre 8 e 30 caracteres" autocomplete="off" />
+  </div>
+  }
+</app-form-dialog>
+
+<app-confirm-dialog
+  [aberto]="retiradaAberta()"
+  titulo="Retirar acesso?"
+  [mensagem]="mensagemRetirada()"
+  textoConfirmar="Retirar acesso"
+  textoCancelar="Voltar"
+  (confirmar)="retirarAcesso()"
+  (cancelar)="retiradaAberta.set(false)" />

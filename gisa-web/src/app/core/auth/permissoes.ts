@@ -1,48 +1,51 @@
 // Arquivo único de controle de acesso do front: funcionalidades, permissões e painéis.
 //
 // COMO MANTER:
-// - Cada funcionalidade do front aponta para as permissões do back (GET /api/permissoes) que a liberam.
-// - `null` = o back ainda não tem permissão para ela: fica liberada para qualquer usuário logado.
-//   Quando a permissão for criada no back, troque o `null` pela lista com o nome dela.
+// - Cada funcionalidade do front aponta para as permissões do back (GET /api/permissoes, ver PERFIS.md)
+//   que a liberam. Hoje cada uma tem uma permissão de mesmo nome no back.
+// - `null` = liberada para qualquer usuário logado (use só para algo que o back não controla).
 // - Quem tem ACESSO_TOTAL pode tudo.
+// - Esconder um botão aqui é só conforto: quem garante o acesso é a API, que responde 403.
 
 export const ACESSO_TOTAL = 'ACESSO_TOTAL';
 
 export const FUNCIONALIDADES = {
   // Pacientes
-  VISUALIZAR_PACIENTES: null,
-  CADASTRAR_PACIENTE: null,
-  EDITAR_PACIENTE: null,
-  INATIVAR_PACIENTE: null,
-  VISUALIZAR_HISTORICO_PACIENTE: null,
+  VISUALIZAR_PACIENTES: ['VISUALIZAR_PACIENTES'],
+  CADASTRAR_PACIENTE: ['CADASTRAR_PACIENTE'],
+  EDITAR_PACIENTE: ['EDITAR_PACIENTE'],
+  INATIVAR_PACIENTE: ['INATIVAR_PACIENTE'],
+  VISUALIZAR_HISTORICO_PACIENTE: ['VISUALIZAR_HISTORICO_PACIENTE'],
 
   // Profissionais, especialistas e PJ
-  VISUALIZAR_PROFISSIONAIS: null,
+  VISUALIZAR_PROFISSIONAIS: ['VISUALIZAR_PROFISSIONAIS'],
   CADASTRAR_PROFISSIONAL: ['CADASTRAR_PROFISSIONAL'],
   CADASTRAR_ESPECIALISTA: ['CADASTRAR_ESPECIALISTA'],
   CADASTRAR_ESPECIALISTA_PJ: ['CADASTRAR_ESPECIALISTA_PJ'],
-  EDITAR_PROFISSIONAL: null,
-  INATIVAR_PROFISSIONAL: null,
-  // Conceder acesso ao sistema e redefinir a senha de outro usuário.
-  GERENCIAR_USUARIOS: ['CADASTRAR_USUARIO'],
+  EDITAR_PROFISSIONAL: ['EDITAR_PROFISSIONAL'],
+  INATIVAR_PROFISSIONAL: ['INATIVAR_PROFISSIONAL'],
+  // Usuários de acesso: conceder, trocar perfil, redefinir senha, retirar acesso. Também é exigida
+  // para cadastrar "com acesso" e para mandar idPerfil no PATCH de profissional (00-GERAL.md).
+  GERENCIAR_USUARIOS: ['GERENCIAR_USUARIOS'],
 
   // Terapias
-  VISUALIZAR_TERAPIAS: null,
-  AGENDAR_TERAPIA: null,
-  EDITAR_TERAPIA: null,
-  ALTERAR_STATUS_TERAPIA: null,
-  REGISTRAR_PRESENCA: null,
+  VISUALIZAR_TERAPIAS: ['VISUALIZAR_TERAPIAS'],
+  AGENDAR_TERAPIA: ['AGENDAR_TERAPIA'],
+  EDITAR_TERAPIA: ['EDITAR_TERAPIA'],
+  ALTERAR_STATUS_TERAPIA: ['ALTERAR_STATUS_TERAPIA'],
+  REGISTRAR_PRESENCA: ['REGISTRAR_PRESENCA'],
 
-  // Documentos impressos (não ficam salvos na API). Quem emite cada um é definido pelas rotas de cada
-  // painel: atestado e receita no do especialista; recusa no da recepção e no do administrador.
-  EMITIR_ATESTADO: null,
-  EMITIR_RECEITA: null,
-  EMITIR_RECUSA: null,
+  // Documentos impressos (só o front usa; a API não tem rota de documentos).
+  EMITIR_ATESTADO: ['EMITIR_ATESTADO'],
+  EMITIR_RECEITA: ['EMITIR_RECEITA'],
+  EMITIR_RECUSA: ['EMITIR_RECUSA'],
 
-  // Administração
-  GERENCIAR_CARGOS: null,
-  GERENCIAR_PERFIS: null,
-  VISUALIZAR_AUDITORIA: [ACESSO_TOTAL],
+  // Tabelas de apoio e segurança
+  GERENCIAR_CARGOS: ['GERENCIAR_CARGOS'],
+  GERENCIAR_PERFIS: ['GERENCIAR_PERFIS'],
+  GERENCIAR_ESCOLAS: ['GERENCIAR_ESCOLAS'],
+  GERENCIAR_ESPECIALIDADES: ['GERENCIAR_ESPECIALIDADES'],
+  VISUALIZAR_AUDITORIA: ['VISUALIZAR_AUDITORIA'],
 } satisfies Record<string, readonly string[] | null>;
 
 export type Funcionalidade = keyof typeof FUNCIONALIDADES;

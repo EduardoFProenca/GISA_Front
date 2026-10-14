@@ -34,12 +34,12 @@ export function painelGuard(painel: Painel): CanActivateFn {
   };
 }
 
-// Rotas com `data: { funcionalidade: '...' }` exigem a permissão correspondente.
+// Rotas com `data: { funcionalidades: [...] }` exigem ao menos uma das permissões.
 export const permissaoGuard: CanActivateFn = (route) => {
   const router = inject(Router);
-  const funcionalidade = route.data['funcionalidade'] as Funcionalidade | undefined;
+  const funcionalidades = (route.data['funcionalidades'] as Funcionalidade[] | undefined) ?? [];
   return comUsuario((auth) =>
-    !funcionalidade || auth.temPermissao(funcionalidade) ? true : irParaInicio(auth, router)
+    !funcionalidades.length || funcionalidades.some((f) => auth.temPermissao(f)) ? true : irParaInicio(auth, router)
   );
 };
 
@@ -52,6 +52,7 @@ export const semSessaoGuard: CanActivateFn = () => {
 };
 
 // Atalho para as rotas: { path: 'x', component: X, ...exigePermissao('CADASTRAR_PACIENTE') }
-export function exigePermissao(funcionalidade: Funcionalidade) {
-  return { canActivate: [permissaoGuard], data: { funcionalidade } };
+// Com várias, basta ter uma.
+export function exigePermissao(...funcionalidades: Funcionalidade[]) {
+  return { canActivate: [permissaoGuard], data: { funcionalidades } };
 }

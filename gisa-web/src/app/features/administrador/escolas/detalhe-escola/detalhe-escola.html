@@ -1,0 +1,71 @@
+<app-cabecalho-pagina titulo="Detalhes da Escola" />
+
+<div class="pagina-apoio">
+  @if (carregando()) {
+  <p class="carregando">Carregando escola...</p>
+  } @else if (erro()) {
+  <p class="erro-msg erro-geral">{{ erro() }}</p>
+  } @else if (escola(); as e) {
+  <div class="painel">
+    <h3>{{ e.nome }}</h3>
+    <div class="info-bloco">
+      <p><strong>Tipo:</strong> {{ rotuloTipo[e.tipoEscola] }}</p>
+      <p><strong>Telefone:</strong> {{ e.telefone ? telefone(e.telefone) : 'não informado' }}</p>
+      <p><strong>Pacientes vinculados:</strong> {{ e.quantidadePacientes }}</p>
+    </div>
+
+    <div class="acoes-situacao">
+      <button type="button" class="btn-secundario" (click)="edicaoAberta.set(true)">Editar escola</button>
+      <button type="button" class="btn-inativar" [disabled]="!podeExcluir() || excluindo()"
+        (click)="exclusaoAberta.set(true)">{{ excluindo() ? 'Excluindo...' : 'Excluir escola' }}</button>
+    </div>
+    @if (!podeExcluir()) {
+    <p class="dica">
+      Para excluir esta escola, antes troque a escola dos pacientes vinculados (na edição de cada um).
+      Pacientes inativos também contam.
+    </p>
+    }
+    @if (erroAcao()) { <p class="erro-msg">{{ erroAcao() }}</p> }
+  </div>
+
+  @if (e.quantidadePacientes && podeVerPacientes) {
+  <div class="painel">
+    <h3>Pacientes <span class="etiqueta">{{ e.quantidadePacientes }}</span></h3>
+    @if (erroPacientes()) {
+    <p class="erro-msg">{{ erroPacientes() }}</p>
+    } @else if (carregandoPacientes() && !pacientes().length) {
+    <p class="carregando">Carregando pacientes...</p>
+    } @else {
+    <ul class="vinculos">
+      @for (p of pacientes(); track p.idCadastro) {
+      <li>
+        <a class="nome" [routerLink]="['/administrador/pacientes', p.idCadastro]">{{ p.nome }}</a>
+        <small>CPF {{ cpf(p.cpf) }}</small>
+        <span class="etiqueta" [class.inativo]="p.statusPaciente !== 'MATRICULADO'">{{ rotuloStatus[p.statusPaciente] }}</span>
+      </li>
+      } @empty {
+      <li class="vazio">Nenhum paciente ativo nesta escola.</li>
+      }
+    </ul>
+    @if (totalPacientes() < e.quantidadePacientes) {
+    <p class="dica">Pacientes inativos não aparecem na lista, mas contam para a exclusão.</p>
+    }
+    <app-paginacao [totalItens]="totalPacientes()" [itensPorPagina]="itensPorPagina"
+      [paginaAtual]="paginaPacientes()" (paginaAlterada)="mudarPaginaPacientes($event)" />
+    }
+  </div>
+  }
+  }
+</div>
+
+<app-dialog-escola [aberto]="edicaoAberta()" [escola]="escola()" (salvo)="aoSalvar($event)"
+  (cancelar)="edicaoAberta.set(false)" />
+
+<app-confirm-dialog
+  [aberto]="exclusaoAberta()"
+  titulo="Excluir escola?"
+  [mensagem]="mensagemExclusao()"
+  textoConfirmar="Excluir"
+  textoCancelar="Voltar"
+  (confirmar)="excluir()"
+  (cancelar)="exclusaoAberta.set(false)" />

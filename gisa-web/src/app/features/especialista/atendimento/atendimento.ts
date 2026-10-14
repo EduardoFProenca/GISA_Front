@@ -1,9 +1,11 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Observable } from 'rxjs';
 import { Auth } from '../../../core/auth/auth';
 import { EventoPaciente } from '../../../core/models/historico.model';
 import { Paciente } from '../../../core/models/paciente.model';
-import { Terapia } from '../../../core/models/terapia.model';
+import { Terapia, TerapiaDoEspecialista } from '../../../core/models/terapia.model';
+import { Pagina } from '../../../core/models/comum.model';
 import { mensagemDeErro } from '../../../core/http/erro-api';
 import { PacienteService } from '../../../core/services/paciente';
 import { TerapiaService } from '../../../core/services/terapia';
@@ -48,6 +50,8 @@ export class AtendimentoEspecialista implements OnInit {
   readonly dataCurta = dataCurta;
   readonly horaCurta = horaCurta;
   readonly podeVerHistorico = this.auth.temPermissao('VISUALIZAR_HISTORICO_PACIENTE');
+  // O especialista não tem VISUALIZAR_TERAPIAS: vê só as terapias dele com o paciente (/terapias/minhas).
+  private readonly veTodasAsTerapias = this.auth.temPermissao('VISUALIZAR_TERAPIAS');
 
   // Estado que muda após resposta HTTP fica em signal.
   carregando = signal(true);
@@ -59,7 +63,7 @@ export class AtendimentoEspecialista implements OnInit {
   carregandoHistorico = signal(true);
   erroHistorico = signal('');
 
-  terapiasMes = signal<Terapia[]>([]);
+  terapiasMes = signal<(Terapia | TerapiaDoEspecialista)[]>([]);
   carregandoTerapias = signal(true);
   erroTerapias = signal('');
   frequencia = computed(() => calcularFrequenciaMes(this.terapiasMes(), this.idPaciente));
@@ -116,7 +120,9 @@ export class AtendimentoEspecialista implements OnInit {
     const hoje = new Date();
     const inicio = paraIso(new Date(hoje.getFullYear(), hoje.getMonth(), 1));
     const fim = paraIso(new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0));
-    this.terapiaService.listar({ idPaciente: this.idPaciente, inicio, fim, size: 100 }).subscribe({
+    const filtro = { idPaciente: this.idPaciente, inicio, fim, size: 100 };
+    const pedido: Observable<Pagina<Terapia | TerapiaDoEspecialista>> = this.veTodasAsTerapias ? this.terapiaService.listar(filtro) : this.terapiaService.minhas(filtro);
+    pedido.subscribe({
       next: (p) => {
         this.terapiasMes.set(p.content);
         this.carregandoTerapias.set(false);

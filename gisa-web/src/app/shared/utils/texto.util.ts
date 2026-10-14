@@ -9,3 +9,8 @@ export function vazio(valor: unknown): boolean {
 export function emailValido(valor: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor.trim());
 }
+
+// Texto para comparar em buscas locais: sem acentos e em minúsculas.
+export function normalizarBusca(texto: string): string {
+  return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}

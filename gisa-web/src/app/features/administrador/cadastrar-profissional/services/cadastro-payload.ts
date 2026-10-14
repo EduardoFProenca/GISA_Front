@@ -55,7 +55,7 @@ export class CadastroPayloadService {
   // null = sem acesso novo (não marcado, ou o cadastro já tem usuário).
   montarUsuario(f: FormulariosCadastro): DadosUsuario | null {
     const iu = f.infoUsuario;
-    if (iu.possuiAcesso || !iu.temAcessoSistema) return null;
+    if (iu.podeGerenciarAcesso === false || iu.possuiAcesso || !iu.temAcessoSistema) return null;
     return { senha: iu.senha, idPerfil: Number(iu.perfil) };
   }
 
@@ -93,6 +93,12 @@ export class CadastroPayloadService {
     };
   }
 
+  private perfilAlterado(f: FormulariosCadastro): boolean {
+    const iu = f.infoUsuario;
+    if (!iu.possuiAcesso || iu.podeGerenciarAcesso === false) return false;
+    return iu.perfilOriginal === undefined || iu.perfil !== iu.perfilOriginal;
+  }
+
   // PATCH de profissional/especialista/PJ: o serviço envia só os campos do tipo do cadastro.
   // cpf, nascimento, sexo, registro e CNPJ são somente leitura (não vão no corpo).
   montarAtualizacao(f: FormulariosCadastro): AtualizacaoEspecialistaPJPayload {
@@ -107,8 +113,9 @@ export class CadastroPayloadService {
       enderecos: this.montarEnderecos(f),
       email: dp.email.trim(),
       idCargo: Number(f.infoProfissional.cargo),
-      // Só funciona para quem já tem usuário (senão a API responde 409).
-      idPerfil: iu.possuiAcesso ? Number(iu.perfil) : undefined,
+      // Só para quem já tem usuário (senão 409) e só se mudou: idPerfil exige GERENCIAR_USUARIOS
+      // e, sem ela, a API recusa o PATCH inteiro (403).
+      idPerfil: this.perfilAlterado(f) ? Number(iu.perfil) : undefined,
       especialidadesIds: this.especialidadesIds(f),
       jornadas: this.mapearJornadas(f),
       razaoSocial: ie.razaoSocial.trim(),

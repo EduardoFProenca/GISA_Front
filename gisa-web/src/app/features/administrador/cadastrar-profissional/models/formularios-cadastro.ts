@@ -33,6 +33,10 @@ export interface InfoUsuarioForm extends ComErros {
   senha: string;
   // idPerfil (texto do select).
   perfil: string;
+  // false = quem está logado não tem GERENCIAR_USUARIOS: não cria acesso nem troca perfil.
+  podeGerenciarAcesso?: boolean;
+  // Perfil carregado na edição (para só mandar idPerfil se mudou).
+  perfilOriginal?: string;
 }
 
 export interface OpcaoEspecialidade {

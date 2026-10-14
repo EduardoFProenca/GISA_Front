@@ -1,11 +1,20 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { AlterarMinhaSenhaPayload, LoginResponse, RedefinirSenhaPayload } from '../models/auth.model';
+import {
+  AlterarMinhaSenhaPayload,
+  FiltroUsuarios,
+  LoginResponse,
+  RedefinirSenhaPayload,
+  UsuarioDetalhe,
+  UsuarioResumo,
+} from '../models/auth.model';
+import { Pagina, PaginaApi, normalizarPagina } from '../models/comum.model';
 import { Auth } from '../auth/auth';
+import { montarParams } from './params.util';
 
-// Senhas (ver USUARIOS.md). Toda troca de senha encerra as sessões abertas daquele usuário.
+// Senhas e usuários de acesso (ver USUARIOS.md). Toda troca de senha encerra as sessões abertas daquele usuário.
 @Injectable({ providedIn: 'root' })
 export class UsuarioService {
   private http = inject(HttpClient);
@@ -20,8 +29,31 @@ export class UsuarioService {
       .pipe(tap((res) => this.auth.substituirToken(res.token)));
   }
 
-  // Administrador (ACESSO_TOTAL ou CADASTRAR_USUARIO); 204.
+  // ---------- Administração de acessos (GERENCIAR_USUARIOS) ----------
+
+  // Padrão da API: 9 por página, por nome.
+  listar(filtro: FiltroUsuarios = {}): Observable<Pagina<UsuarioResumo>> {
+    return this.http
+      .get<PaginaApi<UsuarioResumo>>(this.base, { params: montarParams({ ...filtro }) })
+      .pipe(map((resposta) => normalizarPagina(resposta)));
+  }
+
+  buscar(idCadastro: number): Observable<UsuarioDetalhe> {
+    return this.http.get<UsuarioDetalhe>(`${this.base}/${idCadastro}`);
+  }
+
+  // Vale na próxima requisição do usuário, sem novo login.
+  trocarPerfil(idCadastro: number, idPerfil: number): Observable<UsuarioDetalhe> {
+    return this.http.patch<UsuarioDetalhe>(`${this.base}/${idCadastro}/perfil`, { idPerfil });
+  }
+
+  // Não exige a senha atual; 204.
   redefinirSenha(idCadastro: number, dados: RedefinirSenhaPayload): Observable<void> {
     return this.http.patch<void>(`${this.base}/${idCadastro}/senha`, dados);
+  }
+
+  // Apaga só o usuário (o cadastro continua); os tokens dele deixam de valer na hora.
+  retirarAcesso(idCadastro: number): Observable<void> {
+    return this.http.delete<void>(`${this.base}/${idCadastro}`);
   }
 }

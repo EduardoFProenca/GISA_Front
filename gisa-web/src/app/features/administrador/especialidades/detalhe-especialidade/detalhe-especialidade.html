@@ -1,0 +1,63 @@
+<app-cabecalho-pagina titulo="Detalhes da Especialidade" />
+
+<div class="pagina-apoio">
+  @if (carregando()) {
+  <p class="carregando">Carregando especialidade...</p>
+  } @else if (erro()) {
+  <p class="erro-msg erro-geral">{{ erro() }}</p>
+  } @else if (especialidade(); as e) {
+  <div class="painel">
+    <h3>{{ e.nome }}</h3>
+    <div class="info-bloco">
+      <p><strong>Descrição:</strong> {{ e.descricao || 'não informada' }}</p>
+      <p><strong>Especialistas nesta especialidade:</strong> {{ e.especialistas.length }}</p>
+    </div>
+
+    <div class="acoes-situacao">
+      <button type="button" class="btn-secundario" (click)="edicaoAberta.set(true)">Editar especialidade</button>
+      <button type="button" class="btn-inativar" [disabled]="!podeExcluir() || excluindo()"
+        (click)="exclusaoAberta.set(true)">{{ excluindo() ? 'Excluindo...' : 'Excluir especialidade' }}</button>
+    </div>
+    @if (!podeExcluir()) {
+    <p class="dica">
+      Para excluir esta especialidade, antes retire-a dos especialistas abaixo (na edição de cada um).
+      Especialistas inativos também contam.
+    </p>
+    }
+    @if (erroAcao()) { <p class="erro-msg">{{ erroAcao() }}</p> }
+  </div>
+
+  <div class="painel">
+    <h3>Especialistas <span class="etiqueta">{{ e.especialistas.length }}</span></h3>
+    <ul class="vinculos">
+      @for (p of e.especialistas; track p.idCadastro) {
+      <li>
+        @if (podeVerProfissionais) {
+        <a class="nome" [routerLink]="['/administrador/profissionais', p.idCadastro]">{{ p.nome }}</a>
+        } @else {
+        <span class="nome">{{ p.nome }}</span>
+        }
+        <small>{{ p.tipo === 'ESPECIALISTA_PJ' ? 'Especialista PJ' : 'Especialista' }}</small>
+        <span class="etiqueta" [class.inativo]="p.statusCadastro === 'INATIVO'">
+          {{ p.statusCadastro === 'ATIVO' ? 'Ativo' : 'Inativo' }}
+        </span>
+      </li>
+      } @empty {
+      <li class="vazio">Nenhum especialista nesta especialidade.</li>
+      }
+    </ul>
+  </div>
+  }
+</div>
+
+<app-dialog-especialidade [aberto]="edicaoAberta()" [especialidade]="especialidade()" (salvo)="aoSalvar($event)"
+  (cancelar)="edicaoAberta.set(false)" />
+
+<app-confirm-dialog
+  [aberto]="exclusaoAberta()"
+  titulo="Excluir especialidade?"
+  [mensagem]="mensagemExclusao()"
+  textoConfirmar="Excluir"
+  textoCancelar="Voltar"
+  (confirmar)="excluir()"
+  (cancelar)="exclusaoAberta.set(false)" />
