@@ -45,6 +45,14 @@ export class ProfissionalService {
     return `${this.base}/${ROTA_POR_TIPO[tipo]}${id !== undefined ? '/' + id : ''}${sufixo}`;
   }
 
+  // Cadastro do especialista logado (GET /especialistas/me): basta ser especialista, sem
+  // VISUALIZAR_PROFISSIONAIS. Vem no formato do especialista ou, se for PJ, no formato do PJ.
+  meuCadastroEspecialista(): Observable<Especialista> {
+    return this.http
+      .get<Especialista | EspecialistaPJ>(`${this.base}/especialistas/me`)
+      .pipe(map((r) => ('especialista' in r ? r.especialista : r)));
+  }
+
   listar(filtro: FiltroProfissionais = {}): Observable<Pagina<ProfissionalResumo>> {
     const params = montarParams({ sort: 'nome,asc', ...filtro });
     return this.http
