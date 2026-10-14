@@ -1,0 +1,122 @@
+.seletor {
+  position: relative;
+}
+
+.opcoes {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0.25rem;
+  list-style: none;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.info {
+  padding: 0.5rem 0.6rem;
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.opcao {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: #1e293b;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.88rem;
+  transform: none;
+
+  &:hover,
+  &.ativa {
+    background: #eff6ff;
+    border: none;
+    transform: none;
+    box-shadow: none;
+  }
+
+  &.novo {
+    color: #2563eb;
+    font-weight: 500;
+    border-top: 1px solid #f1f5f9;
+    border-radius: 0 0 6px 6px;
+  }
+}
+
+.cadastro-cbo {
+  margin-top: 0.6rem;
+  padding: 0.75rem;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  strong {
+    font-size: 0.85rem;
+    color: #0f172a;
+  }
+
+  .linha {
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .campo-codigo {
+    width: 110px;
+    flex-shrink: 0;
+  }
+
+  .campo-titulo {
+    flex: 1;
+  }
+
+  label {
+    margin-top: 0 !important;
+  }
+
+  .acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  button {
+    border: none;
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.82rem;
+    transform: none;
+
+    &:hover {
+      transform: none;
+      box-shadow: none;
+      border: none;
+    }
+  }
+
+  .btn-voltar {
+    background: #e2e8f0;
+    color: #334155;
+  }
+
+  .btn-cadastrar {
+    background: #2563eb;
+    color: white;
+
+    &:disabled {
+      opacity: 0.6;
+    }
+  }
+}

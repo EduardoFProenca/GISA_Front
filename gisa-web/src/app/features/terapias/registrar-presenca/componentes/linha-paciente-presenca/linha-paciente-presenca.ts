@@ -12,6 +12,8 @@ import { ROTULO_PRESENCA } from '../../../../../shared/utils/rotulos.util';
 export class LinhaPacientePresenca {
   paciente = input.required<PacienteTerapia>();
   bloqueado = input(false);
+  // Terapia de um dia futuro: só a falta justificada pode ser registrada.
+  antesDoDia = input(false);
 
   marcarPresente = output<void>();
   marcarFalta = output<void>();

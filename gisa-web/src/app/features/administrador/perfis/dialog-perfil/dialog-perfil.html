@@ -1,0 +1,33 @@
+<app-form-dialog
+  [aberto]="aberto()"
+  [titulo]="perfil() ? 'Renomear perfil' : 'Novo perfil'"
+  [descricao]="perfil() ? '' : 'Um perfil é um conjunto de permissões. Cada usuário de acesso tem exatamente um perfil.'"
+  [erro]="erro()"
+  [salvando]="salvando()"
+  (confirmar)="salvar()"
+  (cancelar)="cancelar.emit()">
+  <div>
+    <label for="nomePerfil">Nome do perfil <span class="obrigatorio">*</span></label>
+    <input id="nomePerfil" name="nomePerfil" type="text" maxlength="255" placeholder="Ex.: Recepção"
+      [class.input-erro]="erroNome()" [ngModel]="nome()" (ngModelChange)="nome.set($event)" />
+    @if (erroNome()) { <span class="erro-msg">{{ erroNome() }}</span> }
+  </div>
+
+  @if (!perfil()) {
+  <div>
+    <label>Permissões iniciais</label>
+    <div class="lista-checks">
+      @for (p of permissoes(); track p.idPermissao) {
+      <label>
+        <input type="checkbox" [checked]="selecionadas().has(p.idPermissao)"
+          (change)="alternar(p.idPermissao, $any($event.target).checked)" />
+        <span class="permissao"><strong>{{ p.nome }}</strong><small>{{ p.descricao }}</small></span>
+      </label>
+      } @empty {
+      <p class="dica">Nenhuma permissão disponível.</p>
+      }
+    </div>
+    <p class="dica">Pode ficar sem nenhuma e ser ajustado depois.</p>
+  </div>
+  }
+</app-form-dialog>

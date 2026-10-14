@@ -1,0 +1,22 @@
+<app-form-dialog
+  [aberto]="aberto()"
+  [titulo]="cargo() ? 'Editar cargo' : 'Novo cargo'"
+  [descricao]="cargo() ? 'A mudança vale para todos os profissionais deste cargo.' : ''"
+  [erro]="erro()"
+  [salvando]="salvando()"
+  (confirmar)="salvar()"
+  (cancelar)="cancelar.emit()">
+  <div>
+    <label for="nomeCargo">Nome do cargo <span class="obrigatorio">*</span></label>
+    <input id="nomeCargo" name="nomeCargo" type="text" maxlength="255" placeholder="Ex.: Psicóloga do Ambulatório"
+      [class.input-erro]="erros()['nome']" [ngModel]="nome()" (ngModelChange)="nome.set($event)" />
+    @if (erros()['nome']) { <span class="erro-msg">{{ erros()['nome'] }}</span> }
+  </div>
+  <div>
+    <label>CBO <span class="obrigatorio">*</span></label>
+    @if (aberto()) {
+    <app-seletor-cbo [(selecionado)]="cbo" [comErro]="!!erros()['codigoCBO']" />
+    }
+    @if (erros()['codigoCBO']) { <span class="erro-msg">{{ erros()['codigoCBO'] }}</span> }
+  </div>
+</app-form-dialog>

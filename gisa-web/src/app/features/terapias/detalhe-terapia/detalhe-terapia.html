@@ -34,6 +34,9 @@
       }
     </div>
     }
+    @if (podeAlterarStatus && foraDoDia()) {
+    <p class="aviso">O atendimento só pode ser iniciado no dia da terapia.</p>
+    }
     @if (erroAcao()) { <p class="erro-msg">{{ erroAcao() }}</p> }
   </div>
 

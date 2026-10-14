@@ -87,6 +87,7 @@
         <input type="date" id="data" name="data" [ngModel]="data()" (ngModelChange)="data.set($event); limparErro('data')"
           [class.input-erro]="erros()['data']">
         @if (erros()['data']) { <span class="erro-msg">{{ erros()['data'] }}</span> }
+        @else if (dataPassada()) { <span class="aviso-data">Atenção: esta data já passou.</span> }
       </div>
     </div>
 

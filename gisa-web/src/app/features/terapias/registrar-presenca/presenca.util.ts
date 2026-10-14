@@ -1,4 +1,5 @@
 import { Terapia, TerapiaDoEspecialista } from '../../../core/models/terapia.model';
+import { hojeIso } from '../../../shared/utils/data.util';
 
 // Terapia da listagem geral ou de /terapias/minhas: a diferença é só como os especialistas vêm.
 export type TerapiaDoDia = Terapia | TerapiaDoEspecialista;
@@ -64,6 +65,12 @@ export function substituirTerapia<T extends TerapiaDoDia>(terapias: T[], atualiz
     }
     return atualizada as T;
   });
+}
+
+// A API só aceita PRESENTE e FALTA_INJUSTIFICADA a partir do dia da terapia
+// (a falta justificada pode ser registrada com antecedência).
+export function antesDoDia(t: { data: string }, hoje: string = hojeIso()): boolean {
+  return t.data > hoje;
 }
 
 export function horarioTerapia(t: { horaInicio: string; horaTermino: string }): string {

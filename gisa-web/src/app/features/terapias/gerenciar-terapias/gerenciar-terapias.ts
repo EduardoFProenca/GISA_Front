@@ -44,7 +44,8 @@ function periodoParaFiltro(estado: EstadoFiltroAvancado | null): Pick<FiltroTera
         fim: paraIso(new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0)),
       };
     case 'manual':
-      return estado.dataInicio && estado.dataFim ? { inicio: estado.dataInicio, fim: estado.dataFim } : {};
+      // A API aceita só um dos lados (ex.: só início = daquele dia em diante).
+      return { inicio: estado.dataInicio || undefined, fim: estado.dataFim || undefined };
     default:
       return {};
   }

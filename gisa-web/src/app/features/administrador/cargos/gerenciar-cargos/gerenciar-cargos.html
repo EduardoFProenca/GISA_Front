@@ -1,0 +1,39 @@
+<app-cabecalho-pagina titulo="Cargos" textoAcao="Novo Cargo" (acao)="dialogAberto.set(true)" />
+
+<div class="pagina-apoio">
+  <div class="painel">
+    <p class="descricao-pagina">
+      Todo profissional, especialista e especialista PJ tem um cargo, e todo cargo está ligado a um CBO.
+      <a routerLink="/administrador/cbos">Gerenciar CBOs</a>
+    </p>
+
+    <div class="barra-busca">
+      <input type="search" placeholder="Buscar cargo pelo nome..." aria-label="Buscar cargo pelo nome"
+        [(ngModel)]="termo" (ngModelChange)="buscar($event)" />
+    </div>
+
+    @if (erro()) {
+    <p class="erro-msg erro-geral">{{ erro() }}</p>
+    } @else if (carregando() && !cargos().length) {
+    <p class="carregando">Carregando cargos...</p>
+    } @else {
+    <ul class="tabela">
+      @for (c of cargos(); track c.idCargo) {
+      <li>
+        <a class="linha" [routerLink]="['/administrador/cargos', c.idCargo]">
+          <div class="principal">
+            <strong>{{ c.nome }}</strong>
+            <small><span class="codigo">{{ codigo(c.codigoCBO) }}</span> {{ c.tituloCBO }}</small>
+          </div>
+          <span class="seta" aria-hidden="true">›</span>
+        </a>
+      </li>
+      } @empty {
+      <li class="vazio">{{ termo.trim() ? 'Nenhum cargo encontrado para "' + termo.trim() + '".' : 'Nenhum cargo cadastrado.' }}</li>
+      }
+    </ul>
+    }
+  </div>
+</div>
+
+<app-dialog-cargo [aberto]="dialogAberto()" (salvo)="aoSalvar($event)" (cancelar)="dialogAberto.set(false)" />

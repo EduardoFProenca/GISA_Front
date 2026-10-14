@@ -21,6 +21,8 @@ export class CabecalhoPagina {
   @Input() rotaAcao: string = '';
   @Output() salvar = new EventEmitter<void>();
   @Output() cancelar = new EventEmitter<void>();
+  // Botão de ação sem rotaAcao (ex.: abrir um diálogo).
+  @Output() acao = new EventEmitter<void>();
 
   voltar() {
     this.location.back();
@@ -37,6 +39,8 @@ export class CabecalhoPagina {
   aoClicarAcao() {
     if (this.rotaAcao) {
       this.router.navigateByUrl(this.rotaAcao);
+    } else {
+      this.acao.emit();
     }
   }
 }

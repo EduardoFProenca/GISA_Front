@@ -1,0 +1,57 @@
+<div class="seletor">
+  <input type="text" autocomplete="off" placeholder="Digite o código ou o título do CBO"
+    [class.input-erro]="comErro()"
+    [ngModel]="termo()" (ngModelChange)="aoDigitar($event)" (focus)="aoFocar()" />
+
+  @if (aberto() && !cadastrando()) {
+  <ul class="opcoes">
+    @if (buscando()) {
+    <li class="info">Buscando...</li>
+    } @else {
+    @for (cbo of resultados(); track cbo.codigoCBO) {
+    <li>
+      <button type="button" class="opcao" [class.ativa]="selecionado()?.codigoCBO === cbo.codigoCBO"
+        (click)="escolher(cbo)">{{ rotulo(cbo) }}</button>
+    </li>
+    } @empty {
+    <li class="info">Nenhum CBO encontrado.</li>
+    }
+    @if (totalResultados() > resultados().length) {
+    <li class="info">+{{ totalResultados() - resultados().length }} resultados. Refine a busca.</li>
+    }
+    <li>
+      <button type="button" class="opcao novo" (click)="abrirCadastro()">+ Cadastrar novo CBO</button>
+    </li>
+    }
+  </ul>
+  }
+
+  @if (cadastrando()) {
+  <div class="cadastro-cbo">
+    <strong>Novo CBO</strong>
+    <div class="linha">
+      <div class="campo-codigo">
+        <label for="novoCodigoCbo">Código</label>
+        <input id="novoCodigoCbo" type="text" inputmode="numeric" maxlength="7" placeholder="0000-00"
+          [class.input-erro]="errosNovo()['codigoCBO']"
+          [ngModel]="novoCodigo()" (ngModelChange)="novoCodigo.set($event)" />
+      </div>
+      <div class="campo-titulo">
+        <label for="novoTituloCbo">Título</label>
+        <input id="novoTituloCbo" type="text" maxlength="255" placeholder="Ex.: Recepcionista, em geral"
+          [class.input-erro]="errosNovo()['tituloCBO']"
+          [ngModel]="novoTitulo()" (ngModelChange)="novoTitulo.set($event)" />
+      </div>
+    </div>
+    @for (msg of [errosNovo()['codigoCBO'], errosNovo()['tituloCBO'], erroNovo()]; track $index) {
+    @if (msg) { <span class="erro-msg">{{ msg }}</span> }
+    }
+    <div class="acoes">
+      <button type="button" class="btn-voltar" (click)="cadastrando.set(false)">Voltar à busca</button>
+      <button type="button" class="btn-cadastrar" [disabled]="salvandoNovo()" (click)="cadastrarCbo()">
+        {{ salvandoNovo() ? 'Cadastrando...' : 'Cadastrar e usar' }}
+      </button>
+    </div>
+  </div>
+  }
+</div>

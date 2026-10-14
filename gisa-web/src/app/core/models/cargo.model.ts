@@ -1,5 +1,5 @@
 // Cargos e CBOs (ver CARGOS.md).
-import { CadastroVinculado } from './comum.model';
+import { CadastroVinculado, ParametrosPagina } from './comum.model';
 
 // Item de GET /cargos e bloco `cargo` dos detalhes de profissional.
 export interface Cargo {
@@ -29,6 +29,13 @@ export interface Cbo {
 // GET /cbos/{codigo}
 export interface CboDetalhe extends Cbo {
   cargos: { idCargo: number; nome: string }[];
+}
+
+// Filtros de GET /cbos (padrão: 9 por página, sort codigoCBO,asc).
+// codigo: início do código (máscara ignorada); titulo: trecho, sem diferenciar maiúsculas.
+export interface FiltroCbos extends ParametrosPagina {
+  codigo?: string;
+  titulo?: string;
 }
 
 // Corpo do POST /cbos (codigoCBO: 6 dígitos, sem máscara).

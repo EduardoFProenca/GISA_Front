@@ -1,0 +1,50 @@
+<app-cabecalho-pagina titulo="Detalhes do CBO" />
+
+<div class="pagina-apoio">
+  @if (carregando()) {
+  <p class="carregando">Carregando CBO...</p>
+  } @else if (erro()) {
+  <p class="erro-msg erro-geral">{{ erro() }}</p>
+  } @else if (cbo(); as c) {
+  <div class="painel">
+    <h3>{{ c.tituloCBO }}</h3>
+    <div class="info-bloco">
+      <p><strong>Código:</strong> <span class="codigo">{{ codigo(c.codigoCBO) }}</span></p>
+      <p><strong>Cargos que usam este CBO:</strong> {{ c.cargos.length }}</p>
+    </div>
+
+    <div class="acoes-situacao">
+      <button type="button" class="btn-secundario" (click)="edicaoAberta.set(true)">Editar título</button>
+      <button type="button" class="btn-inativar" [disabled]="!podeExcluir() || excluindo()"
+        (click)="exclusaoAberta.set(true)">{{ excluindo() ? 'Excluindo...' : 'Excluir CBO' }}</button>
+    </div>
+    @if (!podeExcluir()) {
+    <p class="dica">Para excluir este CBO, antes troque o CBO dos cargos abaixo.</p>
+    }
+    @if (erroAcao()) { <p class="erro-msg">{{ erroAcao() }}</p> }
+  </div>
+
+  <div class="painel">
+    <h3>Cargos <span class="etiqueta">{{ c.cargos.length }}</span></h3>
+    <ul class="vinculos">
+      @for (cargo of c.cargos; track cargo.idCargo) {
+      <li><a class="nome" [routerLink]="['/administrador/cargos', cargo.idCargo]">{{ cargo.nome }}</a></li>
+      } @empty {
+      <li class="vazio">Nenhum cargo usa este CBO.</li>
+      }
+    </ul>
+  </div>
+  }
+</div>
+
+<app-dialog-cbo [aberto]="edicaoAberta()" [cbo]="cbo()" (salvo)="aoSalvar($event)"
+  (cancelar)="edicaoAberta.set(false)" />
+
+<app-confirm-dialog
+  [aberto]="exclusaoAberta()"
+  titulo="Excluir CBO?"
+  [mensagem]="mensagemExclusao()"
+  textoConfirmar="Excluir"
+  textoCancelar="Voltar"
+  (confirmar)="excluir()"
+  (cancelar)="exclusaoAberta.set(false)" />

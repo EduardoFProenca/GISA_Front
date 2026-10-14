@@ -1,0 +1,22 @@
+<app-form-dialog
+  [aberto]="aberto()"
+  [titulo]="cbo() ? 'Editar CBO' : 'Novo CBO'"
+  [descricao]="cbo() ? 'O código não pode ser alterado. Para corrigir um código errado, cadastre o CBO certo, mova os cargos para ele e exclua o antigo.' : 'Classificação Brasileira de Ocupações: código oficial de 6 dígitos.'"
+  [erro]="erro()"
+  [salvando]="salvando()"
+  (confirmar)="salvar()"
+  (cancelar)="cancelar.emit()">
+  <div>
+    <label for="codigoCbo">Código <span class="obrigatorio">*</span></label>
+    <input id="codigoCbo" name="codigoCbo" type="text" inputmode="numeric" maxlength="7" placeholder="0000-00"
+      [disabled]="!!cbo()" [class.input-erro]="erros()['codigoCBO']"
+      [ngModel]="codigo()" (ngModelChange)="codigo.set($event)" />
+    @if (erros()['codigoCBO']) { <span class="erro-msg">{{ erros()['codigoCBO'] }}</span> }
+  </div>
+  <div>
+    <label for="tituloCbo">Título <span class="obrigatorio">*</span></label>
+    <input id="tituloCbo" name="tituloCbo" type="text" maxlength="255" placeholder="Ex.: Psicólogo clínico"
+      [class.input-erro]="erros()['tituloCBO']" [ngModel]="titulo()" (ngModelChange)="titulo.set($event)" />
+    @if (erros()['tituloCBO']) { <span class="erro-msg">{{ erros()['tituloCBO'] }}</span> }
+  </div>
+</app-form-dialog>

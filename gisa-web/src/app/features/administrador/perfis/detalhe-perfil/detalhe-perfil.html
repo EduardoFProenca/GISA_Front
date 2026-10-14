@@ -1,0 +1,108 @@
+<app-cabecalho-pagina titulo="Detalhes do Perfil" />
+
+<div class="pagina-apoio">
+  @if (carregando()) {
+  <p class="carregando">Carregando perfil...</p>
+  } @else if (erro()) {
+  <p class="erro-msg erro-geral">{{ erro() }}</p>
+  } @else if (perfil(); as p) {
+  <div class="painel">
+    <h3>{{ p.nome }}
+      @if (ehMeuPerfil()) { <span class="etiqueta">Seu perfil</span> }
+    </h3>
+    <div class="info-bloco">
+      <p><strong>Permissões:</strong> {{ p.permissoes.length }}</p>
+      <p><strong>Usuários com este perfil:</strong> {{ p.usuarios.length }}</p>
+    </div>
+
+    <div class="acoes-situacao">
+      <button type="button" class="btn-secundario" (click)="renomeAberto.set(true)">Renomear</button>
+      <button type="button" class="btn-inativar" [disabled]="!podeExcluir() || excluindo()"
+        (click)="exclusaoAberta.set(true)">{{ excluindo() ? 'Excluindo...' : 'Excluir perfil' }}</button>
+    </div>
+    @if (!podeExcluir()) {
+    <p class="dica">Para excluir este perfil, antes troque o perfil dos usuários abaixo (na edição de cada profissional).</p>
+    }
+    @if (erroAcao()) { <p class="erro-msg">{{ erroAcao() }}</p> }
+  </div>
+
+  <div class="painel">
+    <h3>Permissões
+      <button type="button" class="btn-pequeno" [disabled]="!disponiveis().length" (click)="abrirAdicionar()"
+        [title]="disponiveis().length ? '' : 'O perfil já tem todas as permissões'">+ Adicionar permissão</button>
+    </h3>
+    <ul class="vinculos">
+      @for (perm of p.permissoes; track perm.idPermissao) {
+      <li>
+        <span class="permissao"><strong>{{ perm.nome }}</strong><small>{{ perm.descricao }}</small></span>
+        <button type="button" class="btn-remover" [disabled]="removendo() !== null"
+          [attr.aria-label]="'Remover a permissão ' + perm.nome" (click)="pedirRemocao(perm)">
+          {{ removendo() === perm.idPermissao ? 'Removendo...' : 'Remover' }}
+        </button>
+      </li>
+      } @empty {
+      <li class="vazio">Este perfil ainda não tem permissões.</li>
+      }
+    </ul>
+  </div>
+
+  <div class="painel">
+    <h3>Usuários <span class="etiqueta">{{ p.usuarios.length }}</span></h3>
+    <ul class="vinculos">
+      @for (u of p.usuarios; track u.idCadastro) {
+      <li>
+        <span class="nome">{{ u.nome }}</span>
+        <small>CPF {{ u.cpf }}</small>
+        <span class="etiqueta" [class.inativo]="u.statusCadastro === 'INATIVO'"
+          [title]="u.statusCadastro === 'INATIVO' ? 'Continua neste perfil, mas não consegue fazer login' : ''">
+          {{ u.statusCadastro === 'ATIVO' ? 'Ativo' : 'Inativo' }}
+        </span>
+      </li>
+      } @empty {
+      <li class="vazio">Nenhum usuário com este perfil.</li>
+      }
+    </ul>
+  </div>
+  }
+</div>
+
+<app-dialog-perfil [aberto]="renomeAberto()" [perfil]="perfil()" (salvo)="aoRenomear($event)"
+  (cancelar)="renomeAberto.set(false)" />
+
+<app-form-dialog
+  [aberto]="adicionarAberto()"
+  titulo="Adicionar permissões"
+  [descricao]="'Escolha as permissões para o perfil ' + (perfil()?.nome ?? '') + '.'"
+  [erro]="erroAdicionar()"
+  [salvando]="salvandoAdicao()"
+  textoConfirmar="Adicionar"
+  (confirmar)="confirmarAdicao()"
+  (cancelar)="adicionarAberto.set(false)">
+  <div class="lista-checks">
+    @for (perm of disponiveis(); track perm.idPermissao) {
+    <label>
+      <input type="checkbox" [checked]="paraAdicionar().has(perm.idPermissao)"
+        (change)="alternar(perm.idPermissao, $any($event.target).checked)" />
+      <span class="permissao"><strong>{{ perm.nome }}</strong><small>{{ perm.descricao }}</small></span>
+    </label>
+    }
+  </div>
+</app-form-dialog>
+
+<app-confirm-dialog
+  [aberto]="remocaoPendente() !== null"
+  titulo="Remover permissão do seu perfil?"
+  [mensagem]="mensagemRemocao()"
+  textoConfirmar="Remover"
+  textoCancelar="Voltar"
+  (confirmar)="confirmarRemocao()"
+  (cancelar)="remocaoPendente.set(null)" />
+
+<app-confirm-dialog
+  [aberto]="exclusaoAberta()"
+  titulo="Excluir perfil?"
+  [mensagem]="mensagemExclusao()"
+  textoConfirmar="Excluir"
+  textoCancelar="Voltar"
+  (confirmar)="excluir()"
+  (cancelar)="exclusaoAberta.set(false)" />

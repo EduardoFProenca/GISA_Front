@@ -12,6 +12,7 @@ import { TerapiaService } from '../../../core/services/terapia';
 import { ConflitoHorario, NovaTerapiaPayload, Terapia } from '../../../core/models/terapia.model';
 import { aplicarErrosApi, campoDaChave } from '../../../core/http/erro-api';
 import { ROTULO_MODALIDADE } from '../../../shared/utils/rotulos.util';
+import { hojeIso } from '../../../shared/utils/data.util';
 import { lerContextoTerapias } from '../contexto-terapias';
 
 // Chave de erro da API -> campo da tela
@@ -71,6 +72,9 @@ export class FormTerapia implements OnInit {
   modalidade = computed(() =>
     ROTULO_MODALIDADE[this.idsEscolhidos('paciente').length > 1 ? 'COLETIVA' : 'INDIVIDUAL']
   );
+
+  // A API não impede datas passadas: só avisamos.
+  dataPassada = computed(() => !!this.data() && this.data() < hojeIso());
 
   // Estado da tela
   carregando = signal(this.editando);
@@ -310,6 +314,16 @@ export class FormTerapia implements OnInit {
 
     if (Object.keys(novos).length) this.erros.update((e) => ({ ...e, ...novos }));
     this.finalizarComErro(mensagemGeral);
+    // O horário pode ter sido ocupado depois da última verificação: atualiza os destaques.
+    if (mensagemGeral.startsWith('Conflito de horário')) this.reverificarConflitos();
+  }
+
+  private reverificarConflitos() {
+    const payload = this.payloadVerificacao();
+    if (!payload) return;
+    this.terapiaService
+      .verificarConflitos({ ...payload, idTerapiaIgnorada: this.idTerapia ?? undefined })
+      .subscribe({ next: (r) => this.conflitos.set(r.conflitos), error: () => {} });
   }
 
   private finalizarComErro(mensagem: string) {

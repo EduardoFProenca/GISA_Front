@@ -10,7 +10,8 @@
   <div class="acoes">
     <button type="button" class="btn presente"
       [class.ativo]="paciente().presenca === 'PRESENTE'"
-      [disabled]="bloqueado()"
+      [disabled]="bloqueado() || antesDoDia()"
+      [title]="antesDoDia() ? 'A presença só pode ser registrada a partir do dia da terapia' : ''"
       (click)="marcarPresente.emit()">Compareceu</button>
 
     <button type="button" class="btn falta-justificada"
@@ -20,7 +21,8 @@
 
     <button type="button" class="btn falta"
       [class.ativo]="paciente().presenca === 'FALTA_INJUSTIFICADA'"
-      [disabled]="bloqueado()"
+      [disabled]="bloqueado() || antesDoDia()"
+      [title]="antesDoDia() ? 'A falta só pode ser registrada a partir do dia da terapia' : ''"
       (click)="marcarFalta.emit()">Falta</button>
 
     @if (paciente().presenca !== 'PENDENTE') {

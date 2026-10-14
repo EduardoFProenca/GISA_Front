@@ -1,0 +1,36 @@
+<app-cabecalho-pagina titulo="Perfis de Acesso" textoAcao="Novo Perfil" (acao)="dialogAberto.set(true)" />
+
+<div class="pagina-apoio">
+  <div class="painel">
+    <p class="descricao-pagina">
+      Um perfil é um conjunto de permissões. O perfil de cada usuário é escolhido ao conceder acesso ao sistema
+      e pode ser trocado na edição do profissional.
+    </p>
+
+    @if (erro()) {
+    <p class="erro-msg erro-geral">{{ erro() }}</p>
+    } @else if (carregando()) {
+    <p class="carregando">Carregando perfis...</p>
+    } @else {
+    <ul class="tabela">
+      @for (p of perfis(); track p.idPerfil) {
+      <li>
+        <a class="linha" [routerLink]="['/administrador/perfis', p.idPerfil]">
+          <div class="principal"><strong>{{ p.nome }}</strong></div>
+          <div class="contadores">
+            <span class="etiqueta">{{ plural(p.quantidadePermissoes, 'permissão', 'permissões') }}</span>
+            <span class="etiqueta inativo">{{ plural(p.quantidadeUsuarios, 'usuário', 'usuários') }}</span>
+          </div>
+          <span class="seta" aria-hidden="true">›</span>
+        </a>
+      </li>
+      } @empty {
+      <li class="vazio">Nenhum perfil cadastrado.</li>
+      }
+    </ul>
+    }
+  </div>
+</div>
+
+<app-dialog-perfil [aberto]="dialogAberto()" [permissoes]="permissoes()" (salvo)="aoSalvar($event)"
+  (cancelar)="dialogAberto.set(false)" />

@@ -1,0 +1,47 @@
+<app-cabecalho-pagina titulo="CBOs" textoAcao="Novo CBO" (acao)="dialogAberto.set(true)" />
+
+<div class="pagina-apoio">
+  <div class="painel">
+    <p class="descricao-pagina">
+      Classificação Brasileira de Ocupações. Cada cargo está ligado a um CBO.
+      <a routerLink="/administrador/cargos">Gerenciar cargos</a>
+    </p>
+
+    <div class="barra-busca">
+      <input type="search" placeholder="Buscar por código (ex.: 2515) ou título (ex.: psicólogo)..."
+        aria-label="Buscar CBO por código ou título" [(ngModel)]="termo" (ngModelChange)="buscar()" />
+      <select aria-label="Ordenação" [(ngModel)]="ordenacao" (ngModelChange)="ordenar()">
+        @for (o of ordenacoes; track o.valor) {
+        <option [value]="o.valor">{{ o.label }}</option>
+        }
+      </select>
+    </div>
+
+    @if (erro()) {
+    <p class="erro-msg erro-geral">{{ erro() }}</p>
+    } @else if (carregando() && !cbos().length) {
+    <p class="carregando">Carregando CBOs...</p>
+    } @else {
+    <ul class="tabela">
+      @for (c of cbos(); track c.codigoCBO) {
+      <li>
+        <a class="linha" [routerLink]="['/administrador/cbos', c.codigoCBO]">
+          <span class="codigo">{{ codigo(c.codigoCBO) }}</span>
+          <div class="principal"><strong>{{ c.tituloCBO }}</strong></div>
+          <span class="seta" aria-hidden="true">›</span>
+        </a>
+      </li>
+      } @empty {
+      <li class="vazio">{{ termo.trim() ? 'Nenhum CBO encontrado. Cadastre-o em "Novo CBO".' : 'Nenhum CBO cadastrado.' }}</li>
+      }
+    </ul>
+    }
+  </div>
+
+  @if (total() > itensPorPagina) {
+  <app-paginacao [totalItens]="total()" [itensPorPagina]="itensPorPagina" [paginaAtual]="paginaAtual()"
+    (paginaAlterada)="mudarPagina($event)" />
+  }
+</div>
+
+<app-dialog-cbo [aberto]="dialogAberto()" (salvo)="aoSalvar($event)" (cancelar)="dialogAberto.set(false)" />

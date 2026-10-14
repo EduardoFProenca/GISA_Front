@@ -36,6 +36,9 @@ export class DashboardAdministrador implements OnInit {
     { titulo: 'Cadastrar Profissional', descricao: 'Adicionar ao corpo clínico', iconeSvg: ICONES.cadastrarProfissional, rota: '/administrador/profissionais/novo' },
     { titulo: 'Gestão de Terapias', descricao: 'Visualizar e gerenciar', iconeSvg: ICONES.gestaoConsultas, rota: '/administrador/terapias' },
     { titulo: 'Gestão de Profissionais', descricao: 'Ver corpo clínico', iconeSvg: ICONES.gestaoProfissionais, rota: '/administrador/profissionais/gerenciar' },
+    { titulo: 'Cargos', descricao: 'Funções internas', iconeSvg: ICONES.gestaoAtividades, rota: '/administrador/cargos' },
+    { titulo: 'CBOs', descricao: 'Classificação de ocupações', iconeSvg: ICONES.filtro, rota: '/administrador/cbos' },
+    { titulo: 'Perfis de Acesso', descricao: 'Permissões dos usuários', iconeSvg: ICONES.pessoa, rota: '/administrador/perfis' },
   ];
 
   terapiasHoje = signal<Atividade[]>([]);

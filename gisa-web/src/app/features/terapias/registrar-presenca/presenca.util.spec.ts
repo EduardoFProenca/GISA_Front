@@ -1,5 +1,6 @@
 import { Terapia, TerapiaDoEspecialista } from '../../../core/models/terapia.model';
 import {
+  antesDoDia,
   calcularResumo,
   especialistasTexto,
   filtrarPorSituacao,
@@ -70,5 +71,13 @@ describe('presenca.util', () => {
     expect(resultado.horarioLiberado).toBe(true);
     expect('especialistas' in resultado).toBe(false);
     expect(resultado.outrosEspecialistas).toEqual(['Carlos']);
+  });
+});
+
+describe('antesDoDia', () => {
+  it('é verdadeiro só para terapias de dias futuros', () => {
+    expect(antesDoDia({ data: '2026-10-14' }, '2026-10-13')).toBe(true);
+    expect(antesDoDia({ data: '2026-10-13' }, '2026-10-13')).toBe(false);
+    expect(antesDoDia({ data: '2026-10-12' }, '2026-10-13')).toBe(false);
   });
 });

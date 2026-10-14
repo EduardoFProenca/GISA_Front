@@ -8,7 +8,7 @@ import { StatusTerapia, Terapia } from '../../../core/models/terapia.model';
 import { TerapiaService } from '../../../core/services/terapia';
 import { Auth } from '../../../core/auth/auth';
 import { mensagemDeErro } from '../../../core/http/erro-api';
-import { dataExtenso } from '../../../shared/utils/data.util';
+import { dataExtenso, hojeIso } from '../../../shared/utils/data.util';
 import { ROTULO_MODALIDADE, ROTULO_STATUS_TERAPIA } from '../../../shared/utils/rotulos.util';
 import { lerContextoTerapias } from '../contexto-terapias';
 import { CardTerapiaPresenca, PresencaMarcada } from '../registrar-presenca/componentes/card-terapia-presenca/card-terapia-presenca';
@@ -62,9 +62,15 @@ export class DetalheTerapia implements OnInit {
     const t = this.terapia();
     return t ? `${dataExtenso(t.data)}, ${horarioTerapia(t)}` : '';
   });
+  // A API aceita iniciar em qualquer data, mas o atendimento só deve começar no dia da terapia.
+  foraDoDia = computed(() => {
+    const t = this.terapia();
+    return !!t && t.status === 'AGENDADA' && t.data !== hojeIso();
+  });
   proximo = computed(() => {
     const t = this.terapia();
-    return t ? PROXIMO[t.status] ?? null : null;
+    if (!t || this.foraDoDia()) return null;
+    return PROXIMO[t.status] ?? null;
   });
   podeCancelar = computed(() => {
     const s = this.terapia()?.status;
