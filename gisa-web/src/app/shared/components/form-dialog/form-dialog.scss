@@ -44,7 +44,8 @@
     color: #334155;
   }
 
-  ::ng-deep input,
+  // Checkbox e radio ficam com o estilo global (styles.scss).
+  ::ng-deep input:not([type='checkbox']):not([type='radio']),
   ::ng-deep select,
   ::ng-deep textarea {
     width: 100%;
