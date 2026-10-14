@@ -19,7 +19,8 @@ import { dataCurta, paraIso } from '../../../shared/utils/data.util';
 import { horaCurta } from '../../../shared/utils/data.util';
 import { vazio } from '../../../shared/utils/texto.util';
 import { TemPermissao } from '../../../core/auth/tem-permissao.directive';
-import { AtestadoDrawer } from '../atestado/atestado-drawer';
+import { DocumentoClinicoDrawer } from '../documento-clinico/documento-clinico-drawer';
+import { TipoDocumentoClinico } from '../documento-clinico/documento-clinico.util';
 import { AbaHistorico } from './componentes/aba-historico/aba-historico';
 import { AbaTerapias } from './componentes/aba-terapias/aba-terapias';
 import { CabecalhoPaciente } from './componentes/cabecalho-paciente/cabecalho-paciente';
@@ -41,7 +42,7 @@ const MIN_CARACTERES_EVOLUCAO = 10;
     AbaHistorico,
     AbaTerapias,
     ModalRemarcacao,
-    AtestadoDrawer,
+    DocumentoClinicoDrawer,
     TemPermissao,
   ],
   templateUrl: './atendimento.html',
@@ -83,7 +84,8 @@ export class AtendimentoEspecialista extends ComErros implements OnInit {
   erroSalvar = signal('');
   aviso = signal('');
   remarcando = signal(false);
-  atestadoAberto = signal(false);
+  // Atestado ou receita aberto no drawer (null = fechado).
+  documentoAberto = signal<TipoDocumentoClinico | null>(null);
 
   // Formulário da evolução (template-driven, como no restante do projeto).
   evolucao = { evolucaoPts: '', metas: '', condutas: '', orientacoesCuidadores: '' };

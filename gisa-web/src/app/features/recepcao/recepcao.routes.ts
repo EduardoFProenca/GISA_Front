@@ -4,7 +4,7 @@ import { LayoutPainel } from '../../core/layout/layout-painel/layout-painel';
 import { DashboardRecepcao } from './dashboard/dashboard';
 import { pacientesRoutes } from '../pacientes/pacientes.routes';
 import { terapiasRoutes } from '../terapias/terapias.routes';
-import { EmitirRecusa } from './emitir-recusa/emitir-recusa';
+import { EmitirRecusa } from '../documentos/emitir-recusa/emitir-recusa';
 import { RegistrarPresenca } from '../terapias/registrar-presenca/registrar-presenca';
 
 const presenca = exigePermissao('VISUALIZAR_TERAPIAS');

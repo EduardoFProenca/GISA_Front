@@ -56,6 +56,8 @@ export class DashboardEspecialista implements OnInit {
     { titulo: 'Minha Agenda', descricao: 'Semana e atendimentos', icone: ICONES.calendario, rota: '/especialista/agenda' },
     { titulo: 'Minhas Terapias do Dia', descricao: 'Registrar presença', icone: ICONES.gestaoConsultas, rota: '/especialista/minhas-terapias' },
     { titulo: 'Todas as Terapias', descricao: 'Consultar e agendar', icone: ICONES.gestaoAtividades, rota: '/especialista/terapias' },
+    { titulo: 'Emitir Atestado', descricao: 'Texto livre ou modelo', icone: ICONES.atestado, rota: '/especialista/atestado' },
+    { titulo: 'Emitir Receita', descricao: 'Imprimir receita do paciente', icone: ICONES.receita, rota: '/especialista/receita' },
   ];
 
   readonly rotuloStatus = ROTULO_STATUS_AGENDA;

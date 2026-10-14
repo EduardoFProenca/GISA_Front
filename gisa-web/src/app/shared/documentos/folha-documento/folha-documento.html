@@ -1,0 +1,38 @@
+<article class="documento-folha">
+  <header class="documento-timbrado">
+    <img [src]="instituicao.logo" alt="APAE Sorocaba" class="documento-logo" />
+    <div>
+      <strong>{{ instituicao.nome }}</strong>
+      <span>{{ instituicao.descricao }}</span>
+      <span>{{ instituicao.endereco }}</span>
+    </div>
+  </header>
+
+  <h1 class="documento-titulo">{{ dados.titulo }}</h1>
+
+  @if (dados.identificacao.length) {
+  <dl class="documento-identificacao">
+    @for (campo of dados.identificacao; track campo.rotulo) {
+    <div><dt>{{ campo.rotulo }}:</dt><dd>{{ campo.valor }}</dd></div>
+    }
+  </dl>
+  }
+
+  <div class="documento-corpo">{{ dados.texto }}</div>
+
+  <p class="documento-local">{{ dados.localData }}</p>
+
+  <div class="documento-assinaturas">
+    @for (a of dados.assinaturas; track $index) {
+    <div class="documento-assinatura">
+      <div class="documento-linha"></div>
+      <strong>{{ a.nome }}</strong>
+      @for (d of a.detalhes; track $index) {
+      <span>{{ d }}</span>
+      }
+    </div>
+    }
+  </div>
+
+  <footer class="documento-rodape">{{ instituicao.nome }} · {{ instituicao.endereco }}</footer>
+</article>

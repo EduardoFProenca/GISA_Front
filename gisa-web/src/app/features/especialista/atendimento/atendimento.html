@@ -19,8 +19,11 @@
         @if (alvoRemarcacao()) {
           <button type="button" class="btn-secundario" (click)="abrirRemarcacao()">Solicitar Remarcação</button>
         }
-        <button *temPermissao="'EMITIR_ATESTADO'" type="button" class="btn-secundario" (click)="atestadoAberto.set(true)">
+        <button *temPermissao="'EMITIR_ATESTADO'" type="button" class="btn-secundario" (click)="documentoAberto.set('ATESTADO')">
           Emitir Atestado
+        </button>
+        <button *temPermissao="'EMITIR_RECEITA'" type="button" class="btn-secundario" (click)="documentoAberto.set('RECEITA')">
+          Emitir Receita
         </button>
         <button type="button" class="btn-primario" [disabled]="salvando()" (click)="salvarEvolucao()">
           {{ salvando() ? 'Salvando...' : 'Salvar Evolução' }}
@@ -119,7 +122,8 @@
 </div>
 
 @if (paciente(); as p) {
-  <app-atestado-drawer [aberto]="atestadoAberto()" [paciente]="p" (fechar)="atestadoAberto.set(false)" />
+  <app-documento-clinico-drawer [aberto]="documentoAberto() !== null" [tipo]="documentoAberto() ?? 'ATESTADO'" [paciente]="p"
+    (fechar)="documentoAberto.set(null)" />
 }
 
 <app-modal-remarcacao

@@ -1,0 +1,77 @@
+<app-cabecalho-pagina titulo="Emitir Recusa" />
+
+<div class="pagina-documento">
+  <section class="painel">
+    <h3>Pessoa recusada</h3>
+    <p class="descricao">Digite os dados da pessoa. Se ela já for paciente, você pode preencher a partir do cadastro.</p>
+
+    <label for="buscaPaciente">Preencher com um paciente cadastrado (opcional)</label>
+    <app-select-busca
+      [opcoes]="opcoesPacientes()"
+      [value]="idPaciente()"
+      (valueChange)="preencherComPaciente($event)"
+      placeholder="Digite o nome ou o CPF do paciente"
+      semResultados="Nenhum paciente encontrado" />
+    @if (carregandoPaciente()) {
+    <p class="descricao">Carregando paciente...</p>
+    }
+
+    <div class="linha-form">
+      <div class="campo campo-largo">
+        <label for="nome">Nome <span class="obrigatorio">*</span></label>
+        <input id="nome" type="text" maxlength="255" [(ngModel)]="nome" (ngModelChange)="limparErro('nome')"
+          [class.input-erro]="erros()['nome']" placeholder="Nome completo" />
+        @if (erros()['nome']) { <span class="erro-msg">{{ erros()['nome'] }}</span> }
+      </div>
+    </div>
+
+    <div class="linha-form">
+      <div class="campo">
+        <label for="cpf">CPF</label>
+        <input id="cpf" type="text" appMascara="cpf" inputmode="numeric" [(ngModel)]="cpf"
+          (ngModelChange)="limparErro('cpf')" [class.input-erro]="erros()['cpf']" placeholder="000.000.000-00" />
+        @if (erros()['cpf']) { <span class="erro-msg">{{ erros()['cpf'] }}</span> }
+      </div>
+      <div class="campo">
+        <label for="nascimento">Data de nascimento</label>
+        <input id="nascimento" type="date" [(ngModel)]="dataNascimento" />
+      </div>
+    </div>
+  </section>
+
+  <section class="painel">
+    <h3>Motivo da recusa</h3>
+    <label for="motivo">Motivo <span class="obrigatorio">*</span></label>
+    <textarea id="motivo" rows="8" [(ngModel)]="motivo" (ngModelChange)="limparErro('motivo')"
+      [class.input-erro]="erros()['motivo']"
+      placeholder="Descreva por que a APAE não pode realizar o atendimento"></textarea>
+    @if (erros()['motivo']) { <span class="erro-msg">{{ erros()['motivo'] }}</span> }
+
+    <p class="descricao nota">
+      Cabeçalho da APAE, data de hoje e a sua assinatura entram automaticamente.
+      O documento não fica salvo no sistema: imprima ou salve em PDF ao visualizar.
+    </p>
+
+    @if (erro()) {
+    <p class="erro-msg erro-geral">{{ erro() }}</p>
+    }
+
+    <div class="acoes">
+      <button type="button" class="btn-limpar" (click)="novaRecusa()">Limpar</button>
+      <button type="button" class="btn-emitir" (click)="visualizar()">Visualizar recusa</button>
+    </div>
+  </section>
+</div>
+
+@if (folha(); as f) {
+<div class="documento-previa-overlay" (click)="previa.set(false)">
+  <div class="documento-previa-corpo" role="dialog" aria-modal="true" aria-label="Pré-visualização da recusa"
+    (click)="$event.stopPropagation()">
+    <div class="documento-previa-acoes">
+      <button type="button" class="documento-btn-voltar" (click)="previa.set(false)">Voltar e editar</button>
+      <button type="button" class="documento-btn-imprimir" (click)="imprimir()">Imprimir / Baixar PDF</button>
+    </div>
+    <app-folha-documento [dados]="f" />
+  </div>
+</div>
+}

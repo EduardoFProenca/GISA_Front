@@ -1,0 +1,87 @@
+@if (aberto) {
+  <div class="drawer-overlay" (click)="aoFechar()">
+    <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="titulo-documento" (click)="$event.stopPropagation()">
+      <header class="drawer-topo">
+        <h3 id="titulo-documento">Emitir {{ titulo.toLowerCase() }}</h3>
+        <button type="button" class="fechar" aria-label="Fechar" (click)="aoFechar()">×</button>
+      </header>
+
+      <div class="drawer-corpo">
+        <section class="secao">
+          <h4>Profissional emitente</h4>
+          @if (erroPerfil()) {
+            <p class="erro-geral" role="alert">{{ erroPerfil() }}</p>
+          } @else if (perfil(); as p) {
+            <dl class="dados-leitura">
+              <div><dt>Nome</dt><dd>{{ p.nome }}</dd></div>
+              <div><dt>Especialidade</dt><dd>{{ p.especialidades.join(', ') || '—' }}</dd></div>
+              <div><dt>Registro no conselho</dt><dd>{{ p.registroConselho || '—' }}</dd></div>
+              <div><dt>CBO</dt><dd>{{ p.cbo || '—' }}</dd></div>
+            </dl>
+          } @else {
+            <p class="carregando">Carregando...</p>
+          }
+        </section>
+
+        <section class="secao">
+          <h4>Paciente / assistido</h4>
+          <dl class="dados-leitura">
+            <div><dt>Nome</dt><dd>{{ paciente.pessoa.nome }}</dd></div>
+            <div><dt>CPF</dt><dd>{{ cpf(paciente.pessoa.cpf) }}</dd></div>
+            <div>
+              <dt>Matrícula única / CNS</dt>
+              <dd>{{ matricula(paciente.pessoa.idCadastro) }}@if (paciente.pessoa.numCNS) { / {{ paciente.pessoa.numCNS }} }</dd>
+            </div>
+            <div><dt>Nascimento</dt><dd>{{ dataCurta(paciente.pessoa.dataNascimento) }} ({{ idade }})</dd></div>
+          </dl>
+        </section>
+
+        <section class="secao">
+          <h4>Texto {{ tipo === 'ATESTADO' ? 'do atestado' : 'da receita' }}</h4>
+
+          @if (modelos.length) {
+            <p class="nota">Comece de um modelo (opcional) e edite como quiser:</p>
+            <div class="modelos">
+              @for (m of modelos; track m.id) {
+                <button type="button" class="modelo" (click)="aplicarModelo(m)">{{ m.rotulo }}</button>
+              }
+            </div>
+          }
+
+          <label for="texto-documento">Texto <span class="obrigatorio">*</span></label>
+          <textarea id="texto-documento" rows="14" [class.input-erro]="erroTexto()"
+            [placeholder]="tipo === 'ATESTADO' ? 'Escreva o atestado...' : 'Escreva a receita: medicamentos, posologia, orientações...'"
+            [(ngModel)]="texto" (ngModelChange)="erroTexto.set('')"></textarea>
+          @if (erroTexto()) {
+            <span class="erro-msg">{{ erroTexto() }}</span>
+          }
+
+          <p class="nota">
+            Cabeçalho da APAE, dados do paciente, data de hoje e sua assinatura entram automaticamente.
+            O documento não fica salvo no sistema: imprima ou salve em PDF ao visualizar.
+          </p>
+        </section>
+      </div>
+
+      <footer class="drawer-acoes">
+        <button type="button" class="btn-secundario" (click)="aoFechar()">Cancelar</button>
+        <button type="button" class="btn-primario" [disabled]="!perfil()" (click)="gerarPrevia()">
+          Visualizar {{ titulo.toLowerCase() }}
+        </button>
+      </footer>
+    </aside>
+  </div>
+
+  @if (folha(); as f) {
+    <div class="documento-previa-overlay" (click)="fecharPrevia()">
+      <div class="documento-previa-corpo" role="dialog" aria-modal="true" [attr.aria-label]="'Pré-visualização: ' + titulo"
+        (click)="$event.stopPropagation()">
+        <div class="documento-previa-acoes">
+          <button type="button" class="documento-btn-voltar" (click)="fecharPrevia()">Voltar e editar</button>
+          <button type="button" class="documento-btn-imprimir" (click)="imprimir()">Imprimir / Baixar PDF</button>
+        </div>
+        <app-folha-documento [dados]="f" />
+      </div>
+    </div>
+  }
+}

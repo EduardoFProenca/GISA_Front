@@ -39,6 +39,7 @@ export class DashboardAdministrador implements OnInit {
     { titulo: 'Cargos', descricao: 'Funções internas', icone: ICONES.cargo, rota: '/administrador/cargos' },
     { titulo: 'CBOs', descricao: 'Classificação de ocupações', icone: ICONES.lista, rota: '/administrador/cbos' },
     { titulo: 'Perfis de Acesso', descricao: 'Permissões dos usuários', icone: ICONES.chave, rota: '/administrador/perfis' },
+    { titulo: 'Emitir Recusa', descricao: 'Declaração de recusa de atendimento', icone: ICONES.recusa, rota: '/administrador/recusa' },
   ];
 
   terapiasHoje = signal<Atividade[]>([]);

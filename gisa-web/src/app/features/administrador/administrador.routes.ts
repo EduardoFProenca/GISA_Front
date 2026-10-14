@@ -13,6 +13,7 @@ import { GerenciarCbos } from './cbos/gerenciar-cbos/gerenciar-cbos';
 import { DetalheCbo } from './cbos/detalhe-cbo/detalhe-cbo';
 import { GerenciarPerfis } from './perfis/gerenciar-perfis/gerenciar-perfis';
 import { DetalhePerfil } from './perfis/detalhe-perfil/detalhe-perfil';
+import { EmitirRecusa } from '../documentos/emitir-recusa/emitir-recusa';
 import { pacientesRoutes } from '../pacientes/pacientes.routes';
 import { terapiasRoutes } from '../terapias/terapias.routes';
 
@@ -31,6 +32,9 @@ const telas: Routes = [
   { path: 'cbos/:codigo', component: DetalheCbo, ...exigePermissao('GERENCIAR_CARGOS') },
   { path: 'perfis', component: GerenciarPerfis, ...exigePermissao('GERENCIAR_PERFIS') },
   { path: 'perfis/:id', component: DetalhePerfil, ...exigePermissao('GERENCIAR_PERFIS') },
+
+  // Documentos: o admin emite só a recusa (atestado e receita são do especialista).
+  { path: 'recusa', component: EmitirRecusa, ...exigePermissao('EMITIR_RECUSA') },
 
   { path: 'pacientes', children: pacientesRoutes('/administrador/pacientes') },
   { path: 'terapias', children: terapiasRoutes('/administrador/terapias') },

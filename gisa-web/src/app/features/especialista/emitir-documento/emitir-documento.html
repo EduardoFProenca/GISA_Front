@@ -1,0 +1,36 @@
+<app-cabecalho-pagina [titulo]="titulo" />
+
+<div class="pagina-documento">
+  <section class="painel">
+    <h3>Paciente</h3>
+    <p class="descricao">
+      Escolha o paciente para {{ tipo === 'ATESTADO' ? 'o atestado' : 'a receita' }}. Os dados dele e a sua assinatura
+      entram automaticamente no documento.
+    </p>
+
+    <label for="paciente">Paciente <span class="obrigatorio">*</span></label>
+    <app-select-busca
+      [opcoes]="opcoes()"
+      [value]="idPaciente()"
+      (valueChange)="escolher($event)"
+      placeholder="Digite o nome ou o CPF do paciente"
+      semResultados="Nenhum paciente encontrado" />
+
+    @if (carregandoPaciente()) {
+    <p class="descricao">Carregando paciente...</p>
+    }
+    @if (erro()) {
+    <p class="erro-msg erro-geral">{{ erro() }}</p>
+    }
+
+    @if (paciente() && !drawerAberto()) {
+    <button type="button" class="btn-emitir" (click)="drawerAberto.set(true)">
+      {{ titulo }} para {{ paciente()!.pessoa.nome }}
+    </button>
+    }
+  </section>
+</div>
+
+@if (paciente(); as p) {
+<app-documento-clinico-drawer [aberto]="drawerAberto()" [tipo]="tipo" [paciente]="p" (fechar)="drawerAberto.set(false)" />
+}

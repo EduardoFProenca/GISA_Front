@@ -33,8 +33,10 @@ export const FUNCIONALIDADES = {
   ALTERAR_STATUS_TERAPIA: null,
   REGISTRAR_PRESENCA: null,
 
-  // Documentos impressos (o sistema não emite receitas)
+  // Documentos impressos (não ficam salvos na API). Quem emite cada um é definido pelas rotas de cada
+  // painel: atestado e receita no do especialista; recusa no da recepção e no do administrador.
   EMITIR_ATESTADO: null,
+  EMITIR_RECEITA: null,
   EMITIR_RECUSA: null,
 
   // Administração
