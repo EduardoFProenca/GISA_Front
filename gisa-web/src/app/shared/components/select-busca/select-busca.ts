@@ -22,6 +22,8 @@ export interface OpcaoSelectBusca {
   label: string;
   // Texto mostrado no campo depois de escolher (se omitido, usa o label).
   rotuloSelecionado?: string;
+  // Texto extra que também é pesquisado, sem aparecer (ex.: código do CID sem ponto).
+  termosBusca?: string;
 }
 
 // Combobox com filtro por texto: digita para reduzir a lista, ou clica pra abrir tudo.
@@ -52,7 +54,17 @@ export class SelectBusca implements OnChanges {
   abrirAcima = signal(false);
   alturaMaxima = signal(ALTURA_LISTA_PX);
 
+  // Texto de busca de cada opção já normalizado: calculado uma vez por lista de opções, e não a cada
+  // tecla (listas grandes, como os ~14 mil CIDs, travariam a digitação).
+  private indice: string[] = [];
+  // Último filtro calculado: o template consulta o resultado várias vezes por ciclo.
+  private cache: { termo: string; opcoes: OpcaoSelectBusca[]; resultado: OpcaoSelectBusca[] } | null = null;
+
   ngOnChanges(changes: SimpleChanges) {
+    if (changes['opcoes']) {
+      this.indice = this.opcoes.map((o) => this.normalizar(`${o.label} ${o.termosBusca ?? ''}`));
+      this.cache = null;
+    }
     if (changes['value'] || changes['opcoes']) {
       this.sincronizarTermoComValor();
     }
@@ -73,9 +85,13 @@ export class SelectBusca implements OnChanges {
   }
 
   private get todasFiltradas(): OpcaoSelectBusca[] {
-    const alvo = this.normalizar(this.termo().trim());
-    if (!alvo) return this.opcoes;
-    return this.opcoes.filter((o) => this.normalizar(o.label).includes(alvo));
+    const termo = this.termo();
+    if (this.cache && this.cache.termo === termo && this.cache.opcoes === this.opcoes) return this.cache.resultado;
+
+    const alvo = this.normalizar(termo.trim());
+    const resultado = alvo ? this.opcoes.filter((_, i) => this.indice[i].includes(alvo)) : this.opcoes;
+    this.cache = { termo, opcoes: this.opcoes, resultado };
+    return resultado;
   }
 
   get opcoesFiltradas(): OpcaoSelectBusca[] {

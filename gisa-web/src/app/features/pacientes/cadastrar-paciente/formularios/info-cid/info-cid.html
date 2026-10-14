@@ -5,11 +5,12 @@
     <div class="campo">
       <label>Código CID</label>
       <app-select-busca
-        [opcoes]="opcoes"
+        [opcoes]="opcoes()"
         [value]="codigoSelecionado()"
         (valueChange)="aoEscolherCodigo($event)"
         [limite]="50"
-        placeholder="Digite o código ou o nome. Ex: F84.0 ou autismo"
+        [disabled]="carregandoCatalogo()"
+        [placeholder]="carregandoCatalogo() ? 'Carregando CIDs...' : 'Digite o código ou o nome. Ex: F84.0 ou autismo'"
         semResultados="Nenhum CID encontrado"
       />
     </div>

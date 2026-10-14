@@ -24,26 +24,47 @@ export class InfoCid extends ComErros {
   // Na edição o PATCH só aceita CIDs que já existem na base do GISA (novosCids é só no cadastro).
   @Input() permitirNovos = true;
 
-  private catalogo = this.cidService.sugestoes();
+  // Tabela oficial do CID-10 (DATASUS), baixada uma vez pelo CidService.
+  private catalogo = signal<Map<string, Cid>>(new Map());
+  carregandoCatalogo = signal(true);
 
-  // Dropdown mostra "F84.0 — Autismo infantil" (busca por código OU por nome);
+  // Dropdown mostra "F84.0 — Autismo infantil" (busca por código, com ou sem ponto, ou por nome);
   // depois de escolher, o campo mostra só o código.
-  opcoes: OpcaoSelectBusca[] = this.catalogo.map((c) => ({
-    id: c.codigoCID,
-    label: `${c.codigoCID} — ${c.descricao}`,
-    rotuloSelecionado: c.codigoCID,
-  }));
+  opcoes = signal<OpcaoSelectBusca[]>([]);
 
   codigoSelecionado = signal<string | null>(null);
-  cidSelecionado = computed(
-    () => this.catalogo.find((c) => c.codigoCID === this.codigoSelecionado()) ?? null
-  );
+  cidSelecionado = computed(() => {
+    const codigo = this.codigoSelecionado();
+    return codigo ? (this.catalogo().get(codigo) ?? null) : null;
+  });
   // Campo fechado: só leitura, vem do CID escolhido.
   descricao = computed(() => this.cidSelecionado()?.descricao ?? '');
 
   listaCids = signal<CidSelecionado[]>([]);
   erro = signal<string | null>(null);
   verificando = signal(false);
+
+  constructor() {
+    super();
+    this.cidService.catalogo().subscribe({
+      next: (lista) => {
+        this.catalogo.set(new Map(lista.map((c) => [c.codigoCID, c])));
+        this.opcoes.set(
+          lista.map((c) => ({
+            id: c.codigoCID,
+            label: `${c.codigoCID} — ${c.descricao}`,
+            rotuloSelecionado: c.codigoCID,
+            termosBusca: c.codigoCID.replace('.', ''), // "F840" também encontra F84.0
+          }))
+        );
+        this.carregandoCatalogo.set(false);
+      },
+      error: () => {
+        this.carregandoCatalogo.set(false);
+        this.erro.set('Não foi possível carregar a tabela de CIDs. Recarregue a página e tente de novo.');
+      },
+    });
+  }
 
   aoEscolherCodigo(valor: number | string | null) {
     this.codigoSelecionado.set(valor === null ? null : String(valor));
