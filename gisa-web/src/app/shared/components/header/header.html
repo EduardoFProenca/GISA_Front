@@ -50,6 +50,13 @@
     </div>
     }
 
+    @if (rotaSenha) {
+    <a class="btn-sair" [routerLink]="rotaSenha">
+      <span><ng-icon [name]="icones.senha" /></span>
+      Alterar senha
+    </a>
+    }
+
     <button type="button" class="btn-sair" (click)="sair()">
       <span><ng-icon [name]="icones.sair" /></span>
       Sair

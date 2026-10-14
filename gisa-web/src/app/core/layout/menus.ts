@@ -22,6 +22,7 @@ const MENUS: Record<Painel, ItemMenuPainel[]> = {
     { label: 'CBOs', icone: ICONES.lista, rota: '/administrador/cbos', funcionalidade: 'GERENCIAR_CARGOS', grupo: 'Configurações' },
     { label: 'Perfis de Acesso', icone: ICONES.chave, rota: '/administrador/perfis', funcionalidade: 'GERENCIAR_PERFIS', grupo: 'Configurações' },
     { label: 'Emitir Recusa', icone: ICONES.recusa, rota: '/administrador/recusa', funcionalidade: 'EMITIR_RECUSA', grupo: 'Documentos' },
+    { label: 'Auditoria', icone: ICONES.auditoria, rota: '/administrador/auditoria', funcionalidade: 'VISUALIZAR_AUDITORIA', grupo: 'Segurança' },
   ],
   RECEPCAO: [
     { label: 'Terapias do Dia', icone: ICONES.gestaoConsultas, rota: '/recepcao/presenca', funcionalidade: 'VISUALIZAR_TERAPIAS' },
@@ -41,8 +42,9 @@ const MENUS: Record<Painel, ItemMenuPainel[]> = {
   ],
 };
 
-// Itens do painel que o usuário pode acessar, com "Início" na frente.
+// Itens do painel que o usuário pode acessar, com "Início" na frente e "Alterar minha senha" no fim.
 export function itensDoMenu(painel: Painel, pode: (f: Funcionalidade) => boolean): ItemMenuPainel[] {
   const inicio: ItemMenuPainel = { label: 'Início', icone: ICONES.inicio, rota: PAINEIS[painel] };
-  return [inicio, ...MENUS[painel].filter((item) => !item.funcionalidade || pode(item.funcionalidade))];
+  const senha: ItemMenuPainel = { label: 'Alterar minha senha', icone: ICONES.senha, rota: `${PAINEIS[painel]}/minha-senha`, grupo: 'Minha conta' };
+  return [inicio, ...MENUS[painel].filter((item) => !item.funcionalidade || pode(item.funcionalidade)), senha];
 }

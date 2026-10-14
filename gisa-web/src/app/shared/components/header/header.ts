@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostListener, Input, inject, signal } from '@angular/core';
 import { NgIcon } from '@ng-icons/core';
+import { RouterLink } from '@angular/router';
 import { Auth } from '../../../core/auth/auth';
 import { Layout } from '../../../core/layout/layout';
 import { NotificacaoService, tempoDecorrido } from '../../../core/services/notificacao';
@@ -7,7 +8,7 @@ import { ICONES } from '../../icons';
 
 @Component({
   selector: 'app-header',
-  imports: [NgIcon],
+  imports: [NgIcon, RouterLink],
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })
@@ -32,6 +33,11 @@ export class Header {
 
   painelAberto = signal(false);
 
+  // "Alterar minha senha" do painel do usuário (null se ele não tiver painel).
+  get rotaSenha(): string | null {
+    const inicio = this.auth.rotaInicial();
+    return inicio ? `${inicio}/minha-senha` : null;
+  }
 
   get nome(): string {
     return this.auth.usuarioAtual()?.nome || this.tituloPortal;

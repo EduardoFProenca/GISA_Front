@@ -1,0 +1,90 @@
+<app-cabecalho-pagina titulo="Auditoria" />
+
+<div class="pagina-auditoria">
+  <section class="painel">
+    <div class="abas" role="tablist" aria-label="Categoria">
+      @for (c of categorias; track c.rotulo) {
+      <button type="button" role="tab" class="aba" [class.ativa]="acao() === c.acao"
+        [attr.aria-selected]="acao() === c.acao" (click)="escolherCategoria(c.acao)">{{ c.rotulo }}</button>
+      }
+    </div>
+
+    <div class="filtros">
+      <div class="campo">
+        <label for="cpfAuditoria">CPF do usuário</label>
+        <input id="cpfAuditoria" type="text" appMascara="cpf" inputmode="numeric" placeholder="Início do CPF"
+          [(ngModel)]="cpfFiltro" (ngModelChange)="aoDigitarCpf()" />
+      </div>
+      <div class="campo">
+        <label for="inicioAuditoria">De</label>
+        <input id="inicioAuditoria" type="date" [(ngModel)]="inicio" (ngModelChange)="aoMudarPeriodo()" />
+      </div>
+      <div class="campo">
+        <label for="fimAuditoria">Até</label>
+        <input id="fimAuditoria" type="date" [(ngModel)]="fim" (ngModelChange)="aoMudarPeriodo()"
+          [class.input-erro]="erroPeriodo()" />
+      </div>
+      <div class="botoes">
+        <button type="button" class="btn-leve" (click)="limparFiltros()">Limpar</button>
+        <button type="button" class="btn-leve" (click)="atualizar()">Atualizar</button>
+      </div>
+    </div>
+    @if (erroPeriodo()) { <span class="erro-msg">{{ erroPeriodo() }}</span> }
+
+    <p class="resumo">
+      @if (carregando()) { Carregando... }
+      @else { {{ total() }} {{ total() === 1 ? 'registro' : 'registros' }} · mais recentes primeiro }
+    </p>
+
+    @if (erro()) {
+    <p class="erro-msg erro-geral">{{ erro() }}</p>
+    } @else {
+    <div class="tabela-rolagem">
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th scope="col">Data e hora</th>
+            <th scope="col">Usuário</th>
+            <th scope="col">Ação</th>
+            <th scope="col">O que foi acessado</th>
+            <th scope="col">Resultado</th>
+            <th scope="col">IP</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of registros(); track r.idLog) {
+          <tr>
+            <td class="numero">{{ dataHora(r.dataHora) }}</td>
+            <td>
+              <strong>{{ r.nomeUsuario || 'Não identificado' }}</strong>
+              @if (r.cpfUsuario) { <small>CPF {{ cpf(r.cpfUsuario) }}</small> }
+            </td>
+            <td><span class="acao" [attr.data-acao]="r.acao">{{ rotuloAcao[r.acao] }}</span></td>
+            <td>
+              {{ descrever(r.caminho) }}
+              <small class="caminho">{{ r.metodo }} {{ r.caminho }}</small>
+            </td>
+            <td>
+              <span class="resultado" [class.falha]="!r.sucesso">{{ r.sucesso ? 'Sucesso' : 'Falha' }}</span>
+              <small class="numero">HTTP {{ r.statusHttp }}</small>
+            </td>
+            <td class="numero">{{ r.ip }}</td>
+          </tr>
+          } @empty {
+          @if (!carregando()) {
+          <tr><td colspan="6" class="vazio">Nenhum registro encontrado com esses filtros.</td></tr>
+          }
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+
+    <p class="nota">Consultar a auditoria também gera um registro do tipo Consulta.</p>
+  </section>
+
+  @if (total() > porPagina) {
+  <app-paginacao [totalItens]="total()" [itensPorPagina]="porPagina" [paginaAtual]="paginaAtual()"
+    (paginaAlterada)="mudarPagina($event)" />
+  }
+</div>

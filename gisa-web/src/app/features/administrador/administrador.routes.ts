@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { AlterarSenha } from '../conta/alterar-senha/alterar-senha';
 import { LayoutPainel } from '../../core/layout/layout-painel/layout-painel';
 import { exigePermissao } from '../../core/auth/auth-guard';
 import { DashboardAdministrador } from './dashboard/dashboard';
@@ -14,11 +15,13 @@ import { DetalheCbo } from './cbos/detalhe-cbo/detalhe-cbo';
 import { GerenciarPerfis } from './perfis/gerenciar-perfis/gerenciar-perfis';
 import { DetalhePerfil } from './perfis/detalhe-perfil/detalhe-perfil';
 import { EmitirRecusa } from '../documentos/emitir-recusa/emitir-recusa';
+import { Auditoria } from './auditoria/auditoria';
 import { pacientesRoutes } from '../pacientes/pacientes.routes';
 import { terapiasRoutes } from '../terapias/terapias.routes';
 
 const telas: Routes = [
   { path: '', component: DashboardAdministrador },
+  { path: 'minha-senha', component: AlterarSenha },
   { path: 'profissionais/novo', component: CadastroProfissional },
   { path: 'profissionais/gerenciar', component: GerenciarProfissionais, ...exigePermissao('VISUALIZAR_PROFISSIONAIS') },
   { path: 'profissionais/:id', component: DetalheProfissional, ...exigePermissao('VISUALIZAR_PROFISSIONAIS') },
@@ -35,6 +38,9 @@ const telas: Routes = [
 
   // Documentos: o admin emite só a recusa (atestado e receita são do especialista).
   { path: 'recusa', component: EmitirRecusa, ...exigePermissao('EMITIR_RECUSA') },
+
+  // Segurança (AUDITORIA.md)
+  { path: 'auditoria', component: Auditoria, ...exigePermissao('VISUALIZAR_AUDITORIA') },
 
   { path: 'pacientes', children: pacientesRoutes('/administrador/pacientes') },
   { path: 'terapias', children: terapiasRoutes('/administrador/terapias') },

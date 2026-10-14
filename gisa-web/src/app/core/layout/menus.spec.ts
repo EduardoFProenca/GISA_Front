@@ -13,7 +13,7 @@ describe('itensDoMenu', () => {
     expect(itens.some((i) => i.rota === '/administrador/cargos')).toBe(true);
   });
 
-  it('sem nenhum acesso, sobra só o Início', () => {
-    expect(itensDoMenu('ASSISTENTE_SOCIAL', () => false).map((i) => i.label)).toEqual(['Início']);
+  it('sem nenhum acesso, sobram só o Início e a troca de senha', () => {
+    expect(itensDoMenu('ASSISTENTE_SOCIAL', () => false).map((i) => i.label)).toEqual(['Início', 'Alterar minha senha']);
   });
 });

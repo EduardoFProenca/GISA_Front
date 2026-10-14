@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { AlterarSenha } from '../conta/alterar-senha/alterar-senha';
 import { exigePermissao } from '../../core/auth/auth-guard';
 import { LayoutPainel } from '../../core/layout/layout-painel/layout-painel';
 import { DashboardRecepcao } from './dashboard/dashboard';
@@ -16,6 +17,7 @@ export const recepcaoRoutes: Routes = [
     data: { painel: 'RECEPCAO' },
     children: [
       { path: '', component: DashboardRecepcao },
+      { path: 'minha-senha', component: AlterarSenha },
       { path: 'pacientes', children: pacientesRoutes('/recepcao/pacientes') },
       { path: 'terapias', children: terapiasRoutes('/recepcao/terapias', 'Controle de Agendamentos') },
       {

@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { AlterarSenha } from '../conta/alterar-senha/alterar-senha';
 import { LayoutPainel } from '../../core/layout/layout-painel/layout-painel';
 import { exigePermissao, permissaoGuard } from '../../core/auth/auth-guard';
 import { DashboardEspecialista } from './dashboard/dashboard';
@@ -12,6 +13,7 @@ const minhas = exigePermissao('VISUALIZAR_TERAPIAS');
 
 const telas: Routes = [
   { path: '', component: DashboardEspecialista },
+  { path: 'minha-senha', component: AlterarSenha },
   { path: 'agenda', component: AgendaEspecialista, ...minhas },
   // Atestado e receita: escolhe o paciente e abre o mesmo drawer do prontuário.
   { path: 'atestado', component: EmitirDocumento, canActivate: [permissaoGuard], data: { funcionalidade: 'EMITIR_ATESTADO', tipo: 'ATESTADO' } },

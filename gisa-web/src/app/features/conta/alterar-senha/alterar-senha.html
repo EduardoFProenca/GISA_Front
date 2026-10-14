@@ -1,0 +1,49 @@
+<app-cabecalho-pagina titulo="Alterar minha senha" />
+
+<div class="pagina-senha">
+  <form class="painel" (submit)="$event.preventDefault(); salvar()" novalidate>
+    <div class="topo">
+      <span class="icone" aria-hidden="true"><ng-icon [name]="icones.senha" size="22" /></span>
+      <div>
+        <h3>Senha de acesso</h3>
+        @if (nome) { <p class="descricao">{{ nome }}</p> }
+      </div>
+    </div>
+
+    <p class="descricao">
+      A nova senha precisa ter de {{ minimo }} a {{ maximo }} caracteres. Ao trocar, você continua conectado aqui,
+      mas é desconectado em qualquer outro computador ou navegador.
+    </p>
+
+    <label for="senhaAtual">Senha atual <span class="obrigatorio">*</span></label>
+    <input id="senhaAtual" name="senhaAtual" autocomplete="current-password"
+      [type]="mostrarSenhas() ? 'text' : 'password'" [(ngModel)]="senhaAtual"
+      (ngModelChange)="limparErro('senhaAtual')" [class.input-erro]="erros().senhaAtual" />
+    @if (erros().senhaAtual; as msg) { <span class="erro-msg">{{ msg }}</span> }
+
+    <label for="novaSenha">Nova senha <span class="obrigatorio">*</span></label>
+    <input id="novaSenha" name="novaSenha" autocomplete="new-password" [attr.maxlength]="maximo"
+      [type]="mostrarSenhas() ? 'text' : 'password'" [(ngModel)]="novaSenha"
+      (ngModelChange)="limparErro('novaSenha')" [class.input-erro]="erros().novaSenha" />
+    @if (erros().novaSenha; as msg) { <span class="erro-msg">{{ msg }}</span> }
+
+    <label for="confirmacaoNovaSenha">Repita a nova senha <span class="obrigatorio">*</span></label>
+    <input id="confirmacaoNovaSenha" name="confirmacaoNovaSenha" autocomplete="new-password" [attr.maxlength]="maximo"
+      [type]="mostrarSenhas() ? 'text' : 'password'" [(ngModel)]="confirmacaoNovaSenha"
+      (ngModelChange)="limparErro('confirmacaoNovaSenha')" [class.input-erro]="erros().confirmacaoNovaSenha" />
+    @if (erros().confirmacaoNovaSenha; as msg) { <span class="erro-msg">{{ msg }}</span> }
+
+    <label class="mostrar" for="mostrarSenhas">
+      <input id="mostrarSenhas" name="mostrarSenhas" type="checkbox"
+        [checked]="mostrarSenhas()" (change)="mostrarSenhas.set($any($event.target).checked)" />
+      Mostrar as senhas
+    </label>
+
+    @if (erro()) { <p class="erro-msg erro-geral">{{ erro() }}</p> }
+    @if (sucesso()) { <p class="sucesso" role="status">Senha alterada.</p> }
+
+    <button type="submit" class="btn-salvar" [disabled]="salvando()">
+      {{ salvando() ? 'Salvando...' : 'Alterar senha' }}
+    </button>
+  </form>
+</div>
