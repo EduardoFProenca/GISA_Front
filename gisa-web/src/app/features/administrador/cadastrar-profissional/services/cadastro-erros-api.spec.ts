@@ -14,6 +14,7 @@ function formularioVazio(): FormulariosCadastro {
     }),
     infoProfissional: comErros({ cargo: '', codigoCBO: '' }),
     infoUsuario: comErros({ possuiAcesso: false, temAcessoSistema: false, perfil: '' }),
+    infoAssistenteSocial: comErros({ ehAssistenteSocial: false, registroConselho: '', idsPacientes: [] as number[] }),
     infoEspecialista: comErros({
       ehEspecialista: false,
       registroProfissional: '',

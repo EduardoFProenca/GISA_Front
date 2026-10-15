@@ -17,6 +17,7 @@ function usuario(perfil: string, permissoes: string[] = []): UsuarioLogado {
     idCadastro: 9,
     nome: 'Mariana Costa',
     cpf: '12345678902',
+    email: 'mariana.costa@email.com',
     tipoCadastro: 'PROFISSIONAL',
     perfil: { idPerfil: 3, nome: perfil },
     permissoes: permissoes.map((nome, i) => ({ idPermissao: i + 1, nome, descricao: '' })),
@@ -37,8 +38,10 @@ describe('Auth', () => {
   });
 
   function entrar(u: UsuarioLogado) {
-    auth.login({ cpf: '123', senha: '12345678' }).subscribe();
-    http.expectOne(`${environment.apiUrl}/auth/login`).flush({ token: criarToken({ sub: '123' }) });
+    auth.login({ email: 'mariana.costa@email.com', senha: '12345678' }).subscribe();
+    http
+      .expectOne(`${environment.apiUrl}/auth/login`)
+      .flush({ token: criarToken({ sub: '123' }), senhaTemporaria: false });
     http.expectOne(`${environment.apiUrl}/usuarios/me`).flush(u);
   }
 

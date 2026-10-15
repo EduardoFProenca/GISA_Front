@@ -40,7 +40,7 @@ describe('profissional-detalhe.util', () => {
   });
 
   it('mapeia profissional que não é especialista', () => {
-    const f = paraFormularios({ profissional, especialista: null, pj: null });
+    const f = paraFormularios({ profissional, especialista: null, pj: null, assistenteSocial: null });
     expect(f.status).toBe('INATIVO');
     expect(f.dadosPessoais['cpf']).toBe('123.456.789-00');
     expect(f.contato['cep']).toBe('01001-000');
@@ -65,6 +65,7 @@ describe('profissional-detalhe.util', () => {
         nomeFantasia: 'Dr. Roberto',
         inscricaoEstadual: '123',
       },
+      assistenteSocial: null,
     };
     const f = paraFormularios(detalhe);
     const e = f.infoEspecialista;

@@ -33,6 +33,7 @@ function formularioValido(): FormulariosCadastro {
       temAcessoSistema: false,
       perfil: '',
     }),
+    infoAssistenteSocial: comErros({ ehAssistenteSocial: false, registroConselho: '', idsPacientes: [] as number[] }),
     infoEspecialista: comErros({
       ehEspecialista: false,
       registroProfissional: '',
