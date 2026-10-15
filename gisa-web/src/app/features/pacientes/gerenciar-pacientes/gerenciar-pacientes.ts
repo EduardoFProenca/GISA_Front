@@ -1,25 +1,23 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { lerContextoPacientes } from '../contexto-pacientes';
-import { ICONES } from '../../../shared/icons';
 import { PacienteResumo } from '../../../core/models/paciente.model';
-import { FiltroPacientes, PacienteService } from '../../../core/services/paciente';
+import { PacienteService, termoBuscaPacienteValido } from '../../../core/services/paciente';
 import { Auth } from '../../../core/auth/auth';
 import { mensagemDeErro } from '../../../core/http/erro-api';
 import { CardPacienteComponent } from './card-paciente/card-paciente';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
-import { CardEstatistica } from '../../../shared/components/card-estatistica/card-estatistica';
 import { BuscaFiltro, EstadoBusca } from '../../../shared/components/busca-filtro/busca-filtro';
-import { Paginacao } from '../../../shared/components/paginacao/paginacao';
-import { soDigitos } from '../../../shared/utils/texto.util';
 
+// LGPD: não há listagem de pacientes. A tela começa vazia e só mostra quem foi buscado
+// (nome com 3 letras ou CPF completo; a API devolve até 20, com o CPF mascarado).
 @Component({
   selector: 'app-gerenciar-pacientes',
-  imports: [CardPacienteComponent, CabecalhoPagina, CardEstatistica, BuscaFiltro, Paginacao],
+  imports: [CardPacienteComponent, CabecalhoPagina, BuscaFiltro],
   templateUrl: './gerenciar-pacientes.html',
   styleUrl: './gerenciar-pacientes.scss',
 })
-export class GerenciarPacientes implements OnInit {
+export class GerenciarPacientes {
   private pacienteService = inject(PacienteService);
   private auth = inject(Auth);
   private contexto = lerContextoPacientes(inject(ActivatedRoute));
@@ -28,57 +26,37 @@ export class GerenciarPacientes implements OnInit {
   podeCadastrar = this.auth.temPermissao('CADASTRAR_PACIENTE');
   podeEditar = this.auth.temPermissao('EDITAR_PACIENTE');
 
-  icones = ICONES;
+  readonly limiteResultados = 20;
 
   carregando = signal(false);
   erro = signal('');
-  termoBusca = signal('');
+  // '' = ainda não buscou (ou o termo não basta para buscar).
+  termoBuscado = signal('');
+  termoInsuficiente = signal(false);
   pacientes = signal<PacienteResumo[]>([]);
-  totalElementos = signal(0);
-  paginaAtual = signal(1);
-  itensPorPagina = 9; // padrão da API: 3 cards por linha x 3 linhas
 
-  ngOnInit(): void {
-    this.carregar();
-  }
-
-  private carregar(): void {
-    this.carregando.set(true);
+  aplicarBusca(estado: EstadoBusca): void {
+    const termo = estado.termo.trim();
     this.erro.set('');
+    this.pacientes.set([]);
+    this.termoInsuficiente.set(!!termo && !termoBuscaPacienteValido(termo));
+    if (!termo || this.termoInsuficiente()) {
+      this.termoBuscado.set('');
+      return;
+    }
 
-    this.pacienteService.listar(this.filtro()).subscribe({
-      next: (pagina) => {
+    this.termoBuscado.set(termo);
+    this.carregando.set(true);
+    this.pacienteService.pesquisar({ termo }).subscribe({
+      next: (lista) => {
+        if (this.termoBuscado() !== termo) return; // já buscou outro termo
         this.carregando.set(false);
-        this.pacientes.set(pagina.content);
-        this.totalElementos.set(pagina.totalElements);
+        this.pacientes.set(lista);
       },
       error: (err) => {
         this.carregando.set(false);
-        this.erro.set(mensagemDeErro(err, 'Não foi possível carregar os pacientes.'));
+        this.erro.set(mensagemDeErro(err, 'Não foi possível buscar os pacientes.'));
       },
     });
-  }
-
-  // Termo só com números (e máscara) busca por CPF; o resto busca por nome.
-  private filtro(): FiltroPacientes {
-    const termo = this.termoBusca().trim();
-    const ehCpf = !!termo && /^[\d.\-\s]+$/.test(termo);
-    return {
-      page: this.paginaAtual() - 1, // API é 0-indexed
-      size: this.itensPorPagina,
-      cpf: ehCpf ? soDigitos(termo) : undefined,
-      nome: ehCpf ? undefined : termo || undefined,
-    };
-  }
-
-  mudarPagina(pagina: number): void {
-    this.paginaAtual.set(pagina);
-    this.carregar();
-  }
-
-  aplicarBusca(estado: EstadoBusca): void {
-    this.termoBusca.set(estado.termo);
-    this.paginaAtual.set(1);
-    this.carregar();
   }
 }

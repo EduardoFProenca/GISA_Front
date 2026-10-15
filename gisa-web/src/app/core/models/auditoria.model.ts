@@ -16,6 +16,8 @@ export interface RegistroAuditoria {
   statusHttp: number;
   sucesso: boolean;
   ip: string;
+  // E-mail digitado nas tentativas de login (que falharam); null nos demais registros.
+  emailInformado: string | null;
 }
 
 export interface FiltroAuditoria extends ParametrosPagina {

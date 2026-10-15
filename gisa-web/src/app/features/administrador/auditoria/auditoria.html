@@ -53,11 +53,12 @@
         </thead>
         <tbody>
           @for (r of registros(); track r.idLog) {
-          <tr>
+          <tr [class.login-falho]="r.acao === 'LOGIN' && !r.sucesso">
             <td class="numero">{{ dataHora(r.dataHora) }}</td>
             <td>
               <strong>{{ r.nomeUsuario || 'Não identificado' }}</strong>
               @if (r.cpfUsuario) { <small>CPF {{ cpf(r.cpfUsuario) }}</small> }
+              @if (r.emailInformado) { <small>E-mail digitado: {{ r.emailInformado }}</small> }
             </td>
             <td><span class="acao" [attr.data-acao]="r.acao">{{ rotuloAcao[r.acao] }}</span></td>
             <td>
@@ -80,7 +81,11 @@
     </div>
     }
 
-    <p class="nota">Consultar a auditoria também gera um registro do tipo Consulta.</p>
+    <p class="nota">
+      São registradas as alterações (criação, alteração e exclusão), as tentativas de login que falharam e as
+      consultas ao detalhe de um paciente. Tentativas de login com um e-mail que não existe ficam sem CPF:
+      procure-as na aba "Logins que falharam".
+    </p>
   </section>
 
   @if (total() > porPagina) {

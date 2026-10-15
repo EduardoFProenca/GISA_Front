@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { PacienteService } from '../../../core/services/paciente';
+import { ProfissionalService } from '../../../core/services/profissional';
 import { CardEstatistica } from '../../../shared/components/card-estatistica/card-estatistica';
 import { PainelAcoesComponent } from '../../../shared/components/painel-acoes/painel-acoes';
 import { Auth } from '../../../core/auth/auth';
@@ -8,9 +8,6 @@ import { acoesRapidasDoPainel } from '../../../core/layout/menus';
 import { AtividadesRecentes, Atividade } from '../../../shared/components/atividades-recentes/atividades-recentes';
 import { Header } from '../../../shared/components/header/header';
 import { ICONES } from '../../../shared/icons';
-import { ROTULO_STATUS_PACIENTE } from '../../../shared/utils/rotulos.util';
-
-const QTD_RECENTES = 6;
 
 @Component({
   selector: 'app-dashboard-assistente-social',
@@ -19,7 +16,7 @@ const QTD_RECENTES = 6;
   styleUrl: './dashboard.scss',
 })
 export class DashboardAssistenteSocial implements OnInit {
-  private pacienteService = inject(PacienteService);
+  private profissionalService = inject(ProfissionalService);
   private router = inject(Router);
   private auth = inject(Auth);
 
@@ -28,19 +25,19 @@ export class DashboardAssistenteSocial implements OnInit {
   // Mesmo catálogo do menu lateral, filtrado pelas permissões (core/layout/menus.ts).
   acoesRapidas = acoesRapidasDoPainel('ASSISTENTE_SOCIAL', (f) => this.auth.temPermissao(f));
 
-  // '—' enquanto carrega ou se a chamada falhar.
+  // '—' enquanto carrega ou se a chamada falhar (ex.: quem abre o painel não é assistente social).
   totalPacientes = signal<number | string>('—');
-  // Últimos pacientes cadastrados (GET /pacientes ordenado pela data de cadastro).
-  recentes = signal<Atividade[]>([]);
+  // Pacientes vinculados ao assistente social logado (GET /assistentes-sociais/me/pacientes).
+  meusPacientes = signal<Atividade[]>([]);
 
   ngOnInit() {
-    this.pacienteService.listar({ size: QTD_RECENTES, sort: 'dataCadastro,desc' }).subscribe({
-      next: (pagina) => {
-        this.totalPacientes.set(pagina.totalElements);
-        this.recentes.set(
-          pagina.content.map((p) => ({
+    this.profissionalService.meusPacientesAssistenteSocial().subscribe({
+      next: (lista) => {
+        this.totalPacientes.set(lista.length);
+        this.meusPacientes.set(
+          lista.map((p) => ({
             descricao: p.nome,
-            tempoAtras: `${p.idade} anos · ${ROTULO_STATUS_PACIENTE[p.statusPaciente]}`,
+            tempoAtras: `CPF ${p.cpfMascarado}${p.statusCadastro === 'INATIVO' ? ' · cadastro inativo' : ''}`,
             acoes: [{ label: 'Ver', acao: () => this.router.navigate(['/assistente-social/pacientes', p.idCadastro]) }],
           }))
         );

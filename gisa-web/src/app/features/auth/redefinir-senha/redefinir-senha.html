@@ -1,0 +1,56 @@
+<div class="login-page">
+  <img class="q-icon" src="img_logoApae.png" alt="APAE Sorocaba">
+  <h1>APAE de Saúde</h1>
+  <p class="subtitle">Sistema de Gestão Integrada</p>
+
+  <form class="login-container" (ngSubmit)="salvar()">
+    <h3>{{ primeiroAcesso ? 'Primeiro acesso' : 'Cadastrar nova senha' }}</h3>
+
+    @if (!token) {
+      <p class="mensagem-ok">
+        Este endereço não tem um link de redefinição válido. Peça um novo link ou, se for o seu primeiro acesso,
+        entre de novo com a senha temporária recebida por e-mail.
+      </p>
+      <a class="esqueci-senha" routerLink="/esqueci-senha">Pedir um novo link</a>
+    } @else {
+      <h6>
+        @if (primeiroAcesso) {
+          A senha que você recebeu é temporária. Cadastre agora a sua senha definitiva para entrar no sistema.
+        } @else {
+          Escolha uma nova senha para entrar no sistema.
+        }
+      </h6>
+
+      <label for="novaSenha">Nova senha:</label>
+      <div class="senha-wrapper">
+        <input [type]="mostrarSenha() ? 'text' : 'password'" id="novaSenha" name="novaSenha" [(ngModel)]="novaSenha"
+          (ngModelChange)="limparErro('novaSenha')" [class.input-erro]="erros()['novaSenha']"
+          placeholder="De 8 a 30 caracteres" maxlength="30" autocomplete="new-password">
+        <button type="button" class="toggle-senha" (click)="mostrarSenha.set(!mostrarSenha())"
+          [attr.aria-label]="mostrarSenha() ? 'Ocultar senha' : 'Mostrar senha'"
+          [title]="mostrarSenha() ? 'Ocultar senha' : 'Mostrar senha'">
+          <ng-icon [name]="mostrarSenha() ? icones.olhoFechado : icones.olho" size="20" />
+        </button>
+      </div>
+      @if (erros()['novaSenha']) { <span class="erro-msg">{{ erros()['novaSenha'] }}</span> }
+
+      <label for="confirmacao">Confirme a nova senha:</label>
+      <input [type]="mostrarSenha() ? 'text' : 'password'" id="confirmacao" name="confirmacao" [(ngModel)]="confirmacao"
+        (ngModelChange)="limparErro('confirmacaoNovaSenha')" [class.input-erro]="erros()['confirmacaoNovaSenha']"
+        placeholder="Digite a senha de novo" maxlength="30" autocomplete="new-password">
+      @if (erros()['confirmacaoNovaSenha']) { <span class="erro-msg">{{ erros()['confirmacaoNovaSenha'] }}</span> }
+
+      @if (erro()) { <span class="erro-msg">{{ erro() }}</span> }
+
+      <button type="submit" class="btn-entrar" [disabled]="salvando()">{{ salvando() ? 'Salvando...' : 'Salvar e entrar' }}</button>
+
+      @if (erroToken()) {
+        <a class="esqueci-senha" [routerLink]="primeiroAcesso ? '/login' : '/esqueci-senha'">
+          {{ primeiroAcesso ? 'Entrar de novo com a senha temporária' : 'Pedir um novo link' }}
+        </a>
+      } @else {
+        <a class="esqueci-senha" routerLink="/login">Voltar ao login</a>
+      }
+    }
+  </form>
+</div>

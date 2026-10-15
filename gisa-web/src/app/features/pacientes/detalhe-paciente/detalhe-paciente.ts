@@ -5,8 +5,11 @@ import { Observable } from 'rxjs';
 
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
-import { Paciente } from '../../../core/models/paciente.model';
+import { InativacaoPacienteResponse, Paciente } from '../../../core/models/paciente.model';
 import { PacienteService } from '../../../core/services/paciente';
+import { ProfissionalService } from '../../../core/services/profissional';
+import { SelectBusca } from '../../../shared/components/select-busca/select-busca';
+import { buscaAssistentesSociais } from '../../../shared/components/select-busca/buscas';
 import { Auth } from '../../../core/auth/auth';
 import { PAINEIS } from '../../../core/auth/permissoes';
 import { mensagemDeErro } from '../../../core/http/erro-api';
@@ -22,12 +25,13 @@ import {
   ROTULO_STATUS_CADASTRO,
   ROTULO_STATUS_PACIENTE,
   ROTULO_TIPO_ESCOLA,
+  resumoInativacaoPaciente,
 } from '../../../shared/utils/rotulos.util';
 import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 
 @Component({
   selector: 'app-detalhe-paciente',
-  imports: [CampoDetalhe, CabecalhoPagina, ConfirmDialog, HistoricoPaciente, TerapiasPaciente],
+  imports: [CampoDetalhe, CabecalhoPagina, ConfirmDialog, HistoricoPaciente, TerapiasPaciente, SelectBusca],
   templateUrl: './detalhe-paciente.html',
   styleUrl: './detalhe-paciente.scss'
 })
@@ -35,6 +39,7 @@ export class DetalhePaciente implements OnInit {
   private avisoSucesso = inject(AvisoSucessoService);
   private route = inject(ActivatedRoute);
   private pacienteService = inject(PacienteService);
+  private profissionalService = inject(ProfissionalService);
   private auth = inject(Auth);
   private contexto = lerContextoPacientes(this.route);
 
@@ -62,6 +67,16 @@ export class DetalhePaciente implements OnInit {
   carregando = signal(true);
   erro = signal('');
   paciente = signal<Paciente | null>(null);
+
+  // Assistentes sociais vinculados (as rotas de vínculo são do assistente social: EDITAR_PROFISSIONAL).
+  podeVincular = this.auth.temPermissao('EDITAR_PROFISSIONAL');
+  readonly buscarAssistentesSociais = buscaAssistentesSociais(this.profissionalService);
+  vinculando = signal(false);
+  // Escolha no campo de busca; volta a vazio depois de vincular.
+  selecaoAs = signal<number | null>(null);
+  erroVinculo = signal('');
+  desvinculoPendente = signal<{ idCadastro: number; nome: string } | null>(null);
+  idsVinculados = computed(() => this.paciente()?.assistentesSociais.map((a) => a.idCadastro) ?? []);
 
   // Inativar / reativar
   confirmacaoAberta = signal(false);
@@ -125,11 +140,13 @@ export class DetalhePaciente implements OnInit {
       : this.pacienteService.reativar(this.id());
 
     requisicao.subscribe({
-      next: () => {
+      next: (resposta) => {
         this.alterandoStatus.set(false);
+        const nome = this.paciente()?.pessoa.nome ?? '';
+        const terapias = inativando ? resumoInativacaoPaciente(resposta as InativacaoPacienteResponse) : null;
         this.avisoSucesso.mostrar({
           titulo: inativando ? 'Paciente inativado' : 'Paciente reativado',
-          detalhe: this.paciente()?.pessoa.nome,
+          detalhe: terapias ? `${nome}: ${terapias}` : nome,
         });
         this.carregar();
         this.historico()?.recarregar();
@@ -137,6 +154,47 @@ export class DetalhePaciente implements OnInit {
       error: (err) => {
         this.alterandoStatus.set(false);
         this.erroStatus.set(mensagemDeErro(err, 'Não foi possível alterar a situação do paciente.'));
+      },
+    });
+  }
+
+  // ---------- assistentes sociais ----------
+
+  vincular(idAssistenteSocial: number | string | null) {
+    if (idAssistenteSocial === null || this.vinculando()) return;
+    this.selecaoAs.set(Number(idAssistenteSocial));
+    this.vinculando.set(true);
+    this.erroVinculo.set('');
+    this.profissionalService.vincularPaciente(Number(idAssistenteSocial), this.id()).subscribe({
+      next: (as) => {
+        this.vinculando.set(false);
+        this.selecaoAs.set(null);
+        this.avisoSucesso.mostrar({ titulo: 'Assistente social vinculado', detalhe: as.profissional.pessoa.nome });
+        this.carregar();
+      },
+      error: (err) => {
+        this.vinculando.set(false);
+        this.selecaoAs.set(null);
+        this.erroVinculo.set(mensagemDeErro(err, 'Não foi possível vincular o assistente social.'));
+      },
+    });
+  }
+
+  confirmarDesvinculo() {
+    const as = this.desvinculoPendente();
+    this.desvinculoPendente.set(null);
+    if (!as) return;
+    this.vinculando.set(true);
+    this.erroVinculo.set('');
+    this.profissionalService.desvincularPaciente(as.idCadastro, this.id()).subscribe({
+      next: () => {
+        this.vinculando.set(false);
+        this.avisoSucesso.mostrar({ titulo: 'Vínculo encerrado', detalhe: as.nome });
+        this.carregar();
+      },
+      error: (err) => {
+        this.vinculando.set(false);
+        this.erroVinculo.set(mensagemDeErro(err, 'Não foi possível encerrar o vínculo.'));
       },
     });
   }

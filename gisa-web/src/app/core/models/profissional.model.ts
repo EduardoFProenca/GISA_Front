@@ -3,10 +3,11 @@ import { Endereco, EstadoCivil, ParametrosPagina, Pessoa, Sexo, StatusCadastro }
 import { Cargo } from './cargo.model';
 import { Especialidade, NovaEspecialidade } from './especialidade.model';
 import { PerfilResumo, Permissao } from './perfil.model';
+import { PacienteResumo } from './paciente.model';
 
 // ---------- Respostas ----------
 
-export type TipoProfissional = 'PROFISSIONAL' | 'ESPECIALISTA' | 'ESPECIALISTA_PJ';
+export type TipoProfissional = 'PROFISSIONAL' | 'ESPECIALISTA' | 'ESPECIALISTA_PJ' | 'ASSISTENTE_SOCIAL';
 
 // Item de GET /profissionais (inclui especialistas e PJ). `idProfissional` = idCadastro.
 export interface ProfissionalResumo {
@@ -71,9 +72,17 @@ export interface ProfissionalDetalhe {
   profissional: Profissional;
   especialista: Especialista | null;
   pj: EspecialistaPJ | null;
+  assistenteSocial: AssistenteSocial | null;
 }
 
-// Resposta 201 dos cadastros (registroConselho só em especialista/PJ; cnpj e razaoSocial só em PJ).
+// GET /assistentes-sociais/{id} (pacientes: vínculos ativos, por nome). registroConselho = CRESS.
+export interface AssistenteSocial {
+  profissional: Profissional;
+  registroConselho: string;
+  pacientes: PacienteResumo[];
+}
+
+// Resposta 201 dos cadastros (registroConselho só em especialista/PJ/assistente social; cnpj e razaoSocial só em PJ).
 export interface CadastroResponse {
   idCadastro: number;
   nome: string;
@@ -84,6 +93,8 @@ export interface CadastroResponse {
   cnpj?: string;
   razaoSocial?: string;
   acessoCriado: boolean;
+  // Só nos cadastros "com acesso": false = o acesso foi criado, mas o e-mail com a senha temporária não saiu.
+  emailEnviado?: boolean;
 }
 
 // ---------- Cadastro (POST) ----------
@@ -117,9 +128,20 @@ export interface DadosEspecialistaPJ extends DadosEspecialista {
 }
 
 // Bloco `usuario` dos cadastros "com acesso" e corpo de POST .../{id}/usuario (concessão de acesso).
+// A senha não é enviada: o back gera uma temporária e manda ao e-mail do cadastro.
 export interface DadosUsuario {
-  senha: string;
   idPerfil: number;
+}
+
+// CRESS em registroConselho; idsPacientes = vínculos iniciais.
+export interface DadosAssistenteSocial extends DadosBaseProfissional {
+  registroConselho: string;
+  idsPacientes?: number[];
+}
+
+export interface AssistenteSocialComUsuario {
+  assistenteSocial: DadosAssistenteSocial;
+  usuario: DadosUsuario;
 }
 
 export interface ProfissionalComUsuario {
@@ -138,7 +160,10 @@ export interface EspecialistaPJComUsuario {
 }
 
 // Resposta 201 de POST .../{id}/usuario.
-export type AcessoConcedidoResponse = UsuarioAcesso;
+// emailEnviado false: o acesso foi criado, mas o e-mail não saiu (oferecer o reenvio da senha temporária).
+export interface AcessoConcedidoResponse extends UsuarioAcesso {
+  emailEnviado: boolean;
+}
 
 // ---------- Atualização (PATCH) ----------
 // Envie só o que mudar; listas substituem as atuais. cpf, dataNascimento, sexo,

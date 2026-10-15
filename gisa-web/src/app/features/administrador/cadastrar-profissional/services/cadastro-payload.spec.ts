@@ -31,7 +31,6 @@ function formularioBase(): FormulariosCadastro {
     infoUsuario: comErros({
       possuiAcesso: false,
       temAcessoSistema: false,
-      senha: '',
       perfil: '',
     }),
     infoEspecialista: comErros({
@@ -83,12 +82,11 @@ describe('CadastroPayloadService', () => {
   it('montarUsuario resolve o idPerfil quando há acesso ao sistema', () => {
     const f = formularioBase();
     f.infoUsuario.temAcessoSistema = true;
-    f.infoUsuario.senha = 'SenhaSegura123';
     f.infoUsuario.perfil = '2';
 
     const usuario = service.montarUsuario(f);
 
-    expect(usuario).toEqual({ senha: 'SenhaSegura123', idPerfil: 2 });
+    expect(usuario).toEqual({ idPerfil: 2 });
   });
 
   it('mapearJornadas converte diaSemana para número e ignora linhas incompletas', () => {
@@ -108,7 +106,6 @@ describe('CadastroPayloadService', () => {
     const f = formularioBase();
     f.infoUsuario.possuiAcesso = true;
     f.infoUsuario.temAcessoSistema = true;
-    f.infoUsuario.senha = 'SenhaSegura123';
     f.infoUsuario.perfil = '2';
 
     expect(service.montarUsuario(f)).toBeNull();

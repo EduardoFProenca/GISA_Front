@@ -18,6 +18,7 @@
     <div class="filtros-pessoas">
       <app-select-busca
         [buscar]="buscarPacientes"
+        [dicaTermo]="dicaBuscaPaciente"
         [value]="idPaciente()"
         (valueChange)="filtrarPaciente($event)"
         placeholder="Filtrar por paciente"

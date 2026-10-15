@@ -26,6 +26,7 @@ export class CadastroErrosApiService {
 
   private destinoCampo(campo: string, f: FormulariosCadastro): [ComErros, string] | null {
     const { dadosPessoais: dp, contato: c, infoProfissional: ip, infoUsuario: iu, infoEspecialista: ie } = f;
+    const ias = f.infoAssistenteSocial;
 
     const mapa: Record<string, [ComErros, string]> = {
       nome: [dp, 'nome'],
@@ -43,9 +44,10 @@ export class CadastroErrosApiService {
       cidade: [c, 'cidade'],
       estado: [c, 'uf'],
       idCargo: [ip, 'cargo'],
-      senha: [iu, 'senha'],
       idPerfil: [iu, 'perfil'],
-      registroConselho: [ie, 'registroProfissional'],
+      // Do especialista ou do assistente social, conforme o tipo do cadastro.
+      registroConselho: ias.ehAssistenteSocial ? [ias, 'registroConselho'] : [ie, 'registroProfissional'],
+      idsPacientes: [ias, 'pacientes'],
       especialidadesIds: [ie, 'especialidades'],
       novasEspecialidades: [ie, 'especialidades'],
       jornadas: [ie, 'jornadas'],
@@ -67,6 +69,7 @@ export class CadastroErrosApiService {
     if (/^Cargo não encontrado/i.test(mensagem)) return [f.infoProfissional, 'cargo'];
     if (/^Perfil não encontrado/i.test(mensagem)) return [f.infoUsuario, 'perfil'];
     if (/especialidade/i.test(mensagem)) return [f.infoEspecialista, 'especialidades'];
+    if (/^Paciente(s) não encontrado/i.test(mensagem)) return [f.infoAssistenteSocial, 'pacientes'];
     return null;
   }
 }

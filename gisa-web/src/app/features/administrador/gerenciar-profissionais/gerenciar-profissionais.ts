@@ -16,6 +16,7 @@ const ROTULO_TIPO: Record<TipoProfissional, string> = {
   PROFISSIONAL: 'Profissional',
   ESPECIALISTA: 'Especialista',
   ESPECIALISTA_PJ: 'Especialista PJ',
+  ASSISTENTE_SOCIAL: 'Assistente Social',
 };
 
 @Component({

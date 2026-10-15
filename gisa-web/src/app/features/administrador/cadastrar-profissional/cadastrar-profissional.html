@@ -22,7 +22,11 @@
     <app-info-usuario [perfis]="opcoes().perfis" />
     <br>
     <hr>
-    <app-info-especialista [especialidadesDisponiveis]="opcoes().especialidades" />
+    <app-info-especialista #infoEsp [especialidadesDisponiveis]="opcoes().especialidades"
+      [bloquearTipo]="infoAs.ehAssistenteSocial" />
+    <br>
+    <hr>
+    <app-info-assistente-social #infoAs [bloquearTipo]="infoEsp.ehEspecialista" />
     <br>
     <hr>
     <app-contato subtitulo="Opcional. Se informar, preencha o endereço completo." />

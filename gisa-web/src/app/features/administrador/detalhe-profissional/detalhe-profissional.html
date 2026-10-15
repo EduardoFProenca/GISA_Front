@@ -31,7 +31,7 @@
         <div class="acoes-situacao">
             @if (podeGerenciarUsuarios && ativo()) {
             @if (usuario()) {
-            <button type="button" class="btn-secundario" (click)="abrirDialogo('senha')">Redefinir senha</button>
+            <button type="button" class="btn-secundario" (click)="abrirDialogo('senha')">Enviar nova senha temporária</button>
             } @else {
             <button type="button" class="btn-secundario" (click)="abrirDialogo('acesso')">Conceder acesso ao sistema</button>
             }
@@ -106,6 +106,50 @@
         }
     </div>
     }
+
+    @if (d.assistenteSocial; as assistente) {
+    <br>
+    <hr>
+    <br>
+    <div class="secao">
+        <h3>Assistente Social</h3>
+        <div class="info-bloco">
+            <app-campo-detalhe rotulo="Registro no CRESS">{{ assistente.registroConselho || '—' }}</app-campo-detalhe>
+        </div>
+
+        <p class="subtitulo-bloco">Pacientes vinculados ({{ assistente.pacientes.length }})</p>
+        <ul class="lista-vinculados">
+            @for (pac of assistente.pacientes; track pac.idCadastro) {
+            <li>
+                <span class="nome-vinculado">{{ pac.nome }}</span>
+                <small>CPF {{ pac.cpfMascarado }}</small>
+                <span class="etiqueta-status" [class.inativo]="pac.statusCadastro === 'INATIVO'">
+                    {{ pac.statusCadastro === 'ATIVO' ? 'Ativo' : 'Inativo' }}
+                </span>
+                @if (podeEditar) {
+                <button type="button" class="btn-desvincular" [disabled]="vinculando()"
+                    [attr.aria-label]="'Desvincular ' + pac.nome" (click)="desvinculoPendente.set(pac)">Desvincular</button>
+                }
+            </li>
+            } @empty {
+            <li class="vazio">Nenhum paciente vinculado.</li>
+            }
+        </ul>
+
+        @if (podeEditar && ativo()) {
+        <div class="vincular-paciente">
+            <label>Vincular paciente</label>
+            <app-select-busca [buscar]="buscarPacientes" [dicaTermo]="dicaBuscaPaciente"
+                [ocultarIds]="idsPacientesVinculados()" [value]="selecaoPaciente()" [disabled]="vinculando()"
+                (valueChange)="vincularPaciente($event)" placeholder="Digite o nome ou o CPF completo do paciente"
+                semResultados="Nenhum paciente encontrado" />
+        </div>
+        } @else if (!ativo()) {
+        <p class="dica">Assistente social inativo: reative o cadastro para vincular pacientes.</p>
+        }
+        @if (erroVinculo()) { <p class="erro-msg">{{ erroVinculo() }}</p> }
+    </div>
+    }
     <br>
     <hr>
     <br>
@@ -136,12 +180,12 @@
 </app-confirm-dialog>
 
 <app-form-dialog [aberto]="dialogo() !== null"
-    [titulo]="dialogo() === 'acesso' ? 'Conceder acesso ao sistema' : 'Redefinir senha'"
+    [titulo]="dialogo() === 'acesso' ? 'Conceder acesso ao sistema' : 'Enviar nova senha temporária'"
     [descricao]="dialogo() === 'acesso'
-      ? 'O login será feito com o CPF do cadastro e a senha abaixo.'
-      : 'Defina uma senha temporária e informe a pessoa. As sessões abertas dela serão encerradas.'"
+      ? 'O login será o e-mail do cadastro (' + (detalhe()?.profissional?.email ?? '') + '). Uma senha temporária, válida por 7 dias, será enviada para ele; no primeiro acesso a pessoa cadastra a senha definitiva.'
+      : 'Uma nova senha temporária (válida por 7 dias) será enviada para ' + (detalhe()?.profissional?.email ?? 'o e-mail do cadastro') + '. A senha atual deixa de valer e as sessões abertas são encerradas.'"
     [erro]="erroDialogo()" [salvando]="salvandoDialogo()"
-    [textoConfirmar]="dialogo() === 'acesso' ? 'Conceder acesso' : 'Redefinir'"
+    [textoConfirmar]="dialogo() === 'acesso' ? 'Conceder acesso' : 'Enviar'"
     (confirmar)="confirmarDialogo()" (cancelar)="dialogo.set(null)">
     @if (dialogo() === 'acesso') {
     <div>
@@ -154,9 +198,10 @@
         </select>
     </div>
     }
-    <div>
-        <label for="senhaAcesso">{{ dialogo() === 'acesso' ? 'Senha inicial' : 'Nova senha' }}</label>
-        <input type="text" id="senhaAcesso" name="senhaAcesso" [(ngModel)]="senha" placeholder="Entre 8 e 30 caracteres"
-            autocomplete="off">
-    </div>
 </app-form-dialog>
+
+<app-confirm-dialog [aberto]="desvinculoPendente() !== null" titulo="Desvincular paciente?"
+    [mensagem]="'O assistente social deixa de ver ' + (desvinculoPendente()?.nome ?? '') + '. O histórico do vínculo é mantido.'"
+    textoConfirmar="Desvincular" textoCancelar="Voltar"
+    (confirmar)="confirmarDesvinculo()" (cancelar)="desvinculoPendente.set(null)">
+</app-confirm-dialog>

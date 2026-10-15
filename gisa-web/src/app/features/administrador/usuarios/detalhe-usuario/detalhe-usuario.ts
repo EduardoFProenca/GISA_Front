@@ -45,7 +45,6 @@ export class DetalheUsuario implements OnInit {
   // Diálogos
   dialogo = signal<'perfil' | 'senha' | null>(null);
   idPerfil = '';
-  novaSenha = '';
   salvando = signal(false);
   erroDialogo = signal('');
 
@@ -75,7 +74,6 @@ export class DetalheUsuario implements OnInit {
 
   abrirDialogo(tipo: 'perfil' | 'senha') {
     this.idPerfil = String(this.usuario()?.perfil.idPerfil ?? '');
-    this.novaSenha = '';
     this.erroDialogo.set('');
     this.dialogo.set(tipo);
   }
@@ -83,7 +81,7 @@ export class DetalheUsuario implements OnInit {
   confirmarDialogo() {
     if (this.salvando()) return;
     if (this.dialogo() === 'perfil') this.trocarPerfil();
-    else this.redefinirSenha();
+    else this.enviarSenhaTemporaria();
   }
 
   private trocarPerfil() {
@@ -114,22 +112,22 @@ export class DetalheUsuario implements OnInit {
     });
   }
 
-  private redefinirSenha() {
-    if (this.novaSenha.length < 8 || this.novaSenha.length > 30) {
-      this.erroDialogo.set('A senha deve ter entre 8 e 30 caracteres.');
-      return;
-    }
+  // 503 = o e-mail não saiu e nada foi alterado (a senha anterior continua valendo).
+  private enviarSenhaTemporaria() {
     this.salvando.set(true);
     this.erroDialogo.set('');
-    this.usuarioService.redefinirSenha(this.id, { novaSenha: this.novaSenha }).subscribe({
+    this.usuarioService.enviarSenhaTemporaria(this.id).subscribe({
       next: () => {
         this.salvando.set(false);
         this.dialogo.set(null);
-        this.avisoSucesso.mostrar({ titulo: 'Senha redefinida', detalhe: 'As sessões abertas desse usuário foram encerradas.' });
+        this.avisoSucesso.mostrar({
+          titulo: 'Senha temporária enviada',
+          detalhe: `Enviada para ${this.usuario()?.email ?? 'o e-mail do usuário'}. As sessões abertas foram encerradas.`,
+        });
       },
       error: (err) => {
         this.salvando.set(false);
-        this.erroDialogo.set(mensagemDeErro(err, 'Não foi possível redefinir a senha.'));
+        this.erroDialogo.set(mensagemDeErro(err, 'Não foi possível enviar a nova senha temporária.'));
       },
     });
   }

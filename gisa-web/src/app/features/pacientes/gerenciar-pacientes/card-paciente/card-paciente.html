@@ -14,14 +14,11 @@
     </div>
 
     <div class="campos-card">
-      <app-campo-detalhe rotulo="Idade">{{ paciente.idade }} anos</app-campo-detalhe>
-      <app-campo-detalhe rotulo="CPF">{{ cpfFormatado }}</app-campo-detalhe>
-      <app-campo-detalhe rotulo="Responsável">{{ nomeResponsavel }}</app-campo-detalhe>
-      <app-campo-detalhe rotulo="CID">{{ cidPrincipal }}</app-campo-detalhe>
+      <app-campo-detalhe rotulo="CPF">{{ paciente.cpfMascarado }}</app-campo-detalhe>
     </div>
 
     <span class="status-badge" [class]="classeStatus">
-      {{ rotuloStatus }}
+      Cadastro {{ rotuloStatus.toLowerCase() }}
     </span>
   </div>
 </div>

@@ -13,7 +13,7 @@ function formularioVazio(): FormulariosCadastro {
       cep: '', endereco: '', numero: '', complemento: '', bairro: '', cidade: '', uf: '',
     }),
     infoProfissional: comErros({ cargo: '', codigoCBO: '' }),
-    infoUsuario: comErros({ possuiAcesso: false, temAcessoSistema: false, senha: '', perfil: '' }),
+    infoUsuario: comErros({ possuiAcesso: false, temAcessoSistema: false, perfil: '' }),
     infoEspecialista: comErros({
       ehEspecialista: false,
       registroProfissional: '',

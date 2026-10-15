@@ -63,3 +63,36 @@ h3 {
   font-size: 0.95rem;
 }
 
+
+// Assistentes sociais vinculados: nome + botão de desvincular na mesma linha.
+.linha-vinculo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.btn-desvincular {
+  background: transparent;
+  color: var(--cor-perigo-forte);
+  border: 1px solid var(--vermelho-200);
+  border-radius: var(--raio-md);
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+  transform: none;
+
+  &:hover {
+    background: var(--cor-perigo-suave);
+    transform: none;
+    box-shadow: none;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.vincular-as {
+  margin-top: 1rem;
+}

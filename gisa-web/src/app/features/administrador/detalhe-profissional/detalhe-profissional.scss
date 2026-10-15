@@ -70,3 +70,81 @@ h3 {
     margin-bottom: 0.25rem;
   }
 }
+
+// Pacientes vinculados ao assistente social: mesmos dados do resultado da busca de pacientes.
+.lista-vinculados {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-md);
+
+    &.vazio {
+      color: var(--cor-texto-secundario);
+      border-style: dashed;
+    }
+  }
+
+  .nome-vinculado {
+    flex: 1;
+    min-width: 0;
+    font-weight: 500;
+    color: var(--cor-texto);
+  }
+
+  small {
+    color: var(--cor-texto-secundario);
+  }
+}
+
+.etiqueta-status {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--raio-md);
+  background: var(--cor-sucesso-suave);
+  color: var(--verde-800);
+
+  &.inativo {
+    background: var(--cor-perigo-suave);
+    color: var(--vermelho-800);
+  }
+}
+
+.btn-desvincular {
+  background: transparent;
+  color: var(--cor-perigo-forte);
+  border: 1px solid var(--vermelho-200);
+  border-radius: var(--raio-md);
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+  transform: none;
+
+  &:hover {
+    background: var(--cor-perigo-suave);
+    transform: none;
+    box-shadow: none;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.vincular-paciente {
+  margin-top: 1rem;
+}
+
+.dica {
+  color: var(--cor-texto-secundario);
+  font-size: 0.85rem;
+}

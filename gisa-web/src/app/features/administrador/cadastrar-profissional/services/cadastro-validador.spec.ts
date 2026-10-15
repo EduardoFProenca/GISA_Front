@@ -31,7 +31,6 @@ function formularioValido(): FormulariosCadastro {
     infoUsuario: comErros({
       possuiAcesso: false,
       temAcessoSistema: false,
-      senha: '',
       perfil: '',
     }),
     infoEspecialista: comErros({
@@ -91,32 +90,18 @@ describe('CadastroValidadorService', () => {
     expect(f.dadosPessoais.erros['email']).toContain('inválido');
   });
 
-  it('exige senha e perfil somente quando "tem acesso ao sistema" está marcado', () => {
+  it('exige o perfil somente quando "tem acesso ao sistema" está marcado (a senha é gerada pelo back)', () => {
     const semAcesso = formularioValido();
     expect(service.validar(semAcesso).valido).toBe(true);
 
     const comAcesso = formularioValido();
     comAcesso.infoUsuario.temAcessoSistema = true;
-    comAcesso.infoUsuario.senha = '';
     comAcesso.infoUsuario.perfil = '';
 
     const resultado = service.validar(comAcesso);
 
     expect(resultado.valido).toBe(false);
-    expect(comAcesso.infoUsuario.erros['senha']).toBeTruthy();
     expect(comAcesso.infoUsuario.erros['perfil']).toBeTruthy();
-  });
-
-  it('rejeita senha fora da faixa de 8 a 30 caracteres', () => {
-    const f = formularioValido();
-    f.infoUsuario.temAcessoSistema = true;
-    f.infoUsuario.senha = '123';
-    f.infoUsuario.perfil = 'MEDICO';
-
-    const resultado = service.validar(f);
-
-    expect(resultado.valido).toBe(false);
-    expect(f.infoUsuario.erros['senha']).toContain('8 e 30');
   });
 
   it('exige registro, especialidade e jornada completa quando "é especialista" está marcado', () => {

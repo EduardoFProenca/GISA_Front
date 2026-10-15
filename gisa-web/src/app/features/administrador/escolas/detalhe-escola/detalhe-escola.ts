@@ -3,7 +3,6 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CabecalhoPagina } from '../../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
-import { Paginacao } from '../../../../shared/components/paginacao/paginacao';
 import { Escola, EscolaDetalhe } from '../../../../core/models/escola.model';
 import { PacienteResumo } from '../../../../core/models/paciente.model';
 import { EscolaService } from '../../../../core/services/escola';
@@ -11,14 +10,14 @@ import { PacienteService } from '../../../../core/services/paciente';
 import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 import { Auth } from '../../../../core/auth/auth';
 import { mensagemDeErro } from '../../../../core/http/erro-api';
-import { ROTULO_STATUS_PACIENTE, ROTULO_TIPO_ESCOLA } from '../../../../shared/utils/rotulos.util';
-import { formatarCelular, formatarCpf } from '../../../../shared/utils/formatacao.util';
+import { ROTULO_STATUS_CADASTRO, ROTULO_TIPO_ESCOLA } from '../../../../shared/utils/rotulos.util';
+import { formatarCelular } from '../../../../shared/utils/formatacao.util';
 import { DialogEscola } from '../dialog-escola/dialog-escola';
 
-// GET /escolas/{id} + pacientes da escola (GET /pacientes?idEscola=, exige VISUALIZAR_PACIENTES).
+// GET /escolas/{id} + pacientes da escola (GET /pacientes?idEscola=, exige VISUALIZAR_PACIENTES; até 20, sem paginação).
 @Component({
   selector: 'app-detalhe-escola',
-  imports: [CampoDetalhe, RouterLink, CabecalhoPagina, ConfirmDialog, Paginacao, DialogEscola],
+  imports: [CampoDetalhe, RouterLink, CabecalhoPagina, ConfirmDialog, DialogEscola],
   templateUrl: './detalhe-escola.html',
   styleUrl: '../../tabelas-apoio.scss',
 })
@@ -30,11 +29,11 @@ export class DetalheEscola implements OnInit {
   readonly id = Number(inject(ActivatedRoute).snapshot.paramMap.get('id'));
 
   readonly rotuloTipo = ROTULO_TIPO_ESCOLA;
-  readonly rotuloStatus = ROTULO_STATUS_PACIENTE;
+  readonly rotuloStatus = ROTULO_STATUS_CADASTRO;
   readonly telefone = formatarCelular;
-  readonly cpf = formatarCpf;
   readonly podeVerPacientes = inject(Auth).temPermissao('VISUALIZAR_PACIENTES');
-  readonly itensPorPagina = 9;
+  // A busca de pacientes devolve no máximo 20.
+  readonly limitePacientes = 20;
 
   escola = signal<EscolaDetalhe | null>(null);
   carregando = signal(true);
@@ -42,8 +41,6 @@ export class DetalheEscola implements OnInit {
   erroAcao = signal('');
 
   pacientes = signal<PacienteResumo[]>([]);
-  totalPacientes = signal(0);
-  paginaPacientes = signal(1);
   carregandoPacientes = signal(false);
   erroPacientes = signal('');
 
@@ -73,11 +70,10 @@ export class DetalheEscola implements OnInit {
     this.carregandoPacientes.set(true);
     this.erroPacientes.set('');
     this.pacienteService
-      .listar({ idEscola: this.id, page: this.paginaPacientes() - 1, size: this.itensPorPagina, sort: 'nome,asc' })
+      .pesquisar({ idEscola: this.id })
       .subscribe({
-        next: (p) => {
-          this.pacientes.set(p.content);
-          this.totalPacientes.set(p.totalElements);
+        next: (lista) => {
+          this.pacientes.set(lista);
           this.carregandoPacientes.set(false);
         },
         error: (err) => {
@@ -85,11 +81,6 @@ export class DetalheEscola implements OnInit {
           this.erroPacientes.set(mensagemDeErro(err, 'Não foi possível carregar os pacientes.'));
         },
       });
-  }
-
-  mudarPaginaPacientes(pagina: number) {
-    this.paginaPacientes.set(pagina);
-    this.carregarPacientes();
   }
 
   // O PATCH devolve os detalhes completos.

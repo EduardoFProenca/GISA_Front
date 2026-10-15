@@ -1,13 +1,17 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, switchMap, tap } from 'rxjs';
+import { Observable, map, of, switchMap, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { LoginRequest, LoginResponse, UsuarioLogado } from '../models/auth.model';
+import { LoginRequest, LoginResponse, RedefinirSenhaPayload, TokenResponse, UsuarioLogado } from '../models/auth.model';
 import { Funcionalidade, PAINEIS, Painel, painelDoUsuario, podeAcessar } from './permissoes';
 
 const TOKEN_KEY = 'gisa_token';
 const USUARIO_KEY = 'gisa_usuario';
+
+export type ResultadoLogin =
+  | { primeiroAcesso: false; usuario: UsuarioLogado }
+  | { primeiroAcesso: true; tokenRedefinicao: string };
 
 // Lê o payload (claims) de um JWT sem validar a assinatura (quem valida é a API).
 export function decodificarToken(token: string): Record<string, unknown> | null {
@@ -45,14 +49,31 @@ export class Auth {
     return usuario ? painelDoUsuario(usuario) : null;
   });
 
-  // POST /auth/login e, em seguida, GET /usuarios/me.
-  login(credenciais: LoginRequest): Observable<UsuarioLogado> {
-    return this.http
-      .post<LoginResponse>(`${environment.apiUrl}/auth/login`, credenciais)
-      .pipe(
-        tap((res) => this.substituirToken(res.token)),
-        switchMap(() => this.carregarUsuario())
-      );
+  // POST /auth/login e, em seguida, GET /usuarios/me. Com a senha temporária (primeiro acesso) não há
+  // sessão: devolve o token de redefinição para a tela de cadastrar a senha definitiva.
+  login(credenciais: LoginRequest): Observable<ResultadoLogin> {
+    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, credenciais).pipe(
+      switchMap((res): Observable<ResultadoLogin> => {
+        if (res.senhaTemporaria || !res.token) {
+          return of({ primeiroAcesso: true, tokenRedefinicao: res.tokenRedefinicao ?? '' });
+        }
+        this.substituirToken(res.token);
+        return this.carregarUsuario().pipe(map((usuario) => ({ primeiroAcesso: false as const, usuario })));
+      })
+    );
+  }
+
+  // Sempre 204, exista o e-mail ou não (a API não revela quais e-mails estão cadastrados).
+  esqueciSenha(email: string): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/auth/esqueci-senha`, { email });
+  }
+
+  // Primeiro acesso ou "esqueci minha senha": a resposta já é o token de login, então entra direto.
+  redefinirSenha(dados: RedefinirSenhaPayload): Observable<UsuarioLogado> {
+    return this.http.post<TokenResponse>(`${environment.apiUrl}/auth/redefinir-senha`, dados).pipe(
+      tap((res) => this.substituirToken(res.token)),
+      switchMap(() => this.carregarUsuario())
+    );
   }
 
   // Atualiza nome, perfil e permissões (ex.: ao abrir o app com uma sessão salva).

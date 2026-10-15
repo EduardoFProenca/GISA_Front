@@ -26,6 +26,7 @@ export class CadastroValidadorService {
     this.validarInfoProfissional(f, marcar);
     this.validarInfoUsuario(f, marcar);
     this.validarInfoEspecialista(f, marcar);
+    this.validarInfoAssistenteSocial(f, marcar);
 
     return { valido };
   }
@@ -111,11 +112,14 @@ export class CadastroValidadorService {
     }
     if (!iu.temAcessoSistema) return;
 
-    if (vazio(iu.senha)) marcar(iu, 'senha');
-    else if (iu.senha.length < 8 || iu.senha.length > 30) {
-      marcar(iu, 'senha', 'A senha deve ter entre 8 e 30 caracteres.');
-    }
+    // A senha não é digitada: o back gera uma temporária e envia ao e-mail.
     if (vazio(iu.perfil)) marcar(iu, 'perfil');
+  }
+
+  private validarInfoAssistenteSocial(f: FormulariosCadastro, marcar: (a: ComErros, c: string, m?: string) => void) {
+    const ias = f.infoAssistenteSocial;
+    if (!ias?.ehAssistenteSocial) return;
+    if (vazio(ias.registroConselho)) marcar(ias, 'registroConselho');
   }
 
   private validarInfoEspecialista(f: FormulariosCadastro, marcar: (a: ComErros, c: string, m?: string) => void) {

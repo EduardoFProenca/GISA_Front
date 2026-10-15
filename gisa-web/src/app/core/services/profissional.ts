@@ -4,7 +4,10 @@ import { Observable, catchError, map, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   AcessoConcedidoResponse,
+  AssistenteSocial,
+  AssistenteSocialComUsuario,
   AtualizacaoEspecialistaPJPayload,
+  DadosAssistenteSocial,
   CadastroResponse,
   DadosBaseProfissional,
   DadosEspecialista,
@@ -22,6 +25,7 @@ import {
   TipoProfissional,
 } from '../models/profissional.model';
 import { Pagina, PaginaApi, normalizarPagina } from '../models/comum.model';
+import { PacienteResumo } from '../models/paciente.model';
 import { montarParams } from './params.util';
 import { comCarregamento } from '../http/carregamento';
 
@@ -30,9 +34,11 @@ const ROTA_POR_TIPO: Record<TipoProfissional, string> = {
   PROFISSIONAL: 'profissionais',
   ESPECIALISTA: 'especialistas',
   ESPECIALISTA_PJ: 'especialistas/pj',
+  ASSISTENTE_SOCIAL: 'assistentes-sociais',
 };
 
 export function tipoDoDetalhe(d: ProfissionalDetalhe): TipoProfissional {
+  if (d.assistenteSocial) return 'ASSISTENTE_SOCIAL';
   return d.pj ? 'ESPECIALISTA_PJ' : d.especialista ? 'ESPECIALISTA' : 'PROFISSIONAL';
 }
 
@@ -62,24 +68,52 @@ export class ProfissionalService {
   }
 
   // Começa por /especialistas/{id}: 200 = especialista (já traz o profissional);
-  // 400 = é PJ -> /especialistas/pj/{id}; 404 = profissional comum -> /profissionais/{id}.
+  // 400 = é PJ -> /especialistas/pj/{id}; 404 = não é especialista -> /assistentes-sociais/{id}
+  // (200 = assistente social; 404 = profissional comum -> /profissionais/{id}).
   buscarDetalhe(id: number): Observable<ProfissionalDetalhe> {
-    return this.http.get<Especialista>(this.url('ESPECIALISTA', id), { context: comCarregamento() }).pipe(
-      map((especialista): ProfissionalDetalhe => ({ profissional: especialista.profissional, especialista, pj: null })),
+    const vazio = { especialista: null, pj: null, assistenteSocial: null };
+    const ctx = { context: comCarregamento() };
+    return this.http.get<Especialista>(this.url('ESPECIALISTA', id), ctx).pipe(
+      map((especialista): ProfissionalDetalhe => ({ ...vazio, profissional: especialista.profissional, especialista })),
       catchError((err: HttpErrorResponse) => {
         if (err.status === 400) {
-          return this.http.get<EspecialistaPJ>(this.url('ESPECIALISTA_PJ', id), { context: comCarregamento() }).pipe(
-            map((pj): ProfissionalDetalhe => ({ profissional: pj.especialista.profissional, especialista: pj.especialista, pj }))
+          return this.http.get<EspecialistaPJ>(this.url('ESPECIALISTA_PJ', id), ctx).pipe(
+            map((pj): ProfissionalDetalhe => ({ ...vazio, profissional: pj.especialista.profissional, especialista: pj.especialista, pj }))
           );
         }
-        if (err.status === 404) {
-          return this.http.get<Profissional>(this.url('PROFISSIONAL', id), { context: comCarregamento() }).pipe(
-            map((profissional): ProfissionalDetalhe => ({ profissional, especialista: null, pj: null }))
-          );
-        }
-        return throwError(() => err);
+        if (err.status !== 404) return throwError(() => err);
+        return this.buscarAssistenteSocial(id).pipe(
+          map((assistenteSocial): ProfissionalDetalhe => ({ ...vazio, profissional: assistenteSocial.profissional, assistenteSocial })),
+          catchError((errAs: HttpErrorResponse) => {
+            if (errAs.status !== 404) return throwError(() => errAs);
+            return this.http.get<Profissional>(this.url('PROFISSIONAL', id), ctx).pipe(
+              map((profissional): ProfissionalDetalhe => ({ ...vazio, profissional }))
+            );
+          })
+        );
       })
     );
+  }
+
+  // ---------- Assistente social ----------
+
+  buscarAssistenteSocial(id: number): Observable<AssistenteSocial> {
+    return this.http.get<AssistenteSocial>(this.url('ASSISTENTE_SOCIAL', id), { context: comCarregamento() });
+  }
+
+  // Pacientes vinculados ao assistente social logado (painel dele; basta ser assistente social).
+  meusPacientesAssistenteSocial(): Observable<PacienteResumo[]> {
+    return this.http.get<PacienteResumo[]>(`${this.base}/assistentes-sociais/me/pacientes`);
+  }
+
+  // 409 se o vínculo já existe. Devolve o assistente social atualizado.
+  vincularPaciente(idAssistenteSocial: number, idPaciente: number): Observable<AssistenteSocial> {
+    return this.http.post<AssistenteSocial>(this.url('ASSISTENTE_SOCIAL', idAssistenteSocial, '/pacientes'), { idPaciente });
+  }
+
+  // Encerra o vínculo (o histórico fica no back).
+  desvincularPaciente(idAssistenteSocial: number, idPaciente: number): Observable<void> {
+    return this.http.delete<void>(this.url('ASSISTENTE_SOCIAL', idAssistenteSocial, `/pacientes/${idPaciente}`));
   }
 
   // ---------- Cadastro ----------
@@ -108,6 +142,14 @@ export class ProfissionalService {
     return this.http.post<CadastroResponse>(this.url('ESPECIALISTA_PJ', undefined, '/com-usuario'), dados);
   }
 
+  cadastrarAssistenteSocial(dados: DadosAssistenteSocial): Observable<CadastroResponse> {
+    return this.http.post<CadastroResponse>(this.url('ASSISTENTE_SOCIAL'), dados);
+  }
+
+  cadastrarAssistenteSocialComUsuario(dados: AssistenteSocialComUsuario): Observable<CadastroResponse> {
+    return this.http.post<CadastroResponse>(this.url('ASSISTENTE_SOCIAL', undefined, '/com-usuario'), dados);
+  }
+
   // ---------- Manutenção ----------
 
   // PATCH na rota do tipo, só com os campos que o tipo aceita.
@@ -115,7 +157,7 @@ export class ProfissionalService {
     const { especialidadesIds, novasEspecialidades, jornadas, razaoSocial, nomeFantasia, inscricaoEstadual, ...base } = dados;
     const especialista = { ...base, especialidadesIds, novasEspecialidades, jornadas };
     const corpo =
-      tipo === 'PROFISSIONAL' ? base
+      tipo === 'PROFISSIONAL' || tipo === 'ASSISTENTE_SOCIAL' ? base
       : tipo === 'ESPECIALISTA' ? especialista
       : { ...especialista, razaoSocial, nomeFantasia, inscricaoEstadual };
     return this.http.patch(this.url(tipo, id), corpo);

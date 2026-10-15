@@ -11,7 +11,9 @@ export const ACESSO_TOTAL = 'ACESSO_TOTAL';
 
 export const FUNCIONALIDADES = {
   // Pacientes
-  VISUALIZAR_PACIENTES: ['VISUALIZAR_PACIENTES'],
+  // Busca e detalhe de pacientes. Com só VISUALIZAR_PACIENTES_VINCULADOS (assistente social), a API
+  // devolve apenas os pacientes vinculados ao usuário.
+  VISUALIZAR_PACIENTES: ['VISUALIZAR_PACIENTES', 'VISUALIZAR_PACIENTES_VINCULADOS'],
   CADASTRAR_PACIENTE: ['CADASTRAR_PACIENTE'],
   EDITAR_PACIENTE: ['EDITAR_PACIENTE'],
   INATIVAR_PACIENTE: ['INATIVAR_PACIENTE'],
@@ -105,12 +107,14 @@ function perfilIncompativel(u: UsuarioPainel, painel: Painel): boolean {
 }
 
 // Painel pelo nome do perfil. Sem correspondência (ou incompatível com o cadastro): ACESSO_TOTAL abre
-// o do administrador; especialista/PJ abre o do especialista; os demais ficam sem painel (null).
+// o do administrador; especialista/PJ abre o do especialista; assistente social, o dele; os demais ficam
+// sem painel (null).
 export function painelDoUsuario(usuario: UsuarioPainel): Painel | null {
   const porPerfil = PAINEL_POR_PERFIL[normalizarNomePerfil(usuario.perfil.nome)];
   if (porPerfil && !perfilIncompativel(usuario, porPerfil)) return porPerfil;
   if (usuario.permissoes.some((p) => p.nome === ACESSO_TOTAL)) return 'ADMINISTRADOR';
   if (ehCadastroDeEspecialista(usuario)) return 'ESPECIALISTA';
+  if (usuario.tipoCadastro === 'ASSISTENTE_SOCIAL') return 'ASSISTENTE_SOCIAL';
   return null;
 }
 

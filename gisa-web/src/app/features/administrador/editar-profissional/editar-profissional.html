@@ -34,6 +34,12 @@
     <br>
     <hr>
 
+    @if (f.infoAssistenteSocial) {
+    <app-info-assistente-social [dadosIniciais]="f.infoAssistenteSocial" [bloquearTipo]="true" [edicao]="true" />
+    <br>
+    <hr>
+    }
+
     <app-contato [dadosIniciais]="f.contato" subtitulo="Opcional. Se informar, preencha o endereço completo."></app-contato>
 </div>
 }

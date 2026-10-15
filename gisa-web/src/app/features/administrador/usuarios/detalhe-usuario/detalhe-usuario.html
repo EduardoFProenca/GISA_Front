@@ -33,7 +33,7 @@
 
     <div class="acoes-situacao">
       <button type="button" class="btn-secundario" (click)="abrirDialogo('perfil')">Trocar perfil</button>
-      <button type="button" class="btn-secundario" (click)="abrirDialogo('senha')">Redefinir senha</button>
+      <button type="button" class="btn-secundario" (click)="abrirDialogo('senha')">Enviar nova senha temporária</button>
       <button type="button" class="btn-inativar" [disabled]="ehVoceMesmo || retirando()"
         (click)="retiradaAberta.set(true)">{{ retirando() ? 'Retirando...' : 'Retirar acesso' }}</button>
     </div>
@@ -64,13 +64,14 @@
 
 <app-form-dialog
   [aberto]="dialogo() !== null"
-  [titulo]="dialogo() === 'perfil' ? 'Trocar perfil' : 'Redefinir senha'"
+  [titulo]="dialogo() === 'perfil' ? 'Trocar perfil' : 'Enviar nova senha temporária'"
   [descricao]="dialogo() === 'perfil'
     ? 'O novo perfil vale na próxima ação do usuário, sem precisar entrar de novo.'
-    : 'Defina uma senha temporária e informe a pessoa. As sessões abertas dela serão encerradas.'"
+    : 'Uma nova senha temporária (válida por 7 dias) será enviada para ' + (usuario()?.email ?? 'o e-mail do usuário') +
+      '. A senha atual deixa de valer, as sessões abertas são encerradas e, no próximo login, a pessoa cadastra uma senha nova.'"
   [erro]="erroDialogo()"
   [salvando]="salvando()"
-  [textoConfirmar]="dialogo() === 'perfil' ? 'Trocar perfil' : 'Redefinir'"
+  [textoConfirmar]="dialogo() === 'perfil' ? 'Trocar perfil' : 'Enviar'"
   (confirmar)="confirmarDialogo()"
   (cancelar)="dialogo.set(null)">
   @if (dialogo() === 'perfil') {
@@ -81,12 +82,6 @@
       <option [value]="'' + p.idPerfil">{{ p.nome }}</option>
       }
     </select>
-  </div>
-  } @else if (dialogo() === 'senha') {
-  <div>
-    <label for="novaSenhaUsuario">Nova senha</label>
-    <input type="text" id="novaSenhaUsuario" name="novaSenhaUsuario" [(ngModel)]="novaSenha"
-      placeholder="Entre 8 e 30 caracteres" autocomplete="off" />
   </div>
   }
 </app-form-dialog>

@@ -8,7 +8,7 @@ import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cab
 import { Paginacao } from '../../../shared/components/paginacao/paginacao';
 import { FormDialog } from '../../../shared/components/form-dialog/form-dialog';
 import { SelectBusca } from '../../../shared/components/select-busca/select-busca';
-import { buscaEspecialistas, buscaPacientes } from '../../../shared/components/select-busca/buscas';
+import { buscaEspecialistas, buscaPacientes, DICA_BUSCA_PACIENTE } from '../../../shared/components/select-busca/buscas';
 import { ICONES } from '../../../shared/icons';
 import { paraIso } from '../../../shared/utils/data.util';
 import { COR_STATUS_TERAPIA, ROTULO_STATUS_TERAPIA } from '../../../shared/utils/rotulos.util';
@@ -92,6 +92,7 @@ export class GerenciarTerapias implements OnInit {
   // Filtros
   // Buscas na API conforme a digitação (não carregam todos os pacientes/especialistas).
   readonly buscarPacientes = buscaPacientes(this.pacienteService);
+  readonly dicaBuscaPaciente = DICA_BUSCA_PACIENTE;
   readonly buscarEspecialistas = buscaEspecialistas(this.profissionalService);
   idPaciente = signal<number | null>(null);
   idEspecialista = signal<number | null>(null);

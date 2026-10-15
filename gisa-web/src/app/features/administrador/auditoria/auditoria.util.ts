@@ -1,7 +1,8 @@
 import { AcaoAuditoria } from '../../../core/models/auditoria.model';
 
+// Só são registradas alterações, logins que FALHARAM e consultas ao detalhe de paciente (AUDITORIA.md).
 export const ROTULO_ACAO: Record<AcaoAuditoria, string> = {
-  LOGIN: 'Login',
+  LOGIN: 'Login falhou',
   CRIACAO: 'Criação',
   ALTERACAO: 'Alteração',
   EXCLUSAO: 'Exclusão',
@@ -11,11 +12,11 @@ export const ROTULO_ACAO: Record<AcaoAuditoria, string> = {
 // Abas da tela: cada categoria é um valor de `acao` da API (null = todas).
 export const CATEGORIAS: { acao: AcaoAuditoria | null; rotulo: string }[] = [
   { acao: null, rotulo: 'Todas' },
-  { acao: 'LOGIN', rotulo: 'Logins' },
+  { acao: 'LOGIN', rotulo: 'Logins que falharam' },
   { acao: 'CRIACAO', rotulo: 'Criações' },
   { acao: 'ALTERACAO', rotulo: 'Alterações' },
   { acao: 'EXCLUSAO', rotulo: 'Exclusões' },
-  { acao: 'CONSULTA', rotulo: 'Consultas' },
+  { acao: 'CONSULTA', rotulo: 'Consultas de paciente' },
 ];
 
 // Primeiro trecho do caminho -> nome do que foi acessado.
@@ -25,6 +26,7 @@ const RECURSOS: Record<string, string> = {
   responsaveis: 'Responsável',
   profissionais: 'Profissional',
   especialistas: 'Especialista',
+  'assistentes-sociais': 'Assistente social',
   terapias: 'Terapia',
   usuarios: 'Usuário',
   perfis: 'Perfil',

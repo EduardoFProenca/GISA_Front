@@ -7,7 +7,7 @@ import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { SelectBusca } from '../../../shared/components/select-busca/select-busca';
-import { buscaPacientes } from '../../../shared/components/select-busca/buscas';
+import { buscaPacientes, DICA_BUSCA_PACIENTE } from '../../../shared/components/select-busca/buscas';
 import { Mascara } from '../../../shared/directives/mascara.directive';
 import { DadosFolhaDocumento, FolhaDocumento } from '../../../shared/documentos/folha-documento/folha-documento';
 import { imprimirDocumento } from '../../../shared/documentos/impressao';
@@ -15,6 +15,7 @@ import { INSTITUICAO, localEDataDeHoje } from '../../../shared/documentos/instit
 import { dataCurta } from '../../../shared/utils/data.util';
 import { formatarCpf } from '../../../shared/utils/formatacao.util';
 import { cpfValido, soDigitos } from '../../../shared/utils/texto.util';
+import { resumoInativacaoPaciente } from '../../../shared/utils/rotulos.util';
 
 // Declaração de recusa da APAE (a instituição informa que não pode atender a pessoa).
 // Recepção e administrador. Quem é recusado normalmente não é paciente: os dados são digitados,
@@ -32,6 +33,7 @@ export class EmitirRecusa {
 
   // Preencher a partir de um paciente cadastrado (opcional)
   readonly buscarPacientes = buscaPacientes(this.pacienteService);
+  readonly dicaBuscaPaciente = DICA_BUSCA_PACIENTE;
   idPaciente = signal<number | null>(null);
 
   // Recusa de um paciente cadastrado e ativo: depois de imprimir, oferece inativá-lo (uma vez por emissão).
@@ -102,9 +104,13 @@ export class EmitirRecusa {
     this.confirmarInativacaoAberta.set(false);
     if (id === null) return;
     this.pacienteService.inativar(id).subscribe({
-      next: () => {
+      next: (resumo) => {
         this.pacienteAtivo.set(false);
-        this.avisoSucesso.mostrar({ titulo: 'Paciente inativado', detalhe: this.nome.trim() });
+        const terapias = resumoInativacaoPaciente(resumo);
+        this.avisoSucesso.mostrar({
+          titulo: 'Paciente inativado',
+          detalhe: terapias ? `${this.nome.trim()}: ${terapias}` : this.nome.trim(),
+        });
       },
       error: (err) => {
         this.previa.set(false);

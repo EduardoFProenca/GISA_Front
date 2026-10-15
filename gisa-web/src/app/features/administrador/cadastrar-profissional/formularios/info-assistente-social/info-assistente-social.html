@@ -1,0 +1,42 @@
+<fieldset class="secao" [disabled]="somenteLeitura">
+    <div class="cabecalho-checkbox">
+        <h3>Assistente Social</h3>
+        <label class="checkbox-inline">
+            <input type="checkbox" name="ehAssistenteSocial" [(ngModel)]="ehAssistenteSocial" [disabled]="bloquearTipo">
+            É assistente social
+        </label>
+    </div>
+
+    @if (ehAssistenteSocial) {
+    <div class="campo">
+        <label for="registroCress">Registro no CRESS <span class="obrigatorio">*</span></label>
+        <input type="text" id="registroCress" name="registroCress" [(ngModel)]="registroConselho" maxlength="50"
+            placeholder="Ex.: CRESS-9/12345" [readonly]="edicao" [class.input-erro]="erros['registroConselho']"
+            (input)="limparErro('registroConselho')">
+        @if (erros['registroConselho']) { <span class="erro-msg">{{ erros['registroConselho'] }}</span> }
+    </div>
+
+    @if (!edicao) {
+    <div class="campo">
+        <label>Pacientes vinculados</label>
+        <p class="dica-campo">O assistente social só vê os pacientes vinculados a ele. Os vínculos podem ser alterados depois, no detalhe do profissional.</p>
+        <app-select-busca [buscar]="buscarPacientes" [dicaTermo]="dicaBuscaPaciente" [ocultarIds]="idsPacientes"
+            [value]="selecao" (opcaoEscolhida)="adicionarPaciente($event)"
+            placeholder="Digite o nome ou o CPF completo do paciente" semResultados="Nenhum paciente encontrado" />
+        @if (erros['pacientes']) { <span class="erro-msg">{{ erros['pacientes'] }}</span> }
+
+        <ul class="lista-pacientes">
+            @for (p of pacientes; track p.idCadastro) {
+            <li>
+                <span>{{ p.rotulo }}</span>
+                <button type="button" class="remover-item" (click)="removerPaciente(p.idCadastro)"
+                    [attr.aria-label]="'Remover ' + p.rotulo">Remover</button>
+            </li>
+            } @empty {
+            <li class="vazio">Nenhum paciente vinculado ainda (opcional).</li>
+            }
+        </ul>
+    </div>
+    }
+    }
+</fieldset>

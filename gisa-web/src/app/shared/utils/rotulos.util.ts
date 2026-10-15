@@ -30,6 +30,7 @@ export const ROTULO_TIPO_CADASTRO: Record<TipoCadastro, string> = {
   PROFISSIONAL: 'Profissional',
   ESPECIALISTA: 'Especialista',
   ESPECIALISTA_PJ: 'Especialista PJ',
+  ASSISTENTE_SOCIAL: 'Assistente Social',
 };
 
 export const ROTULO_TIPO_ESCOLA: Record<TipoEscola, string> = {
@@ -102,3 +103,18 @@ export const ROTULO_DIA_SEMANA: Record<number, string> = {
   6: 'Sábado',
   7: 'Domingo',
 };
+
+// Detalhe do aviso de inativação do paciente (terapias futuras afetadas). null = nenhuma.
+export function resumoInativacaoPaciente(r: { terapiasCanceladas: number; terapiasColetivasRemovido: number } | null): string | null {
+  if (!r) return null;
+  const partes: string[] = [];
+  if (r.terapiasCanceladas) {
+    const n = r.terapiasCanceladas;
+    partes.push(n > 1 ? `${n} terapias individuais canceladas` : '1 terapia individual cancelada');
+  }
+  if (r.terapiasColetivasRemovido) {
+    const n = r.terapiasColetivasRemovido;
+    partes.push(n > 1 ? `retirado de ${n} terapias coletivas` : 'retirado de 1 terapia coletiva');
+  }
+  return partes.length ? partes.join(' e ') : null;
+}

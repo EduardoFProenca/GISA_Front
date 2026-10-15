@@ -30,7 +30,6 @@ export interface InfoUsuarioForm extends ComErros {
   // true = o cadastro já tem usuário (edição): só o perfil pode mudar.
   possuiAcesso: boolean;
   temAcessoSistema: boolean;
-  senha: string;
   // idPerfil (texto do select).
   perfil: string;
   // false = quem está logado não tem GERENCIAR_USUARIOS: não cria acesso nem troca perfil.
@@ -64,14 +63,23 @@ export interface InfoEspecialistaForm extends ComErros {
   inscricaoEstadual: string;
 }
 
+export interface InfoAssistenteSocialForm extends ComErros {
+  ehAssistenteSocial: boolean;
+  // Número do CRESS.
+  registroConselho: string;
+  // Pacientes vinculados já no cadastro.
+  idsPacientes: number[];
+}
+
 export interface FormulariosCadastro {
   dadosPessoais: DadosPessoaisForm;
   contato: ContatoForm;
   infoProfissional: InfoProfissionalForm;
   infoUsuario: InfoUsuarioForm;
   infoEspecialista: InfoEspecialistaForm;
+  infoAssistenteSocial: InfoAssistenteSocialForm;
 }
 
 export function listaErros(f: FormulariosCadastro): ComErros[] {
-  return [f.dadosPessoais, f.contato, f.infoProfissional, f.infoUsuario, f.infoEspecialista];
+  return [f.dadosPessoais, f.contato, f.infoProfissional, f.infoUsuario, f.infoEspecialista, f.infoAssistenteSocial];
 }

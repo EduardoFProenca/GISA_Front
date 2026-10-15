@@ -6,6 +6,7 @@ import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-p
 import { Contato } from '../../../shared/components/contato/contato';
 import { InfoEspecialista } from './formularios/info-especialista/info-especialista';
 import { InfoUsuario } from './formularios/info-usuario/info-usuario';
+import { InfoAssistenteSocial } from './formularios/info-assistente-social/info-assistente-social';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { InfoProfissional } from './formularios/info-profissional/info-profissional';
 import { ProfissionalService } from '../../../core/services/profissional';
@@ -19,7 +20,7 @@ import { CadastroErrosApiService } from './services/cadastro-erros-api';
 
 @Component({
   selector: 'app-cadastrar-profissional',
-  imports: [DadosPessoais, Contato, InfoEspecialista, InfoUsuario, CabecalhoPagina, InfoProfissional],
+  imports: [DadosPessoais, Contato, InfoEspecialista, InfoAssistenteSocial, InfoUsuario, CabecalhoPagina, InfoProfissional],
   templateUrl: './cadastrar-profissional.html',
   styleUrl: './cadastrar-profissional.scss',
 })
@@ -30,6 +31,7 @@ export class CadastroProfissional implements OnInit {
   @ViewChild(InfoProfissional) infoProfissional!: InfoProfissional;
   @ViewChild(InfoUsuario) infoUsuario!: InfoUsuario;
   @ViewChild(InfoEspecialista) infoEspecialista!: InfoEspecialista;
+  @ViewChild(InfoAssistenteSocial) infoAssistenteSocial!: InfoAssistenteSocial;
 
   private profissionalService = inject(ProfissionalService);
   private opcoesService = inject(OpcoesProfissionalService);
@@ -64,6 +66,7 @@ export class CadastroProfissional implements OnInit {
       infoProfissional: this.infoProfissional,
       infoUsuario: this.infoUsuario,
       infoEspecialista: this.infoEspecialista,
+      infoAssistenteSocial: this.infoAssistenteSocial,
     };
   }
 
@@ -83,6 +86,15 @@ export class CadastroProfissional implements OnInit {
     const dadosBase = this.payload.montarDadosBase(f);
     const usuario = this.payload.montarUsuario(f);
     const ie = f.infoEspecialista;
+
+    if (f.infoAssistenteSocial.ehAssistenteSocial) {
+      const assistenteSocial = this.payload.montarDadosAssistenteSocial(f, dadosBase);
+      const req = usuario
+        ? this.profissionalService.cadastrarAssistenteSocialComUsuario({ assistenteSocial, usuario })
+        : this.profissionalService.cadastrarAssistenteSocial(assistenteSocial);
+      req.subscribe(this.handlersPadrao());
+      return;
+    }
 
     if (!ie.ehEspecialista) {
       const req = usuario
@@ -114,7 +126,7 @@ export class CadastroProfissional implements OnInit {
         this.salvando = false;
         this.nomeCadastrado = res?.nome || this.dadosPessoais.nome;
         this.idCadastrado = res?.idCadastro ?? null;
-        this.mostrarSucesso();
+        this.mostrarSucesso(res?.emailEnviado === false);
         this.cdr.markForCheck();
       },
       error: (err: HttpErrorResponse) => {
@@ -148,11 +160,14 @@ export class CadastroProfissional implements OnInit {
     }
   }
 
-  // Aviso de sucesso com os próximos passos (fim de fluxo).
-  private mostrarSucesso() {
+  // Aviso de sucesso com os próximos passos (fim de fluxo). emailNaoEnviado: o acesso foi criado, mas a
+  // senha temporária não chegou ao e-mail; o reenvio fica no detalhe do profissional.
+  private mostrarSucesso(emailNaoEnviado = false) {
     this.avisoSucesso.mostrar({
       titulo: 'Profissional cadastrado',
-      detalhe: this.nomeCadastrado,
+      detalhe: emailNaoEnviado
+        ? `${this.nomeCadastrado}. Atenção: o e-mail com a senha temporária não foi enviado. Reenvie pelo detalhe do profissional ("Enviar nova senha temporária").`
+        : this.nomeCadastrado,
       acoes: [
         { texto: 'Cadastrar outro', acao: () => this.aoContinuarCadastrando() },
         { texto: 'Ver profissional', primaria: true, acao: () => this.aoVerDetalhesCadastrado() },

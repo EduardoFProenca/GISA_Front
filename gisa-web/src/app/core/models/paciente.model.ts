@@ -15,19 +15,19 @@ export interface Prontuario {
 
 // ---------- Respostas ----------
 
-// Item de GET /pacientes (idade calculada pelo back; CPF sem máscara).
+// Item da busca GET /pacientes?termo= (até 20, sem paginação), de GET /assistentes-sociais/me/pacientes
+// e dos pacientes de um assistente social. O CPF completo só sai no detalhe (LGPD).
 export interface PacienteResumo {
   idCadastro: number;
   nome: string;
-  idade: number;
-  cpf: string;
-  responsaveis: {
-    nome: string;
-    celular: string | null;
-    grauParentesco: GrauParentesco;
-  }[];
-  cids: Cid[];
-  statusPaciente: StatusPaciente;
+  cpfMascarado: string;
+  statusCadastro: StatusCadastro;
+}
+
+// DELETE /pacientes/{id}: terapias futuras afetadas pela inativação.
+export interface InativacaoPacienteResponse {
+  terapiasCanceladas: number;
+  terapiasColetivasRemovido: number;
 }
 
 // Responsável dentro do detalhe do paciente. `responsavel.idCadastro` = idResponsavel.
@@ -47,6 +47,8 @@ export interface Paciente {
   cids: Cid[];
   prontuario: Prontuario | null;
   responsaveis: VinculoResponsavel[];
+  // Vínculos ativos, por nome.
+  assistentesSociais: { idCadastro: number; nome: string }[];
 }
 
 // Item de GET /responsaveis.

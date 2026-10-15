@@ -55,6 +55,9 @@ export class SelectBusca implements OnChanges {
   @Input() value: number | string | null = null;
   @Input() placeholder: string = 'Selecione';
   @Input() semResultados: string = 'Nenhum resultado encontrado';
+  // Modo remoto: dica no lugar de "sem resultados" enquanto o termo não basta para buscar
+  // (ex.: pacientes só por CPF completo ou nome com 3 letras). null = o termo já basta.
+  @Input() dicaTermo: ((termo: string) => string | null) | null = null;
   @Input() comErro: boolean = false;
   @Input() disabled: boolean = false;
   // Máximo de opções exibidas de uma vez (listas grandes, como CID). Padrão: todas.
@@ -66,6 +69,8 @@ export class SelectBusca implements OnChanges {
 
   @Output() valueChange = new EventEmitter<number | string | null>();
   @Output() textoChange = new EventEmitter<string>();
+  // A opção inteira escolhida (com o rótulo), antes do valueChange.
+  @Output() opcaoEscolhida = new EventEmitter<OpcaoSelectBusca>();
 
   termo = signal('');
   aberto = signal(false);
@@ -208,6 +213,7 @@ export class SelectBusca implements OnChanges {
       this.texto = this.rotulo(opcao);
       this.textoChange.emit(this.texto);
     }
+    this.opcaoEscolhida.emit(opcao);
     this.valueChange.emit(opcao.id);
   }
 

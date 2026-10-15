@@ -5,18 +5,9 @@
 />
 
 <div class="pagina-profissionais">
-  <div class="stats-grid">
-    <app-card-estatistica
-      titulo="Total de Pacientes"
-      [valor]="totalElementos()"
-      [icone]="icones.gestaoPacientes"
-      tom="azul"
-    />
-  </div>
-
   <div class="painel-busca">
     <app-busca-filtro
-      placeholder="Buscar por nome ou CPF..."
+      placeholder="Buscar pelo nome ou CPF completo..."
       (buscaAlterada)="aplicarBusca($event)"
     />
 
@@ -31,18 +22,19 @@
         <app-card-paciente [paciente]="paciente" [somenteLeitura]="!podeEditar" [rotaBase]="rotaBase" />
       } @empty {
         @if (carregando()) {
-          <p class="vazio">Carregando pacientes...</p>
+          <p class="vazio">Buscando pacientes...</p>
+        } @else if (termoInsuficiente()) {
+          <p class="vazio">Digite ao menos 3 letras do nome ou o CPF completo (11 dígitos).</p>
+        } @else if (!termoBuscado()) {
+          <p class="vazio">Busque o paciente pelo nome ou pelo CPF completo. Por proteção de dados (LGPD), a lista completa de pacientes não é exibida.</p>
         } @else if (!erro()) {
           <p class="vazio">Nenhum paciente encontrado.</p>
         }
       }
     </div>
-  </div>
 
-  <app-paginacao
-    [totalItens]="totalElementos()"
-    [itensPorPagina]="itensPorPagina"
-    [paginaAtual]="paginaAtual()"
-    (paginaAlterada)="mudarPagina($event)"
-  />
+    @if (pacientes().length >= limiteResultados) {
+      <p class="vazio">Mostrando os {{ limiteResultados }} primeiros resultados. Refine a busca para encontrar outros pacientes.</p>
+    }
+  </div>
 </div>

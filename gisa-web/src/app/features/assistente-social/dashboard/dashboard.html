@@ -3,14 +3,14 @@
 <div class="corpo-dashboard">
   <main class="conteudo">
     <div class="stats-grid">
-      <app-card-estatistica titulo="Pacientes cadastrados" [valor]="totalPacientes()" [icone]="icones.gestaoPacientes" tom="azul" />
+      <app-card-estatistica titulo="Meus pacientes" [valor]="totalPacientes()" [icone]="icones.gestaoPacientes" tom="azul" />
     </div>
 
     <div class="conteudo-principal">
       <app-painel-acoes [acoes]="acoesRapidas" />
 
-      <app-atividades-recentes [atividades]="recentes()" titulo="Cadastrados recentemente"
-        vazio="Nenhum paciente cadastrado ainda." />
+      <app-atividades-recentes [atividades]="meusPacientes()" titulo="Pacientes vinculados a você"
+        vazio="Nenhum paciente vinculado a você ainda." />
     </div>
   </main>
 </div>

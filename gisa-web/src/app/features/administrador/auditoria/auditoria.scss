@@ -168,11 +168,17 @@
   background: var(--cor-superficie-realce);
   color: var(--cinza-600);
 
-  &[data-acao='LOGIN'] { background: var(--celeste-100); color: var(--celeste-700); }
+  // Tentativa de login que falhou: destaque de alerta (pode ser alguém tentando adivinhar a senha).
+  &[data-acao='LOGIN'] { background: var(--cor-perigo-forte); color: white; }
   &[data-acao='CRIACAO'] { background: var(--verde-100); color: var(--cor-sucesso-forte); }
   &[data-acao='ALTERACAO'] { background: var(--ambar-100); color: var(--cor-alerta-forte); }
   &[data-acao='EXCLUSAO'] { background: var(--vermelho-100); color: var(--cor-perigo-forte); }
   &[data-acao='CONSULTA'] { background: var(--roxo-100); color: var(--roxo-700); }
+}
+
+// Linha inteira em destaque nas tentativas de login que falharam.
+.tabela tr.login-falho td {
+  background: var(--cor-perigo-suave);
 }
 
 .resultado {

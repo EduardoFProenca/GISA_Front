@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { soDigitos } from '../../../../shared/utils/texto.util';
 import {
   AtualizacaoEspecialistaPJPayload,
+  DadosAssistenteSocial,
   DadosBaseProfissional,
   DadosEspecialista,
   DadosEspecialistaPJ,
@@ -56,7 +57,7 @@ export class CadastroPayloadService {
   montarUsuario(f: FormulariosCadastro): DadosUsuario | null {
     const iu = f.infoUsuario;
     if (iu.podeGerenciarAcesso === false || iu.possuiAcesso || !iu.temAcessoSistema) return null;
-    return { senha: iu.senha, idPerfil: Number(iu.perfil) };
+    return { idPerfil: Number(iu.perfil) };
   }
 
   mapearJornadas(f: FormulariosCadastro): Jornada[] {
@@ -90,6 +91,15 @@ export class CadastroPayloadService {
       razaoSocial: ie.razaoSocial.trim(),
       nomeFantasia: ie.nomeFantasia.trim() || undefined,
       inscricaoEstadual: ie.inscricaoEstadual.trim() || undefined,
+    };
+  }
+
+  montarDadosAssistenteSocial(f: FormulariosCadastro, dadosBase: DadosBaseProfissional): DadosAssistenteSocial {
+    const ias = f.infoAssistenteSocial;
+    return {
+      ...dadosBase,
+      registroConselho: ias.registroConselho.trim(),
+      idsPacientes: ias.idsPacientes.length ? ias.idsPacientes : undefined,
     };
   }
 

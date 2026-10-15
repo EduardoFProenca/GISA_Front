@@ -34,6 +34,7 @@
             <app-select-busca
               [opcoes]="tipo === 'paciente' ? opcoesPacientes() : opcoesEspecialistas()"
               [buscar]="tipo === 'paciente' ? buscarPacientes : buscarEspecialistas"
+              [dicaTermo]="tipo === 'paciente' ? dicaBuscaPaciente : null"
               [ocultarIds]="outrosEscolhidos($any(tipo), item.uid)"
               [value]="item.id"
               (valueChange)="aoMudarPessoa($any(tipo), item.uid, $event)"

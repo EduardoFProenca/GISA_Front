@@ -5,10 +5,9 @@ import { PerfilResumo } from '../../../../../core/models/perfil.model';
 import { Auth } from '../../../../../core/auth/auth';
 
 export interface InfoUsuarioValor {
-  // true = o cadastro já tem usuário de acesso (só o perfil pode mudar; a senha não aparece).
+  // true = o cadastro já tem usuário de acesso (só o perfil pode mudar).
   possuiAcesso: boolean;
   temAcessoSistema: boolean;
-  senha: string;
   // idPerfil (como texto, valor do select).
   perfil: string;
 }
@@ -29,7 +28,6 @@ export class InfoUsuario extends ComErros implements OnInit, InfoUsuarioValor {
 
   possuiAcesso: boolean = false;
   temAcessoSistema: boolean = false;
-  senha: string = '';
   perfil: string = '';
   perfilOriginal?: string;
 

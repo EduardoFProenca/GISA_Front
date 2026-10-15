@@ -18,7 +18,7 @@
         @for (opcao of opcoesFiltradas; track opcao.id) {
           <li (mousedown)="selecionar(opcao)">{{ opcao.label }}</li>
         } @empty {
-          <li class="sem-resultados">{{ semResultados }}</li>
+          <li class="sem-resultados">{{ (dicaTermo && dicaTermo(termo().trim())) || semResultados }}</li>
         }
       }
       @if (restantes > 0) {

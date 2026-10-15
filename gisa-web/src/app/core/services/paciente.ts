@@ -5,22 +5,31 @@ import { environment } from '../../../environments/environment';
 import {
   AtualizacaoPacientePayload,
   CadastroPacienteResponse,
+  InativacaoPacienteResponse,
   Paciente,
   PacienteCadastroPayload,
   PacienteResumo,
   ResponsavelPayload,
 } from '../models/paciente.model';
-import { Pagina, PaginaApi, ParametrosPagina, normalizarPagina } from '../models/comum.model';
+import { Pagina, PaginaApi, normalizarPagina } from '../models/comum.model';
 import { EventoPaciente, FiltroHistoricoPaciente } from '../models/historico.model';
 import { montarParams } from './params.util';
 import { comCarregamento } from '../http/carregamento';
 
-export interface FiltroPacientes extends ParametrosPagina {
-  // Trecho do CPF (máscara ignorada) e/ou do nome; com os dois, o paciente precisa atender aos dois.
-  cpf?: string;
-  nome?: string;
+// Não existe listagem de pacientes (LGPD): só busca, até 20 resultados, por nome.
+export interface FiltroPacientes {
+  // Só dígitos (máscara ignorada): CPF exato, 11 dígitos. Outro texto: trecho do nome, ao menos 3 letras.
+  // Obrigatório, exceto com idEscola.
+  termo?: string;
   // Pacientes de uma escola (gestão de escolas).
   idEscola?: number;
+}
+
+// Termo aceito pela busca: CPF completo ou nome com ao menos 3 caracteres.
+export function termoBuscaPacienteValido(termo: string): boolean {
+  const t = termo.trim();
+  if (/^[\d.\-\s]+$/.test(t)) return t.replace(/\D/g, '').length === 11;
+  return t.length >= 3;
 }
 
 // Pacientes (ver PACIENTES.md).
@@ -29,11 +38,14 @@ export class PacienteService {
   private http = inject(HttpClient);
   private base = `${environment.apiUrl}/pacientes`;
 
-  listar(filtro: FiltroPacientes = {}): Observable<Pagina<PacienteResumo>> {
-    const params = montarParams({ sort: 'nome,asc', ...filtro });
-    return this.http
-      .get<PaginaApi<PacienteResumo>>(this.base, { params })
-      .pipe(map((resposta) => normalizarPagina(resposta)));
+  // Quem só vê os pacientes vinculados (assistente social) recebe só os dele (filtro do back).
+  pesquisar(filtro: FiltroPacientes): Observable<PacienteResumo[]> {
+    const termo = filtro.termo?.trim();
+    const params = montarParams({
+      idEscola: filtro.idEscola,
+      termo: termo && /^[\d.\-\s]+$/.test(termo) ? termo.replace(/\D/g, '') : termo,
+    });
+    return this.http.get<PacienteResumo[]>(this.base, { params });
   }
 
   buscar(id: number): Observable<Paciente> {
@@ -54,9 +66,10 @@ export class PacienteService {
     return this.http.post<Paciente>(`${this.base}/${id}/responsaveis`, responsavel);
   }
 
-  // Inativa (statusCadastro INATIVO; statusPaciente DESLIGADO, salvo se estiver em ALTA).
-  inativar(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.base}/${id}`);
+  // Inativa (statusCadastro INATIVO; statusPaciente DESLIGADO, salvo se estiver em ALTA). Cancela as
+  // terapias individuais futuras e tira o paciente das coletivas futuras; devolve as quantidades.
+  inativar(id: number): Observable<InativacaoPacienteResponse> {
+    return this.http.delete<InativacaoPacienteResponse>(`${this.base}/${id}`);
   }
 
   reativar(id: number): Observable<Paciente> {

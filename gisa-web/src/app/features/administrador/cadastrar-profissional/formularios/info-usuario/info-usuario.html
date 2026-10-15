@@ -18,12 +18,10 @@
   }
 
   @if (temAcessoSistema && !possuiAcesso) {
-    <div class="campo">
-      <label for="senha">Senha Inicial <span class="obrigatorio">*</span></label>
-      <input type="text" id="senha" name="senha" [(ngModel)]="senha" placeholder="Entre 8 e 30 caracteres"
-        [class.input-erro]="erros['senha']" (input)="limparErro('senha')">
-      @if (erros['senha']) { <span class="erro-msg">{{ erros['senha'] }}</span> }
-    </div>
+    <p class="aviso-acesso">
+      O login será o e-mail informado nos dados pessoais. Uma senha temporária (válida por 7 dias) será enviada
+      para esse e-mail, e no primeiro acesso a pessoa cadastra a senha definitiva.
+    </p>
   }
 
   @if (podeGerenciarAcesso && (possuiAcesso || temAcessoSistema)) {

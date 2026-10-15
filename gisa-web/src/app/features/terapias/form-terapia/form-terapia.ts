@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, debounceTime, distinctUntilChanged, of, switchMap } from 'rxjs';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { SelectBusca, OpcaoSelectBusca } from '../../../shared/components/select-busca/select-busca';
-import { buscaEspecialistas, buscaPacientes } from '../../../shared/components/select-busca/buscas';
+import { buscaEspecialistas, buscaPacientes, DICA_BUSCA_PACIENTE } from '../../../shared/components/select-busca/buscas';
 import { PacienteService } from '../../../core/services/paciente';
 import { ProfissionalService } from '../../../core/services/profissional';
 import { TerapiaService } from '../../../core/services/terapia';
@@ -67,7 +67,8 @@ export class FormTerapia implements OnInit {
 
   // Selects buscam na API conforme a digitação. Só pacientes matriculados e especialistas ativos
   // podem ser agendados.
-  readonly buscarPacientes = buscaPacientes(this.pacienteService, { somenteMatriculados: true });
+  readonly buscarPacientes = buscaPacientes(this.pacienteService, { somenteAtivos: true });
+  readonly dicaBuscaPaciente = DICA_BUSCA_PACIENTE;
   readonly buscarEspecialistas = buscaEspecialistas(this.profissionalService);
   // Nomes dos participantes que já estão na terapia (edição), para os campos mostrarem quem é.
   opcoesPacientes = signal<OpcaoSelectBusca[]>([]);

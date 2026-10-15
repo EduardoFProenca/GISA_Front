@@ -3,21 +3,21 @@
     <h1>APAE de Saúde</h1>
     <p class="subtitle">Sistema de Gestão Integrada</p>
 
-    <div class="login-container container-login">
+    <form class="login-container container-login" (ngSubmit)="fazerLogin()">
         <h3>Acesso ao Sistema</h3>
-        <h6>Informe seu CPF de cadastro e senha para continuar</h6>
+        <h6>Informe seu e-mail e senha para continuar</h6>
 
-        <label for="usuario">CPF de Cadastro:</label>
-        <input type="text" [(ngModel)]="usuario" appMascara="cpf" inputmode="numeric" [class.input-erro]="erroUsuario()" placeholder="000.000.000-00"
-            name="usuario" id="usuario">
-        @if (erroUsuario()) {
-        <span class="erro-msg">O CPF deve ter 11 dígitos</span>
+        <label for="email">E-mail:</label>
+        <input type="email" [(ngModel)]="email" [class.input-erro]="erroEmail()" placeholder="seu.email@exemplo.com"
+            name="email" id="email" autocomplete="username">
+        @if (erroEmail()) {
+        <span class="erro-msg">Informe um e-mail válido</span>
         }
 
         <label for="senha">Sua Senha:</label>
         <div class="senha-wrapper">
             <input [type]="mostrarSenha() ? 'text' : 'password'" [(ngModel)]="senha" [class.input-erro]="erroSenha()"
-                placeholder="Digite sua senha" name="senha" id="senha">
+                placeholder="Digite sua senha" name="senha" id="senha" autocomplete="current-password">
             <button type="button" class="toggle-senha" (click)="toggleSenha()"
                 [attr.aria-label]="mostrarSenha() ? 'Ocultar senha' : 'Mostrar senha'"
                 [title]="mostrarSenha() ? 'Ocultar senha' : 'Mostrar senha'">
@@ -32,8 +32,7 @@
         <span class="erro-msg">{{ erroLogin() }}</span>
         }
 
-        <button type="button" class="btn-entrar" (click)="fazerLogin()" [disabled]="carregando()">{{ carregando() ? (demorando() ? 'Aguardando o servidor...' : 'Entrando...') : 'Entrar' }}</button>
-        <br>
-        <!-- <a class="esqueci-senha" (click)="esqueciSenha()">Esqueci a senha</a> -->
-    </div>
+        <button type="submit" class="btn-entrar" [disabled]="carregando()">{{ carregando() ? (demorando() ? 'Aguardando o servidor...' : 'Entrando...') : 'Entrar' }}</button>
+        <a class="esqueci-senha" routerLink="/esqueci-senha">Esqueci minha senha</a>
+    </form>
 </div>

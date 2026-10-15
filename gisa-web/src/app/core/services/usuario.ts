@@ -5,8 +5,7 @@ import { environment } from '../../../environments/environment';
 import {
   AlterarMinhaSenhaPayload,
   FiltroUsuarios,
-  LoginResponse,
-  RedefinirSenhaPayload,
+  TokenResponse,
   UsuarioDetalhe,
   UsuarioResumo,
 } from '../models/auth.model';
@@ -24,9 +23,9 @@ export class UsuarioService {
 
   // Devolve um token novo, que substitui o atual (o antigo deixa de valer).
   // Senha atual errada responde 400 (não 401), então não desloga.
-  alterarMinhaSenha(dados: AlterarMinhaSenhaPayload): Observable<LoginResponse> {
+  alterarMinhaSenha(dados: AlterarMinhaSenhaPayload): Observable<TokenResponse> {
     return this.http
-      .patch<LoginResponse>(`${this.base}/minha-senha`, dados)
+      .patch<TokenResponse>(`${this.base}/minha-senha`, dados)
       .pipe(tap((res) => this.auth.substituirToken(res.token)));
   }
 
@@ -48,9 +47,10 @@ export class UsuarioService {
     return this.http.patch<UsuarioDetalhe>(`${this.base}/${idCadastro}/perfil`, { idPerfil });
   }
 
-  // Não exige a senha atual; 204.
-  redefinirSenha(idCadastro: number, dados: RedefinirSenhaPayload): Observable<void> {
-    return this.http.patch<void>(`${this.base}/${idCadastro}/senha`, dados);
+  // Gera uma nova senha temporária e a envia ao e-mail do usuário (também serve para reenviar o acesso).
+  // A senha anterior deixa de valer. 503 = o e-mail não saiu e nada foi alterado.
+  enviarSenhaTemporaria(idCadastro: number): Observable<void> {
+    return this.http.post<void>(`${this.base}/${idCadastro}/senha-temporaria`, null);
   }
 
   // Apaga só o usuário (o cadastro continua); os tokens dele deixam de valer na hora.

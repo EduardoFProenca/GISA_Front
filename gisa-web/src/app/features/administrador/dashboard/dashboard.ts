@@ -6,7 +6,6 @@ import { acoesRapidasDoPainel } from '../../../core/layout/menus';
 import { AtividadesRecentes, Atividade } from '../../../shared/components/atividades-recentes/atividades-recentes';
 import { Header } from '../../../shared/components/header/header';
 import { ICONES } from '../../../shared/icons';
-import { PacienteService } from '../../../core/services/paciente';
 import { ProfissionalService } from '../../../core/services/profissional';
 import { TerapiaService } from '../../../core/services/terapia';
 import { Router } from '@angular/router';
@@ -19,7 +18,6 @@ import { terapiasDeHoje } from '../../terapias/terapias-hoje';
   styleUrl: './dashboard.scss',
 })
 export class DashboardAdministrador implements OnInit {
-  private pacienteService = inject(PacienteService);
   private profissionalService = inject(ProfissionalService);
   private terapiaService = inject(TerapiaService);
   private router = inject(Router);
@@ -28,7 +26,6 @@ export class DashboardAdministrador implements OnInit {
   icones = ICONES;
 
   // '—' enquanto carrega ou se a chamada falhar.
-  totalPacientes = signal<number | string>('—');
   totalProfissionais = signal<number | string>('—');
   profissionaisAtivos = signal<number | string>('—');
 
@@ -42,11 +39,7 @@ export class DashboardAdministrador implements OnInit {
       next: ({ atividades }) => this.terapiasHoje.set(atividades),
     });
 
-    // size=1: só o total interessa, não a lista.
-    this.pacienteService.listar({ page: 0, size: 1 }).subscribe({
-      next: (pagina) => this.totalPacientes.set(pagina.totalElements),
-    });
-
+    // size=1: só o total interessa, não a lista. (Pacientes não têm total: a API só faz busca, por LGPD.)
     this.profissionalService.listar({ size: 1 }).subscribe({
       next: (pagina) => this.totalProfissionais.set(pagina.totalElements),
     });

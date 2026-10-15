@@ -10,7 +10,8 @@ import { Contato } from '../../../shared/components/contato/contato';
 import { InfoProfissional } from '../cadastrar-profissional/formularios/info-profissional/info-profissional';
 import { InfoUsuario } from '../cadastrar-profissional/formularios/info-usuario/info-usuario';
 import { InfoEspecialista } from '../cadastrar-profissional/formularios/info-especialista/info-especialista';
-import { FormulariosCadastro } from '../cadastrar-profissional/models/formularios-cadastro';
+import { InfoAssistenteSocial } from '../cadastrar-profissional/formularios/info-assistente-social/info-assistente-social';
+import { FormulariosCadastro, InfoAssistenteSocialForm } from '../cadastrar-profissional/models/formularios-cadastro';
 import { CadastroValidadorService } from '../cadastrar-profissional/services/cadastro-validador';
 import { CadastroPayloadService } from '../cadastrar-profissional/services/cadastro-payload';
 import { CadastroErrosApiService } from '../cadastrar-profissional/services/cadastro-erros-api';
@@ -19,6 +20,11 @@ import { ProfissionalService, tipoDoDetalhe } from '../../../core/services/profi
 import { ProfissionalDetalhe } from '../../../core/models/profissional.model';
 import { mensagemDeErro } from '../../../core/http/erro-api';
 import { FormulariosDetalhe, paraFormularios } from '../detalhe-profissional/profissional-detalhe.util';
+
+// Formulário vazio para quem não é assistente social (o validador e o payload ignoram o bloco).
+function semAssistenteSocial(): InfoAssistenteSocialForm {
+  return { ehAssistenteSocial: false, registroConselho: '', idsPacientes: [], erros: {}, limparErro() {} };
+}
 
 @Component({
   selector: 'app-editar-profissional',
@@ -30,6 +36,7 @@ import { FormulariosDetalhe, paraFormularios } from '../detalhe-profissional/pro
     InfoProfissional,
     InfoUsuario,
     InfoEspecialista,
+    InfoAssistenteSocial,
   ],
   templateUrl: './editar-profissional.html',
   styleUrl: './editar-profissional.scss',
@@ -50,6 +57,8 @@ export class EditarProfissional implements OnInit {
   @ViewChild(InfoProfissional) infoProfissionalForm?: InfoProfissional;
   @ViewChild(InfoUsuario) infoUsuarioForm?: InfoUsuario;
   @ViewChild(InfoEspecialista) infoEspecialistaForm?: InfoEspecialista;
+  // Só existe na tela quando o cadastro é de assistente social.
+  @ViewChild(InfoAssistenteSocial) infoAssistenteSocialForm?: InfoAssistenteSocial;
 
   id = Number(this.route.snapshot.paramMap.get('id'));
 
@@ -101,6 +110,7 @@ export class EditarProfissional implements OnInit {
       infoProfissional: this.infoProfissionalForm,
       infoUsuario: this.infoUsuarioForm,
       infoEspecialista: this.infoEspecialistaForm,
+      infoAssistenteSocial: this.infoAssistenteSocialForm ?? semAssistenteSocial(),
     };
   }
 
@@ -120,13 +130,15 @@ export class EditarProfissional implements OnInit {
     try {
       await firstValueFrom(this.profissionalService.atualizar(this.id, this.tipo(), this.payload.montarAtualizacao(f)));
       const usuario = this.payload.montarUsuario(f);
+      let emailNaoEnviado = false;
       if (usuario) {
-        await firstValueFrom(this.profissionalService.concederAcesso(this.id, this.tipo(), usuario));
+        const acesso = await firstValueFrom(this.profissionalService.concederAcesso(this.id, this.tipo(), usuario));
+        emailNaoEnviado = !acesso.emailEnviado;
         // Evita conceder de novo se o usuário salvar outra vez nesta tela.
         f.infoUsuario.possuiAcesso = true;
       }
       this.nomeSalvo.set(f.dadosPessoais.nome.trim());
-      this.mostrarSucesso();
+      this.mostrarSucesso(emailNaoEnviado);
     } catch (err) {
       this.erroGeral.set(this.errosApi.tratar(err, f).mensagemGeral);
     } finally {
@@ -148,10 +160,12 @@ export class EditarProfissional implements OnInit {
   }
 
   // Aviso de sucesso com os próximos passos (fim de fluxo).
-  private mostrarSucesso() {
+  private mostrarSucesso(emailNaoEnviado = false) {
     this.avisoSucesso.mostrar({
       titulo: 'Alterações salvas',
-      detalhe: this.nomeSalvo(),
+      detalhe: emailNaoEnviado
+        ? `${this.nomeSalvo()}. Atenção: o acesso foi criado, mas o e-mail com a senha temporária não foi enviado. Reenvie pelo detalhe do profissional.`
+        : this.nomeSalvo(),
       acoes: [
         { texto: 'Voltar à lista', acao: () => this.irParaGerenciarProfissionais() },
         { texto: 'Ver profissional', primaria: true, acao: () => this.irParaDetalhes() },

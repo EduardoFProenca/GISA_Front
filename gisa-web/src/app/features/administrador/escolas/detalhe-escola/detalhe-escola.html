@@ -40,18 +40,16 @@
       @for (p of pacientes(); track p.idCadastro) {
       <li>
         <a class="nome" [routerLink]="['/administrador/pacientes', p.idCadastro]">{{ p.nome }}</a>
-        <small>CPF {{ cpf(p.cpf) }}</small>
-        <span class="etiqueta" [class.inativo]="p.statusPaciente !== 'MATRICULADO'">{{ rotuloStatus[p.statusPaciente] }}</span>
+        <small>CPF {{ p.cpfMascarado }}</small>
+        <span class="etiqueta" [class.inativo]="p.statusCadastro === 'INATIVO'">{{ rotuloStatus[p.statusCadastro] }}</span>
       </li>
       } @empty {
-      <li class="vazio">Nenhum paciente ativo nesta escola.</li>
+      <li class="vazio">Nenhum paciente nesta escola.</li>
       }
     </ul>
-    @if (totalPacientes() < e.quantidadePacientes) {
-    <p class="dica">Pacientes inativos não aparecem na lista, mas contam para a exclusão.</p>
+    @if (pacientes().length < e.quantidadePacientes) {
+    <p class="dica">Mostrando {{ pacientes().length }} de {{ e.quantidadePacientes }} pacientes (a busca traz no máximo {{ limitePacientes }}). Para encontrar um paciente específico, use a busca de pacientes.</p>
     }
-    <app-paginacao [totalItens]="totalPacientes()" [itensPorPagina]="itensPorPagina"
-      [paginaAtual]="paginaPacientes()" (paginaAlterada)="mudarPaginaPacientes($event)" />
     }
   </div>
   }

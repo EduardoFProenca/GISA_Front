@@ -8,6 +8,8 @@ export interface FormulariosDetalhe {
   infoProfissional: Record<string, unknown>;
   infoUsuario: Record<string, unknown>;
   infoEspecialista: Record<string, unknown>;
+  // null = não é assistente social (o bloco não aparece na edição).
+  infoAssistenteSocial: Record<string, unknown> | null;
 }
 
 // Converte a resposta da API nos valores que os formulários compartilhados esperam.
@@ -66,9 +68,11 @@ export function paraFormularios(detalhe: ProfissionalDetalhe): FormulariosDetalh
     infoUsuario: {
       possuiAcesso: !!usuario,
       temAcessoSistema: false,
-      senha: '',
       perfil: usuario ? String(usuario.perfil.idPerfil) : '',
     },
     infoEspecialista,
+    infoAssistenteSocial: detalhe.assistenteSocial
+      ? { ehAssistenteSocial: true, registroConselho: detalhe.assistenteSocial.registroConselho ?? '' }
+      : null,
   };
 }
