@@ -73,8 +73,8 @@ describe('agenda.util (especialista)', () => {
       idTerapia: 7, titulo: 'Terapia coletiva', modalidade: 'COLETIVA', data: '2026-10-13',
       horaInicio: '09:00:00', horaTermino: '10:00:00', status: 'AGENDADA', horarioLiberado: false,
       pacientes: [
-        { idCadastro: 1, nome: 'A', presenca: 'PENDENTE', justificativa: null },
-        { idCadastro: 2, nome: 'B', presenca: 'PRESENTE', justificativa: null },
+        { idCadastro: 1, nome: 'A', presenca: 'PENDENTE', justificativa: null, presencasPermitidas: [] },
+        { idCadastro: 2, nome: 'B', presenca: 'PRESENTE', justificativa: null, presencasPermitidas: [] },
       ],
       outrosEspecialistas: ['Carlos'],
     };

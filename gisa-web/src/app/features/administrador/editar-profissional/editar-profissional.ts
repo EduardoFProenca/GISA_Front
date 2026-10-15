@@ -11,7 +11,7 @@ import { InfoProfissional } from '../cadastrar-profissional/formularios/info-pro
 import { InfoUsuario } from '../cadastrar-profissional/formularios/info-usuario/info-usuario';
 import { InfoEspecialista } from '../cadastrar-profissional/formularios/info-especialista/info-especialista';
 import { InfoAssistenteSocial } from '../cadastrar-profissional/formularios/info-assistente-social/info-assistente-social';
-import { FormulariosCadastro, InfoAssistenteSocialForm } from '../cadastrar-profissional/models/formularios-cadastro';
+import { FormulariosCadastro, InfoAssistenteSocialForm, InfoEspecialistaForm } from '../cadastrar-profissional/models/formularios-cadastro';
 import { CadastroValidadorService } from '../cadastrar-profissional/services/cadastro-validador';
 import { CadastroPayloadService } from '../cadastrar-profissional/services/cadastro-payload';
 import { CadastroErrosApiService } from '../cadastrar-profissional/services/cadastro-erros-api';
@@ -24,6 +24,24 @@ import { FormulariosDetalhe, paraFormularios } from '../detalhe-profissional/pro
 // Formulário vazio para quem não é assistente social (o validador e o payload ignoram o bloco).
 function semAssistenteSocial(): InfoAssistenteSocialForm {
   return { ehAssistenteSocial: false, registroConselho: '', idsPacientes: [], erros: {}, limparErro() {} };
+}
+
+// Formulário vazio para quem não é especialista (o PATCH de profissional e de assistente social não leva esses campos).
+function semEspecialista(): InfoEspecialistaForm {
+  return {
+    ehEspecialista: false,
+    registroProfissional: '',
+    especialidades: [],
+    opcoesEspecialidade: [],
+    jornadas: [],
+    atuaComoPJ: false,
+    cnpj: '',
+    razaoSocial: '',
+    nomeFantasia: '',
+    inscricaoEstadual: '',
+    erros: {},
+    limparErro() {},
+  };
 }
 
 @Component({
@@ -56,6 +74,7 @@ export class EditarProfissional implements OnInit {
   @ViewChild(Contato) contatoForm?: Contato;
   @ViewChild(InfoProfissional) infoProfissionalForm?: InfoProfissional;
   @ViewChild(InfoUsuario) infoUsuarioForm?: InfoUsuario;
+  // Só existe na tela quando o cadastro é de especialista ou PJ.
   @ViewChild(InfoEspecialista) infoEspecialistaForm?: InfoEspecialista;
   // Só existe na tela quando o cadastro é de assistente social.
   @ViewChild(InfoAssistenteSocial) infoAssistenteSocialForm?: InfoAssistenteSocial;
@@ -77,6 +96,7 @@ export class EditarProfissional implements OnInit {
     const d = this.detalhe();
     return d ? tipoDoDetalhe(d) : 'PROFISSIONAL';
   });
+  ehEspecialista = computed(() => this.tipo() === 'ESPECIALISTA' || this.tipo() === 'ESPECIALISTA_PJ');
 
   ngOnInit() {
     if (!Number.isInteger(this.id) || this.id <= 0) {
@@ -101,7 +121,7 @@ export class EditarProfissional implements OnInit {
   }
 
   private get formulariosAtuais(): FormulariosCadastro | null {
-    if (!this.dadosPessoaisForm || !this.contatoForm || !this.infoProfissionalForm || !this.infoUsuarioForm || !this.infoEspecialistaForm) {
+    if (!this.dadosPessoaisForm || !this.contatoForm || !this.infoProfissionalForm || !this.infoUsuarioForm) {
       return null;
     }
     return {
@@ -109,7 +129,7 @@ export class EditarProfissional implements OnInit {
       contato: this.contatoForm,
       infoProfissional: this.infoProfissionalForm,
       infoUsuario: this.infoUsuarioForm,
-      infoEspecialista: this.infoEspecialistaForm,
+      infoEspecialista: this.infoEspecialistaForm ?? semEspecialista(),
       infoAssistenteSocial: this.infoAssistenteSocialForm ?? semAssistenteSocial(),
     };
   }

@@ -7,6 +7,7 @@ const paciente: PacienteTerapia = {
   nome: 'Lucas Santos',
   presenca: 'PENDENTE',
   justificativa: null,
+  presencasPermitidas: ['PRESENTE', 'FALTA_INJUSTIFICADA', 'FALTA_JUSTIFICADA', 'PENDENTE'],
 };
 
 describe('LinhaPacientePresenca', () => {

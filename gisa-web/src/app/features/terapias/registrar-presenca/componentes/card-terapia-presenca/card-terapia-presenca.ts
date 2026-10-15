@@ -2,7 +2,7 @@ import { Component, computed, input, output } from '@angular/core';
 import { PacienteTerapia, Presenca } from '../../../../../core/models/terapia.model';
 import { ROTULO_MODALIDADE, ROTULO_STATUS_TERAPIA } from '../../../../../shared/utils/rotulos.util';
 import { LinhaPacientePresenca } from '../linha-paciente-presenca/linha-paciente-presenca';
-import { TerapiaDoDia, antesDoDia, especialistasTexto, horarioTerapia } from '../../presenca.util';
+import { TerapiaDoDia, especialistasTexto, horarioTerapia } from '../../presenca.util';
 
 export interface PresencaMarcada {
   idPaciente: number;
@@ -32,7 +32,6 @@ export class CardTerapiaPresenca {
   cancelada = computed(() => this.terapia().status === 'CANCELADA');
   // Todos os pacientes justificaram a falta: o horário do especialista ficou livre (vem da API).
   horarioLiberado = computed(() => this.terapia().horarioLiberado);
-  antesDoDia = computed(() => antesDoDia(this.terapia()));
 
   bloqueado(p: PacienteTerapia): boolean {
     return !this.podeRegistrar() || this.cancelada() || this.idPacienteSalvando() === p.idCadastro;

@@ -29,10 +29,13 @@
     <br>
     <hr>
 
+    <!-- A API não muda o tipo do cadastro: a seção só aparece para quem já é especialista ou PJ. -->
+    @if (ehEspecialista()) {
     <app-info-especialista [dadosIniciais]="f.infoEspecialista" [especialidadesDisponiveis]="opcoes().especialidades"
         [bloquearTipo]="true"></app-info-especialista>
     <br>
     <hr>
+    }
 
     @if (f.infoAssistenteSocial) {
     <app-info-assistente-social [dadosIniciais]="f.infoAssistenteSocial" [bloquearTipo]="true" [edicao]="true" />

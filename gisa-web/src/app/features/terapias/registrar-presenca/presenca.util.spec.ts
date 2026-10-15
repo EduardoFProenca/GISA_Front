@@ -1,11 +1,11 @@
 import { Terapia, TerapiaDoEspecialista } from '../../../core/models/terapia.model';
 import {
-  antesDoDia,
   calcularResumo,
   especialistasTexto,
   filtrarPorSituacao,
   filtrarTerapias,
   horarioTerapia,
+  motivoPresencaIndisponivel,
   situacaoDaTerapia,
   substituirTerapia,
 } from './presenca.util';
@@ -20,7 +20,7 @@ function terapia(parcial: Partial<Terapia> = {}): Terapia {
     horaTermino: '09:50',
     status: 'AGENDADA',
     horarioLiberado: false,
-    pacientes: [{ idCadastro: 5, nome: 'Lucas Santos', presenca: 'PENDENTE', justificativa: null }],
+    pacientes: [{ idCadastro: 5, nome: 'Lucas Santos', presenca: 'PENDENTE', justificativa: null, presencasPermitidas: [] }],
     especialistas: [{ idCadastro: 10, nome: 'Ana Souza', especialidades: ['Psicologia'] }],
     motivoCancelamento: null,
     ...parcial,
@@ -31,7 +31,7 @@ describe('presenca.util', () => {
   it('resumo ignora pacientes de terapias canceladas', () => {
     const lista = [
       terapia(),
-      terapia({ idTerapia: 2, pacientes: [{ idCadastro: 6, nome: 'Bia', presenca: 'PRESENTE', justificativa: null }] }),
+      terapia({ idTerapia: 2, pacientes: [{ idCadastro: 6, nome: 'Bia', presenca: 'PRESENTE', justificativa: null, presencasPermitidas: [] }] }),
       terapia({ idTerapia: 3, status: 'CANCELADA' }),
     ];
     expect(calcularResumo(lista)).toEqual({ terapias: 3, presentes: 1, faltas: 0, pendentes: 1 });
@@ -40,7 +40,7 @@ describe('presenca.util', () => {
   it('situação: pendente, registrada ou cancelada', () => {
     expect(situacaoDaTerapia(terapia())).toBe('PENDENTE');
     expect(
-      situacaoDaTerapia(terapia({ pacientes: [{ idCadastro: 5, nome: 'L', presenca: 'FALTA_INJUSTIFICADA', justificativa: null }] }))
+      situacaoDaTerapia(terapia({ pacientes: [{ idCadastro: 5, nome: 'L', presenca: 'FALTA_INJUSTIFICADA', justificativa: null, presencasPermitidas: [] }] }))
     ).toBe('REGISTRADA');
     expect(situacaoDaTerapia(terapia({ status: 'CANCELADA' }))).toBe('CANCELADA');
   });
@@ -74,10 +74,10 @@ describe('presenca.util', () => {
   });
 });
 
-describe('antesDoDia', () => {
-  it('é verdadeiro só para terapias de dias futuros', () => {
-    expect(antesDoDia({ data: '2026-10-14' }, '2026-10-13')).toBe(true);
-    expect(antesDoDia({ data: '2026-10-13' }, '2026-10-13')).toBe(false);
-    expect(antesDoDia({ data: '2026-10-12' }, '2026-10-13')).toBe(false);
+describe('motivoPresencaIndisponivel', () => {
+  it('lê a fase do prazo a partir da lista devolvida pela API', () => {
+    expect(motivoPresencaIndisponivel(['PENDENTE', 'FALTA_JUSTIFICADA'])).toBe('Disponível a partir do dia da terapia');
+    expect(motivoPresencaIndisponivel(['FALTA_JUSTIFICADA'])).toBe('Prazo encerrado: só falta justificada');
+    expect(motivoPresencaIndisponivel([])).toBe('Nenhuma marcação disponível nesta terapia');
   });
 });

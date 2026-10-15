@@ -1,5 +1,4 @@
 import { Presenca, StatusTerapia, Terapia, TerapiaDoEspecialista } from '../../../core/models/terapia.model';
-import { hojeIso } from '../../../shared/utils/data.util';
 
 // Terapia da listagem geral ou de /terapias/minhas: a diferença é só como os especialistas vêm.
 export type TerapiaDoDia = Terapia | TerapiaDoEspecialista;
@@ -67,10 +66,13 @@ export function substituirTerapia<T extends TerapiaDoDia>(terapias: T[], atualiz
   });
 }
 
-// A API só aceita PRESENTE e FALTA_INJUSTIFICADA a partir do dia da terapia
-// (a falta justificada pode ser registrada com antecedência).
-export function antesDoDia(t: { data: string }, hoje: string = hojeIso()): boolean {
-  return t.data > hoje;
+// Tooltip do botão de uma marcação fora de `presencasPermitidas`.
+// A regra de datas fica no back; aqui só se lê a lista: antes do dia ela ainda
+// permite desfazer (PENDENTE), depois do prazo só sobra a falta justificada.
+export function motivoPresencaIndisponivel(permitidas: Presenca[]): string {
+  if (permitidas.length === 0) return 'Nenhuma marcação disponível nesta terapia';
+  if (permitidas.includes('PENDENTE')) return 'Disponível a partir do dia da terapia';
+  return 'Prazo encerrado: só falta justificada';
 }
 
 export function horarioTerapia(t: { horaInicio: string; horaTermino: string }): string {

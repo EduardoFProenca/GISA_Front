@@ -21,7 +21,6 @@
       <app-linha-paciente-presenca
         [paciente]="p"
         [bloqueado]="bloqueado(p)"
-        [antesDoDia]="antesDoDia()"
         (marcarPresente)="marcar(p, 'PRESENTE')"
         (marcarFalta)="marcar(p, 'FALTA_INJUSTIFICADA')"
         (marcarFaltaJustificada)="marcar(p, 'FALTA_JUSTIFICADA', $event)"

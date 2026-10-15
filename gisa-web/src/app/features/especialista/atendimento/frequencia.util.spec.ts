@@ -4,7 +4,7 @@ import { calcularFrequenciaMes } from './frequencia.util';
 const t = (id: number, presenca: 'PRESENTE' | 'PENDENTE' | 'FALTA_INJUSTIFICADA', status: Terapia['status'] = 'CONCLUIDA'): Terapia => ({
   idTerapia: id, titulo: 'X', modalidade: 'INDIVIDUAL', data: `2026-10-0${id}`, horaInicio: '09:00:00',
   horaTermino: '10:00:00', status, horarioLiberado: false,
-  pacientes: [{ idCadastro: 5, nome: 'P', presenca, justificativa: null }],
+  pacientes: [{ idCadastro: 5, nome: 'P', presenca, justificativa: null, presencasPermitidas: [] }],
   especialistas: [{ idCadastro: 1, nome: 'E', especialidades: ['Fonoaudiologia'] }],
 });
 

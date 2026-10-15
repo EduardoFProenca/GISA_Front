@@ -13,6 +13,9 @@ export interface PacienteTerapia {
   nome: string;
   presenca: Presenca;
   justificativa: string | null;
+  // Marcações que o PATCH de presença aceita agora (o back aplica a regra de prazo).
+  // Vazia = nenhuma marcação (terapia cancelada).
+  presencasPermitidas: Presenca[];
 }
 
 export interface EspecialistaTerapia {
