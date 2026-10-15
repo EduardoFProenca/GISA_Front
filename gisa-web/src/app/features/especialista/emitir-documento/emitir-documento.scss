@@ -11,9 +11,9 @@
 
 .painel {
   background: white;
-  border-radius: 12px;
+  border-radius: var(--raio-xl);
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--sombra-card);
   text-align: left;
 
   h3 {
@@ -25,23 +25,23 @@
 
 .descricao {
   margin: 0 0 0.5rem;
-  color: #64748b;
+  color: var(--cor-texto-secundario);
   font-size: 0.9rem;
 }
 
 .btn-emitir {
   margin-top: 1.25rem;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--raio-md);
   padding: 0.65rem 1.2rem;
-  background: #0891b2;
+  background: var(--cor-destaque);
   color: white;
   font-size: 0.95rem;
   font-weight: 600;
   transform: none;
 
   &:hover {
-    background: #0e7490;
+    background: var(--cor-destaque-forte);
     border: none;
     transform: none;
   }

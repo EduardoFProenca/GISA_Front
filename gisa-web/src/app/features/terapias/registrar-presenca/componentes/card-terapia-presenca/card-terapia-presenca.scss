@@ -3,26 +3,26 @@
 }
 
 .card-consulta {
-  --cor-status: #2563eb;
+  --cor-status: var(--cor-primaria);
 
   background: white;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--cor-borda);
   border-left: 4px solid var(--cor-status);
   // Faixa de status reta: os cantos do lado dela não são arredondados.
   border-radius: 0 12px 12px 0;
   padding: 1rem 1.15rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--sombra-card);
   transition: background 0.2s, opacity 0.2s;
 
   &.cancelada {
-    --cor-status: #dc2626;
+    --cor-status: var(--cor-perigo);
     opacity: 0.75;
   }
 
   // Horário liberado: só efeito visual (esmaecido, verde).
   &.liberada {
-    --cor-status: #16a34a;
-    background: #f6fdf8;
+    --cor-status: var(--cor-sucesso);
+    background: var(--verde-50);
     opacity: 0.85;
   }
 }
@@ -37,12 +37,12 @@
   .horario {
     display: block;
     font-size: 1.05rem;
-    color: #0f172a;
+    color: var(--cor-texto);
   }
 
   .meta {
     font-size: 0.85rem;
-    color: #64748b;
+    color: var(--cor-texto-secundario);
   }
 }
 
@@ -50,29 +50,29 @@
   font-size: 0.75rem;
   font-weight: 600;
   padding: 0.2rem 0.65rem;
-  border-radius: 999px;
+  border-radius: var(--raio-pilula);
   white-space: nowrap;
-  background: #dbeafe;
-  color: #1d4ed8;
+  background: var(--azul-100);
+  color: var(--cor-primaria-hover);
 
   &[data-status='CONCLUIDA'] {
-    background: #dcfce7;
-    color: #15803d;
+    background: var(--cor-sucesso-suave);
+    color: var(--cor-sucesso-forte);
   }
 
   &[data-status='CANCELADA'] {
-    background: #fee2e2;
-    color: #b91c1c;
+    background: var(--cor-perigo-suave);
+    color: var(--cor-perigo-forte);
   }
 
   &[data-status='EM_ATENDIMENTO'] {
-    background: #fef3c7;
-    color: #b45309;
+    background: var(--cor-alerta-suave);
+    color: var(--cor-alerta-forte);
   }
 
   &[data-status='LIBERADA'] {
-    background: #bbf7d0;
-    color: #166534;
+    background: var(--verde-200);
+    color: var(--verde-800);
   }
 }
 
@@ -84,11 +84,11 @@
 
 .vazio {
   text-align: center;
-  color: #94a3b8;
+  color: var(--cor-texto-suave);
   padding: 1rem;
 }
 .motivo {
   margin: 0.5rem 0 0;
   font-size: 0.85rem;
-  color: #b91c1c;
+  color: var(--cor-perigo-forte);
 }

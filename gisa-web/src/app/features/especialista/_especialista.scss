@@ -31,22 +31,22 @@
 }
 
 @mixin btn-primario {
-  background: #0891b2;
+  background: var(--cor-destaque);
   color: white;
   border: none;
   padding: 0.55rem 1.25rem;
-  border-radius: 8px;
+  border-radius: var(--raio-md);
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
 
   &:hover:not(:disabled) {
-    background: #0e7490;
+    background: var(--cor-destaque-forte);
     border: none;
   }
 
   &:disabled {
-    background: #cbd5e1;
+    background: var(--cinza-300);
     cursor: not-allowed;
     transform: scale(0.95);
     box-shadow: none;
@@ -55,10 +55,10 @@
 
 @mixin btn-secundario {
   background: transparent;
-  color: #475569;
-  border: 1px solid #cbd5e1;
+  color: var(--cinza-600);
+  border: 1px solid var(--cor-borda-forte);
   padding: 0.55rem 1.25rem;
-  border-radius: 8px;
+  border-radius: var(--raio-md);
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
@@ -66,12 +66,12 @@
   display: inline-block;
 
   &:hover:not(:disabled) {
-    background: #f1f5f9;
-    border: 1px solid #cbd5e1;
+    background: var(--cor-superficie-realce);
+    border: 1px solid var(--cor-borda-forte);
   }
 
   &:disabled {
-    color: #94a3b8;
+    color: var(--cor-texto-suave);
     cursor: not-allowed;
     transform: scale(0.95);
     box-shadow: none;
@@ -95,15 +95,15 @@
   .selo {
     display: inline-block;
     padding: 0.15rem 0.6rem;
-    border-radius: 999px;
+    border-radius: var(--raio-pilula);
     font-size: 0.72rem;
     font-weight: 600;
     white-space: nowrap;
   }
-  .st-AGENDADA { background: #dbeafe; color: #1d4ed8; }
-  .st-PRESENTE { background: #dcfce7; color: #15803d; }
-  .st-FALTA_JUSTIFICADA { background: #fef3c7; color: #b45309; }
-  .st-FALTA_INJUSTIFICADA { background: #fee2e2; color: #b91c1c; }
-  .st-CONCLUIDA { background: #e2e8f0; color: #475569; }
-  .st-CANCELADA { background: #f1f5f9; color: #94a3b8; text-decoration: line-through; }
+  .st-AGENDADA { background: var(--azul-100); color: var(--cor-primaria-hover); }
+  .st-PRESENTE { background: var(--verde-100); color: var(--cor-sucesso-forte); }
+  .st-FALTA_JUSTIFICADA { background: var(--ambar-100); color: var(--cor-alerta-forte); }
+  .st-FALTA_INJUSTIFICADA { background: var(--vermelho-100); color: var(--cor-perigo-forte); }
+  .st-CONCLUIDA { background: var(--cinza-200); color: var(--cinza-600); }
+  .st-CANCELADA { background: var(--cinza-100); color: var(--cinza-400); text-decoration: line-through; }
 }

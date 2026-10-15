@@ -4,11 +4,11 @@
   h3 {
     font-size: 1.1rem;
     font-weight: 600;
-    color: #000;
+    color: var(--cor-titulo);
     text-align: left;
     margin: 2rem 0 1.25rem 0;
     padding-bottom: 0.6rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--cor-borda);
   }
 }
 
@@ -42,8 +42,8 @@
 
 .add-item {
   background: transparent;
-  color: #2563eb;
-  border: 1.5px dashed #93c5fd;
+  color: var(--cor-primaria);
+  border: 1.5px dashed var(--azul-300);
   padding: 0.6rem;
   width: 100%;
   font-size: 0.85rem;
@@ -51,10 +51,10 @@
   transform: none;
 
   &:hover {
-    background: #eff6ff;
+    background: var(--cor-primaria-suave);
     transform: none;
     box-shadow: none;
-    border-color: #2563eb;
+    border-color: var(--cor-primaria);
   }
 
   &:active {
@@ -64,8 +64,8 @@
   }
 
   &:disabled {
-    color: #94a3b8;
-    border-color: #cbd5e1;
+    color: var(--cor-texto-suave);
+    border-color: var(--cor-borda-forte);
     background: transparent;
     cursor: not-allowed;
   }
@@ -76,15 +76,15 @@
   height: 32px;
   flex-shrink: 0;
   padding: 0;
-  background: #fef2f2;
-  color: #ef4444;
+  background: var(--vermelho-50);
+  color: var(--vermelho-500);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--raio-md);
   font-size: 0.85rem;
   transform: none;
 
   &:hover {
-    background: #fee2e2;
+    background: var(--cor-perigo-suave);
     transform: none;
     box-shadow: none;
   }
@@ -98,11 +98,11 @@
 
 .legenda-secao {
   margin: 0 0 1rem;
-  color: #64748b;
+  color: var(--cor-texto-secundario);
   font-size: 0.85rem;
 
   .obrigatorio {
-    color: #ef4444;
+    color: var(--vermelho-500);
   }
 }
 
@@ -125,20 +125,20 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #f9fafb;
-  border: 1.5px solid #e5e7eb;
-  border-radius: 10px;
+  background-color: var(--cor-superficie-suave);
+  border: 1.5px solid var(--cor-borda);
+  border-radius: var(--raio-lg);
   padding: 0.9rem 1rem;
 
   .nome-resp {
     font-weight: 600;
-    color: #1a1a2e;
+    color: var(--cor-titulo);
     margin-bottom: 0.25rem;
   }
 
   .detalhes-resp {
     font-size: 0.85rem;
-    color: #64748b;
+    color: var(--cor-texto-secundario);
   }
 
   .acoes-card {
@@ -152,17 +152,17 @@
     border: none;
     cursor: pointer;
     padding: 0.35rem 0.5rem;
-    border-radius: 8px;
+    border-radius: var(--raio-md);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: #475569;
+    color: var(--cinza-600);
     transform: none;
     transition: background 0.2s, color 0.2s;
 
     &:hover {
-      background-color: #e0f2fe;
-      color: #0284c7;
+      background-color: var(--celeste-100);
+      color: var(--celeste-600);
       transform: none;
       box-shadow: none;
     }
@@ -180,9 +180,9 @@
 }
 
 .formulario-card {
-  background: #ffffff;
-  border: 1.5px solid #e5e7eb;
-  border-radius: 10px;
+  background: var(--cor-superficie);
+  border: 1.5px solid var(--cor-borda);
+  border-radius: var(--raio-lg);
   padding: 1.25rem 1.5rem;
   margin-bottom: 1rem;
 
@@ -190,7 +190,7 @@
     margin: 0 0 0.25rem;
     font-size: 1rem;
     font-weight: 600;
-    color: #1a1a2e;
+    color: var(--cor-titulo);
     text-align: left;
   }
 
@@ -208,34 +208,34 @@
 
   .btn-cancelar {
     background: transparent;
-    color: #475569;
-    border: 1px solid #cbd5e1;
+    color: var(--cinza-600);
+    border: 1px solid var(--cor-borda-forte);
     padding: 0.5rem 1.25rem;
-    border-radius: 6px;
+    border-radius: var(--raio-sm);
     font-size: 0.95rem;
     font-weight: 600;
     transform: none;
 
     &:hover {
-      background: #f1f5f9;
+      background: var(--cor-superficie-realce);
       transform: none;
       box-shadow: none;
-      border: 1px solid #cbd5e1;
+      border: 1px solid var(--cor-borda-forte);
     }
   }
 
   .btn-confirmar {
-    background: #0891b2;
+    background: var(--cor-destaque);
     color: white;
     border: none;
     padding: 0.5rem 1.25rem;
-    border-radius: 6px;
+    border-radius: var(--raio-sm);
     font-size: 0.95rem;
     font-weight: 600;
     transform: none;
 
     &:hover {
-      background: #0e7490;
+      background: var(--cor-destaque-forte);
       transform: none;
       box-shadow: none;
       border: none;
@@ -257,7 +257,7 @@
 
 .legenda-busca {
   font-size: 0.8rem;
-  color: #6b7280;
+  color: var(--cor-texto-secundario);
   margin-top: 0.35rem;
 }
 

@@ -1,8 +1,8 @@
 .painel {
   background: white;
-  border-radius: 12px;
+  border-radius: var(--raio-xl);
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--sombra-card);
 
   h3 {
     margin: 0 0 1.25rem 0;
@@ -21,7 +21,7 @@ li {
   justify-content: space-between;
   align-items: center;
   padding: 0.85rem 0;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--cinza-100);
   gap: 0.75rem;
 
   &:last-child {
@@ -38,7 +38,7 @@ li {
 
   span {
     font-size: 0.75rem;
-    color: #94a3b8;
+    color: var(--cor-texto-suave);
   }
 }
 
@@ -55,6 +55,6 @@ li {
   }
 }
 .vazio {
-  color: #94a3b8;
+  color: var(--cor-texto-suave);
   font-size: 0.9rem;
 }

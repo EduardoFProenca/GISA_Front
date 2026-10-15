@@ -6,7 +6,7 @@
   min-height: var(--altura-topo);
   padding: 0.5rem 2rem;
   background: white;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--cor-borda);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -23,58 +23,58 @@
   border: none;
   cursor: pointer;
   padding: 0.4rem;
-  border-radius: 6px;
-  color: #475569;
+  border-radius: var(--raio-sm);
+  color: var(--cinza-600);
 
   &:hover {
-    background: #0890b231;
+    background: var(--cor-destaque-fundo);
   }
 }
 
 .titulo-pagina {
   font-size: 1rem;
-  color: #1a1a2e;
+  color: var(--cor-titulo);
   text-align: center;
 }
 
 .btn-acao , .btn-salvar {
-  background: #0891b2;
+  background: var(--cor-destaque);
   color: white;
   border: none;
   padding: 0.5rem 1.25rem;
-  border-radius: 6px;
+  border-radius: var(--raio-sm);
   cursor: pointer;
   font-weight: 600;
 
   &:hover {
-    background: #0e7490;
+    background: var(--cor-destaque-forte);
   }
 }
 
 
 .btn-cancelar {
   background: transparent;
-  color: #475569;
-  border: 1px solid #cbd5e1;
+  color: var(--cinza-600);
+  border: 1px solid var(--cor-borda-forte);
   padding: 0.5rem 1.25rem;
-  border-radius: 6px;
+  border-radius: var(--raio-sm);
   cursor: pointer;
   font-weight: 600;
 
   &:hover {
-    background: #f1f5f9;
+    background: var(--cor-superficie-realce);
   }
 }
 .btn-acao-secundaria {
   background: white;
-  color: #0891b2;
-  border: 1.5px solid #0891b2;
+  color: var(--cor-destaque);
+  border: 1.5px solid var(--cor-destaque);
   padding: 0.45rem 1.1rem;
-  border-radius: 6px;
+  border-radius: var(--raio-sm);
   cursor: pointer;
   font-weight: 600;
 
   &:hover {
-    background: #ecfeff;
+    background: var(--ciano-50);
   }
 }

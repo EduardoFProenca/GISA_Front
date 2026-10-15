@@ -1,0 +1,142 @@
+// Design tokens do sistema: toda cor, sombra e raio usados nas telas vêm daqui.
+// Ao estilizar, prefira os tokens semânticos (--cor-*, --sombra-*, --raio-*); a paleta
+// (--cinza-*, --azul-*...) fica para casos de cor própria, como badges de status.
+// Para mudar a identidade visual, basta alterar este arquivo.
+
+:root {
+  // ---------- Paleta ----------
+
+  --branco: #ffffff;
+
+  --cinza-50: #f8fafc;
+  --cinza-100: #f1f5f9;
+  --cinza-200: #e5e7eb;
+  --cinza-300: #cbd5e1;
+  --cinza-400: #94a3b8;
+  --cinza-500: #64748b;
+  --cinza-600: #475569;
+  --cinza-700: #334155;
+  --cinza-800: #1e293b;
+  --cinza-900: #0f172a;
+
+  --marinho-800: #2c2c44;
+  --marinho-900: #1a1a2e;
+
+  --azul-50: #eff6ff;
+  --azul-100: #dbeafe;
+  --azul-200: #bfdbfe;
+  --azul-300: #93c5fd;
+  --azul-500: #3b82f6;
+  --azul-600: #2563eb;
+  --azul-700: #1d4ed8;
+  --azul-800: #1e40af;
+  --azul-900: #1e3a8a;
+
+  --ciano-50: #ecfeff;
+  --ciano-100: #cffafe;
+  --ciano-200: #a5f3fc;
+  --ciano-300: #67e8f9;
+  --ciano-600: #0891b2;
+  --ciano-700: #0e7490;
+
+  --celeste-50: #f0f9ff;
+  --celeste-100: #e0f2fe;
+  --celeste-200: #bae6fd;
+  --celeste-300: #7dd3fc;
+  --celeste-600: #0284c7;
+  --celeste-700: #0369a1;
+  --celeste-900: #0c4a6e;
+
+  --turquesa-50: #f0fdfa;
+  --turquesa-500: #14b8a6;
+  --turquesa-700: #0f766e;
+
+  --indigo-50: #eef2ff;
+  --indigo-100: #e0e7ff;
+  --indigo-200: #c7d2fe;
+  --indigo-800: #3730a3;
+
+  --roxo-100: #ede9fe;
+  --roxo-600: #7c3aed;
+  --roxo-700: #6d28d9;
+  --roxo-800: #5b21b6;
+  --roxo-900: #4c1d95;
+
+  --verde-50: #f0fdf4;
+  --verde-100: #dcfce7;
+  --verde-200: #bbf7d0;
+  --verde-600: #16a34a;
+  --verde-700: #15803d;
+  --verde-800: #166534;
+
+  --ambar-100: #fef3c7;
+  --ambar-600: #d97706;
+  --ambar-700: #b45309;
+  --ambar-800: #92400e;
+
+  --vermelho-50: #fef2f2;
+  --vermelho-100: #fee2e2;
+  --vermelho-200: #fecaca;
+  --vermelho-500: #ef4444;
+  --vermelho-600: #dc2626;
+  --vermelho-700: #b91c1c;
+  --vermelho-800: #991b1b;
+
+  // ---------- Papéis (use estes nas telas) ----------
+
+  // Fundos
+  --cor-fundo-pagina: #f4f6f9;
+  --cor-superficie: var(--branco);
+  --cor-superficie-suave: var(--cinza-50);
+  --cor-superficie-realce: var(--cinza-100);
+
+  // Textos
+  --cor-titulo: var(--marinho-900);
+  --cor-texto: var(--cinza-900);
+  --cor-texto-medio: var(--cinza-700);
+  --cor-texto-secundario: var(--cinza-500);
+  --cor-texto-suave: var(--cinza-400);
+
+  // Bordas
+  --cor-borda: var(--cinza-200);
+  --cor-borda-forte: var(--cinza-300);
+
+  // Ação principal (botões, links, foco)
+  --cor-primaria: var(--azul-600);
+  --cor-primaria-hover: var(--azul-700);
+  --cor-primaria-suave: var(--azul-50);
+  --cor-foco: var(--azul-500);
+
+  // Destaque da marca (menu, cabeçalhos, atalhos)
+  --cor-destaque: var(--ciano-600);
+  --cor-destaque-forte: var(--ciano-700);
+  --cor-destaque-fundo: color-mix(in srgb, var(--ciano-600) 19%, transparent);
+
+  // Estados
+  --cor-perigo: var(--vermelho-600);
+  --cor-perigo-forte: var(--vermelho-700);
+  --cor-perigo-suave: var(--vermelho-100);
+  --cor-sucesso: var(--verde-600);
+  --cor-sucesso-forte: var(--verde-700);
+  --cor-sucesso-suave: var(--verde-100);
+  --cor-alerta: var(--ambar-600);
+  --cor-alerta-forte: var(--ambar-700);
+  --cor-alerta-suave: var(--ambar-100);
+
+  // ---------- Sombras ----------
+  --sombra-card: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --sombra-flutuante: 0 8px 20px rgba(0, 0, 0, 0.1);
+  --sombra-dialog: 0 10px 25px rgba(0, 0, 0, 0.15);
+  --sombra-anel-foco: 0 0 0 3px color-mix(in srgb, var(--cor-foco) 15%, transparent);
+
+  // ---------- Raios ----------
+  --raio-sm: 6px;
+  --raio-md: 8px;
+  --raio-lg: 10px;
+  --raio-xl: 12px;
+  --raio-pilula: 999px;
+
+  // ---------- Layout ----------
+  // Altura da faixa do topo: cabeçalho das páginas, cabeçalho dos dashboards e nome no menu lateral.
+  --altura-topo: 72px;
+}

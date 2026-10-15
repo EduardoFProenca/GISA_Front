@@ -68,10 +68,10 @@ export const ROTULO_STATUS_TERAPIA: Record<StatusTerapia, string> = {
 
 // Cor do indicador de cada status (filtros e badges).
 export const COR_STATUS_TERAPIA: Record<StatusTerapia, string> = {
-  AGENDADA: '#2563eb',
-  EM_ATENDIMENTO: '#d97706',
-  CONCLUIDA: '#16a34a',
-  CANCELADA: '#ef4444',
+  AGENDADA: 'var(--cor-primaria)',
+  EM_ATENDIMENTO: 'var(--cor-alerta)',
+  CONCLUIDA: 'var(--cor-sucesso)',
+  CANCELADA: 'var(--vermelho-500)',
 };
 
 export const ROTULO_MODALIDADE: Record<Modalidade, string> = {

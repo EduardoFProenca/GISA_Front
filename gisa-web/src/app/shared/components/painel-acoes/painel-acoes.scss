@@ -1,8 +1,8 @@
 .painel {
   background: white;
-  border-radius: 12px;
+  border-radius: var(--raio-xl);
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--sombra-card);
 
   h3 {
     margin: 0 0 1.25rem 0;
@@ -12,7 +12,8 @@
 
 .grid-acoes {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  // Quem usa o painel pode mudar o número de colunas com --colunas-acoes no <app-painel-acoes>.
+  grid-template-columns: repeat(var(--colunas-acoes, 3), minmax(0, 1fr));
   gap: 1rem;
 }
 
@@ -21,22 +22,22 @@
   align-items: flex-start;
   gap: 0.75rem;
   padding: 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-lg);
   text-decoration: none;
   color: inherit;
   transition: 0.2s;
 
   &:hover {
-    border-color: #0891b2;
-    background: #0890b231;
+    border-color: var(--cor-destaque);
+    background: var(--cor-destaque-fundo);
     cursor: pointer;
     .q-icon {
-      background: #0890b2;
-      color: #e5e7eb !important;
+      background: var(--cor-destaque);
+      color: var(--cinza-200);
     }
     &:active {
-      background: #0891b2;
+      background: var(--cor-destaque);
     }
   }
 
@@ -46,9 +47,9 @@
     justify-content: center;
     width: 32px;
     height: 32px;
-    background: #f1f5f9;
-    border-radius: 8px;
-    color: #475569;
+    background: var(--cor-superficie-realce);
+    border-radius: var(--raio-md);
+    color: var(--cinza-600);
     flex-shrink: 0;
   }
 
@@ -60,6 +61,6 @@
   p {
     margin: 0.2rem 0 0 0;
     font-size: 0.78rem;
-    color: #94a3b8;
+    color: var(--cor-texto-suave);
   }
 }

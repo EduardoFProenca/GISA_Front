@@ -2,8 +2,8 @@
   background: white;
   max-width: 820px;
   margin: 2rem auto;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: var(--raio-xl);
+  box-shadow: var(--sombra-card);
   padding: 2rem 2.5rem;
 }
 
@@ -13,11 +13,11 @@
   h3 {
     font-size: 1.1rem;
     font-weight: 600;
-    color: #000;
+    color: var(--cor-titulo);
     text-align: left;
     margin: 0 0 1.25rem 0;
     padding-bottom: 0.6rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--cor-borda);
   }
 }
 
@@ -72,7 +72,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid #0891b2;
+    outline: 2px solid var(--cor-destaque);
     outline-offset: 2px;
   }
 }
@@ -86,13 +86,13 @@
   height: 36px;
   padding: 0;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--raio-md);
   background: transparent;
-  color: #94a3b8;
+  color: var(--cor-texto-suave);
 
   &:hover {
-    background: #fee2e2;
-    color: #dc2626;
+    background: var(--cor-perigo-suave);
+    color: var(--cor-perigo);
   }
 }
 
@@ -103,36 +103,36 @@
   gap: 0.4rem;
   margin-top: 0.6rem;
   padding: 0.38rem 0.85rem;
-  border: 1px dashed #67e8f9;
-  border-radius: 8px;
-  background: #ecfeff;
-  color: #0e7490;
+  border: 1px dashed var(--ciano-300);
+  border-radius: var(--raio-md);
+  background: var(--ciano-50);
+  color: var(--cor-destaque-forte);
   font-size: 0.82rem;
   font-weight: 600;
 
   &:hover {
-    background: #cffafe;
+    background: var(--ciano-100);
     border-style: solid;
   }
 }
 .aviso {
   text-align: center;
-  color: #94a3b8;
+  color: var(--cor-texto-suave);
   padding: 2rem;
 }
 
 .aviso-data {
-  color: #b45309;
+  color: var(--cor-alerta-forte);
   font-size: 0.8rem;
 }
 
 .aviso-conflito {
   margin-top: 1rem;
   padding: 0.75rem 1rem;
-  border-radius: 8px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #991b1b;
+  border-radius: var(--raio-md);
+  background: var(--vermelho-50);
+  border: 1px solid var(--vermelho-200);
+  color: var(--vermelho-800);
   font-size: 0.9rem;
   text-align: left;
 
@@ -142,8 +142,8 @@
   }
 
   &.verificando {
-    background: #f8fafc;
-    border-color: #e2e8f0;
-    color: #64748b;
+    background: var(--cor-superficie-suave);
+    border-color: var(--cor-borda);
+    color: var(--cor-texto-secundario);
   }
 }

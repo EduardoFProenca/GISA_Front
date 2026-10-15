@@ -6,20 +6,20 @@
   min-height: var(--altura-topo);
   padding: 0.5rem 2rem;
   background: white;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--cor-borda);
 }
 
 .header-esquerda {
   strong {
     display: block;
     font-size: 1rem;
-    color: #1a1a2e;
+    color: var(--cor-titulo);
   }
 
   p {
     margin: 0;
     font-size: 0.78rem;
-    color: #94a3b8;
+    color: var(--cor-texto-suave);
   }
 }
 
@@ -38,15 +38,15 @@
   background: transparent;
   font: inherit;
   font-size: 0.9rem;
-  color: #475569;
-  border-radius: 8px;
+  color: var(--cinza-600);
+  border-radius: var(--raio-md);
   padding: 10px 15px;
   cursor: pointer;
   text-decoration: none;
 
   &:hover,
   &:focus-visible {
-    background: #0890b231;
+    background: var(--cor-destaque-fundo);
   }
 }
 
@@ -64,8 +64,8 @@
     min-width: 16px;
     height: 16px;
     padding: 0 4px;
-    border-radius: 999px;
-    background: #dc2626;
+    border-radius: var(--raio-pilula);
+    background: var(--cor-perigo);
     color: white;
     font-size: 0.65rem;
     font-weight: 700;
@@ -83,26 +83,26 @@
   max-height: 360px;
   overflow-y: auto;
   background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-xl);
+  box-shadow: var(--sombra-dialog);
 
   .painel-topo {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0.75rem 1rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--cor-borda);
 
     strong {
       font-size: 0.9rem;
-      color: #1a1a2e;
+      color: var(--cor-titulo);
     }
 
     .link {
       border: none;
       background: none;
-      color: #0891b2;
+      color: var(--cor-destaque);
       font-size: 0.75rem;
       cursor: pointer;
     }
@@ -115,18 +115,18 @@
     width: 100%;
     padding: 0.75rem 1rem;
     border: none;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--cinza-100);
     background: white;
     text-align: left;
     font: inherit;
     cursor: pointer;
 
     &:hover {
-      background: #f8fafc;
+      background: var(--cor-superficie-suave);
     }
 
     &.nao-lida {
-      background: #ecfeff;
+      background: var(--ciano-50);
 
       .item-titulo {
         font-weight: 700;
@@ -135,17 +135,17 @@
 
     .item-titulo {
       font-size: 0.85rem;
-      color: #1a1a2e;
+      color: var(--cor-titulo);
     }
 
     .item-msg {
       font-size: 0.78rem;
-      color: #475569;
+      color: var(--cinza-600);
     }
 
     .item-tempo {
       font-size: 0.7rem;
-      color: #94a3b8;
+      color: var(--cor-texto-suave);
     }
   }
 
@@ -154,6 +154,6 @@
     padding: 1.5rem 1rem;
     text-align: center;
     font-size: 0.85rem;
-    color: #94a3b8;
+    color: var(--cor-texto-suave);
   }
 }

@@ -4,11 +4,11 @@
   h3 {
     font-size: 1.1rem;
     font-weight: 600;
-    color: #000;
+    color: var(--cor-titulo);
     text-align: left;
     margin: 2rem 0 1.25rem 0;
     padding-bottom: 0.6rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--cor-borda);
   }
 }
 
@@ -32,7 +32,7 @@
 .rotulo-secundario {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #374151;
+  color: var(--cor-texto-medio);
 }
 
 .bloco-pj {
@@ -82,7 +82,7 @@
 
   .separador {
     font-size: 0.8rem;
-    color: #94a3b8;
+    color: var(--cor-texto-suave);
     flex-shrink: 0;
   }
 }
@@ -92,15 +92,15 @@
   height: 32px;
   flex-shrink: 0;
   padding: 0;
-  background: #fef2f2;
-  color: #ef4444;
+  background: var(--vermelho-50);
+  color: var(--vermelho-500);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--raio-md);
   font-size: 0.85rem;
   transform: none;
 
   &:hover {
-    background: #fee2e2;
+    background: var(--cor-perigo-suave);
     transform: none;
     box-shadow: none;
   }
@@ -114,8 +114,8 @@
 
 .add-item {
   background: transparent;
-  color: #2563eb;
-  border: 1.5px dashed #93c5fd;
+  color: var(--cor-primaria);
+  border: 1.5px dashed var(--azul-300);
   padding: 0.6rem;
   width: 100%;
   font-size: 0.85rem;
@@ -123,10 +123,10 @@
   transform: none;
 
   &:hover {
-    background: #eff6ff;
+    background: var(--cor-primaria-suave);
     transform: none;
     box-shadow: none;
-    border-color: #2563eb;
+    border-color: var(--cor-primaria);
   }
 
   &:active {

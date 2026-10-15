@@ -4,10 +4,10 @@
   <main class="conteudo">
     <!-- Resumo do dia -->
     <div class="stats-grid">
-      <app-card-estatistica titulo="Pacientes do Dia" [valor]="carregando() ? '—' : resumo().total" [icone]="icones.gestaoPacientes" corIcone="#dbeafe" />
-      <app-card-estatistica titulo="Atendidos" [valor]="carregando() ? '—' : resumo().atendidos" [icone]="icones.gestaoConsultas" corIcone="#dcfce7" />
-      <app-card-estatistica titulo="Aguardando na Fila" [valor]="carregando() ? '—' : resumo().aguardando" [icone]="icones.calendario" corIcone="#fef3c7" />
-      <app-card-estatistica titulo="Faltas" [valor]="carregando() ? '—' : resumo().faltas" [icone]="icones.gestaoAtividades" corIcone="#fee2e2" />
+      <app-card-estatistica titulo="Pacientes do Dia" [valor]="carregando() ? '—' : resumo().total" [icone]="icones.gestaoPacientes" tom="azul" />
+      <app-card-estatistica titulo="Atendidos" [valor]="carregando() ? '—' : resumo().atendidos" [icone]="icones.gestaoConsultas" tom="verde" />
+      <app-card-estatistica titulo="Aguardando na Fila" [valor]="carregando() ? '—' : resumo().aguardando" [icone]="icones.calendario" tom="ambar" />
+      <app-card-estatistica titulo="Faltas" [valor]="carregando() ? '—' : resumo().faltas" [icone]="icones.gestaoAtividades" tom="vermelho" />
     </div>
 
     @if (aviso()) {

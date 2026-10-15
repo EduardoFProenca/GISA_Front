@@ -11,6 +11,7 @@
   gap: 1.5rem;
 }
 
-::ng-deep .painel-acoes .grid-acoes {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+// Aqui o painel de ações fica numa coluna estreita: 2 atalhos por linha.
+app-painel-acoes {
+  --colunas-acoes: 2;
 }

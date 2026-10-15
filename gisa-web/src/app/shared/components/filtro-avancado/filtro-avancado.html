@@ -12,7 +12,7 @@
           type="button"
           class="pill"
           [class.ativo]="statusEstaAtivo(opcao.valor)"
-          [style.--cor-pill]="opcao.cor ?? '#2563eb'"
+          [style.--cor-pill]="opcao.cor ?? 'var(--cor-primaria)'"
           (click)="alternarStatus(opcao.valor)">
           <span class="bolinha"></span>
           {{ opcao.label }}

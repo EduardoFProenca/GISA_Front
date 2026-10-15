@@ -8,11 +8,11 @@
     flex-wrap: wrap;
     font-size: 1.1rem;
     font-weight: 600;
-    color: #000;
+    color: var(--cor-titulo);
     text-align: left;
     margin: 0 0 1.25rem 0;
     padding-bottom: 0.6rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--cor-borda);
   }
 
   .icone-secao {
@@ -21,7 +21,7 @@
     justify-content: center;
     width: 28px;
     height: 28px;
-    background: #eff6ff;
+    background: var(--cor-primaria-suave);
     border-radius: 50%;
     font-size: 0.9rem;
   }
@@ -29,7 +29,7 @@
   .subtitulo-secao {
     font-size: 0.78rem;
     font-weight: 400;
-    color: #94a3b8;
+    color: var(--cor-texto-suave);
     width: 100%;
     margin-top: -0.35rem; // cola no título (o h3 usa gap entre os itens)
   }
@@ -67,9 +67,9 @@
   display: block;
   margin-top: 0.25rem;
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--cor-texto-secundario);
 
   &.aviso {
-    color: #b45309;
+    color: var(--cor-alerta-forte);
   }
 }

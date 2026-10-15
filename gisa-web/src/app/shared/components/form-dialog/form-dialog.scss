@@ -10,57 +10,37 @@
 
 .dialog {
   background: white;
-  border-radius: 8px;
+  border-radius: var(--raio-md);
   padding: 1.5rem;
   max-width: 440px;
   width: 90%;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--sombra-dialog);
   text-align: left;
 
   h3 {
     margin: 0 0 0.5rem;
     font-size: 1.1rem;
-    color: #1a1a2e;
+    color: var(--cor-titulo);
   }
 }
 
 .descricao {
   margin: 0 0 1rem;
-  color: #475569;
+  color: var(--cinza-600);
   font-size: 0.9rem;
 }
 
-.conteudo {
+// Os campos projetados (label, input...) recebem o estilo base em styles.scss (.form-dialog-conteudo).
+.form-dialog-conteudo {
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
   margin-bottom: 1rem;
-
-  ::ng-deep label {
-    display: block;
-    font-size: 0.85rem;
-    font-weight: 500;
-    margin-bottom: 0.3rem;
-    color: #334155;
-  }
-
-  // Checkbox e radio ficam com o estilo global (styles.scss).
-  ::ng-deep input:not([type='checkbox']):not([type='radio']),
-  ::ng-deep select,
-  ::ng-deep textarea {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 0.55rem 0.75rem;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-family: inherit;
-  }
 }
 
 .erro {
   margin: 0 0 1rem;
-  color: #dc2626;
+  color: var(--cor-perigo);
   font-size: 0.85rem;
 }
 
@@ -72,29 +52,29 @@
 
 .btn-cancelar {
   background: transparent;
-  color: #475569;
-  border: 1px solid #cbd5e1;
+  color: var(--cinza-600);
+  border: 1px solid var(--cor-borda-forte);
   padding: 0.5rem 1.25rem;
-  border-radius: 6px;
+  border-radius: var(--raio-sm);
   cursor: pointer;
   font-weight: 600;
 
   &:hover {
-    background: #f1f5f9;
+    background: var(--cor-superficie-realce);
   }
 }
 
 .btn-confirmar {
-  background: #2563eb;
+  background: var(--cor-primaria);
   color: white;
   border: none;
   padding: 0.5rem 1.25rem;
-  border-radius: 6px;
+  border-radius: var(--raio-sm);
   cursor: pointer;
   font-weight: 600;
 
   &:hover {
-    background: #1d4ed8;
+    background: var(--cor-primaria-hover);
   }
 
   &:disabled {

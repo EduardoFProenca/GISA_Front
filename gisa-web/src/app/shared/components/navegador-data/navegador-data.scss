@@ -17,32 +17,32 @@
   flex-wrap: wrap;
 
   strong {
-    color: #0f172a;
+    color: var(--cor-texto);
   }
 
   input[type='date'] {
     width: auto; // o global é 100% e jogava o campo para a linha de baixo
     margin: 0;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-md);
     padding: 0.35rem 0.6rem;
     font: inherit;
-    color: #334155;
+    color: var(--cor-texto-medio);
   }
 }
 
 .btn-nav,
 .btn-hoje {
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--cor-borda);
   background: white;
-  border-radius: 8px;
+  border-radius: var(--raio-md);
   padding: 0.35rem 0.8rem;
   font: inherit;
-  color: #334155;
+  color: var(--cor-texto-medio);
   cursor: pointer;
 
   &:hover:not(:disabled) {
-    background: #f1f5f9;
+    background: var(--cor-superficie-realce);
   }
 
   &:disabled {

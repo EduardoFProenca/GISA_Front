@@ -11,16 +11,16 @@
   height: 36px;
   padding: 0 0.6rem;
   background: white;
-  border: 1px solid #e5e7eb;
-  color: #475569;
+  border: 1px solid var(--cor-borda);
+  color: var(--cinza-600);
   font-size: 0.85rem;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: var(--raio-md);
   transform: none;
 
   &:hover:not(:disabled) {
-    border-color: #93c5fd;
-    background: #eff6ff;
+    border-color: var(--azul-300);
+    background: var(--cor-primaria-suave);
     transform: none;
     box-shadow: none;
   }
@@ -31,8 +31,8 @@
   }
 
   &.ativo {
-    background: #2563eb;
-    border-color: #2563eb;
+    background: var(--cor-primaria);
+    border-color: var(--cor-primaria);
     color: white;
   }
 

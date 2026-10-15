@@ -19,12 +19,12 @@ import { Component, input } from '@angular/core';
       font-weight: 600;
       letter-spacing: 0.04em;
       text-transform: uppercase;
-      color: #64748b;
+      color: var(--cor-texto-secundario);
     }
 
     .valor {
       font-size: 0.92rem;
-      color: #0f172a;
+      color: var(--cor-texto);
       overflow-wrap: anywhere;
     }
   `,

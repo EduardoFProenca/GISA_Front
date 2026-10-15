@@ -1,20 +1,20 @@
 h3 {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #000;
+  color: var(--cor-titulo);
   text-align: left;
   margin: 0 0 1.25rem 0;
   padding-bottom: 0.6rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--cor-borda);
 }
 
 .aviso {
-  color: #64748b;
+  color: var(--cor-texto-secundario);
   font-size: 0.9rem;
 }
 
 .erro-msg {
-  color: #dc2626;
+  color: var(--cor-perigo);
 }
 
 .linha-tempo {
@@ -23,8 +23,8 @@ h3 {
   padding: 0;
 
   li {
-    background-color: #f8fafc;
-    border-left: 3px solid #3b82f6;
+    background-color: var(--cor-superficie-suave);
+    border-left: 3px solid var(--cor-foco);
     border-radius: 0 6px 6px 0; // faixa reta, como nos cards de status
     padding: 0.75rem 1rem;
     margin-bottom: 0.75rem;
@@ -40,22 +40,22 @@ h3 {
 
   .tipo {
     font-weight: 600;
-    color: #1e3a8a;
+    color: var(--azul-900);
   }
 
   .quando {
-    color: #64748b;
+    color: var(--cor-texto-secundario);
   }
 }
 
 .descricao {
   margin: 0.35rem 0 0;
   font-size: 0.9rem;
-  color: #1a1a2e;
+  color: var(--cor-titulo);
 }
 
 .autor {
   margin: 0.25rem 0 0;
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: var(--cor-texto-suave);
 }

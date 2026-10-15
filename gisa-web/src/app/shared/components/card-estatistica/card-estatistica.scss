@@ -1,8 +1,8 @@
 .card-stat {
   background: white;
-  border-radius: 12px;
+  border-radius: var(--raio-xl);
   padding: 1.25rem 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--sombra-card);
 }
 
 .topo {
@@ -13,12 +13,12 @@
 
 .label {
   font-size: 0.85rem;
-  color: #64748b;
+  color: var(--cor-texto-secundario);
 }
 
 .icone {
   padding: 0.4rem 0.6rem;
-  border-radius: 8px;
+  border-radius: var(--raio-md);
   font-size: 1rem;
 }
 

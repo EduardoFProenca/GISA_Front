@@ -13,9 +13,9 @@
   display: flex;
   flex-direction: column;
   background: white;
-  border-radius: 12px;
+  border-radius: var(--raio-xl);
   padding: 1.75rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--sombra-card);
   text-align: left;
 
   h3 {
@@ -35,9 +35,9 @@
 .icone {
   width: 44px;
   height: 44px;
-  border-radius: 12px;
-  background: #e0f2fe;
-  color: #0e7490;
+  border-radius: var(--raio-xl);
+  background: var(--celeste-100);
+  color: var(--cor-destaque-forte);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,32 +46,32 @@
 
 .descricao {
   margin: 0;
-  color: #64748b;
+  color: var(--cor-texto-secundario);
   font-size: 0.88rem;
 }
 
 .mostrar {
-  display: flex !important;
+  display: flex;
   align-items: center;
   gap: 0.5rem;
   font-weight: 500;
-  color: #475569;
+  color: var(--cinza-600);
 }
 
 .btn-salvar {
   margin-top: 1.5rem;
   width: 100%;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--raio-md);
   padding: 0.75rem;
-  background: #0891b2;
+  background: var(--cor-destaque);
   color: white;
   font-size: 0.95rem;
   font-weight: 600;
   transform: none;
 
   &:hover:not(:disabled) {
-    background: #0e7490;
+    background: var(--cor-destaque-forte);
     border: none;
     transform: none;
   }

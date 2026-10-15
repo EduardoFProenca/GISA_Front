@@ -4,20 +4,20 @@
 
 .card-consulta {
   // Cor do status: alimenta a borda, o ícone e o badge.
-  --cor-status: #2563eb;
-  --bg-status: #dbeafe;
+  --cor-status: var(--cor-primaria);
+  --bg-status: var(--azul-100);
 
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
   background: white;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--cor-borda);
   border-left: 4px solid var(--cor-status);
   // Faixa de status reta: os cantos do lado dela não são arredondados.
   border-radius: 0 12px 12px 0;
   padding: 1rem 1.15rem 0.85rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--sombra-card);
   transition: box-shadow 0.15s ease, border-color 0.15s ease;
 
   &:hover {
@@ -25,23 +25,23 @@
   }
 
   &.agendada {
-    --cor-status: #2563eb;
-    --bg-status: #dbeafe;
+    --cor-status: var(--cor-primaria);
+    --bg-status: var(--azul-100);
   }
 
   &.concluida {
-    --cor-status: #16a34a;
-    --bg-status: #dcfce7;
+    --cor-status: var(--cor-sucesso);
+    --bg-status: var(--verde-100);
   }
 
   &.cancelada {
-    --cor-status: #dc2626;
-    --bg-status: #fee2e2;
+    --cor-status: var(--cor-perigo);
+    --bg-status: var(--vermelho-100);
   }
 
   &.em-atendimento {
-    --cor-status: #d97706;
-    --bg-status: #fef3c7;
+    --cor-status: var(--cor-alerta);
+    --bg-status: var(--ambar-100);
   }
 }
 
@@ -56,7 +56,7 @@
 .icone {
   width: 42px;
   height: 42px;
-  border-radius: 12px;
+  border-radius: var(--raio-xl);
   background: var(--bg-status);
   color: var(--cor-status);
   display: flex;
@@ -78,7 +78,7 @@
 
   strong {
     font-size: 0.95rem;
-    color: #0f172a;
+    color: var(--cor-texto);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -91,7 +91,7 @@
   font-size: 0.74rem;
   font-weight: 600;
   padding: 0.18rem 0.6rem;
-  border-radius: 999px;
+  border-radius: var(--raio-pilula);
   white-space: nowrap;
   background: var(--bg-status);
   color: color-mix(in srgb, var(--cor-status) 75%, black);
@@ -100,7 +100,7 @@
 .subtitulo {
   margin: 0.15rem 0 0;
   font-size: 0.82rem;
-  color: #64748b;
+  color: var(--cor-texto-secundario);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -115,10 +115,10 @@
   gap: 0.3rem;
   margin: 0;
   font-size: 0.78rem;
-  color: #94a3b8;
+  color: var(--cor-texto-suave);
 
   .sep {
-    color: #cbd5e1;
+    color: var(--cinza-300);
   }
 }
 
@@ -139,9 +139,9 @@
   gap: 0.35rem;
   max-width: 100%;
   padding: 0.2rem 0.6rem 0.2rem 0.5rem;
-  border-radius: 999px;
-  background: #eff6ff;
-  color: #1d4ed8;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-primaria-suave);
+  color: var(--cor-primaria-hover);
   font-size: 0.76rem;
   font-weight: 500;
   white-space: nowrap;
@@ -157,14 +157,14 @@
   }
 
   &.especialista {
-    background: #f0fdfa;
-    color: #0f766e;
+    background: var(--turquesa-50);
+    color: var(--turquesa-700);
   }
 
   &.mais {
     padding: 0.2rem 0.6rem;
-    background: #f1f5f9;
-    color: #64748b;
+    background: var(--cor-superficie-realce);
+    color: var(--cor-texto-secundario);
     font-weight: 600;
     cursor: default;
   }
@@ -178,7 +178,7 @@
   justify-content: space-between;
   gap: 0.5rem;
   padding-top: 0.7rem;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--cinza-100);
 }
 
 .acoes {
@@ -201,7 +201,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid #0891b2;
+    outline: 2px solid var(--cor-destaque);
     outline-offset: 2px;
   }
 }
@@ -209,14 +209,14 @@
 .btn-detalhes {
   padding: 0.38rem 0.9rem;
   border: 1px solid transparent;
-  border-radius: 8px;
-  background: #f1f5f9;
-  color: #0f172a;
+  border-radius: var(--raio-md);
+  background: var(--cor-superficie-realce);
+  color: var(--cor-texto);
   font-size: 0.8rem;
   font-weight: 600;
 
   &:hover {
-    background: #e2e8f0;
+    background: var(--cinza-200);
   }
 }
 
@@ -225,16 +225,16 @@
   align-items: center;
   gap: 0.35rem;
   padding: 0.36rem 0.8rem;
-  border: 1px solid #a5f3fc;
-  border-radius: 8px;
-  background: #ecfeff;
-  color: #0e7490;
+  border: 1px solid var(--ciano-200);
+  border-radius: var(--raio-md);
+  background: var(--ciano-50);
+  color: var(--cor-destaque-forte);
   font-size: 0.8rem;
   font-weight: 600;
 
   &:hover {
-    background: #cffafe;
-    border-color: #67e8f9;
+    background: var(--ciano-100);
+    border-color: var(--ciano-300);
   }
 }
 
@@ -246,17 +246,17 @@
   height: 34px;
   padding: 0;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--raio-md);
   background: transparent;
-  color: #64748b;
+  color: var(--cor-texto-secundario);
 
   &:hover {
-    background: #f1f5f9;
-    color: #0f172a;
+    background: var(--cor-superficie-realce);
+    color: var(--cor-texto);
   }
 
   &.perigo:hover {
-    background: #fee2e2;
-    color: #dc2626;
+    background: var(--cor-perigo-suave);
+    color: var(--cor-perigo);
   }
 }

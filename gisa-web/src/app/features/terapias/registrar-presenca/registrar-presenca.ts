@@ -53,9 +53,9 @@ export class RegistrarPresenca implements OnInit {
 
   // O dia é escolhido no navegador de data; o filtro avançado só tem a situação.
   situacoesDisponiveis: OpcaoFiltroAvancado[] = [
-    { valor: 'PENDENTE', label: 'Presença pendente', cor: '#2563eb' },
-    { valor: 'REGISTRADA', label: 'Presença registrada', cor: '#16a34a' },
-    { valor: 'CANCELADA', label: 'Cancelada', cor: '#ef4444' },
+    { valor: 'PENDENTE', label: 'Presença pendente', cor: 'var(--cor-primaria)' },
+    { valor: 'REGISTRADA', label: 'Presença registrada', cor: 'var(--cor-sucesso)' },
+    { valor: 'CANCELADA', label: 'Cancelada', cor: 'var(--vermelho-500)' },
   ];
 
   resumo = computed(() => calcularResumo(this.terapias()));

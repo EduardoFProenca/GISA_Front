@@ -24,9 +24,9 @@
 
 .painel {
   background: white;
-  border-radius: 12px;
+  border-radius: var(--raio-xl);
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--sombra-card);
 
   h3 {
     margin: 0 0 1rem;
@@ -36,7 +36,7 @@
 
   // Faixa reta à esquerda: os cantos desse lado não são arredondados.
   &.destaque {
-    border-left: 4px solid #0891b2;
+    border-left: 4px solid var(--cor-destaque);
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
@@ -54,7 +54,7 @@
 
   .link {
     font-size: 0.82rem;
-    color: #0891b2;
+    color: var(--cor-destaque);
     text-decoration: none;
 
     &:hover {
@@ -75,8 +75,8 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: #e0f2fe;
-  color: #0e7490;
+  background: var(--celeste-100);
+  color: var(--cor-destaque-forte);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,26 +96,26 @@
 
 .proximo-nome {
   font-size: 1.1rem;
-  color: #1a1a2e;
+  color: var(--cor-titulo);
 }
 
 .proximo-detalhe {
   font-size: 0.85rem;
-  color: #64748b;
+  color: var(--cor-texto-secundario);
 }
 
 .vazio {
   margin: 0;
   padding: 0.75rem 0;
-  color: #94a3b8;
+  color: var(--cor-texto-suave);
   font-size: 0.9rem;
   list-style: none;
 }
 
 .mensagem.erro {
-  color: #b91c1c;
-  background: #fee2e2;
-  border-radius: 8px;
+  color: var(--cor-perigo-forte);
+  background: var(--cor-perigo-suave);
+  border-radius: var(--raio-md);
   padding: 0.75rem;
   margin: 0 0 1rem;
 }
@@ -129,8 +129,8 @@
 .aviso-painel {
   margin: 0 0 1rem;
   padding: 0.75rem 1rem;
-  border-radius: 8px;
-  background: #fef3c7;
-  color: #92400e;
+  border-radius: var(--raio-md);
+  background: var(--cor-alerta-suave);
+  color: var(--ambar-800);
   font-size: 0.9rem;
 }

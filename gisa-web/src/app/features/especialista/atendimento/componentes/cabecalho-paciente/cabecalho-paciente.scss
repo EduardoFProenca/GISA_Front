@@ -3,17 +3,17 @@
   gap: 1.25rem;
   align-items: flex-start;
   background: white;
-  border-radius: 12px;
+  border-radius: var(--raio-xl);
   padding: 1.25rem 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--sombra-card);
 }
 
 .avatar {
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: #e0f2fe;
-  color: #0e7490;
+  background: var(--celeste-100);
+  color: var(--cor-destaque-forte);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -41,13 +41,13 @@
 
   dt {
     font-size: 0.72rem;
-    color: #94a3b8;
+    color: var(--cor-texto-suave);
   }
 
   dd {
     margin: 0;
     font-size: 0.9rem;
-    color: #1a1a2e;
+    color: var(--cor-titulo);
     font-weight: 500;
   }
 }
@@ -60,10 +60,10 @@
 }
 
 .alerta {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #991b1b;
-  border-radius: 999px;
+  background: var(--vermelho-50);
+  border: 1px solid var(--vermelho-200);
+  color: var(--vermelho-800);
+  border-radius: var(--raio-pilula);
   padding: 0.25rem 0.8rem;
   font-size: 0.8rem;
 }

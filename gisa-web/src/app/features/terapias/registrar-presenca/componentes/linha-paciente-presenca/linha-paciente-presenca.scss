@@ -9,7 +9,7 @@
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.7rem 0;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--cinza-100);
 }
 
 .info-paciente {
@@ -21,12 +21,12 @@
 
   .nome {
     font-weight: 600;
-    color: #1e293b;
+    color: var(--cinza-800);
   }
 
   .justificativa {
     flex-basis: 100%;
-    color: #64748b;
+    color: var(--cor-texto-secundario);
   }
 }
 
@@ -34,23 +34,23 @@
   font-size: 0.75rem;
   font-weight: 600;
   padding: 0.15rem 0.55rem;
-  border-radius: 999px;
-  background: #f1f5f9;
-  color: #64748b;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-superficie-realce);
+  color: var(--cor-texto-secundario);
 
   &[data-presenca='PRESENTE'] {
-    background: #dcfce7;
-    color: #15803d;
+    background: var(--cor-sucesso-suave);
+    color: var(--cor-sucesso-forte);
   }
 
   &[data-presenca='FALTA_JUSTIFICADA'] {
-    background: #fef3c7;
-    color: #b45309;
+    background: var(--cor-alerta-suave);
+    color: var(--cor-alerta-forte);
   }
 
   &[data-presenca='FALTA_INJUSTIFICADA'] {
-    background: #fee2e2;
-    color: #b91c1c;
+    background: var(--cor-perigo-suave);
+    color: var(--cor-perigo-forte);
   }
 }
 
@@ -61,10 +61,10 @@
 }
 
 .btn {
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--cor-borda-forte);
   background: white;
-  color: #334155;
-  border-radius: 8px;
+  color: var(--cor-texto-medio);
+  border-radius: var(--raio-md);
   padding: 0.4rem 0.8rem;
   font: inherit;
   font-size: 0.85rem;
@@ -77,41 +77,41 @@
   }
 
   &.presente {
-    border-color: #16a34a;
-    color: #15803d;
+    border-color: var(--cor-sucesso);
+    color: var(--cor-sucesso-forte);
 
     &:hover:not(:disabled),
     &.ativo {
-      background: #16a34a;
+      background: var(--cor-sucesso);
       color: white;
     }
   }
 
   &.falta-justificada {
-    border-color: #d97706;
-    color: #b45309;
+    border-color: var(--cor-alerta);
+    color: var(--cor-alerta-forte);
 
     &:hover:not(:disabled),
     &.ativo {
-      background: #d97706;
+      background: var(--cor-alerta);
       color: white;
     }
   }
 
   &.falta {
-    border-color: #dc2626;
-    color: #b91c1c;
+    border-color: var(--cor-perigo);
+    color: var(--cor-perigo-forte);
 
     &:hover:not(:disabled),
     &.ativo {
-      background: #dc2626;
+      background: var(--cor-perigo);
       color: white;
     }
   }
 
   &.confirmar {
-    background: #2563eb;
-    border-color: #2563eb;
+    background: var(--cor-primaria);
+    border-color: var(--cor-primaria);
     color: white;
   }
 }
@@ -125,8 +125,8 @@
   input {
     flex: 1;
     min-width: 220px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
+    border: 1px solid var(--cor-borda-forte);
+    border-radius: var(--raio-md);
     padding: 0.45rem 0.7rem;
     font: inherit;
   }

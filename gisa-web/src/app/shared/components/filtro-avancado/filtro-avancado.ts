@@ -6,7 +6,7 @@ import { ICONES } from '../../icons';
 export interface OpcaoFiltroAvancado {
   valor: string;
   label: string;
-  // Cor do indicador do pill (ex: '#2563eb'). Opcional — sem isso o pill fica neutro.
+  // Cor do indicador do pill (ex: 'var(--cor-primaria)'). Opcional — sem isso o pill fica neutro.
   cor?: string;
 }
 

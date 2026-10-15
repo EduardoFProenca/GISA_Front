@@ -8,13 +8,13 @@
 }
 
 .terapia {
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-lg);
   padding: 1rem 1.1rem;
 
   &.alerta {
-    border-color: #fecaca;
-    background: #fffafa;
+    border-color: var(--vermelho-200);
+    background: var(--vermelho-50);
   }
 }
 
@@ -28,11 +28,11 @@
   strong {
     display: block;
     font-size: 0.95rem;
-    color: #1a1a2e;
+    color: var(--cor-titulo);
   }
 
   small {
-    color: #94a3b8;
+    color: var(--cor-texto-suave);
     font-size: 0.78rem;
   }
 }
@@ -40,31 +40,31 @@
 .percentual {
   font-size: 1.3rem;
   font-weight: 700;
-  color: #15803d;
+  color: var(--cor-sucesso-forte);
 
   &.baixo {
-    color: #b91c1c;
+    color: var(--cor-perigo-forte);
   }
 
   &.neutro {
-    color: #cbd5e1;
+    color: var(--cinza-300);
   }
 }
 
 .barra {
   position: relative;
   height: 10px;
-  border-radius: 999px;
-  background: #e2e8f0;
+  border-radius: var(--raio-pilula);
+  background: var(--cinza-200);
 }
 
 .barra-preenchida {
   height: 100%;
-  border-radius: 999px;
-  background: #16a34a;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-sucesso);
 
   &.baixo {
-    background: #dc2626;
+    background: var(--cor-perigo);
   }
 }
 
@@ -73,45 +73,45 @@
   top: -3px;
   bottom: -3px;
   width: 2px;
-  background: #334155;
+  background: var(--cinza-700);
 }
 
 .legenda {
   display: block;
   margin-top: 0.6rem;
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--cor-texto-secundario);
 
   strong {
-    color: #b91c1c;
+    color: var(--cor-perigo-forte);
   }
 }
 
 .vazio {
   text-align: center;
-  color: #94a3b8;
+  color: var(--cor-texto-suave);
   padding: 1.5rem 0;
   margin: 0;
 }
 
 .vazio.erro {
-  color: #b91c1c;
+  color: var(--cor-perigo-forte);
 }
 
 .referencia {
   margin: 0 0 1rem;
   font-size: 0.85rem;
-  color: #64748b;
+  color: var(--cor-texto-secundario);
 }
 
 .terapia.geral {
-  background: #f8fafc;
+  background: var(--cor-superficie-suave);
 }
 
 .titulo-sessoes {
   margin: 1.75rem 0 0.5rem;
   font-size: 0.95rem;
-  color: #334155;
+  color: var(--cor-texto-medio);
 }
 
 .sessoes {
@@ -123,9 +123,9 @@
     display: flex;
     justify-content: space-between;
     padding: 0.5rem 0;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--cinza-100);
     font-size: 0.86rem;
-    color: #475569;
+    color: var(--cinza-600);
   }
 }
 
@@ -133,8 +133,8 @@
   font-weight: 600;
   font-size: 0.78rem;
 
-  &.p-PRESENTE { color: #15803d; }
-  &.p-FALTA_JUSTIFICADA { color: #b45309; }
-  &.p-FALTA_INJUSTIFICADA { color: #b91c1c; }
-  &.p-PENDENTE { color: #94a3b8; }
+  &.p-PRESENTE { color: var(--cor-sucesso-forte); }
+  &.p-FALTA_JUSTIFICADA { color: var(--cor-alerta-forte); }
+  &.p-FALTA_INJUSTIFICADA { color: var(--cor-perigo-forte); }
+  &.p-PENDENTE { color: var(--cinza-400); }
 }

@@ -3,9 +3,9 @@
 <div class="corpo-dashboard">
   <main class="conteudo">
     <div class="stats-grid">
-      <app-card-estatistica titulo="Terapias Hoje" [valor]="resumo()?.terapias ?? '—'" [icone]="icones.calendario" corIcone="#dbeafe" />
-      <app-card-estatistica titulo="Presenças Confirmadas" [valor]="resumo()?.presentes ?? '—'" [icone]="icones.gestaoConsultas" corIcone="#dcfce7" />
-      <app-card-estatistica titulo="Presenças Pendentes" [valor]="resumo()?.pendentes ?? '—'" [icone]="icones.pessoa" corIcone="#fef3c7" />
+      <app-card-estatistica titulo="Terapias Hoje" [valor]="resumo()?.terapias ?? '—'" [icone]="icones.calendario" tom="azul" />
+      <app-card-estatistica titulo="Presenças Confirmadas" [valor]="resumo()?.presentes ?? '—'" [icone]="icones.gestaoConsultas" tom="verde" />
+      <app-card-estatistica titulo="Presenças Pendentes" [valor]="resumo()?.pendentes ?? '—'" [icone]="icones.pessoa" tom="ambar" />
     </div>
 
     <div class="conteudo-principal">

@@ -21,7 +21,7 @@
   position: absolute;
   left: 0.9rem;
   display: flex;
-  color: #94a3b8;
+  color: var(--cor-texto-suave);
   pointer-events: none;
 }
 
@@ -40,6 +40,6 @@
 .icone-filtro {
   display: flex;
   align-items: center;
-  color: #94a3b8;
+  color: var(--cor-texto-suave);
   flex-shrink: 0;
 }

@@ -24,7 +24,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--cor-borda);
 
   h3 {
     margin: 0;
@@ -40,12 +40,12 @@
   text-align: center;
   font-size: 1.6rem;
   line-height: 1;
-  color: #64748b;
+  color: var(--cor-texto-secundario);
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: var(--raio-md);
 
   &:hover {
-    background: #f1f5f9;
+    background: var(--cor-superficie-realce);
   }
 }
 
@@ -61,9 +61,9 @@
   h4 {
     margin: 0 0 0.75rem;
     padding-bottom: 0.4rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--cor-borda);
     font-size: 0.95rem;
-    color: #334155;
+    color: var(--cor-texto-medio);
   }
 
   textarea {
@@ -79,14 +79,14 @@
 
   dt {
     font-size: 0.72rem;
-    color: #94a3b8;
+    color: var(--cor-texto-suave);
   }
 
   dd {
     margin: 0;
     font-size: 0.9rem;
     font-weight: 500;
-    color: #1a1a2e;
+    color: var(--cor-titulo);
   }
 }
 
@@ -94,7 +94,7 @@
 .carregando {
   margin: 1rem 0 0;
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--cor-texto-secundario);
 }
 
 .drawer-acoes {
@@ -102,7 +102,7 @@
   justify-content: flex-end;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--cor-borda);
 }
 
 .btn-primario {
@@ -124,15 +124,15 @@
 .modelo {
   @include btn-reset;
   padding: 0.35rem 0.75rem;
-  border: 1px solid #bae6fd;
-  border-radius: 999px;
-  background: #f0f9ff;
-  color: #0369a1;
+  border: 1px solid var(--celeste-200);
+  border-radius: var(--raio-pilula);
+  background: var(--celeste-50);
+  color: var(--celeste-700);
   font-size: 0.82rem;
   cursor: pointer;
 
   &:hover {
-    background: #e0f2fe;
-    border: 1px solid #7dd3fc;
+    background: var(--celeste-100);
+    border: 1px solid var(--celeste-300);
   }
 }

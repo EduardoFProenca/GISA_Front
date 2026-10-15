@@ -1,20 +1,20 @@
 h3 {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #000;
+  color: var(--cor-titulo);
   text-align: left;
   margin: 0 0 1.25rem 0;
   padding-bottom: 0.6rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--cor-borda);
 }
 
 .aviso {
-  color: #64748b;
+  color: var(--cor-texto-secundario);
   font-size: 0.9rem;
 }
 
 .erro-msg {
-  color: #dc2626;
+  color: var(--cor-perigo);
 }
 
 .lista {
@@ -23,9 +23,9 @@ h3 {
   padding: 0;
 
   li {
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
+    background-color: var(--cor-superficie-suave);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-md);
     padding: 0.75rem 1rem;
     margin-bottom: 0.6rem;
     text-align: left;
@@ -40,30 +40,30 @@ h3 {
 
   .quando {
     font-weight: 600;
-    color: #0f172a;
+    color: var(--cor-texto);
   }
 }
 
 .status {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #2563eb;
+  color: var(--cor-primaria);
 
-  &[data-status='EM_ATENDIMENTO'] { color: #d97706; }
-  &[data-status='CONCLUIDA'] { color: #16a34a; }
-  &[data-status='CANCELADA'] { color: #ef4444; }
+  &[data-status='EM_ATENDIMENTO'] { color: var(--cor-alerta); }
+  &[data-status='CONCLUIDA'] { color: var(--cor-sucesso); }
+  &[data-status='CANCELADA'] { color: var(--vermelho-500); }
 }
 
 .detalhe {
   margin: 0.3rem 0 0;
   font-size: 0.85rem;
-  color: #475569;
+  color: var(--cinza-600);
 }
 
 .link {
   display: inline-block;
   margin-top: 0.35rem;
   font-size: 0.85rem;
-  color: #2563eb;
+  color: var(--cor-primaria);
   text-decoration: none;
 }

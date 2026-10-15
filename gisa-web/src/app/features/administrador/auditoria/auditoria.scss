@@ -9,9 +9,9 @@
 
 .painel {
   background: white;
-  border-radius: 12px;
+  border-radius: var(--raio-xl);
   padding: 1.25rem 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--sombra-card);
   margin-bottom: 1.5rem;
   text-align: left;
 }
@@ -22,29 +22,29 @@
   flex-wrap: wrap;
   gap: 0.35rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #eef1f6;
+  border-bottom: 1px solid var(--cor-borda);
 }
 
 .aba {
   background: transparent;
-  color: #475569;
-  border: 1px solid #e2e8f0;
-  border-radius: 999px;
+  color: var(--cinza-600);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pilula);
   padding: 0.4rem 0.95rem;
   font-size: 0.85rem;
   font-weight: 500;
   transform: none;
 
   &:hover {
-    background: #f1f5f9;
-    border-color: #e2e8f0;
+    background: var(--cor-superficie-realce);
+    border-color: var(--cor-borda);
     transform: none;
     box-shadow: none;
   }
 
   &.ativa {
-    background: #0891b2;
-    border-color: #0891b2;
+    background: var(--cor-destaque);
+    border-color: var(--cor-destaque);
     color: white;
   }
 }
@@ -73,17 +73,17 @@
 }
 
 .btn-leve {
-  background: #f1f5f9;
-  color: #334155;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  background: var(--cor-superficie-realce);
+  color: var(--cor-texto-medio);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-md);
   padding: 0.7rem 1rem;
   font-size: 0.88rem;
   transform: none;
 
   &:hover {
-    background: #e2e8f0;
-    border-color: #e2e8f0;
+    background: var(--cinza-200);
+    border-color: var(--cor-borda);
     transform: none;
     box-shadow: none;
   }
@@ -91,15 +91,15 @@
 
 .resumo {
   margin: 1.25rem 0 0.75rem;
-  color: #64748b;
+  color: var(--cor-texto-secundario);
   font-size: 0.85rem;
 }
 
 // --- Tabela ---
 .tabela-rolagem {
   overflow-x: auto;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-lg);
 }
 
 .tabela {
@@ -113,18 +113,22 @@
     font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: #64748b;
-    background: #f8fafc;
+    color: var(--cor-texto-secundario);
+    background: var(--cor-superficie-suave);
     padding: 0.65rem 0.85rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--cor-borda);
     white-space: nowrap;
   }
 
   td {
     padding: 0.65rem 0.85rem;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--cinza-100);
     vertical-align: top;
-    color: #1e293b;
+    color: var(--cinza-800);
+  }
+
+  td.vazio {
+    padding: 2rem;
   }
 
   tr:last-child td {
@@ -138,7 +142,7 @@
 
   small {
     display: block;
-    color: #94a3b8;
+    color: var(--cor-texto-suave);
     font-size: 0.76rem;
     margin-top: 0.1rem;
   }
@@ -157,37 +161,36 @@
 .acao {
   display: inline-block;
   padding: 0.15rem 0.55rem;
-  border-radius: 999px;
+  border-radius: var(--raio-pilula);
   font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--cor-superficie-realce);
+  color: var(--cinza-600);
 
-  &[data-acao='LOGIN'] { background: #e0f2fe; color: #0369a1; }
-  &[data-acao='CRIACAO'] { background: #dcfce7; color: #15803d; }
-  &[data-acao='ALTERACAO'] { background: #fef3c7; color: #b45309; }
-  &[data-acao='EXCLUSAO'] { background: #fee2e2; color: #b91c1c; }
-  &[data-acao='CONSULTA'] { background: #ede9fe; color: #6d28d9; }
+  &[data-acao='LOGIN'] { background: var(--celeste-100); color: var(--celeste-700); }
+  &[data-acao='CRIACAO'] { background: var(--verde-100); color: var(--cor-sucesso-forte); }
+  &[data-acao='ALTERACAO'] { background: var(--ambar-100); color: var(--cor-alerta-forte); }
+  &[data-acao='EXCLUSAO'] { background: var(--vermelho-100); color: var(--cor-perigo-forte); }
+  &[data-acao='CONSULTA'] { background: var(--roxo-100); color: var(--roxo-700); }
 }
 
 .resultado {
   font-weight: 600;
-  color: #15803d;
+  color: var(--cor-sucesso-forte);
 
   &.falha {
-    color: #b91c1c;
+    color: var(--cor-perigo-forte);
   }
 }
 
 .vazio {
   text-align: center;
-  color: #94a3b8;
-  padding: 2rem !important;
+  color: var(--cor-texto-suave);
 }
 
 .nota {
   margin: 0.85rem 0 0;
-  color: #94a3b8;
+  color: var(--cor-texto-suave);
   font-size: 0.78rem;
 }
