@@ -16,17 +16,8 @@
   @if (!perfil()) {
   <div>
     <label>Permissões iniciais</label>
-    <div class="lista-checks">
-      @for (p of permissoes(); track p.idPermissao) {
-      <label>
-        <input type="checkbox" [checked]="selecionadas().has(p.idPermissao)"
-          (change)="alternar(p.idPermissao, $any($event.target).checked)" />
-        <span class="permissao"><strong>{{ p.nome }}</strong><small>{{ p.descricao }}</small></span>
-      </label>
-      } @empty {
-      <p class="dica">Nenhuma permissão disponível.</p>
-      }
-    </div>
+    <app-seletor-permissoes [permissoes]="permissoes()" [selecionadas]="selecionadas()"
+      (selecionadasChange)="selecionadas.set($event)" />
     <p class="dica">Pode ficar sem nenhuma e ser ajustado depois.</p>
   </div>
   }

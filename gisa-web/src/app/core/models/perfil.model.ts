@@ -5,6 +5,8 @@ export interface Permissao {
   idPermissao: number;
   nome: string;
   descricao: string;
+  // Agrupamento na tela de perfis (ex.: "Pacientes"); o front tem um mapa reserva se não vier.
+  categoria?: string | null;
 }
 
 // Referência a um perfil (bloco `perfil` do usuário de acesso).

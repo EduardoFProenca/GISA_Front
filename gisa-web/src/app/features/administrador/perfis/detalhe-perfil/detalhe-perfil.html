@@ -78,15 +78,8 @@
   textoConfirmar="Adicionar"
   (confirmar)="confirmarAdicao()"
   (cancelar)="adicionarAberto.set(false)">
-  <div class="lista-checks">
-    @for (perm of disponiveis(); track perm.idPermissao) {
-    <label>
-      <input type="checkbox" [checked]="paraAdicionar().has(perm.idPermissao)"
-        (change)="alternar(perm.idPermissao, $any($event.target).checked)" />
-      <span class="permissao"><strong>{{ perm.nome }}</strong><small>{{ perm.descricao }}</small></span>
-    </label>
-    }
-  </div>
+  <app-seletor-permissoes [permissoes]="disponiveis()" [selecionadas]="paraAdicionar()"
+    (selecionadasChange)="paraAdicionar.set($event)" />
 </app-form-dialog>
 
 <app-confirm-dialog

@@ -5,12 +5,13 @@ import { PerfilDetalhe, PerfilResumo, Permissao } from '../../../../core/models/
 import { PerfilService } from '../../../../core/services/perfil';
 import { aplicarErrosApi } from '../../../../core/http/erro-api';
 import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
+import { SeletorPermissoes } from '../seletor-permissoes/seletor-permissoes';
 
 // Criar perfil (nome + permissões iniciais) ou renomear (perfil informado: só o nome).
 // As permissões de um perfil existente são geridas na tela de detalhe, uma a uma.
 @Component({
   selector: 'app-dialog-perfil',
-  imports: [FormsModule, FormDialog],
+  imports: [FormsModule, FormDialog, SeletorPermissoes],
   templateUrl: './dialog-perfil.html',
   styleUrl: '../../tabelas-apoio.scss',
 })
@@ -42,15 +43,6 @@ export class DialogPerfil {
         this.erroNome.set('');
         this.erro.set('');
       });
-    });
-  }
-
-  alternar(id: number, marcado: boolean) {
-    this.selecionadas.update((atual) => {
-      const novo = new Set(atual);
-      if (marcado) novo.add(id);
-      else novo.delete(id);
-      return novo;
     });
   }
 

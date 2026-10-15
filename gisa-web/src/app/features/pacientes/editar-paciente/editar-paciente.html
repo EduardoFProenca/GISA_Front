@@ -43,13 +43,6 @@
 
     <br><hr><br>
 
-    <!-- Contato e Endereço -->
-    <app-contato #contatoPaciente
-      [dadosIniciais]="contato()"
-    ></app-contato>
-
-    <br><hr><br>
-
     <!-- Informações administrativas -->
     <app-info-paciente [convenioInicial]="convenioInicial()" />
 
@@ -57,6 +50,13 @@
 
     <!-- Responsáveis (adicionar, editar e remover) -->
     <app-info-responsavel [responsaveisIniciais]="responsaveisIniciais()" [contatoPaciente]="contatoPaciente" />
+
+    <br><hr><br>
+
+    <!-- Contato e Endereço -->
+    <app-contato #contatoPaciente
+      [dadosIniciais]="contato()"
+    ></app-contato>
 
     <br><hr><br>
 

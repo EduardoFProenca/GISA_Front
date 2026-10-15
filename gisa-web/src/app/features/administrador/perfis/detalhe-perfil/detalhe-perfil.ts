@@ -9,13 +9,14 @@ import { PerfilService } from '../../../../core/services/perfil';
 import { Auth } from '../../../../core/auth/auth';
 import { mensagemDeErro } from '../../../../core/http/erro-api';
 import { DialogPerfil } from '../dialog-perfil/dialog-perfil';
+import { SeletorPermissoes } from '../seletor-permissoes/seletor-permissoes';
 import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 
 // GET /perfis/{id}: permissões e usuários do perfil. Toda alteração devolve o perfil atualizado,
 // e a tela é redesenhada direto com a resposta.
 @Component({
   selector: 'app-detalhe-perfil',
-  imports: [CampoDetalhe, CabecalhoPagina, ConfirmDialog, FormDialog, DialogPerfil],
+  imports: [CampoDetalhe, CabecalhoPagina, ConfirmDialog, FormDialog, DialogPerfil, SeletorPermissoes],
   templateUrl: './detalhe-perfil.html',
   styleUrl: '../../tabelas-apoio.scss',
 })
@@ -91,15 +92,6 @@ export class DetalhePerfil implements OnInit {
     this.paraAdicionar.set(new Set());
     this.erroAdicionar.set('');
     this.adicionarAberto.set(true);
-  }
-
-  alternar(id: number, marcado: boolean) {
-    this.paraAdicionar.update((atual) => {
-      const novo = new Set(atual);
-      if (marcado) novo.add(id);
-      else novo.delete(id);
-      return novo;
-    });
   }
 
   confirmarAdicao() {

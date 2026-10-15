@@ -1,4 +1,4 @@
-import { Component, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, ViewChild, inject, ChangeDetectorRef, signal } from '@angular/core';
 import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,7 +21,7 @@ import { Endereco } from '../../../core/models/comum.model';
 import { TipoEscola } from '../../../core/models/escola.model';
 import { CadastroPacienteResponse } from '../../../core/models/paciente.model';
 import { soDigitos, vazio } from '../../../shared/utils/texto.util';
-import { FormulariosPaciente, listaErros } from './models/formularios-paciente';
+import { FormulariosPaciente } from './models/formularios-paciente';
 import { PacienteValidadorService } from './services/paciente-validador';
 import { PacienteCadastroPayloadService } from './services/paciente-payload';
 import { PacienteErrosApiService } from './services/paciente-erros-api';
@@ -57,6 +57,8 @@ export class CadastrarPaciente {
   erro = '';
   nomeCadastrado = '';
   idCadastrado: number | null = null;
+  // Muda a cada "Cadastrar outro"; o template recria os formulários quando ela muda.
+  geracaoFormulario = signal(0);
 
   private get formularios(): FormulariosPaciente {
     return {
@@ -159,24 +161,13 @@ export class CadastrarPaciente {
     }, 50);
   }
 
-  private limparFormulario() {
-    Object.assign(this.dadosPessoais, {
-      nome: '', cpf: '', email: '', dataNascimento: '', sexo: '', celular: '', estadoCivil: '', numCNS: ''
-    });
-    Object.assign(this.contato, {
-      cep: '', endereco: '', numero: '', complemento: '', bairro: '', cidade: '', uf: ''
-    });
-    this.infoPaciente.limpar();
-    this.infoResponsavel.limpar();
-    this.infoEscola.limpar();
-    this.infoProntuario.limpar();
-    this.infoCid.limpar();
-    listaErros(this.formularios).forEach((b) => (b.erros = {}));
-    this.erro = '';
-  }
-
+  // Recria os formulários do zero (o botão vem do aviso, fora desta tela: zerar os campos dos filhos
+  // não redesenharia a tela deles).
   aoContinuarCadastrando() {
-    this.limparFormulario();
+    this.erro = '';
+    this.idCadastrado = null;
+    this.geracaoFormulario.update((n) => n + 1);
+    window.scrollTo({ top: 0 });
   }
 
   aoVerDetalhesCadastrado() {

@@ -1,0 +1,26 @@
+<input type="search" class="busca-permissao" placeholder="Buscar permissão pelo nome ou descrição"
+  aria-label="Buscar permissão" [value]="busca()" (input)="busca.set($any($event.target).value)" />
+
+<div class="grupos">
+  @for (g of grupos(); track g.categoria) {
+  <section class="grupo">
+    <header>
+      <h4>{{ g.categoria }}</h4>
+      <button type="button" class="btn-link" (click)="alternarGrupo(g)">
+        {{ g.todasMarcadas ? 'Desmarcar todas' : 'Marcar todas' }}
+      </button>
+    </header>
+    <div class="lista-checks">
+      @for (p of g.permissoes; track p.idPermissao) {
+      <label>
+        <input type="checkbox" [checked]="selecionadas().has(p.idPermissao)"
+          (change)="alternar(p.idPermissao, $any($event.target).checked)" />
+        <span class="permissao"><strong>{{ p.nome }}</strong><small>{{ p.descricao }}</small></span>
+      </label>
+      }
+    </div>
+  </section>
+  } @empty {
+  <p class="dica">{{ busca().trim() ? 'Nenhuma permissão encontrada.' : 'Nenhuma permissão disponível.' }}</p>
+  }
+</div>

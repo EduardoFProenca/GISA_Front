@@ -11,18 +11,21 @@
   <p class="erro-msg erro-geral">{{ erro }}</p>
   }
 
+  <!-- Um item só: quando a geração muda, os formulários são recriados vazios. -->
+  @for (g of [geracaoFormulario()]; track g) {
   <app-dados-pessoais [exibirEmail]="false" [celularObrigatorio]="false" />
-  <br><hr>
-  <app-contato #contatoPaciente />
   <br><hr>
   <app-info-paciente />
   <br><hr>
   <app-info-responsavel [contatoPaciente]="contatoPaciente" />
+  <br><hr>
+  <app-contato #contatoPaciente />
   <br><hr>
   <app-info-escola />
   <br><hr>
   <app-info-prontuario />
   <br><hr>
   <app-info-cid />
+  }
 </div>
 

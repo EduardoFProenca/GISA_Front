@@ -15,7 +15,7 @@ import { ProfissionalService } from '../../../core/services/profissional';
 import { TerapiaService } from '../../../core/services/terapia';
 import { ConflitoHorario, NovaTerapiaPayload, Terapia } from '../../../core/models/terapia.model';
 import { aplicarErrosApi, campoDaChave } from '../../../core/http/erro-api';
-import { ROTULO_MODALIDADE } from '../../../shared/utils/rotulos.util';
+import { ROTULO_DIA_SEMANA, ROTULO_MODALIDADE } from '../../../shared/utils/rotulos.util';
 import { hojeIso, paraIsoMinuto } from '../../../shared/utils/data.util';
 import { SeletorHora } from '../../../shared/components/seletor-hora/seletor-hora';
 import { lerContextoTerapias } from '../contexto-terapias';
@@ -156,6 +156,14 @@ export class FormTerapia implements OnInit {
 
   textoConflito(c: ConflitoHorario): string {
     const quem = c.tipo === 'PACIENTE' ? 'paciente' : 'especialista';
+    if (c.motivo === 'FORA_DA_JORNADA') {
+      const diaJs = new Date(c.data + 'T00:00:00').getDay(); // 0 = domingo
+      const dia = (ROTULO_DIA_SEMANA[diaJs === 0 ? 7 : diaJs] ?? '').toLowerCase();
+      const jornadas = c.jornadasDoDia ?? [];
+      if (!jornadas.length) return `${c.nome} (${quem}) não atende na ${dia}.`;
+      const horarios = jornadas.map((j) => `das ${j.horaInicio} às ${j.horaTermino}`).join(' e ');
+      return `${c.nome} (${quem}) atende na ${dia} só ${horarios}.`;
+    }
     return `${c.nome} (${quem}) já tem terapia das ${c.horaInicio} às ${c.horaTermino}.`;
   }
 

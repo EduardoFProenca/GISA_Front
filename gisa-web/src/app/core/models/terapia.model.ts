@@ -88,15 +88,23 @@ export interface AlterarStatusTerapiaPayload {
   motivo?: string;
 }
 
+// HORARIO_OCUPADO: já existe terapia no horário. FORA_DA_JORNADA: o especialista não atende nesse horário.
+export type MotivoConflito = 'HORARIO_OCUPADO' | 'FORA_DA_JORNADA';
+
 export interface ConflitoHorario {
   tipo: 'PACIENTE' | 'ESPECIALISTA';
+  // Ausente nas respostas antigas da API (= HORARIO_OCUPADO).
+  motivo?: MotivoConflito;
   idCadastro: number;
   nome: string;
-  // Dados da terapia já existente que ocupa o horário.
-  idTerapia: number;
+  // HORARIO_OCUPADO: dados da terapia já existente que ocupa o horário.
+  // FORA_DA_JORNADA: idTerapia null; data e horários são os da terapia pedida.
+  idTerapia: number | null;
   data: string;
   horaInicio: string;
   horaTermino: string;
+  // FORA_DA_JORNADA: jornadas do especialista no dia da semana da terapia (vazia = não atende no dia).
+  jornadasDoDia?: { horaInicio: string; horaTermino: string }[];
 }
 
 export interface VerificacaoConflitos {

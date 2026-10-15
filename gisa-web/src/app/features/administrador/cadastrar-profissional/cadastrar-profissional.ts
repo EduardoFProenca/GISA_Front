@@ -12,7 +12,7 @@ import { ProfissionalService } from '../../../core/services/profissional';
 import { CadastroResponse } from '../../../core/models/profissional.model';
 import { mensagemDeErro } from '../../../core/http/erro-api';
 import { OpcoesProfissional, OpcoesProfissionalService } from './services/opcoes-profissional';
-import { FormulariosCadastro, listaErros } from './models/formularios-cadastro';
+import { FormulariosCadastro } from './models/formularios-cadastro';
 import { CadastroValidadorService } from './services/cadastro-validador';
 import { CadastroPayloadService } from './services/cadastro-payload';
 import { CadastroErrosApiService } from './services/cadastro-erros-api';
@@ -44,6 +44,8 @@ export class CadastroProfissional implements OnInit {
   erro = '';
   nomeCadastrado = '';
   idCadastrado: number | null = null;
+  // Muda a cada "Cadastrar outro"; o template recria os formulários quando ela muda.
+  geracaoFormulario = signal(0);
 
   // Cargos, perfis e especialidades da API (opções dos selects).
   opcoes = signal<OpcoesProfissional>({ cargos: [], perfis: [], especialidades: [] });
@@ -131,32 +133,13 @@ export class CadastroProfissional implements OnInit {
     }, 50);
   }
 
-  private limparFormulario() {
-    Object.assign(this.dadosPessoais, {
-      nome: '', cpf: '', email: '', dataNascimento: '', sexo: '', celular: '', estadoCivil: '', numCNS: ''
-    });
-    Object.assign(this.contato, {
-      cep: '', endereco: '', numero: '', complemento: '', bairro: '', cidade: '', uf: ''
-    });
-    this.infoProfissional.cargo = '';
-    this.infoUsuario.temAcessoSistema = false;
-    this.infoUsuario.senha = '';
-    this.infoUsuario.perfil = '';
-    this.infoEspecialista.ehEspecialista = false;
-    this.infoEspecialista.atuaComoPJ = false;
-    this.infoEspecialista.registroProfissional = '';
-    this.infoEspecialista.cnpj = '';
-    this.infoEspecialista.razaoSocial = '';
-    this.infoEspecialista.nomeFantasia = '';
-    this.infoEspecialista.inscricaoEstadual = '';
-    this.infoEspecialista.especialidades = [''];
-    this.infoEspecialista.jornadas = [{ diaSemana: '', horaInicio: '', horaTermino: '' }];
-    listaErros(this.formularios).forEach((f) => (f.erros = {}));
-    this.erro = '';
-  }
-
+  // Recria os formulários do zero (o botão vem do aviso, fora desta tela: zerar os campos dos filhos
+  // não redesenharia a tela deles).
   aoContinuarCadastrando() {
-    this.limparFormulario();
+    this.erro = '';
+    this.idCadastrado = null;
+    this.geracaoFormulario.update((n) => n + 1);
+    window.scrollTo({ top: 0 });
   }
 
   aoVerDetalhesCadastrado() {

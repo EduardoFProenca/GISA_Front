@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { soDigitos, vazio } from '../../../../shared/utils/texto.util';
+import { soDigitos, vazio, cpfValido } from '../../../../shared/utils/texto.util';
 import { ComErros } from '../../../../shared/components/com-erros';
 import { ContatoForm, FormulariosPaciente, ResponsavelItem, listaErros } from '../models/formularios-paciente';
 import { mesmoEnderecoForm } from '../../paciente-form.util';
@@ -51,6 +51,7 @@ export class PacienteValidadorService {
     const cpf = soDigitos(r.cpf);
     if (!cpf) erros['cpf'] = OBRIGATORIO;
     else if (cpf.length !== 11) erros['cpf'] = 'O CPF deve ter 11 dígitos.';
+    else if (!cpfValido(cpf)) erros['cpf'] = 'CPF inválido.';
     else if (lista.some((x, i) => i !== indexEdicao && soDigitos(x.cpf) === cpf)) {
       erros['cpf'] = 'Este CPF já foi adicionado como responsável.';
     }
@@ -100,6 +101,7 @@ export class PacienteValidadorService {
     const cpf = soDigitos(dp.cpf);
     if (!cpf) marcar(dp, 'cpf');
     else if (cpf.length !== 11) marcar(dp, 'cpf', 'O CPF deve ter 11 dígitos.');
+    else if (!cpfValido(cpf)) marcar(dp, 'cpf', 'CPF inválido.');
 
     if (vazio(dp.dataNascimento)) marcar(dp, 'dataNascimento');
     else if (this.dataFutura(dp.dataNascimento)) marcar(dp, 'dataNascimento', 'Data de nascimento inválida.');

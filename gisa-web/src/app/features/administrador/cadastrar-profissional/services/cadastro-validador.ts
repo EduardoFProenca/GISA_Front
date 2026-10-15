@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { soDigitos, vazio, emailValido } from '../../../../shared/utils/texto.util';
+import { soDigitos, vazio, emailValido, cpfValido } from '../../../../shared/utils/texto.util';
 import { ComErros } from '../../../../shared/components/com-erros';
 import { FormulariosCadastro, JornadaForm, listaErros } from '../models/formularios-cadastro';
 
@@ -65,6 +65,7 @@ export class CadastroValidadorService {
     const cpf = soDigitos(dp.cpf);
     if (!cpf) marcar(dp, 'cpf');
     else if (cpf.length !== 11) marcar(dp, 'cpf', 'O CPF deve ter 11 dígitos.');
+    else if (!cpfValido(cpf)) marcar(dp, 'cpf', 'CPF inválido.');
 
     if (vazio(dp.dataNascimento)) marcar(dp, 'dataNascimento');
     if (vazio(dp.sexo)) marcar(dp, 'sexo');

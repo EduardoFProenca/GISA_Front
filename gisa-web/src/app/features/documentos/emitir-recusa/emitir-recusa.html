@@ -72,3 +72,13 @@
   </div>
 </div>
 }
+
+<app-confirm-dialog
+  [aberto]="confirmarInativacaoAberta()"
+  titulo="Inativar paciente?"
+  [mensagem]="'A recusa foi emitida para ' + nome.trim() + ', que é paciente ativo. Deseja inativar o cadastro? O paciente passa a Desligado e o histórico é mantido.'"
+  textoConfirmar="Inativar"
+  textoCancelar="Manter ativo"
+  (confirmar)="inativarPaciente()"
+  (cancelar)="confirmarInativacaoAberta.set(false)"
+></app-confirm-dialog>
