@@ -8,7 +8,7 @@ function formularioBase(): FormulariosCadastro {
   return {
     dadosPessoais: comErros({
       nome: '  Maria Silva  ',
-      cpf: '123.456.789-01',
+      cpf: '123.456.789-09',
       email: ' maria@email.com ',
       dataNascimento: '1990-05-10',
       sexo: 'F',
@@ -69,7 +69,7 @@ describe('CadastroPayloadService', () => {
     const dados = service.montarDadosBase(f);
 
     expect(dados.nome).toBe('Maria Silva');
-    expect(dados.cpf).toBe('12345678901');
+    expect(dados.cpf).toBe('12345678909');
     expect(dados.celular).toBe('11999999999');
     expect(dados.numCNS).toBe('123456789012345');
     expect(dados.idCargo).toBe(2);

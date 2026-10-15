@@ -7,7 +7,7 @@ function formularioValido(): FormulariosCadastro {
   return {
     dadosPessoais: comErros({
       nome: 'Maria Silva',
-      cpf: '12345678901',
+      cpf: '12345678909',
       email: 'maria@email.com',
       dataNascimento: '1990-05-10',
       sexo: 'F',
