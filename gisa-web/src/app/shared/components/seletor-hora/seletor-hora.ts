@@ -27,14 +27,18 @@ export class SeletorHora {
   readonly horas = HORAS;
   readonly minutos = MINUTOS;
 
-  // Acompanham o valor de fora; quando ele volta a '' (parte apagada), mantém o que já foi escolhido.
+  // true quando o último valor emitido foi '' (só uma das partes escolhida).
+  private emitiuVazio = false;
+
+  // Acompanham o valor de fora. Quando ele volta a '' porque uma parte foi apagada aqui, mantém a
+  // outra parte; quando quem limpou foi o formulário (ex.: "Agendar outra"), limpa as duas.
   hora = linkedSignal<string, string | null>({
     source: this.value,
-    computation: (v, anterior) => (v ? v.slice(0, 2) : (anterior?.value ?? null)),
+    computation: (v, anterior) => (v ? v.slice(0, 2) : this.emitiuVazio ? (anterior?.value ?? null) : null),
   });
   minuto = linkedSignal<string, string | null>({
     source: this.value,
-    computation: (v, anterior) => (v ? v.slice(3, 5) : (anterior?.value ?? null)),
+    computation: (v, anterior) => (v ? v.slice(3, 5) : this.emitiuVazio ? (anterior?.value ?? null) : null),
   });
 
   escolherHora(h: number | string | null) {
@@ -50,6 +54,8 @@ export class SeletorHora {
   private emitir() {
     const h = this.hora();
     const m = this.minuto();
-    this.valueChange.emit(h && m ? `${h}:${m}` : '');
+    const valor = h && m ? `${h}:${m}` : '';
+    this.emitiuVazio = !valor;
+    this.valueChange.emit(valor);
   }
 }

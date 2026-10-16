@@ -354,11 +354,16 @@ export class FormTerapia implements OnInit {
       this.router.navigateByUrl(this.rotaBase);
       return;
     }
-    // Agendar outra: mantém data e horário, limpa as pessoas.
+    // Agendar outra: formulário em branco.
     this.pacientes.set([this.novoItem()]);
     this.especialistas.set([this.novoItem()]);
+    this.data.set('');
+    this.horaInicio.set('');
+    this.horaTermino.set('');
     this.erros.set({});
+    this.erro.set('');
     this.conflitos.set([]);
+    this.idSalvo.set(null);
   }
 
   cancelar() {
