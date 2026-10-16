@@ -18,13 +18,14 @@ import { ResumoPresencaDia } from './componentes/resumo-presenca-dia/resumo-pres
 import { CardTerapiaPresenca, PresencaMarcada } from './componentes/card-terapia-presenca/card-terapia-presenca';
 import { TerapiaDoDia, calcularResumo, filtrarPorSituacao, filtrarTerapias, substituirTerapia } from './presenca.util';
 import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
-import { AVISO_PRESENCA, nomePaciente } from './presenca.util';
+import { AVISO_PRESENCA, nomePaciente, participaDaTerapia } from './presenca.util';
 
 // Máximo aceito pela API em uma página.
 const TAMANHO_DIA = 100;
 
 // Terapias de um dia com registro de presença.
 // data.modo = 'geral' (recepção: todas as terapias) ou 'minhas' (especialista logado).
+// No modo geral o especialista vê todas, mas só registra presença nas terapias de que participa.
 @Component({
   selector: 'app-registrar-presenca',
   imports: [CabecalhoPagina, BuscaFiltro, FiltroAvancado, NavegadorData, ResumoPresencaDia, CardTerapiaPresenca, RouterLink],
@@ -109,6 +110,10 @@ export class RegistrarPresenca implements OnInit {
 
   aplicarFiltroAvancado(estado: EstadoFiltroAvancado) {
     this.situacoes.set(new Set(estado.status));
+  }
+
+  podeRegistrarEm(t: TerapiaDoDia): boolean {
+    return this.podeRegistrar && (!this.auth.ehEspecialista() || participaDaTerapia(t, this.auth.usuarioAtual()?.idCadastro));
   }
 
   idPacienteSalvando(t: TerapiaDoDia): number | null {

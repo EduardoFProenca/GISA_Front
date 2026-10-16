@@ -26,7 +26,7 @@
       <div class="item-terapia">
         <app-card-terapia-presenca
           [terapia]="t"
-          [podeRegistrar]="podeRegistrar"
+          [podeRegistrar]="podeRegistrarEm(t)"
           [idPacienteSalvando]="idPacienteSalvando(t)"
           (presencaMarcada)="registrar(t, $event)" />
         @if (rotaTerapias) {

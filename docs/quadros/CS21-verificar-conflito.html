@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quadro CS21</title>
+<style>
+  body { background: #ffffff; margin: 24px 16px; font-family: Arial, Helvetica, sans-serif; color: #222; }
+  .dica { max-width: 760px; font-size: 13px; color: #555; margin-bottom: 20px; }
+</style>
+</head>
+<body>
+<p class="dica">Selecione do título até o fim da tabela, copie (Ctrl+C) e cole no Google Docs (Ctrl+V).</p>
+
+<p style="font-family:Arial,Helvetica,sans-serif;font-size:11pt;font-weight:bold;margin:0 0 6px;">Quadro 21 - CS21 - Verificar Conflito de Horário</p>
+<table style="border-collapse:collapse;width:100%;max-width:760px;font-family:Arial,Helvetica,sans-serif;font-size:10pt;">
+  <tr>
+    <td style="background:#2E5C8A;color:#ffffff;font-weight:bold;font-size:11pt;border:1px solid #b7b7b7;padding:6px 8px;width:28%;">Campo</td>
+    <td style="background:#2E5C8A;color:#ffffff;font-weight:bold;font-size:11pt;border:1px solid #b7b7b7;padding:6px 8px;">Descrição</td>
+  </tr>
+  <tr>
+    <td style="background:#E8EEF7;font-weight:bold;border:1px solid #b7b7b7;padding:6px 8px;">Caso de Uso</td>
+    <td style="background:#ffffff;border:1px solid #b7b7b7;padding:6px 8px;">Verificar conflito de horário</td>
+  </tr>
+  <tr>
+    <td style="background:#E8EEF7;font-weight:bold;border:1px solid #b7b7b7;padding:6px 8px;">Tarefa / Fase</td>
+    <td style="background:#F3F3F3;border:1px solid #b7b7b7;padding:6px 8px;">Criar a agenda dos médicos e terapeutas (incluído pelo CS13 – Gerenciar Terapias, no agendamento e na edição)</td>
+  </tr>
+  <tr>
+    <td style="background:#E8EEF7;font-weight:bold;border:1px solid #b7b7b7;padding:6px 8px;">Ator Principal</td>
+    <td style="background:#ffffff;border:1px solid #b7b7b7;padding:6px 8px;">Recepcionista (por meio do CS13; este caso não é acionado sozinho)</td>
+  </tr>
+  <tr>
+    <td style="background:#E8EEF7;font-weight:bold;border:1px solid #b7b7b7;padding:6px 8px;">Ator Secundário</td>
+    <td style="background:#F3F3F3;border:1px solid #b7b7b7;padding:6px 8px;">—</td>
+  </tr>
+  <tr>
+    <td style="background:#E8EEF7;font-weight:bold;border:1px solid #b7b7b7;padding:6px 8px;">Pré-Condição</td>
+    <td style="background:#ffffff;border:1px solid #b7b7b7;padding:6px 8px;">Formulário de agendamento ou de edição de terapia (CS13) com pacientes, especialistas, data e horário preenchidos.</td>
+  </tr>
+  <tr>
+    <td style="background:#E8EEF7;font-weight:bold;border:1px solid #b7b7b7;padding:6px 8px;">Pós-Condição</td>
+    <td style="background:#F3F3F3;border:1px solid #b7b7b7;padding:6px 8px;">Conflitos exibidos ao usuário, ou horário confirmado como livre. Nada é gravado.</td>
+  </tr>
+  <tr>
+    <td style="background:#1F3B5C;color:#ffffff;font-weight:bold;border:1px solid #b7b7b7;padding:6px 8px;">Ações do Ator</td>
+    <td style="background:#1F3B5C;color:#ffffff;font-weight:bold;border:1px solid #b7b7b7;padding:6px 8px;">Ações do Sistema</td>
+  </tr>
+  <tr>
+    <td style="background:#ffffff;border:1px solid #b7b7b7;padding:6px 8px;">1. No CS13, escolhe ou altera os pacientes, os especialistas, a data ou o horário.</td>
+    <td style="background:#ffffff;border:1px solid #b7b7b7;padding:6px 8px;"></td>
+  </tr>
+  <tr>
+    <td style="background:#EEF3FA;border:1px solid #b7b7b7;padding:6px 8px;"></td>
+    <td style="background:#EEF3FA;border:1px solid #b7b7b7;padding:6px 8px;">2. Confere se algum paciente ou especialista já tem outra terapia que se sobrepõe ao horário (o início conta, o término não: 09:00–10:00 e 10:00–11:00 não conflitam).</td>
+  </tr>
+  <tr>
+    <td style="background:#ffffff;border:1px solid #b7b7b7;padding:6px 8px;"></td>
+    <td style="background:#ffffff;border:1px solid #b7b7b7;padding:6px 8px;">3. Confere se a terapia cabe inteira em uma única jornada de trabalho de cada especialista, no dia da semana da data.</td>
+  </tr>
+  <tr>
+    <td style="background:#EEF3FA;border:1px solid #b7b7b7;padding:6px 8px;"></td>
+    <td style="background:#EEF3FA;border:1px solid #b7b7b7;padding:6px 8px;">4. Desconsidera as terapias canceladas, o horário de paciente com falta justificada (e do especialista, quando todos os pacientes justificaram) e, na edição, a própria terapia.</td>
+  </tr>
+  <tr>
+    <td style="background:#ffffff;border:1px solid #b7b7b7;padding:6px 8px;"></td>
+    <td style="background:#ffffff;border:1px solid #b7b7b7;padding:6px 8px;">5. Se houver conflito, destaca as pessoas envolvidas e lista todos os conflitos: horário ocupado (com a terapia que ocupa) ou fora da jornada (com as jornadas do dia). Sem conflito, segue sem alertas.</td>
+  </tr>
+  <tr>
+    <td style="background:#EEF3FA;border:1px solid #b7b7b7;padding:6px 8px;">6. Ajusta o horário ou os participantes (volta ao passo 1) ou confirma o agendamento no CS13.</td>
+    <td style="background:#EEF3FA;border:1px solid #b7b7b7;padding:6px 8px;"></td>
+  </tr>
+  <tr>
+    <td style="background:#E8EEF7;font-weight:bold;border:1px solid #b7b7b7;padding:6px 8px;">Fluxo Alternativo A – Ao salvar</td>
+    <td style="background:#ffffff;border:1px solid #b7b7b7;padding:6px 8px;">O sistema refaz a verificação no momento de gravar. Se outro usuário ocupou o horário depois da última verificação, recusa o agendamento e lista os conflitos. Em agendamentos simultâneos para o mesmo horário, só o primeiro é gravado.</td>
+  </tr>
+  <tr>
+    <td style="background:#E8EEF7;font-weight:bold;border:1px solid #b7b7b7;padding:6px 8px;">Exceções</td>
+    <td style="background:#F3F3F3;border:1px solid #b7b7b7;padding:6px 8px;">Término igual ou anterior ao início, participante inativo ou repetido: recusa antes de verificar. Horário no passado: a verificação não recusa, mas o agendamento (CS13) recusa.</td>
+  </tr>
+  <tr>
+    <td style="background:#E8EEF7;font-weight:bold;border:1px solid #b7b7b7;padding:6px 8px;">Observação</td>
+    <td style="background:#ffffff;border:1px solid #b7b7b7;padding:6px 8px;">A verificação é um aviso antecipado: ela não reserva o horário.</td>
+  </tr>
+</table>
+</body>
+</html>

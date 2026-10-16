@@ -57,7 +57,7 @@
     <h3>Pacientes e Presença</h3>
     <app-card-terapia-presenca
       [terapia]="t"
-      [podeRegistrar]="podeRegistrarPresenca"
+      [podeRegistrar]="podeRegistrarPresenca()"
       [idPacienteSalvando]="salvandoPresenca()"
       (presencaMarcada)="registrarPresenca($event)" />
   </div>

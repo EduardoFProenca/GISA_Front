@@ -39,6 +39,11 @@ export function filtrarPorSituacao<T extends TerapiaDoDia>(terapias: T[], situac
   return terapias.filter((t) => situacoes.has(situacaoDaTerapia(t)));
 }
 
+// Terapias de /terapias/minhas são sempre do especialista logado; nas da listagem geral, confere a lista.
+export function participaDaTerapia(t: TerapiaDoDia, idEspecialista: number | undefined): boolean {
+  return 'outrosEspecialistas' in t || t.especialistas.some((e) => e.idCadastro === idEspecialista);
+}
+
 export function nomesEspecialistas(t: TerapiaDoDia): string[] {
   return 'especialistas' in t ? t.especialistas.map((e) => e.nome) : t.outrosEspecialistas;
 }

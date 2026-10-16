@@ -41,7 +41,7 @@ jobs:
       - run: npx ng build --base-href /GISA_Front/
 
       # SPA: o Pages devolve o 404.html para rotas que não existem como arquivo
-      # (ex.: /GISA_Front/administrador/pacientes ao recarregar a página).
+      # (ex.: /GISA_Front/pacientes ao recarregar a página).
       - run: cp dist/gisa-web/browser/index.html dist/gisa-web/browser/404.html
 
       - uses: actions/upload-pages-artifact@v3

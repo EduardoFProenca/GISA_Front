@@ -13,7 +13,7 @@ import { dataExtenso, hojeIso } from '../../../shared/utils/data.util';
 import { ROTULO_MODALIDADE, ROTULO_STATUS_TERAPIA } from '../../../shared/utils/rotulos.util';
 import { lerContextoTerapias } from '../contexto-terapias';
 import { CardTerapiaPresenca, PresencaMarcada } from '../registrar-presenca/componentes/card-terapia-presenca/card-terapia-presenca';
-import { horarioTerapia } from '../registrar-presenca/presenca.util';
+import { horarioTerapia, participaDaTerapia } from '../registrar-presenca/presenca.util';
 import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 import { AVISO_PRESENCA, AVISO_STATUS, nomePaciente } from '../registrar-presenca/presenca.util';
 
@@ -48,11 +48,16 @@ export class DetalheTerapia implements OnInit {
 
   podeEditar = this.auth.temPermissao('EDITAR_TERAPIA');
   podeAlterarStatus = this.auth.temPermissao('ALTERAR_STATUS_TERAPIA');
-  podeRegistrarPresenca = this.auth.temPermissao('REGISTRAR_PRESENCA');
-
   carregando = signal(true);
   erro = signal('');
   terapia = signal<Terapia | null>(null);
+
+  // Especialista só registra presença nas terapias de que participa.
+  podeRegistrarPresenca = computed(() => {
+    const t = this.terapia();
+    if (!t || !this.auth.temPermissao('REGISTRAR_PRESENCA')) return false;
+    return !this.auth.ehEspecialista() || participaDaTerapia(t, this.auth.usuarioAtual()?.idCadastro);
+  });
 
   rotuloStatus = computed(() => {
     const t = this.terapia();
