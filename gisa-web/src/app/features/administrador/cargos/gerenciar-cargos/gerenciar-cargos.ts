@@ -67,6 +67,6 @@ export class GerenciarCargos {
 
   aoSalvar(cargo: Cargo) {
     this.dialogAberto.set(false);
-    this.router.navigate(['/administrador/cargos', cargo.idCargo]);
+    this.router.navigate(['/cargos', cargo.idCargo]);
   }
 }

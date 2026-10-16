@@ -139,7 +139,7 @@ export class DetalheUsuario implements OnInit {
     this.usuarioService.retirarAcesso(this.id).subscribe({
       next: () => {
         this.avisoSucesso.mostrar({ titulo: 'Acesso retirado', detalhe: this.usuario()?.nome });
-        this.router.navigateByUrl('/administrador/usuarios');
+        this.router.navigateByUrl('/usuarios');
       },
       error: (err) => {
         this.retirando.set(false);

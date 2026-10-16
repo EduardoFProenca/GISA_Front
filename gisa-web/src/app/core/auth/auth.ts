@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, map, of, switchMap, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LoginRequest, LoginResponse, RedefinirSenhaPayload, TokenResponse, UsuarioLogado } from '../models/auth.model';
-import { Funcionalidade, PAINEIS, Painel, painelDoUsuario, podeAcessar } from './permissoes';
+import { CadastroExigido, Funcionalidade, podeAcessar, temCadastro } from './permissoes';
 
 const TOKEN_KEY = 'gisa_token';
 const USUARIO_KEY = 'gisa_usuario';
@@ -44,10 +44,9 @@ export class Auth {
   // Nomes das permissões do usuário logado.
   permissoes = computed(() => this.usuarioAtual()?.permissoes.map((p) => p.nome) ?? []);
 
-  painel = computed<Painel | null>(() => {
-    const usuario = this.usuarioAtual();
-    return usuario ? painelDoUsuario(usuario) : null;
-  });
+  // Tipo de cadastro do usuário logado (ver temCadastro em permissoes.ts).
+  ehEspecialista = computed(() => temCadastro(this.usuarioAtual()?.tipoCadastro, 'ESPECIALISTA'));
+  ehAssistenteSocial = computed(() => temCadastro(this.usuarioAtual()?.tipoCadastro, 'ASSISTENTE_SOCIAL'));
 
   // POST /auth/login e, em seguida, GET /usuarios/me. Com a senha temporária (primeiro acesso) não há
   // sessão: devolve o token de redefinição para a tela de cadastrar a senha definitiva.
@@ -111,10 +110,8 @@ export class Auth {
     return podeAcessar(this.permissoes(), funcionalidade);
   }
 
-  // Rota inicial do usuário logado (null = perfil sem painel).
-  rotaInicial(): string | null {
-    const painel = this.painel();
-    return painel ? PAINEIS[painel] : null;
+  temCadastro(exigido: CadastroExigido): boolean {
+    return temCadastro(this.usuarioAtual()?.tipoCadastro, exigido);
   }
 
   private salvarUsuario(usuario: UsuarioLogado | null) {

@@ -19,12 +19,12 @@
       @if (u.cargo) { <app-campo-detalhe rotulo="Cargo">{{ u.cargo.nome }}</app-campo-detalhe> }
       @if (u.email) { <app-campo-detalhe rotulo="E-mail">{{ u.email }}</app-campo-detalhe> }
       @if (podeVerPerfis) {
-      <app-campo-detalhe rotulo="Perfil de acesso"><a [routerLink]="['/administrador/perfis', u.perfil.idPerfil]">{{ u.perfil.nome }}</a></app-campo-detalhe>
+      <app-campo-detalhe rotulo="Perfil de acesso"><a [routerLink]="['/perfis', u.perfil.idPerfil]">{{ u.perfil.nome }}</a></app-campo-detalhe>
       } @else {
       <app-campo-detalhe rotulo="Perfil de acesso">{{ u.perfil.nome }}</app-campo-detalhe>
       }
       @if (u.tipoCadastro !== 'PESSOA' && podeVerCadastro) {
-      <p><a [routerLink]="['/administrador/profissionais', u.idCadastro]">Ver cadastro completo</a></p>
+      <p><a [routerLink]="['/profissionais', u.idCadastro]">Ver cadastro completo</a></p>
       }
     </div>
     @if (u.statusCadastro === 'INATIVO') {

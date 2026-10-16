@@ -1,4 +1,4 @@
-// Arquivo único de controle de acesso do front: funcionalidades, permissões e painéis.
+// Arquivo único de controle de acesso do front: funcionalidades, permissões e tipo de cadastro.
 //
 // COMO MANTER:
 // - Cada funcionalidade do front aponta para as permissões do back (GET /api/permissoes, ver PERFIS.md)
@@ -59,70 +59,18 @@ export function podeAcessar(permissoes: readonly string[], funcionalidade: Funci
   return exigidas === null || exigidas.some((p) => permissoes.includes(p));
 }
 
-// ---------- Painéis ----------
+// ---------- Tipo de cadastro ----------
 
-// Rota base de cada painel.
-export const PAINEIS = {
-  ADMINISTRADOR: '/administrador',
-  RECEPCAO: '/recepcao',
-  ESPECIALISTA: '/especialista',
-  ASSISTENTE_SOCIAL: '/assistente-social',
-} as const;
+// Algumas telas dependem do tipo de cadastro do usuário, e não de uma permissão: a agenda, as
+// terapias do dia, o atestado e a receita usam dados que só o especialista tem (/terapias/minhas e
+// /especialistas/me); "meus pacientes" só existe para o assistente social.
+export type CadastroExigido = 'ESPECIALISTA' | 'ASSISTENTE_SOCIAL';
 
-export type Painel = keyof typeof PAINEIS;
-
-// Nome do perfil (GET /api/perfis), normalizado: minúsculo, sem acento, separadores viram espaço.
-// Para um perfil novo abrir um painel, acrescente o nome dele aqui.
-const PAINEL_POR_PERFIL: Record<string, Painel> = {
-  'administrador': 'ADMINISTRADOR',
-  'recepcao': 'RECEPCAO',
-  'recepcionista': 'RECEPCAO',
-  'especialista': 'ESPECIALISTA',
-  'assistente social': 'ASSISTENTE_SOCIAL',
-};
-
-export function normalizarNomePerfil(nome: string): string {
-  return nome
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .toLowerCase()
-    .replace(/[\s_-]+/g, ' ')
-    .trim();
+export function temCadastro(tipoCadastro: string | undefined, exigido: CadastroExigido): boolean {
+  if (exigido === 'ESPECIALISTA') return tipoCadastro === 'ESPECIALISTA' || tipoCadastro === 'ESPECIALISTA_PJ';
+  return tipoCadastro === exigido;
 }
 
-interface UsuarioPainel {
-  perfil: { nome: string };
-  permissoes: readonly { nome: string }[];
-  tipoCadastro: string;
-}
-
-function ehCadastroDeEspecialista(u: UsuarioPainel): boolean {
-  return u.tipoCadastro === 'ESPECIALISTA' || u.tipoCadastro === 'ESPECIALISTA_PJ';
-}
-
-// O painel do especialista depende de terapias do próprio usuário (/terapias/minhas), que a API
-// só atende para cadastros de especialista/PJ: o perfil "Especialista" sozinho não basta.
-function perfilIncompativel(u: UsuarioPainel, painel: Painel): boolean {
-  return painel === 'ESPECIALISTA' && !ehCadastroDeEspecialista(u);
-}
-
-// Painel pelo nome do perfil. Sem correspondência (ou incompatível com o cadastro): ACESSO_TOTAL abre
-// o do administrador; especialista/PJ abre o do especialista; assistente social, o dele; os demais ficam
-// sem painel (null).
-export function painelDoUsuario(usuario: UsuarioPainel): Painel | null {
-  const porPerfil = PAINEL_POR_PERFIL[normalizarNomePerfil(usuario.perfil.nome)];
-  if (porPerfil && !perfilIncompativel(usuario, porPerfil)) return porPerfil;
-  if (usuario.permissoes.some((p) => p.nome === ACESSO_TOTAL)) return 'ADMINISTRADOR';
-  if (ehCadastroDeEspecialista(usuario)) return 'ESPECIALISTA';
-  if (usuario.tipoCadastro === 'ASSISTENTE_SOCIAL') return 'ASSISTENTE_SOCIAL';
-  return null;
-}
-
-// Explica por que o usuário ficou sem painel (mensagem do login).
-export function motivoSemPainel(usuario: UsuarioPainel): string {
-  const porPerfil = PAINEL_POR_PERFIL[normalizarNomePerfil(usuario.perfil.nome)];
-  if (porPerfil && perfilIncompativel(usuario, porPerfil)) {
-    return `O perfil "${usuario.perfil.nome}" só pode ser usado por cadastros de especialista. Procure o administrador para ajustar o seu perfil.`;
-  }
-  return `O perfil "${usuario.perfil.nome}" não tem acesso a nenhum painel. Procure o administrador.`;
-}
+// Página inicial de todo usuário logado. O nome do perfil não interfere em nada: o que aparece no
+// menu, nas telas e no Início vem das permissões (e, nos casos acima, do tipo de cadastro).
+export const ROTA_INICIO = '/inicio';

@@ -55,7 +55,6 @@ describe('Auth', () => {
 
     expect(auth.isLoggedIn()).toBe(true);
     expect(auth.usuarioAtual()?.nome).toBe('Mariana Costa');
-    expect(auth.rotaInicial()).toBe('/recepcao');
   });
 
   it('ACESSO_TOTAL libera qualquer funcionalidade', () => {
@@ -74,22 +73,26 @@ describe('Auth', () => {
     expect(auth.temPermissao('VISUALIZAR_AUDITORIA')).toBe(false);
   });
 
-  it('perfil "Especialista" em cadastro que não é de especialista não abre o painel do especialista', () => {
-    entrar(usuario('Especialista'));
+  it('o nome do perfil não interfere: perfil novo libera só as suas permissões', () => {
+    entrar(usuario('Recepção - Estagiário', ['VISUALIZAR_PACIENTES', 'REGISTRAR_PRESENCA']));
 
-    expect(auth.rotaInicial()).toBe(null);
+    expect(auth.temPermissao('VISUALIZAR_PACIENTES')).toBe(true);
+    expect(auth.temPermissao('AGENDAR_TERAPIA')).toBe(false);
   });
 
-  it('perfil "Especialista" em cadastro de especialista abre o painel do especialista', () => {
-    entrar({ ...usuario('Especialista'), tipoCadastro: 'ESPECIALISTA' });
+  it('o tipo de cadastro vem de /usuarios/me, independente do perfil', () => {
+    entrar({ ...usuario('Médico', ['EMITIR_ATESTADO']), tipoCadastro: 'ESPECIALISTA_PJ' });
 
-    expect(auth.rotaInicial()).toBe('/especialista');
+    expect(auth.ehEspecialista()).toBe(true);
+    expect(auth.temCadastro('ESPECIALISTA')).toBe(true);
+    expect(auth.ehAssistenteSocial()).toBe(false);
   });
 
-  it('perfil sem painel mapeado não tem rota inicial', () => {
-    entrar(usuario('Financeiro'));
+  it('perfil "Especialista" em cadastro que não é de especialista não ganha as telas de especialista', () => {
+    entrar(usuario('Especialista', ['EMITIR_ATESTADO']));
 
-    expect(auth.rotaInicial()).toBe(null);
+    expect(auth.temPermissao('EMITIR_ATESTADO')).toBe(true);
+    expect(auth.ehEspecialista()).toBe(false);
   });
 
   it('logout limpa token e usuário', () => {

@@ -48,6 +48,6 @@ export class GerenciarEspecialidades implements OnInit {
 
   aoSalvar(e: Especialidade) {
     this.dialogAberto.set(false);
-    this.router.navigate(['/administrador/especialidades', e.idEspecialidade]);
+    this.router.navigate(['/especialidades', e.idEspecialidade]);
   }
 }

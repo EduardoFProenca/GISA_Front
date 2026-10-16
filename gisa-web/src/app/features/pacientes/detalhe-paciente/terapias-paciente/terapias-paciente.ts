@@ -19,7 +19,7 @@ export class TerapiasPaciente {
   private terapiaService = inject(TerapiaService);
 
   idPaciente = input.required<number>();
-  // Base das rotas de terapia do painel; vazio = lista sem link (ex.: Assistente Social).
+  // Base das rotas de terapia; vazio = lista sem link (ex.: Assistente Social).
   rotaTerapias = input('');
 
   readonly itensPorPagina = 5;

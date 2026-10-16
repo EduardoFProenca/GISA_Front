@@ -98,6 +98,6 @@ export class GerenciarCbos {
 
   aoSalvar(cbo: Cbo) {
     this.dialogAberto.set(false);
-    this.router.navigate(['/administrador/cbos', cbo.codigoCBO]);
+    this.router.navigate(['/cbos', cbo.codigoCBO]);
   }
 }

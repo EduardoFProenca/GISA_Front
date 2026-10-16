@@ -101,7 +101,7 @@ export class ProfissionalService {
     return this.http.get<AssistenteSocial>(this.url('ASSISTENTE_SOCIAL', id), { context: comCarregamento() });
   }
 
-  // Pacientes vinculados ao assistente social logado (painel dele; basta ser assistente social).
+  // Pacientes vinculados ao assistente social logado (Início dele; basta ser assistente social).
   meusPacientesAssistenteSocial(): Observable<PacienteResumo[]> {
     return this.http.get<PacienteResumo[]>(`${this.base}/assistentes-sociais/me/pacientes`);
   }

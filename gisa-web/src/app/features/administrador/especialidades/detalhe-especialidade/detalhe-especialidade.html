@@ -33,7 +33,7 @@
       @for (p of e.especialistas; track p.idCadastro) {
       <li>
         @if (podeVerProfissionais) {
-        <a class="nome" [routerLink]="['/administrador/profissionais', p.idCadastro]">{{ p.nome }}</a>
+        <a class="nome" [routerLink]="['/profissionais', p.idCadastro]">{{ p.nome }}</a>
         } @else {
         <span class="nome">{{ p.nome }}</span>
         }

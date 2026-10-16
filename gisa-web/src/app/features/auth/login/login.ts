@@ -6,7 +6,7 @@ import { ICONES } from '../../../shared/icons';
 import { Router, RouterLink } from '@angular/router';
 import { timeout } from 'rxjs';
 import { Auth } from '../../../core/auth/auth';
-import { motivoSemPainel } from '../../../core/auth/permissoes';
+import { ROTA_INICIO } from '../../../core/auth/permissoes';
 import { lerErroApi, mensagemDeErro } from '../../../core/http/erro-api';
 import { emailValido } from '../../../shared/utils/texto.util';
 import { ESTADO_PRIMEIRO_ACESSO } from '../redefinir-senha/redefinir-senha';
@@ -68,14 +68,8 @@ export class LoginComponent {
             });
             return;
           }
-          const rota = this.auth.rotaInicial();
-          if (rota) {
-            this.router.navigate([rota]);
-            return;
-          }
-          // Perfil sem painel (ou incompatível com o cadastro): ver core/auth/permissoes.ts.
-          this.auth.logout();
-          this.erroLogin.set(motivoSemPainel(resultado.usuario));
+          // Qualquer perfil entra: o Início mostra só o que as permissões dele liberam.
+          this.router.navigate([ROTA_INICIO]);
         },
         error: (err: unknown) => {
           clearTimeout(aviso);

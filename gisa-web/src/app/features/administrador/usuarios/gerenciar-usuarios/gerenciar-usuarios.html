@@ -37,7 +37,7 @@
     <ul class="tabela">
       @for (u of pagina().content; track u.idCadastro) {
       <li>
-        <a class="linha" [routerLink]="['/administrador/usuarios', u.idCadastro]">
+        <a class="linha" [routerLink]="['/usuarios', u.idCadastro]">
           <div class="principal">
             <strong>{{ u.nome }}</strong>
             <small>CPF {{ cpf(u.cpf) }} · {{ rotuloTipo[u.tipoCadastro] }}</small>

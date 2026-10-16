@@ -94,6 +94,6 @@ export class HistoricoProfissional implements OnInit {
   }
 
   verDetalhes(idTerapia: number) {
-    this.router.navigate(['/administrador/terapias', idTerapia]);
+    this.router.navigate(['/terapias', idTerapia]);
   }
 }

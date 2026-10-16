@@ -156,7 +156,7 @@ export class CadastroProfissional implements OnInit {
 
   aoVerDetalhesCadastrado() {
     if (this.idCadastrado != null) {
-      this.router.navigate(['/administrador/profissionais', this.idCadastrado]);
+      this.router.navigate(['/profissionais', this.idCadastrado]);
     }
   }
 

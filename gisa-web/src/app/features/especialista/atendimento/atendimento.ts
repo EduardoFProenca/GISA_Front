@@ -52,6 +52,10 @@ export class AtendimentoEspecialista implements OnInit {
   readonly podeVerHistorico = this.auth.temPermissao('VISUALIZAR_HISTORICO_PACIENTE');
   // O especialista não tem VISUALIZAR_TERAPIAS: vê só as terapias dele com o paciente (/terapias/minhas).
   private readonly veTodasAsTerapias = this.auth.temPermissao('VISUALIZAR_TERAPIAS');
+  // O especialista chega pela agenda; os demais, pelo detalhe do paciente.
+  readonly voltar = this.auth.ehEspecialista()
+    ? { rota: '/agenda', texto: 'Voltar para Agenda' }
+    : { rota: `/pacientes/${this.idPaciente}`, texto: 'Voltar para o paciente' };
 
   // Estado que muda após resposta HTTP fica em signal.
   carregando = signal(true);

@@ -2,14 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
-import { DashboardEspecialista } from './dashboard';
+import { Inicio } from './inicio';
 
-describe('DashboardEspecialista', () => {
+describe('Inicio', () => {
   it('should create', async () => {
     await TestBed.configureTestingModule({
-      imports: [DashboardEspecialista],
+      imports: [Inicio],
       providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     }).compileComponents();
-    expect(TestBed.createComponent(DashboardEspecialista).componentInstance).toBeTruthy();
+    expect(TestBed.createComponent(Inicio).componentInstance).toBeTruthy();
   });
 });

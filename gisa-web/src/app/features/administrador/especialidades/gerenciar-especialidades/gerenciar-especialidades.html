@@ -19,7 +19,7 @@
     <ul class="tabela">
       @for (e of filtradas(); track e.idEspecialidade) {
       <li>
-        <a class="linha" [routerLink]="['/administrador/especialidades', e.idEspecialidade]">
+        <a class="linha" [routerLink]="['/especialidades', e.idEspecialidade]">
           <div class="principal">
             <strong>{{ e.nome }}</strong>
             @if (e.descricao) { <small>{{ e.descricao }}</small> }

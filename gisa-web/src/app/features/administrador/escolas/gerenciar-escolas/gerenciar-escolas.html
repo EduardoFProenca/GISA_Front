@@ -25,7 +25,7 @@
     <ul class="tabela">
       @for (e of pagina().content; track e.idEscola) {
       <li>
-        <a class="linha" [routerLink]="['/administrador/escolas', e.idEscola]">
+        <a class="linha" [routerLink]="['/escolas', e.idEscola]">
           <div class="principal">
             <strong>{{ e.nome }}</strong>
             <small>{{ rotuloTipo[e.tipoEscola] }}@if (e.telefone) { · {{ telefone(e.telefone) }} }</small>

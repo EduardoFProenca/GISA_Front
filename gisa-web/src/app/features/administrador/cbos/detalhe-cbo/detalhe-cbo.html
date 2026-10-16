@@ -28,7 +28,7 @@
     <h3>Cargos <span class="etiqueta">{{ c.cargos.length }}</span></h3>
     <ul class="vinculos">
       @for (cargo of c.cargos; track cargo.idCargo) {
-      <li><a class="nome" [routerLink]="['/administrador/cargos', cargo.idCargo]">{{ cargo.nome }}</a></li>
+      <li><a class="nome" [routerLink]="['/cargos', cargo.idCargo]">{{ cargo.nome }}</a></li>
       } @empty {
       <li class="vazio">Nenhum cargo usa este CBO.</li>
       }

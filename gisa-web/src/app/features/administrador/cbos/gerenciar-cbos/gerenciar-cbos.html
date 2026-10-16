@@ -4,7 +4,7 @@
   <div class="painel">
     <p class="descricao-pagina">
       Classificação Brasileira de Ocupações. Cada cargo está ligado a um CBO.
-      <a routerLink="/administrador/cargos">Gerenciar cargos</a>
+      <a routerLink="/cargos">Gerenciar cargos</a>
     </p>
 
     <div class="barra-busca">
@@ -25,7 +25,7 @@
     <ul class="tabela">
       @for (c of cbos(); track c.codigoCBO) {
       <li>
-        <a class="linha" [routerLink]="['/administrador/cbos', c.codigoCBO]">
+        <a class="linha" [routerLink]="['/cbos', c.codigoCBO]">
           <span class="codigo">{{ codigo(c.codigoCBO) }}</span>
           <div class="principal"><strong>{{ c.tituloCBO }}</strong></div>
           <ng-icon class="seta" [name]="icones.proximo" aria-hidden="true" />

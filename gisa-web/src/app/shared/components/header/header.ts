@@ -33,11 +33,7 @@ export class Header {
 
   painelAberto = signal(false);
 
-  // "Alterar minha senha" do painel do usuário (null se ele não tiver painel).
-  get rotaSenha(): string | null {
-    const inicio = this.auth.rotaInicial();
-    return inicio ? `${inicio}/minha-senha` : null;
-  }
+  readonly rotaSenha = '/minha-senha';
 
   get nome(): string {
     return this.auth.usuarioAtual()?.nome || this.tituloPortal;

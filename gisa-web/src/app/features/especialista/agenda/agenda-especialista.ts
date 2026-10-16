@@ -193,6 +193,6 @@ export class AgendaEspecialista implements OnInit {
 
   abrirProntuario(a: ItemAgenda) {
     this.fecharDetalhe();
-    this.router.navigate(['/especialista/atendimento', a.idPaciente], { queryParams: { terapia: a.idTerapia } });
+    this.router.navigate(['/atendimento', a.idPaciente], { queryParams: { terapia: a.idTerapia } });
   }
 }

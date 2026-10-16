@@ -67,7 +67,7 @@ export class DetalheCbo implements OnInit {
     this.cargoService.excluirCbo(this.codigoCbo).subscribe({
       next: () => {
         this.avisoSucesso.mostrar({ titulo: 'CBO excluído', detalhe: this.cbo()?.tituloCBO });
-        this.router.navigateByUrl('/administrador/cbos');
+        this.router.navigateByUrl('/cbos');
       },
       error: (err) => {
         this.excluindo.set(false);

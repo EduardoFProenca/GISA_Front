@@ -11,7 +11,6 @@ import { ProfissionalService } from '../../../core/services/profissional';
 import { SelectBusca } from '../../../shared/components/select-busca/select-busca';
 import { buscaAssistentesSociais } from '../../../shared/components/select-busca/buscas';
 import { Auth } from '../../../core/auth/auth';
-import { PAINEIS } from '../../../core/auth/permissoes';
 import { mensagemDeErro } from '../../../core/http/erro-api';
 import { lerContextoPacientes } from '../contexto-pacientes';
 import { HistoricoPaciente } from './historico-paciente/historico-paciente';
@@ -61,7 +60,7 @@ export class DetalhePaciente implements OnInit {
   podeInativar = this.auth.temPermissao('INATIVAR_PACIENTE');
   podeVerHistorico = this.auth.temPermissao('VISUALIZAR_HISTORICO_PACIENTE');
   podeVerTerapias = this.auth.temPermissao('VISUALIZAR_TERAPIAS');
-  // /administrador/pacientes -> /administrador/terapias (todo painel monta as duas).
+  // /pacientes -> /terapias.
   rotaTerapias = this.contexto.rotaBase.replace(/\/pacientes$/, '/terapias');
 
   carregando = signal(true);
@@ -93,11 +92,11 @@ export class DetalhePaciente implements OnInit {
 
   dataCadastro = computed(() => dataCurta(this.paciente()?.dataCadastro));
 
-  // O prontuário (atendimento) só existe no painel do especialista.
+  // Prontuário (atendimento): para o especialista (vê as terapias dele com o paciente) ou para quem
+  // vê todas as terapias. Sem isso a aba de terapias do prontuário não teria o que mostrar.
+  private podeAbrirProntuario = this.auth.ehEspecialista() || this.podeVerTerapias;
   rotaProntuario = computed(() =>
-    this.rotaBase.startsWith(PAINEIS.ESPECIALISTA + '/') && this.paciente()
-      ? `${PAINEIS.ESPECIALISTA}/atendimento/${this.id()}`
-      : ''
+    this.podeAbrirProntuario && this.paciente() ? `/atendimento/${this.id()}` : ''
   );
 
   ngOnInit(): void {

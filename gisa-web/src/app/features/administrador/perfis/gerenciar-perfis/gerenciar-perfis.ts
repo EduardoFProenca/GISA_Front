@@ -47,6 +47,6 @@ export class GerenciarPerfis implements OnInit {
 
   aoSalvar(perfil: PerfilDetalhe) {
     this.dialogAberto.set(false);
-    this.router.navigate(['/administrador/perfis', perfil.idPerfil]);
+    this.router.navigate(['/perfis', perfil.idPerfil]);
   }
 }

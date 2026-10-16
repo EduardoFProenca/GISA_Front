@@ -6,7 +6,7 @@ import { hojeIso } from '../../shared/utils/data.util';
 import { ROTULO_STATUS_TERAPIA } from '../../shared/utils/rotulos.util';
 import { horarioTerapia } from './registrar-presenca/presenca.util';
 
-// Terapias de hoje como itens do painel "Atividades" dos dashboards.
+// Terapias de hoje como itens do bloco "Terapias de hoje" do Início.
 export function terapiasDeHoje(
   service: TerapiaService,
   abrir: (t: Terapia) => void,

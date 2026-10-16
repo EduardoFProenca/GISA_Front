@@ -1,14 +1,11 @@
-@use '../especialista' as *;
+@use '../especialista/especialista' as *;
 
+// Os cards variam com as permissões do usuário: a grade se ajusta à quantidade.
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
   gap: 1.5rem;
   margin-bottom: 1.5rem;
-
-  @media (max-width: 1000px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 .conteudo-principal {
@@ -17,9 +14,22 @@
   gap: 1.5rem;
   align-items: start;
 
+  // Sem bloco lateral (ex.: perfil só de cadastros): o Gestão Rápida ocupa a largura toda.
+  &.sem-lateral {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   @media (max-width: 1000px) {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+// Próximo paciente, terapias de hoje e pacientes vinculados, um abaixo do outro.
+.coluna-lateral {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
 }
 
 .painel {

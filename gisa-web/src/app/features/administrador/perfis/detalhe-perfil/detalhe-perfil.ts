@@ -156,7 +156,7 @@ export class DetalhePerfil implements OnInit {
     this.perfilService.excluir(this.id).subscribe({
       next: () => {
         this.avisoSucesso.mostrar({ titulo: 'Perfil excluído', detalhe: this.perfil()?.nome });
-        this.router.navigateByUrl('/administrador/perfis');
+        this.router.navigateByUrl('/perfis');
       },
       error: (err) => {
         this.excluindo.set(false);

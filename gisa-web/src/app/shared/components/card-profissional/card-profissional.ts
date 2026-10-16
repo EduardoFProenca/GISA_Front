@@ -27,17 +27,17 @@ export class CardProfissional {
 
 
   abrirDetalhe() {
-    this.router.navigateByUrl(`/administrador/profissionais/${this.profissional.id}`);
+    this.router.navigateByUrl(`/profissionais/${this.profissional.id}`);
   }
 
   abrirEdicao(event: Event) {
     event.stopPropagation();
-    this.router.navigateByUrl(`/administrador/profissionais/${this.profissional.id}/editar`);
+    this.router.navigateByUrl(`/profissionais/${this.profissional.id}/editar`);
   }
 
   abrirHistorico(event: Event) {
     event.stopPropagation();
-    this.router.navigateByUrl(`/administrador/profissionais/${this.profissional.id}/historico`);
+    this.router.navigateByUrl(`/profissionais/${this.profissional.id}/historico`);
   }
 
   get classeStatus(): string {

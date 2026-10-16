@@ -6,8 +6,8 @@ import { CadastrarPaciente } from './cadastrar-paciente/cadastrar-paciente';
 import { DetalhePaciente } from './detalhe-paciente/detalhe-paciente';
 import { EditarPaciente } from './editar-paciente/editar-paciente';
 
-// Telas de pacientes, compartilhadas entre os painéis. Cada painel monta as rotas com a sua base:
-//   { path: 'pacientes', children: pacientesRoutes('/recepcao/pacientes') }
+// Telas de pacientes. Montadas em features/telas.routes.ts:
+//   { path: 'pacientes', children: pacientesRoutes('/pacientes') }
 export function pacientesRoutes(rotaBase: string): Routes {
   const rota = (funcionalidade: Funcionalidade) => ({
     canActivate: [permissaoGuard],

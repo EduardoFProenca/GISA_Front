@@ -64,7 +64,7 @@ export class DetalheCargo implements OnInit {
     this.cargoService.excluir(this.id).subscribe({
       next: () => {
         this.avisoSucesso.mostrar({ titulo: 'Cargo excluído', detalhe: this.cargo()?.nome });
-        this.router.navigateByUrl('/administrador/cargos');
+        this.router.navigateByUrl('/cargos');
       },
       error: (err) => {
         this.excluindo.set(false);

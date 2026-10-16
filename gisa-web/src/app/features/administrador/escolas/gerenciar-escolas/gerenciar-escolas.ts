@@ -99,6 +99,6 @@ export class GerenciarEscolas implements OnInit {
 
   aoSalvar(escola: Escola) {
     this.dialogAberto.set(false);
-    this.router.navigate(['/administrador/escolas', escola.idEscola]);
+    this.router.navigate(['/escolas', escola.idEscola]);
   }
 }

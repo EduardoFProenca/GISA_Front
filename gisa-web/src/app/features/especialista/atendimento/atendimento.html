@@ -6,14 +6,14 @@
   } @else if (erro()) {
     <p class="mensagem erro" role="alert">{{ erro() }}</p>
     <div class="acoes-erro">
-      <a class="btn-secundario" routerLink="/especialista/agenda">Voltar para Agenda</a>
+      <a class="btn-secundario" [routerLink]="voltar.rota">{{ voltar.texto }}</a>
     </div>
   } @else if (paciente(); as p) {
     <app-cabecalho-paciente [paciente]="p" />
 
     <!-- Ações principais -->
     <div class="barra-acoes">
-      <a class="btn-secundario" routerLink="/especialista/agenda">Voltar para Agenda</a>
+      <a class="btn-secundario" [routerLink]="voltar.rota">{{ voltar.texto }}</a>
 
       <div class="grupo">
         <button *temPermissao="'EMITIR_ATESTADO'" type="button" class="btn-secundario" (click)="documentoAberto.set('ATESTADO')">

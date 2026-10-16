@@ -65,7 +65,7 @@ export class DetalheEspecialidade implements OnInit {
     this.especialidadeService.excluir(this.id).subscribe({
       next: () => {
         this.avisoSucesso.mostrar({ titulo: 'Especialidade excluída', detalhe: this.especialidade()?.nome });
-        this.router.navigateByUrl('/administrador/especialidades');
+        this.router.navigateByUrl('/especialidades');
       },
       error: (err) => {
         this.excluindo.set(false);

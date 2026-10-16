@@ -39,7 +39,7 @@
     <ul class="vinculos">
       @for (p of pacientes(); track p.idCadastro) {
       <li>
-        <a class="nome" [routerLink]="['/administrador/pacientes', p.idCadastro]">{{ p.nome }}</a>
+        <a class="nome" [routerLink]="['/pacientes', p.idCadastro]">{{ p.nome }}</a>
         <small>CPF {{ p.cpfMascarado }}</small>
         <span class="etiqueta" [class.inativo]="p.statusCadastro === 'INATIVO'">{{ rotuloStatus[p.statusCadastro] }}</span>
       </li>

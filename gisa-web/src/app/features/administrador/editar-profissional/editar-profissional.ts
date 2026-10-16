@@ -167,11 +167,11 @@ export class EditarProfissional implements OnInit {
   }
 
   irParaGerenciarProfissionais() {
-    this.router.navigate(['/administrador/profissionais/gerenciar']);
+    this.router.navigate(['/profissionais/gerenciar']);
   }
 
   irParaDetalhes() {
-    this.router.navigate(['/administrador/profissionais', this.id]);
+    this.router.navigate(['/profissionais', this.id]);
   }
 
   confirmarCancelamento() {

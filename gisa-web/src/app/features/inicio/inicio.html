@@ -1,0 +1,97 @@
+<app-header tituloPortal="GISA" subtituloPortal="Sistema Clínico" />
+
+<div class="corpo-dashboard">
+  <main class="conteudo">
+    @if (temCards) {
+      <div class="stats-grid">
+        <!-- Meus atendimentos de hoje (especialista) -->
+        @if (ehEspecialista) {
+          <app-card-estatistica titulo="Meus Pacientes do Dia" [valor]="carregandoAgenda() ? '—' : resumoAgenda().total" [icone]="icones.gestaoPacientes" tom="azul" />
+          <app-card-estatistica titulo="Atendidos" [valor]="carregandoAgenda() ? '—' : resumoAgenda().atendidos" [icone]="icones.gestaoConsultas" tom="verde" />
+          <app-card-estatistica titulo="Aguardando na Fila" [valor]="carregandoAgenda() ? '—' : resumoAgenda().aguardando" [icone]="icones.calendario" tom="ambar" />
+          <app-card-estatistica titulo="Faltas" [valor]="carregandoAgenda() ? '—' : resumoAgenda().faltas" [icone]="icones.gestaoAtividades" tom="vermelho" />
+        }
+
+        <!-- Terapias de hoje (VISUALIZAR_TERAPIAS) -->
+        @if (veTerapias) {
+          <app-card-estatistica titulo="Terapias Hoje" [valor]="resumoGeral()?.terapias ?? '—'" [icone]="icones.calendario" tom="azul" />
+          <app-card-estatistica titulo="Presenças Confirmadas" [valor]="resumoGeral()?.presentes ?? '—'" [icone]="icones.gestaoConsultas" tom="verde" />
+          <app-card-estatistica titulo="Presenças Pendentes" [valor]="resumoGeral()?.pendentes ?? '—'" [icone]="icones.pessoa" tom="ambar" />
+        }
+
+        <!-- Equipe (VISUALIZAR_PROFISSIONAIS) -->
+        @if (veProfissionais) {
+          <app-card-estatistica titulo="Total de Profissionais" [valor]="totalProfissionais()" [icone]="icones.gestaoProfissionais" tom="verde" />
+          <app-card-estatistica titulo="Profissionais Ativos" [valor]="profissionaisAtivos()" [icone]="icones.cadastrarProfissional" tom="ambar" />
+        }
+
+        <!-- Meus pacientes (assistente social) -->
+        @if (ehAssistenteSocial) {
+          <app-card-estatistica titulo="Meus Pacientes" [valor]="totalMeusPacientes()" [icone]="icones.gestaoPacientes" tom="azul" />
+        }
+      </div>
+    }
+
+    @if (avisoAgenda()) {
+      <p class="aviso-painel" role="alert">{{ avisoAgenda() }}</p>
+    }
+
+    @if (semAcesso) {
+      <p class="aviso-painel" role="status">
+        O seu perfil ainda não libera nenhuma tela do sistema. Procure o administrador para ajustar as permissões.
+      </p>
+    }
+
+    <div class="conteudo-principal" [class.sem-lateral]="!temColunaLateral">
+      @if (acoes.length) {
+        <app-painel-acoes [acoes]="acoes" />
+      }
+
+      @if (temColunaLateral) {
+        <div class="coluna-lateral">
+          <!-- Próximo paciente (especialista) -->
+          @if (ehEspecialista) {
+            <section class="painel destaque">
+              <div class="painel-topo">
+                <h3>Próximo Paciente</h3>
+                <a class="link" routerLink="/agenda">Ver agenda</a>
+              </div>
+
+              @if (carregandoAgenda()) {
+                <p class="vazio">Carregando atendimentos...</p>
+              } @else if (proximo(); as p) {
+                <div class="proximo">
+                  <div class="avatar" aria-hidden="true">{{ p.pacienteNome.charAt(0) }}</div>
+                  <div class="proximo-info">
+                    <strong class="proximo-nome">{{ p.pacienteNome }}</strong>
+                    <span class="proximo-detalhe">
+                      {{ p.horaInicio }} – {{ p.horaTermino }} · {{ rotuloModalidade[p.modalidade] }}
+                    </span>
+                    <span class="selo" [class]="'selo st-' + statusDe(p)">{{ rotuloStatus[statusDe(p)] }}</span>
+                  </div>
+                </div>
+                @if (vePacientes) {
+                  <button type="button" class="btn-primario" (click)="abrirProntuario(p.idPaciente, p.idTerapia)">
+                    Abrir Prontuário
+                  </button>
+                }
+              } @else {
+                <p class="vazio">Não há mais atendimentos previstos para hoje.</p>
+              }
+            </section>
+          }
+
+          @if (veTerapias) {
+            <app-atividades-recentes [atividades]="terapiasHoje()" titulo="Terapias de hoje"
+              vazio="Nenhuma terapia agendada para hoje." />
+          }
+
+          @if (ehAssistenteSocial) {
+            <app-atividades-recentes [atividades]="meusPacientes()" titulo="Pacientes vinculados a você"
+              vazio="Nenhum paciente vinculado a você ainda." />
+          }
+        </div>
+      }
+    </div>
+  </main>
+</div>

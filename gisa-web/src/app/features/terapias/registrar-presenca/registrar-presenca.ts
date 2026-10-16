@@ -39,7 +39,7 @@ export class RegistrarPresenca implements OnInit {
 
   readonly minhas = this.route.snapshot.data['modo'] === 'minhas';
   readonly titulo = this.minhas ? 'Minhas Terapias' : 'Terapias do Dia';
-  // Base das rotas de terapia do painel (para o link "Detalhes"); vazio = sem link.
+  // Base das rotas de terapia (para o link "Detalhes"); vazio = sem link.
   readonly rotaTerapias: string = this.route.snapshot.data['rotaTerapias'] ?? '';
   readonly podeRegistrar = this.auth.temPermissao('REGISTRAR_PRESENCA');
 

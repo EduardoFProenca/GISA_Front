@@ -4,7 +4,7 @@ import { NgIcon } from '@ng-icons/core';
 import { Router } from '@angular/router';
 import { ICONES } from '../../../../shared/icons';
 import { PacienteResumo } from '../../../../core/models/paciente.model';
-import { ROTA_BASE_ADMIN } from '../../contexto-pacientes';
+import { ROTA_BASE_PACIENTES } from '../../contexto-pacientes';
 import { ROTULO_STATUS_CADASTRO } from '../../../../shared/utils/rotulos.util';
 
 // Resultado da busca de pacientes: só nome, CPF mascarado e situação do cadastro (LGPD).
@@ -17,7 +17,7 @@ import { ROTULO_STATUS_CADASTRO } from '../../../../shared/utils/rotulos.util';
 export class CardPacienteComponent {
   @Input() paciente!: PacienteResumo;
   @Input() somenteLeitura = false;
-  @Input() rotaBase = ROTA_BASE_ADMIN;
+  @Input() rotaBase = ROTA_BASE_PACIENTES;
   icones = ICONES;
 
   private router = inject(Router);

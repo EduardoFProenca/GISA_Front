@@ -4,7 +4,7 @@
   <div class="painel">
     <p class="descricao-pagina">
       Todo profissional, especialista e especialista PJ tem um cargo, e todo cargo está ligado a um CBO.
-      <a routerLink="/administrador/cbos">Gerenciar CBOs</a>
+      <a routerLink="/cbos">Gerenciar CBOs</a>
     </p>
 
     <div class="barra-busca">
@@ -20,7 +20,7 @@
     <ul class="tabela">
       @for (c of cargos(); track c.idCargo) {
       <li>
-        <a class="linha" [routerLink]="['/administrador/cargos', c.idCargo]">
+        <a class="linha" [routerLink]="['/cargos', c.idCargo]">
           <div class="principal">
             <strong>{{ c.nome }}</strong>
             <small><span class="codigo">{{ codigo(c.codigoCBO) }}</span> {{ c.tituloCBO }}</small>

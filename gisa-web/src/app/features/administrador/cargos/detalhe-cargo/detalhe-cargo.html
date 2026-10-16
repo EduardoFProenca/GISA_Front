@@ -10,7 +10,7 @@
     <h3>{{ c.nome }}</h3>
     <div class="info-bloco">
       <app-campo-detalhe rotulo="CBO">
-        <a [routerLink]="['/administrador/cbos', c.codigoCBO]"><span class="codigo">{{ codigo(c.codigoCBO) }}</span></a>
+        <a [routerLink]="['/cbos', c.codigoCBO]"><span class="codigo">{{ codigo(c.codigoCBO) }}</span></a>
         {{ c.tituloCBO }}
       </app-campo-detalhe>
       <app-campo-detalhe rotulo="Profissionais neste cargo">{{ c.profissionais.length }}</app-campo-detalhe>
@@ -32,7 +32,7 @@
     <ul class="vinculos">
       @for (p of c.profissionais; track p.idCadastro) {
       <li>
-        <a class="nome" [routerLink]="['/administrador/profissionais', p.idCadastro]">{{ p.nome }}</a>
+        <a class="nome" [routerLink]="['/profissionais', p.idCadastro]">{{ p.nome }}</a>
         <small>CPF {{ p.cpf }}</small>
         <span class="etiqueta" [class.inativo]="p.statusCadastro === 'INATIVO'">
           {{ p.statusCadastro === 'ATIVO' ? 'Ativo' : 'Inativo' }}

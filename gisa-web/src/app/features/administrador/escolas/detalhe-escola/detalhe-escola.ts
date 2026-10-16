@@ -96,7 +96,7 @@ export class DetalheEscola implements OnInit {
     this.escolaService.excluir(this.id).subscribe({
       next: () => {
         this.avisoSucesso.mostrar({ titulo: 'Escola excluída', detalhe: this.escola()?.nome });
-        this.router.navigateByUrl('/administrador/escolas');
+        this.router.navigateByUrl('/escolas');
       },
       error: (err) => {
         this.excluindo.set(false);

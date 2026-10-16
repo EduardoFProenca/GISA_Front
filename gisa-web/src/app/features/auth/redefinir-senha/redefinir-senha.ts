@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgIcon } from '@ng-icons/core';
 import { Auth } from '../../../core/auth/auth';
-import { motivoSemPainel } from '../../../core/auth/permissoes';
+import { ROTA_INICIO } from '../../../core/auth/permissoes';
 import { aplicarErrosApi } from '../../../core/http/erro-api';
 import { ICONES } from '../../../shared/icons';
 
@@ -13,7 +13,7 @@ export const ESTADO_PRIMEIRO_ACESSO = 'tokenPrimeiroAcesso';
 // Cadastrar a nova senha. Dois caminhos, o mesmo endpoint (POST /auth/redefinir-senha):
 // - primeiro acesso: o login com a senha temporária manda para cá com o token no estado da navegação;
 // - "esqueci minha senha": o link do e-mail traz ?token=.
-// A resposta já é o token de login: o usuário entra direto no painel.
+// A resposta já é o token de login: o usuário entra direto no Início.
 @Component({
   selector: 'app-redefinir-senha',
   imports: [FormsModule, RouterLink, NgIcon],
@@ -56,15 +56,9 @@ export class RedefinirSenha {
     this.auth
       .redefinirSenha({ token: this.token, novaSenha: this.novaSenha, confirmacaoNovaSenha: this.confirmacao })
       .subscribe({
-        next: (usuario) => {
+        next: () => {
           this.salvando.set(false);
-          const rota = this.auth.rotaInicial();
-          if (rota) {
-            this.router.navigate([rota], { replaceUrl: true });
-            return;
-          }
-          this.auth.logout();
-          this.erro.set(motivoSemPainel(usuario));
+          this.router.navigate([ROTA_INICIO], { replaceUrl: true });
         },
         error: (err) => {
           this.salvando.set(false);
