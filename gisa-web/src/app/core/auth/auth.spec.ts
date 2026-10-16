@@ -64,6 +64,13 @@ describe('Auth', () => {
     expect(auth.temPermissao('GERENCIAR_USUARIOS')).toBe(true);
   });
 
+  it('ACESSO_TOTAL não libera atestado nem receita: só a permissão marcada no perfil', () => {
+    entrar(usuario('Administrador', ['ACESSO_TOTAL']));
+    expect(auth.temPermissao('EMITIR_ATESTADO')).toBe(false);
+    expect(auth.temPermissao('EMITIR_RECEITA')).toBe(false);
+    expect(auth.temPermissao('EMITIR_RECUSA')).toBe(true);
+  });
+
   it('libera só as funcionalidades cujas permissões o perfil tem', () => {
     entrar(usuario('Recepção', ['EDITAR_PACIENTE', 'REGISTRAR_PRESENCA']));
 

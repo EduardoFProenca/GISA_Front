@@ -4,7 +4,7 @@
 // - Cada funcionalidade do front aponta para as permissões do back (GET /api/permissoes, ver PERFIS.md)
 //   que a liberam. Hoje cada uma tem uma permissão de mesmo nome no back.
 // - `null` = liberada para qualquer usuário logado (use só para algo que o back não controla).
-// - Quem tem ACESSO_TOTAL pode tudo.
+// - Quem tem ACESSO_TOTAL pode tudo, menos o que está em FORA_DO_ACESSO_TOTAL (atestado e receita).
 // - Esconder um botão aqui é só conforto: quem garante o acesso é a API, que responde 403.
 
 export const ACESSO_TOTAL = 'ACESSO_TOTAL';
@@ -52,9 +52,13 @@ export const FUNCIONALIDADES = {
 
 export type Funcionalidade = keyof typeof FUNCIONALIDADES;
 
+// Documentos clínicos assinados por quem emite: o ACESSO_TOTAL não os libera (o administrador não
+// emite atestado nem receita). Só valem com a permissão marcada no perfil (e cadastro de especialista).
+const FORA_DO_ACESSO_TOTAL: readonly Funcionalidade[] = ['EMITIR_ATESTADO', 'EMITIR_RECEITA'];
+
 // `permissoes`: nomes das permissões do usuário logado.
 export function podeAcessar(permissoes: readonly string[], funcionalidade: Funcionalidade): boolean {
-  if (permissoes.includes(ACESSO_TOTAL)) return true;
+  if (permissoes.includes(ACESSO_TOTAL) && !FORA_DO_ACESSO_TOTAL.includes(funcionalidade)) return true;
   const exigidas: readonly string[] | null = FUNCIONALIDADES[funcionalidade];
   return exigidas === null || exigidas.some((p) => permissoes.includes(p));
 }
