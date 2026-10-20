@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { soDigitos, vazio, emailValido, cpfValido } from '../../../../shared/utils/texto.util';
+import { dataFutura } from '../../../../shared/utils/data.util';
 import { ComErros } from '../../../../shared/components/com-erros';
 import { FormulariosCadastro, JornadaForm, listaErros } from '../models/formularios-cadastro';
 
@@ -69,6 +70,7 @@ export class CadastroValidadorService {
     else if (!cpfValido(cpf)) marcar(dp, 'cpf', 'CPF inválido.');
 
     if (vazio(dp.dataNascimento)) marcar(dp, 'dataNascimento');
+    else if (dataFutura(dp.dataNascimento)) marcar(dp, 'dataNascimento', 'A data de nascimento não pode ser no futuro.');
     if (vazio(dp.sexo)) marcar(dp, 'sexo');
     if (vazio(dp.estadoCivil)) marcar(dp, 'estadoCivil');
 

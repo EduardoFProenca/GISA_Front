@@ -93,7 +93,7 @@
       <div class="linha-tripla">
         <div class="campo">
           <label for="respNascimento">Data de Nascimento <span class="obrigatorio">*</span></label>
-          <input type="date" id="respNascimento" name="respNascimento" [(ngModel)]="novoResponsavel.dataNascimento" [disabled]="!!novoResponsavel.idResponsavel"
+          <input type="date" id="respNascimento" name="respNascimento" [max]="hoje" [(ngModel)]="novoResponsavel.dataNascimento" [disabled]="!!novoResponsavel.idResponsavel"
             [class.input-erro]="errosCard['dataNascimento']" (input)="limparErroCard('dataNascimento')">
           @if (errosCard['dataNascimento']) { <span class="erro-msg">{{ errosCard['dataNascimento'] }}</span> }
         </div>

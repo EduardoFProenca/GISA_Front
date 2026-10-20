@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 import { FormsModule } from '@angular/forms';
 import { Mascara } from '../../directives/mascara.directive';
 import { ComErros } from '../com-erros';
+import { hojeIso } from '../../utils/data.util';
 
 export interface DadosPessoaisValor {
   nome: string;
@@ -34,6 +35,7 @@ export class DadosPessoais extends ComErros implements OnInit {
   cpf: string = '';
   email: string = '';
   dataNascimento: string = '';
+  readonly hoje = hojeIso();
   sexo: string = '';
   celular: string = '';
   estadoCivil: string = '';

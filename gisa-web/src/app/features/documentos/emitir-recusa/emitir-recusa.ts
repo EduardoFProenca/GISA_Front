@@ -12,7 +12,7 @@ import { Mascara } from '../../../shared/directives/mascara.directive';
 import { DadosFolhaDocumento, FolhaDocumento } from '../../../shared/documentos/folha-documento/folha-documento';
 import { imprimirDocumento } from '../../../shared/documentos/impressao';
 import { INSTITUICAO, localEDataDeHoje } from '../../../shared/documentos/instituicao';
-import { dataCurta } from '../../../shared/utils/data.util';
+import { dataCurta, dataFutura, hojeIso } from '../../../shared/utils/data.util';
 import { formatarCpf } from '../../../shared/utils/formatacao.util';
 import { cpfValido, soDigitos } from '../../../shared/utils/texto.util';
 import { resumoInativacaoPaciente } from '../../../shared/utils/rotulos.util';
@@ -46,6 +46,7 @@ export class EmitirRecusa {
   nome = '';
   cpf = '';
   dataNascimento = '';
+  readonly hoje = hojeIso();
   motivo = '';
   erros = signal<Record<string, string>>({});
   erro = signal('');
@@ -85,6 +86,7 @@ export class EmitirRecusa {
     const cpf = soDigitos(this.cpf);
     if (cpf && cpf.length !== 11) erros['cpf'] = 'O CPF deve ter 11 dígitos.';
     else if (cpf && !cpfValido(cpf)) erros['cpf'] = 'CPF inválido.';
+    if (dataFutura(this.dataNascimento)) erros['nascimento'] = 'A data de nascimento não pode ser no futuro.';
     if (!this.motivo.trim()) erros['motivo'] = 'Escreva o motivo da recusa.';
     this.erros.set(erros);
     if (Object.keys(erros).length) return;

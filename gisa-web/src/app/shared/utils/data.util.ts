@@ -69,3 +69,8 @@ export function paraIsoMinuto(d: Date): string {
 export function diasEntre(inicioIso: string, fimIso: string): number {
   return Math.round((deIso(fimIso).getTime() - deIso(inicioIso).getTime()) / 86_400_000);
 }
+
+// Data (yyyy-MM-dd) depois de hoje — nascimento e afins não podem ser no futuro.
+export function dataFutura(iso: string | null | undefined): boolean {
+  return !!iso && iso.slice(0, 10) > hojeIso();
+}

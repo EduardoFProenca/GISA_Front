@@ -13,6 +13,7 @@ import { mensagemDeErro } from '../../../../../core/http/erro-api';
 import { ICONES } from '../../../../../shared/icons';
 import { ROTULO_PARENTESCO } from '../../../../../shared/utils/rotulos.util';
 import { soDigitos } from '../../../../../shared/utils/texto.util';
+import { hojeIso } from '../../../../../shared/utils/data.util';
 import { ContatoForm, EnderecoForm, ResponsavelItem } from '../../models/formularios-paciente';
 import { PacienteValidadorService } from '../../services/paciente-validador';
 import {
@@ -36,6 +37,7 @@ export class InfoResponsavel extends ComErros {
   private validador = inject(PacienteValidadorService);
   private responsavelService = inject(ResponsavelService);
   private cdr = inject(ChangeDetectorRef);
+  readonly hoje = hojeIso();
 
   // Endereço do responsável que não reside com o paciente (só existe enquanto o cartão está aberto).
   @ViewChild(Contato) contatoResp?: Contato;

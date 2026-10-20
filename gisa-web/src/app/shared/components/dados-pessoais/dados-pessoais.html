@@ -20,7 +20,7 @@
   <div class="linha-form">
     <div class="campo">
       <label for="dataNascimento">Data de Nascimento <span class="obrigatorio">*</span></label>
-      <input type="date" id="dataNascimento" name="dataNascimento" [(ngModel)]="dataNascimento"
+      <input type="date" id="dataNascimento" name="dataNascimento" [(ngModel)]="dataNascimento" [max]="hoje"
         [disabled]="somenteLeitura || bloquearCpfSexoNascimento" [class.input-erro]="erros['dataNascimento']"
         (input)="limparErro('dataNascimento')">
       @if (erros['dataNascimento']) { <span class="erro-msg">{{ erros['dataNascimento'] }}</span> }

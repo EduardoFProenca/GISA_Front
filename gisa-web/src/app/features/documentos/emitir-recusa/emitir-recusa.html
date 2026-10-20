@@ -32,7 +32,9 @@
       </div>
       <div class="campo">
         <label for="nascimento">Data de nascimento</label>
-        <input id="nascimento" type="date" [(ngModel)]="dataNascimento" />
+        <input id="nascimento" type="date" [max]="hoje" [(ngModel)]="dataNascimento"
+          (ngModelChange)="limparErro('nascimento')" [class.input-erro]="erros()['nascimento']" />
+        @if (erros()['nascimento']) { <span class="erro-msg">{{ erros()['nascimento'] }}</span> }
       </div>
     </div>
   </section>

@@ -3,6 +3,7 @@ import { soDigitos, vazio, cpfValido } from '../../../../shared/utils/texto.util
 import { ComErros } from '../../../../shared/components/com-erros';
 import { ContatoForm, FormulariosPaciente, ResponsavelItem, listaErros } from '../models/formularios-paciente';
 import { mesmoEnderecoForm } from '../../paciente-form.util';
+import { dataFutura } from '../../../../shared/utils/data.util';
 
 const OBRIGATORIO = 'Campo obrigatório.';
 
@@ -57,7 +58,7 @@ export class PacienteValidadorService {
     }
 
     if (vazio(r.dataNascimento)) erros['dataNascimento'] = OBRIGATORIO;
-    else if (this.dataFutura(r.dataNascimento)) erros['dataNascimento'] = 'Data de nascimento inválida.';
+    else if (dataFutura(r.dataNascimento)) erros['dataNascimento'] = 'A data de nascimento não pode ser no futuro.';
 
     if (vazio(r.sexo)) erros['sexo'] = OBRIGATORIO;
     if (vazio(r.estadoCivil)) erros['estadoCivil'] = OBRIGATORIO;
@@ -104,7 +105,7 @@ export class PacienteValidadorService {
     else if (!cpfValido(cpf)) marcar(dp, 'cpf', 'CPF inválido.');
 
     if (vazio(dp.dataNascimento)) marcar(dp, 'dataNascimento');
-    else if (this.dataFutura(dp.dataNascimento)) marcar(dp, 'dataNascimento', 'Data de nascimento inválida.');
+    else if (dataFutura(dp.dataNascimento)) marcar(dp, 'dataNascimento', 'A data de nascimento não pode ser no futuro.');
 
     if (vazio(dp.sexo)) marcar(dp, 'sexo');
     if (vazio(dp.estadoCivil)) marcar(dp, 'estadoCivil');
@@ -152,10 +153,5 @@ export class PacienteValidadorService {
         `O endereço do paciente é diferente do de ${nomes}, que reside com ele. ` +
         'Use o mesmo endereço ou marque que o responsável não reside com o paciente.');
     }
-  }
-
-  private dataFutura(valor: string): boolean {
-    const d = new Date(valor + 'T00:00:00');
-    return !isNaN(d.getTime()) && d.getTime() > Date.now();
   }
 }

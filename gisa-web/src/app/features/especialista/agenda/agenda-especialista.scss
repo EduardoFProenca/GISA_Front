@@ -309,6 +309,8 @@
   padding: 1.5rem 1.75rem;
   width: 100%;
   max-width: 520px;
+  max-height: 100%;
+  overflow-y: auto;
   box-shadow: var(--sombra-dialog);
 
   h3 {
