@@ -6,12 +6,13 @@ import { PerfilService } from '../../../../core/services/perfil';
 import { aplicarErrosApi } from '../../../../core/http/erro-api';
 import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 import { SeletorPermissoes } from '../seletor-permissoes/seletor-permissoes';
+import { Filtro } from '../../../../shared/directives/filtro.directive';
 
 // Criar perfil (nome + permissões iniciais) ou renomear (perfil informado: só o nome).
 // As permissões de um perfil existente são geridas na tela de detalhe, uma a uma.
 @Component({
   selector: 'app-dialog-perfil',
-  imports: [FormsModule, FormDialog, SeletorPermissoes],
+  imports: [FormsModule, FormDialog, SeletorPermissoes, Filtro],
   templateUrl: './dialog-perfil.html',
   styleUrl: '../../tabelas-apoio.scss',
 })

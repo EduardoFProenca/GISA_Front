@@ -33,7 +33,7 @@
 
         <div class="campo">
             <label for="registro">Registro no Conselho <span class="obrigatorio">*</span></label>
-            <input type="text" id="registro" name="registro" [(ngModel)]="registroProfissional" [disabled]="bloquearTipo"
+            <input type="text" id="registro" appFiltro="registro" name="registro" [(ngModel)]="registroProfissional" [disabled]="bloquearTipo"
                 placeholder="Ex: CRP-12345" [class.input-erro]="erros['registroProfissional']"
                 (input)="limparErro('registroProfissional')">
             @if (erros['registroProfissional']) { <span class="erro-msg">{{ erros['registroProfissional'] }}</span> }
@@ -84,7 +84,7 @@
             </div>
             <div class="campo">
                 <label for="razaoSocial">Razão Social <span class="obrigatorio">*</span></label>
-                <input type="text" id="razaoSocial" name="razaoSocial" [(ngModel)]="razaoSocial"
+                <input type="text" id="razaoSocial" appFiltro="texto" name="razaoSocial" [(ngModel)]="razaoSocial"
                     placeholder="Ex: Roberto Almeida Serviços Médicos LTDA" [class.input-erro]="erros['razaoSocial']"
                     (input)="limparErro('razaoSocial')">
                 @if (erros['razaoSocial']) { <span class="erro-msg">{{ erros['razaoSocial'] }}</span> }
@@ -93,12 +93,12 @@
         <div class="linha-form">
             <div class="campo">
                 <label for="nomeFantasia">Nome Fantasia</label>
-                <input type="text" id="nomeFantasia" name="nomeFantasia" [(ngModel)]="nomeFantasia"
+                <input type="text" id="nomeFantasia" appFiltro="texto" name="nomeFantasia" [(ngModel)]="nomeFantasia"
                     placeholder="Ex: Clínica Dr. Roberto">
             </div>
             <div class="campo">
                 <label for="inscricaoEstadual">Inscrição Estadual</label>
-                <input type="text" id="inscricaoEstadual" name="inscricaoEstadual" [(ngModel)]="inscricaoEstadual"
+                <input type="text" id="inscricaoEstadual" appFiltro="numero" name="inscricaoEstadual" [(ngModel)]="inscricaoEstadual"
                     placeholder="000.000.000.000">
             </div>
         </div>

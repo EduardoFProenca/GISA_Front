@@ -10,7 +10,7 @@
     @if (ehAssistenteSocial) {
     <div class="campo">
         <label for="registroCress">Registro no CRESS <span class="obrigatorio">*</span></label>
-        <input type="text" id="registroCress" name="registroCress" [(ngModel)]="registroConselho" maxlength="50"
+        <input type="text" id="registroCress" appFiltro="registro" name="registroCress" [(ngModel)]="registroConselho" maxlength="50"
             placeholder="Ex.: CRESS-9/12345" [readonly]="edicao" [class.input-erro]="erros['registroConselho']"
             (input)="limparErro('registroConselho')">
         @if (erros['registroConselho']) { <span class="erro-msg">{{ erros['registroConselho'] }}</span> }

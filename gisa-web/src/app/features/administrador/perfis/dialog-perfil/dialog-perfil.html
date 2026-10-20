@@ -8,7 +8,7 @@
   (cancelar)="cancelar.emit()">
   <div>
     <label for="nomePerfil">Nome do perfil <span class="obrigatorio">*</span></label>
-    <input id="nomePerfil" name="nomePerfil" type="text" maxlength="255" placeholder="Ex.: Recepção"
+    <input id="nomePerfil" appFiltro="texto" name="nomePerfil" type="text" maxlength="255" placeholder="Ex.: Recepção"
       [class.input-erro]="erroNome()" [ngModel]="nome()" (ngModelChange)="nome.set($event)" />
     @if (erroNome()) { <span class="erro-msg">{{ erroNome() }}</span> }
   </div>

@@ -15,7 +15,7 @@
     </div>
     <div class="campo campo-largo">
       <label for="endereco">Endereço <span class="obrigatorio">*</span></label>
-      <input type="text" id="endereco" name="endereco" [(ngModel)]="endereco" placeholder="Rua, avenida, etc."
+      <input type="text" id="endereco" appFiltro="texto" name="endereco" [(ngModel)]="endereco" placeholder="Rua, avenida, etc."
         [class.input-erro]="erros['endereco']" (input)="limparErro('endereco')">
       @if (erros['endereco']) { <span class="erro-msg">{{ erros['endereco'] }}</span> }
     </div>
@@ -24,17 +24,17 @@
   <div class="linha-form linha-tripla">
     <div class="campo">
       <label for="numero">Número <span class="obrigatorio">*</span></label>
-      <input type="text" id="numero" name="numero" [(ngModel)]="numero" placeholder="Nº"
+      <input type="text" id="numero" appFiltro="numero" name="numero" [(ngModel)]="numero" placeholder="Nº"
         [class.input-erro]="erros['numero']" (input)="limparErro('numero')">
       @if (erros['numero']) { <span class="erro-msg">{{ erros['numero'] }}</span> }
     </div>
     <div class="campo">
       <label for="complemento">Complemento</label>
-      <input type="text" id="complemento" name="complemento" [(ngModel)]="complemento" placeholder="Apto, bloco, etc.">
+      <input type="text" id="complemento" appFiltro="texto" name="complemento" [(ngModel)]="complemento" placeholder="Apto, bloco, etc.">
     </div>
     <div class="campo">
       <label for="bairro">Bairro <span class="obrigatorio">*</span></label>
-      <input type="text" id="bairro" name="bairro" [(ngModel)]="bairro" placeholder="Nome do bairro"
+      <input type="text" id="bairro" appFiltro="texto" name="bairro" [(ngModel)]="bairro" placeholder="Nome do bairro"
         [class.input-erro]="erros['bairro']" (input)="limparErro('bairro')">
       @if (erros['bairro']) { <span class="erro-msg">{{ erros['bairro'] }}</span> }
     </div>
@@ -43,7 +43,7 @@
   <div class="linha-form">
     <div class="campo campo-largo">
       <label for="cidade">Cidade <span class="obrigatorio">*</span></label>
-      <input type="text" id="cidade" name="cidade" [(ngModel)]="cidade" placeholder="Nome da cidade"
+      <input type="text" id="cidade" appFiltro="nome" name="cidade" [(ngModel)]="cidade" placeholder="Nome da cidade"
         [class.input-erro]="erros['cidade']" (input)="limparErro('cidade')">
       @if (erros['cidade']) { <span class="erro-msg">{{ erros['cidade'] }}</span> }
     </div>

@@ -16,6 +16,7 @@ import { soDigitos } from '../../../../../shared/utils/texto.util';
 import { hojeIso } from '../../../../../shared/utils/data.util';
 import { ContatoForm, EnderecoForm, ResponsavelItem } from '../../models/formularios-paciente';
 import { PacienteValidadorService } from '../../services/paciente-validador';
+import { Filtro } from '../../../../../shared/directives/filtro.directive';
 import {
   enderecoEmTexto,
   enderecoVazio,
@@ -29,7 +30,7 @@ export type { ResponsavelItem };
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-responsavel',
-  imports: [NgIcon, FormsModule, Mascara, Contato, ConfirmDialog, SelectBusca],
+  imports: [NgIcon, FormsModule, Mascara, Contato, ConfirmDialog, SelectBusca, Filtro],
   templateUrl: './info-responsavel.html',
   styleUrl: './info-responsavel.scss'
 })

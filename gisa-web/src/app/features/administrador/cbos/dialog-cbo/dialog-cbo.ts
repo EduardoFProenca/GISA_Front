@@ -10,11 +10,12 @@ import { aplicarErrosApi } from '../../../../core/http/erro-api';
 import { formatarCbo } from '../../../../shared/utils/formatacao.util';
 import { soDigitos } from '../../../../shared/utils/texto.util';
 import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
+import { Filtro } from '../../../../shared/directives/filtro.directive';
 
 // Criar (cbo = null) ou editar CBO. Na edição só o título muda: o código identifica o registro.
 @Component({
   selector: 'app-dialog-cbo',
-  imports: [FormsModule, FormDialog, Mascara, SelectBusca],
+  imports: [FormsModule, FormDialog, Mascara, SelectBusca, Filtro],
   templateUrl: './dialog-cbo.html',
 })
 export class DialogCbo {

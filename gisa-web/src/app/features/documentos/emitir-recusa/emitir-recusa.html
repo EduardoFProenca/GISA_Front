@@ -17,7 +17,7 @@
     <div class="linha-form">
       <div class="campo campo-largo">
         <label for="nome">Nome <span class="obrigatorio">*</span></label>
-        <input id="nome" type="text" maxlength="255" [(ngModel)]="nome" (ngModelChange)="limparErro('nome')"
+        <input id="nome" appFiltro="nome" type="text" maxlength="255" [(ngModel)]="nome" (ngModelChange)="limparErro('nome')"
           [class.input-erro]="erros()['nome']" placeholder="Nome completo" />
         @if (erros()['nome']) { <span class="erro-msg">{{ erros()['nome'] }}</span> }
       </div>

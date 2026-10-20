@@ -9,11 +9,12 @@ import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 import { aplicarErrosApi } from '../../../../core/http/erro-api';
 import { soDigitos } from '../../../../shared/utils/texto.util';
 import { ROTULO_TIPO_ESCOLA } from '../../../../shared/utils/rotulos.util';
+import { Filtro } from '../../../../shared/directives/filtro.directive';
 
 // Criar (escola = null) ou editar escola. No PATCH só vai o que mudou (telefone vazio = null, limpa).
 @Component({
   selector: 'app-dialog-escola',
-  imports: [FormsModule, FormDialog, Mascara],
+  imports: [FormsModule, FormDialog, Mascara, Filtro],
   templateUrl: './dialog-escola.html',
 })
 export class DialogEscola {

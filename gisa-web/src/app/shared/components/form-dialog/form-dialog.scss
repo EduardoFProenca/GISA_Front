@@ -14,6 +14,7 @@
   background: white;
   border-radius: var(--raio-md);
   padding: 1.5rem;
+  box-sizing: border-box; // padding entra no max-height, senão a caixa cobre a margem do overlay
   max-width: 440px;
   width: 100%;
   max-height: 100%;

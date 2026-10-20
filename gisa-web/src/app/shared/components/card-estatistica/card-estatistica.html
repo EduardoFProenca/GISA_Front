@@ -1,7 +1,13 @@
-<div class="card-stat">
+<ng-template #conteudo>
   <div class="topo">
     <span class="label">{{ titulo }}</span>
     <span class="icone" [style.background-color]="'var(--' + tom + '-100)'"><ng-icon [name]="icone" /></span>
   </div>
   <div class="valor">{{ valor }}</div>
-</div>
+</ng-template>
+
+@if (link) {
+  <a class="card-stat clicavel" [routerLink]="link"><ng-container *ngTemplateOutlet="conteudo" /></a>
+} @else {
+  <div class="card-stat"><ng-container *ngTemplateOutlet="conteudo" /></div>
+}

@@ -70,7 +70,7 @@
       <div class="linha-form">
         <div class="campo">
           <label for="respNome">Nome do Responsável <span class="obrigatorio">*</span></label>
-          <input type="text" id="respNome" name="respNome" [(ngModel)]="novoResponsavel.nome" [disabled]="!!novoResponsavel.reaproveitado"
+          <input type="text" id="respNome" appFiltro="nome" name="respNome" [(ngModel)]="novoResponsavel.nome" [disabled]="!!novoResponsavel.reaproveitado"
             placeholder="Digite o nome completo" [class.input-erro]="errosCard['nome']"
             (input)="limparErroCard('nome')">
           @if (errosCard['nome']) { <span class="erro-msg">{{ errosCard['nome'] }}</span> }
@@ -136,7 +136,7 @@
 
         <div class="campo">
           <label for="respOcupacao">Ocupação / Profissão</label>
-          <input type="text" id="respOcupacao" name="respOcupacao" [(ngModel)]="novoResponsavel.ocupacao" [disabled]="!!novoResponsavel.reaproveitado"
+          <input type="text" id="respOcupacao" appFiltro="nome" name="respOcupacao" [(ngModel)]="novoResponsavel.ocupacao" [disabled]="!!novoResponsavel.reaproveitado"
             placeholder="Ex: Professor...">
         </div>
 

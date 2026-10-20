@@ -4,12 +4,13 @@ import { Mascara } from '../../directives/mascara.directive';
 import { ComErros } from '../com-erros';
 import { CepService } from '../../../core/services/cep';
 import { soDigitos } from '../../utils/texto.util';
+import { Filtro } from '../../directives/filtro.directive';
 
 // Eager: os erros (ComErros) chegam depois da resposta da API e precisam aparecer.
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-contato',
-  imports: [FormsModule, Mascara],
+  imports: [FormsModule, Mascara, Filtro],
   templateUrl: './contato.html',
   styleUrl: './contato.scss',
 })

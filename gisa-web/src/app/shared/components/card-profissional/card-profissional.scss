@@ -5,7 +5,8 @@
   border: 1px solid var(--cor-borda);
   border-radius: var(--raio-xl);
   padding: 1rem 1.25rem;
-   box-shadow: var(--sombra-card);
+  box-shadow: var(--sombra-card);
+  cursor: pointer;
   &:hover {
     border-color: var(--azul-300);
     box-shadow: 1px 8px 32px rgba(0, 0, 0, 0.06);

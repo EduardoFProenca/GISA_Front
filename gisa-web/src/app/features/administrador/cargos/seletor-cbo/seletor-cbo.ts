@@ -12,6 +12,7 @@ import { aplicarErrosApi } from '../../../../core/http/erro-api';
 import { filtroDeBuscaCbo, rotuloCbo } from '../cbo.util';
 import { soDigitos } from '../../../../shared/utils/texto.util';
 import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
+import { Filtro } from '../../../../shared/directives/filtro.directive';
 
 // Autocomplete de CBO com busca no servidor (GET /cbos é paginado). Se o CBO não existir,
 // permite cadastrá-lo ali mesmo (POST /cbos) e já o seleciona (fluxo do CARGOS.md).
@@ -19,7 +20,7 @@ import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 // e completa o título no cadastro manual.
 @Component({
   selector: 'app-seletor-cbo',
-  imports: [FormsModule, Mascara],
+  imports: [FormsModule, Mascara, Filtro],
   templateUrl: './seletor-cbo.html',
   styleUrl: './seletor-cbo.scss',
 })

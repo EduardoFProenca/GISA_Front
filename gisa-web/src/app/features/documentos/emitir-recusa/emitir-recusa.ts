@@ -16,13 +16,14 @@ import { dataCurta, dataFutura, hojeIso } from '../../../shared/utils/data.util'
 import { formatarCpf } from '../../../shared/utils/formatacao.util';
 import { cpfValido, soDigitos } from '../../../shared/utils/texto.util';
 import { resumoInativacaoPaciente } from '../../../shared/utils/rotulos.util';
+import { Filtro } from '../../../shared/directives/filtro.directive';
 
 // Declaração de recusa da APAE (a instituição informa que não pode atender a pessoa).
 // Recepção e administrador. Quem é recusado normalmente não é paciente: os dados são digitados,
 // com a opção de preencher a partir de um paciente cadastrado. Nada é salvo na API.
 @Component({
   selector: 'app-emitir-recusa',
-  imports: [FormsModule, Mascara, CabecalhoPagina, SelectBusca, FolhaDocumento, ConfirmDialog],
+  imports: [FormsModule, Mascara, CabecalhoPagina, SelectBusca, FolhaDocumento, ConfirmDialog, Filtro],
   templateUrl: './emitir-recusa.html',
   styleUrl: './emitir-recusa.scss',
 })

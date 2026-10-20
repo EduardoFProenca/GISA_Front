@@ -50,7 +50,7 @@
       </div>
       <div class="campo-titulo">
         <label for="novoTituloCbo">Título</label>
-        <input id="novoTituloCbo" type="text" maxlength="255" placeholder="Ex.: Recepcionista, em geral"
+        <input id="novoTituloCbo" appFiltro="texto" type="text" maxlength="255" placeholder="Ex.: Recepcionista, em geral"
           [class.input-erro]="errosNovo()['tituloCBO']"
           [ngModel]="novoTitulo()" (ngModelChange)="novoTitulo.set($event)" />
       </div>

@@ -7,11 +7,12 @@ import { CargoService } from '../../../../core/services/cargo';
 import { aplicarErrosApi } from '../../../../core/http/erro-api';
 import { SeletorCbo } from '../seletor-cbo/seletor-cbo';
 import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
+import { Filtro } from '../../../../shared/directives/filtro.directive';
 
 // Criar (cargo = null) ou editar cargo. No PATCH só vai o que mudou.
 @Component({
   selector: 'app-dialog-cargo',
-  imports: [FormsModule, FormDialog, SeletorCbo],
+  imports: [FormsModule, FormDialog, SeletorCbo, Filtro],
   templateUrl: './dialog-cargo.html',
 })
 export class DialogCargo {

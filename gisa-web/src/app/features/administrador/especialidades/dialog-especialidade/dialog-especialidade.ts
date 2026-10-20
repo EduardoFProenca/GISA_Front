@@ -6,11 +6,12 @@ import { AtualizacaoEspecialidadePayload, Especialidade } from '../../../../core
 import { EspecialidadeService } from '../../../../core/services/especialidade';
 import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 import { aplicarErrosApi } from '../../../../core/http/erro-api';
+import { Filtro } from '../../../../shared/directives/filtro.directive';
 
 // Criar (especialidade = null) ou editar especialidade. No PATCH só vai o que mudou (descrição vazia = null, limpa).
 @Component({
   selector: 'app-dialog-especialidade',
-  imports: [FormsModule, FormDialog],
+  imports: [FormsModule, FormDialog, Filtro],
   templateUrl: './dialog-especialidade.html',
 })
 export class DialogEspecialidade {

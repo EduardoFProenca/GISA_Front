@@ -5,6 +5,7 @@ import { ComErros } from '../../../../../shared/components/com-erros';
 import { SeletorHora } from '../../../../../shared/components/seletor-hora/seletor-hora';
 import { Especialidade } from '../../../../../core/models/especialidade.model';
 import { JornadaForm, OpcaoEspecialidade } from '../../models/formularios-cadastro';
+import { Filtro } from '../../../../../shared/directives/filtro.directive';
 
 export type Jornada = JornadaForm;
 
@@ -12,7 +13,7 @@ export type Jornada = JornadaForm;
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-especialista',
-  imports: [FormsModule, Mascara, SeletorHora],
+  imports: [FormsModule, Mascara, SeletorHora, Filtro],
   templateUrl: './info-especialista.html',
   styleUrl: './info-especialista.scss',
 })

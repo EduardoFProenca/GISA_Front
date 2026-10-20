@@ -24,7 +24,7 @@
   </div>
   <div>
     <label for="tituloCbo">Título <span class="obrigatorio">*</span></label>
-    <input id="tituloCbo" name="tituloCbo" type="text" maxlength="255" placeholder="Ex.: Psicólogo clínico"
+    <input id="tituloCbo" appFiltro="texto" name="tituloCbo" type="text" maxlength="255" placeholder="Ex.: Psicólogo clínico"
       [class.input-erro]="erros()['tituloCBO']" [ngModel]="titulo()" (ngModelChange)="titulo.set($event)" />
     @if (erros()['tituloCBO']) { <span class="erro-msg">{{ erros()['tituloCBO'] }}</span> }
   </div>
