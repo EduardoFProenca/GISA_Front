@@ -18,11 +18,9 @@ export class InfoCid extends ComErros {
   @Input() set cidsIniciais(valor: Cid[] | undefined) {
     if (valor) this.listaCids.set(valor.map((c) => ({ ...c, novo: false })));
   }
-  // O formulário pai recebe a lista sempre que ela muda. No POST /pacientes:
+  // O formulário pai recebe a lista sempre que ela muda. No POST e no PATCH /pacientes:
   // novo=false -> codigosCid (só o código); novo=true -> novosCids ({codigoCID, descricao}).
   @Output() cidsChange = new EventEmitter<CidSelecionado[]>();
-  // Na edição o PATCH só aceita CIDs que já existem na base do GISA (novosCids é só no cadastro).
-  @Input() permitirNovos = true;
 
   // Tabela oficial do CID-10 (DATASUS), baixada uma vez pelo CidService.
   private catalogo = signal<Map<string, Cid>>(new Map());
@@ -88,12 +86,6 @@ export class InfoCid extends ComErros {
         this.verificando.set(false);
         if (resultado.tipo === 'invalido') {
           this.erro.set('Código CID inválido.');
-          return;
-        }
-        if (resultado.tipo === 'novo' && !this.permitirNovos) {
-          this.erro.set(
-            'Este CID ainda não está cadastrado no GISA. CIDs novos só podem ser incluídos no cadastro de um paciente.'
-          );
           return;
         }
         this.listaCids.update((lista) => [

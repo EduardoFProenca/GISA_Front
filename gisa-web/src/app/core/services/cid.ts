@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 import { Cid } from '../models/cid.model';
 
 // CID que já está na lista do formulário. `novo` = ainda não existe na base do GISA
-// e deve ir em `novosCids` no POST /pacientes (se false, vai em `codigosCid`).
+// e deve ir em `novosCids` no POST e no PATCH /pacientes (se false, vai em `codigosCid`).
 export interface CidSelecionado extends Cid {
   novo: boolean;
 }

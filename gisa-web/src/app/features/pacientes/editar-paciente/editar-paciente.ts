@@ -270,6 +270,7 @@ export class EditarPaciente implements OnInit {
       // O formulário edita só o primeiro endereço; os demais são mantidos.
       enderecos: [base.enderecos[0], ...original.pessoa.enderecos.slice(1)],
       codigosCid: base.codigosCid,
+      novosCids: base.novosCids,
       prontuario: {
         alergias: pr.alergias.trim() || null,
         comorbidade: pr.comorbidade.trim() || null,

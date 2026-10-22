@@ -108,7 +108,7 @@ export interface PacienteCadastroPayload {
   convenio?: boolean;
   // CIDs que já existem na base.
   codigosCid: string[];
-  // CIDs novos, cadastrados junto com o paciente (só no POST).
+  // CIDs novos, cadastrados junto com o paciente.
   novosCids: Cid[];
   prontuario: Prontuario;
   responsaveis: ResponsavelPayload[];
@@ -129,8 +129,9 @@ export interface AtualizacaoPacientePayload {
   // null remove a escola do paciente.
   idEscola?: number | null;
   enderecos?: Endereco[];
-  // Só CIDs já existentes (novosCids não existe no PATCH).
+  // Substitui a lista: CIDs que já existem vão em codigosCid; os que ainda não existem, em novosCids.
   codigosCid?: string[];
+  novosCids?: Cid[];
   // Atualiza só os campos enviados; null remove o prontuário.
   prontuario?: Prontuario | null;
   // Responsável que não vier na lista é desvinculado (ao menos 1).
