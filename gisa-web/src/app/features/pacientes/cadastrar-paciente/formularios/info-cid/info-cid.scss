@@ -117,6 +117,53 @@
   margin-bottom: 0.75rem;
 }
 
+// Cadastro manual de CID fora da tabela oficial.
+.link-manual {
+  display: block;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--cor-primaria);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transform: none;
+
+  &:hover {
+    text-decoration: underline;
+    background: none;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.cid-manual {
+  margin-top: 1rem;
+  padding: 0.25rem 1rem 1rem;
+  border: 1px dashed var(--cor-borda-forte);
+  border-radius: var(--raio-md);
+  background: var(--cor-superficie-suave);
+}
+
+.dica-manual {
+  margin: 0.75rem 0 0;
+  font-size: 0.8rem;
+  color: var(--cor-texto-secundario);
+  text-align: left;
+}
+
+.acoes-manual {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  .link-manual {
+    margin: 0;
+    flex-shrink: 0;
+  }
+}
+
 .lista-cids-adicionados {
   display: flex;
   flex-wrap: wrap;

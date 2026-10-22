@@ -44,6 +44,41 @@
     {{ verificando() ? 'Verificando...' : '+ Adicionar CID' }}
   </button>
 
+  @if (!manualAberto()) {
+    <button type="button" class="link-manual" (click)="abrirManual()">
+      CID não está na lista? Cadastrar manualmente
+    </button>
+  } @else {
+    <div class="cid-manual">
+      <p class="dica-manual">
+        Para códigos que não constam na tabela oficial (CID-10, versão 2008). Se o código já existir, a descrição
+        cadastrada é mantida.
+      </p>
+      <div class="linha-form linha-cid">
+        <div class="campo">
+          <label for="codigoManual">Código CID <span class="obrigatorio">*</span></label>
+          <input id="codigoManual" type="text" maxlength="5" placeholder="Ex.: U07.1" [(ngModel)]="codigoManual"
+            (ngModelChange)="erroManual.set(null)" [class.input-erro]="erroManual()" />
+        </div>
+        <div class="campo">
+          <label for="descricaoManual">Descrição <span class="obrigatorio">*</span></label>
+          <input id="descricaoManual" type="text" maxlength="255" placeholder="Ex.: COVID-19, vírus identificado"
+            [(ngModel)]="descricaoManual" (ngModelChange)="erroManual.set(null)" [class.input-erro]="erroManual()"
+            (keydown.enter)="$event.preventDefault(); adicionarManual()" data-enter-nativo />
+        </div>
+      </div>
+      @if (erroManual()) {
+        <span class="erro-msg erro-cid">{{ erroManual() }}</span>
+      }
+      <div class="acoes-manual">
+        <button type="button" class="link-manual" (click)="fecharManual()">Cancelar</button>
+        <button type="button" class="add-item" [disabled]="verificando()" (click)="adicionarManual()">
+          {{ verificando() ? 'Verificando...' : '+ Adicionar CID não listado' }}
+        </button>
+      </div>
+    </div>
+  }
+
   @if (listaCids().length > 0) {
     <div class="lista-cids-adicionados">
       @for (cid of listaCids(); track cid.codigoCID; let i = $index) {

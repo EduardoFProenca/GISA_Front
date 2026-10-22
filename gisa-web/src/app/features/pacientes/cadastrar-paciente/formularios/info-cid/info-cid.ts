@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, computed, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ComErros } from '../../../../../shared/components/com-erros';
 import { Cid } from '../../../../../core/models/cid.model';
-import { CidSelecionado, CidService } from '../../../../../core/services/cid';
+import { CidSelecionado, CidService, FORMATO_CID_10 } from '../../../../../core/services/cid';
 import { OpcaoSelectBusca, SelectBusca } from '../../../../../shared/components/select-busca/select-busca';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-cid',
-  imports: [SelectBusca],
+  imports: [SelectBusca, FormsModule],
   templateUrl: './info-cid.html',
   styleUrl: './info-cid.scss',
 })
@@ -88,18 +89,76 @@ export class InfoCid extends ComErros {
           this.erro.set('Código CID inválido.');
           return;
         }
-        this.listaCids.update((lista) => [
-          ...lista,
-          { ...resultado.cid, novo: resultado.tipo === 'novo' },
-        ]);
+        this.incluir({ ...resultado.cid, novo: resultado.tipo === 'novo' });
         this.codigoSelecionado.set(null);
-        this.cidsChange.emit(this.listaCids());
       },
       error: () => {
         this.verificando.set(false);
         this.erro.set('Não foi possível verificar o CID agora. Tente novamente em instantes.');
       },
     });
+  }
+
+  // ---------- CID fora da tabela oficial (ex.: códigos criados depois de 2008, como U07.1) ----------
+
+  manualAberto = signal(false);
+  codigoManual = '';
+  descricaoManual = '';
+  erroManual = signal<string | null>(null);
+
+  abrirManual() {
+    this.codigoManual = '';
+    this.descricaoManual = '';
+    this.erroManual.set(null);
+    this.manualAberto.set(true);
+  }
+
+  fecharManual() {
+    this.manualAberto.set(false);
+    this.erroManual.set(null);
+  }
+
+  // O código digitado passa pela mesma conferência do campo normal: se já existir no GISA ou na
+  // tabela oficial, vale a descrição de lá; só um código desconhecido usa a descrição digitada.
+  adicionarManual() {
+    if (this.verificando()) return;
+    const codigo = this.cidService.padronizar(this.codigoManual);
+    const descricao = this.descricaoManual.trim();
+    if (!FORMATO_CID_10.test(codigo)) {
+      this.erroManual.set('Código inválido. Use o formato do CID-10, como F84 ou F84.0.');
+      return;
+    }
+    if (!descricao) {
+      this.erroManual.set('Informe a descrição do CID.');
+      return;
+    }
+    if (this.listaCids().some((c) => c.codigoCID === codigo)) {
+      this.erroManual.set('Este CID já foi adicionado.');
+      return;
+    }
+
+    this.verificando.set(true);
+    this.erroManual.set(null);
+    this.cidService.resolver(codigo).subscribe({
+      next: (resultado) => {
+        this.verificando.set(false);
+        this.incluir(
+          resultado.tipo === 'invalido'
+            ? { codigoCID: codigo, descricao, novo: true }
+            : { ...resultado.cid, novo: resultado.tipo === 'novo' }
+        );
+        this.fecharManual();
+      },
+      error: () => {
+        this.verificando.set(false);
+        this.erroManual.set('Não foi possível verificar o CID agora. Tente novamente em instantes.');
+      },
+    });
+  }
+
+  private incluir(cid: CidSelecionado) {
+    this.listaCids.update((lista) => [...lista, cid]);
+    this.cidsChange.emit(this.listaCids());
   }
 
   removerCid(index: number) {
@@ -112,5 +171,6 @@ export class InfoCid extends ComErros {
     this.codigoSelecionado.set(null);
     this.erro.set(null);
     this.erros = {};
+    this.fecharManual();
   }
 }

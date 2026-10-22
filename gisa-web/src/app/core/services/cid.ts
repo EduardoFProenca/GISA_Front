@@ -16,6 +16,9 @@ export type ResultadoCid =
   | { tipo: 'novo'; cid: Cid }
   | { tipo: 'invalido' };
 
+// Formato do CID-10 (o mesmo validado pela API nos CIDs novos): F84 ou F84.0.
+export const FORMATO_CID_10 = /^[A-Z][0-9]{2}(\.[0-9])?$/;
+
 // Tabela oficial do CID-10 (DATASUS, versão 2008), servida pelo próprio front em public/data.
 // Gerada por scripts/gerar-cid10.mjs. Formato: { fonte, total, cids: [codigo, descricao][] }.
 const ARQUIVO_CID10 = 'data/cid10.json';
