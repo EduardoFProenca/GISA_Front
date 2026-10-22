@@ -6,7 +6,7 @@
     font-weight: 600;
     color: var(--cor-titulo);
     text-align: left;
-      margin: 2rem 0 1.25rem 0;
+      margin: 0 0 1.25rem 0; // o espaço acima vem da seção (styles.scss): no fieldset a margem não colapsa
     padding-bottom: 0.6rem;
     border-bottom: 1px solid var(--cor-borda);
   }

@@ -30,7 +30,7 @@
 } @else {
   <ol class="timeline">
     @for (e of visiveis(); track e.idEvento) {
-      <li [class]="ehTerapia(e) ? 'evento tipo-terapia' : 'evento tipo-cadastro'">
+      <li [class]="'evento tom-' + tom(e)">
         <span class="marcador" aria-hidden="true"></span>
         <div class="cartao">
           <div class="cartao-topo">

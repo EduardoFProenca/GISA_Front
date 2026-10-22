@@ -31,7 +31,6 @@
       </div>
     </div>
 
-    <br><hr><br>
 
     <!-- Dados Pessoais -->
     <app-dados-pessoais
@@ -41,34 +40,28 @@
       [celularObrigatorio]="false"
     ></app-dados-pessoais>
 
-    <br><hr><br>
 
     <!-- Informações administrativas -->
     <app-info-paciente [convenioInicial]="convenioInicial()" />
 
-    <br><hr><br>
 
     <!-- Responsáveis (adicionar, editar e remover) -->
     <app-info-responsavel [responsaveisIniciais]="responsaveisIniciais()" [contatoPaciente]="contatoPaciente" />
 
-    <br><hr><br>
 
     <!-- Contato e Endereço -->
     <app-contato #contatoPaciente
       [dadosIniciais]="contato()"
     ></app-contato>
 
-    <br><hr><br>
 
     <!-- Escola -->
     <app-info-escola [escolaInicial]="escolaInicial()" />
 
-    <br><hr><br>
 
     <!-- Prontuário -->
     <app-info-prontuario [prontuarioInicial]="prontuarioInicial()" />
 
-    <br><hr><br>
 
     <!-- CIDs (adicionar e remover) -->
     <app-info-cid [cidsIniciais]="cidsIniciais()" />

@@ -14,21 +14,11 @@
     <!-- Um item só: quando a geração muda, os formulários são recriados vazios. -->
     @for (g of [geracaoFormulario()]; track g) {
     <app-dados-pessoais />
-    <br>
-    <hr>
     <app-info-profissional [cargos]="opcoes().cargos"></app-info-profissional>
-    <br>
-    <hr>
     <app-info-usuario [perfis]="opcoes().perfis" />
-    <br>
-    <hr>
     <app-info-especialista #infoEsp [especialidadesDisponiveis]="opcoes().especialidades"
       [bloquearTipo]="infoAs.ehAssistenteSocial" />
-    <br>
-    <hr>
     <app-info-assistente-social #infoAs [bloquearTipo]="infoEsp.ehEspecialista" />
-    <br>
-    <hr>
     <app-contato subtitulo="Opcional. Se informar, preencha o endereço completo." />
     }
   </div>

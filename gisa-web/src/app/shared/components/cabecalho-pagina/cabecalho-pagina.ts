@@ -25,6 +25,8 @@ export class CabecalhoPagina {
   @Input() motivoSalvarDesabilitado: string = '';
   @Input() textoAcao: string = '';
   @Input() rotaAcao: string = '';
+  // Ícone do botão de ação: "+" para criar, lápis para editar.
+  @Input() tipoAcao: 'adicionar' | 'editar' = 'adicionar';
   // Ação secundária (botão vazado, à esquerda da principal), ex.: "Abrir prontuário".
   @Input() textoAcaoSecundaria: string = '';
   @Input() rotaAcaoSecundaria: string = '';

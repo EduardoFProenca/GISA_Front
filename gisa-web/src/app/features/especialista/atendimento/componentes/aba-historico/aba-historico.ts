@@ -2,7 +2,7 @@ import { Component, Input, computed, signal } from '@angular/core';
 import { Cid } from '../../../../../core/models/cid.model';
 import { EventoPaciente, TipoEventoPaciente } from '../../../../../core/models/historico.model';
 import { dataHoraLocal } from '../../../../../shared/utils/data.util';
-import { ROTULO_EVENTO_PACIENTE } from '../../../../../shared/utils/rotulos.util';
+import { ROTULO_EVENTO_PACIENTE, tomEventoPaciente } from '../../../../../shared/utils/rotulos.util';
 
 type Filtro = 'TODOS' | 'TERAPIAS' | 'CADASTRO';
 
@@ -27,6 +27,7 @@ export class AbaHistorico {
   @Input() erro = '';
 
   readonly rotulos = ROTULO_EVENTO_PACIENTE;
+  readonly tom = tomEventoPaciente;
   readonly dataHora = dataHoraLocal;
   readonly filtros: { valor: Filtro; label: string }[] = [
     { valor: 'TODOS', label: 'Todos' },
@@ -43,8 +44,4 @@ export class AbaHistorico {
     );
     return [...lista].sort((a, b) => b.dataHora.localeCompare(a.dataHora)); // mais recente primeiro
   });
-
-  ehTerapia(e: EventoPaciente): boolean {
-    return TIPOS_TERAPIA.includes(e.tipo);
-  }
 }

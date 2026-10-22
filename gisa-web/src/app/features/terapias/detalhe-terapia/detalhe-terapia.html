@@ -1,5 +1,5 @@
 <app-cabecalho-pagina titulo="Detalhes da Terapia"
-  [textoAcao]="podeEditar && terapia()?.status === 'AGENDADA' ? 'Editar' : ''"
+  [textoAcao]="podeEditar && terapia()?.status === 'AGENDADA' ? 'Editar' : ''" tipoAcao="editar"
   [rotaAcao]="rotaBase + '/' + id + '/editar'">
 </app-cabecalho-pagina>
 
@@ -40,7 +40,6 @@
     @if (erroAcao()) { <p class="erro-msg">{{ erroAcao() }}</p> }
   </div>
 
-  <br><hr><br>
 
   <div class="secao">
     <h3>Especialistas</h3>
@@ -51,7 +50,6 @@
     }
   </div>
 
-  <br><hr><br>
 
   <div class="secao">
     <h3>Pacientes e Presença</h3>

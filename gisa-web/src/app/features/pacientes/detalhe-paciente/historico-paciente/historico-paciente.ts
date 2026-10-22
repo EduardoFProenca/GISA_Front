@@ -4,7 +4,7 @@ import { PacienteService } from '../../../../core/services/paciente';
 import { mensagemDeErro } from '../../../../core/http/erro-api';
 import { Paginacao } from '../../../../shared/components/paginacao/paginacao';
 import { dataHoraLocal } from '../../../../shared/utils/data.util';
-import { ROTULO_EVENTO_PACIENTE } from '../../../../shared/utils/rotulos.util';
+import { ROTULO_EVENTO_PACIENTE, tomEventoPaciente } from '../../../../shared/utils/rotulos.util';
 
 // Linha do tempo do paciente (GET /pacientes/{id}/historico), mais recentes primeiro.
 @Component({
@@ -20,6 +20,7 @@ export class HistoricoPaciente {
 
   readonly itensPorPagina = 10;
   readonly rotulos = ROTULO_EVENTO_PACIENTE;
+  readonly tom = tomEventoPaciente;
   readonly dataHora = dataHoraLocal;
 
   eventos = signal<EventoPaciente[]>([]);

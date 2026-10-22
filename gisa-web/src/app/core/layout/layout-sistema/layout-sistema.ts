@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { ItemMenu, Menu } from '../../../shared/components/menu/menu';
+import { NavegacaoEnter } from '../../../shared/directives/navegacao-enter.directive';
 import { Auth } from '../../auth/auth';
 import { ROTA_INICIO } from '../../auth/permissoes';
 import { itensDoMenu } from '../menus';
@@ -12,7 +13,7 @@ import { itensDoMenu } from '../menus';
 // No Início o menu não aparece: lá a navegação é pelo "Gestão Rápida".
 @Component({
   selector: 'app-layout-sistema',
-  imports: [Menu, RouterOutlet],
+  imports: [Menu, RouterOutlet, NavegacaoEnter],
   templateUrl: './layout-sistema.html',
   styleUrl: './layout-sistema.scss',
 })

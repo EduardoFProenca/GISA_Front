@@ -24,7 +24,7 @@ h3 {
 
   li {
     background-color: var(--cor-superficie-suave);
-    border-left: 3px solid var(--cor-foco);
+    border-left: 3px solid var(--cor-evento, var(--cor-foco));
     border-radius: 0 6px 6px 0; // faixa reta, como nos cards de status
     padding: 0.75rem 1rem;
     margin-bottom: 0.75rem;
@@ -58,4 +58,14 @@ h3 {
   margin: 0.25rem 0 0;
   font-size: 0.8rem;
   color: var(--cor-texto-suave);
+}
+
+// Cor de cada evento (ver tomEventoPaciente).
+.tom-verde { --cor-evento: var(--cor-sucesso); --cor-evento-texto: var(--cor-sucesso-forte); }
+.tom-amarelo { --cor-evento: var(--cor-alerta); --cor-evento-texto: var(--cor-alerta-forte); }
+.tom-vermelho { --cor-evento: var(--cor-perigo); --cor-evento-texto: var(--cor-perigo-forte); }
+.tom-cinza { --cor-evento: var(--cinza-400); --cor-evento-texto: var(--cor-texto-secundario); }
+
+.cabecalho-evento .tipo {
+  color: var(--cor-evento-texto, var(--azul-900));
 }

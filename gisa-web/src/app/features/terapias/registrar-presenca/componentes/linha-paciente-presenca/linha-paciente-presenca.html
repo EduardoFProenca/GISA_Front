@@ -39,7 +39,7 @@
   <div class="justificativa-form">
     <input type="text" maxlength="255" placeholder="Motivo da falta (ex.: atestado médico)"
       [ngModel]="texto()" (ngModelChange)="texto.set($event)"
-      (keyup.enter)="confirmar()" />
+      (keyup.enter)="confirmar()" data-enter-nativo />
     <button type="button" class="btn confirmar"
       [disabled]="!texto().trim() || bloqueado()"
       (click)="confirmar()">Confirmar</button>

@@ -1,4 +1,4 @@
-<app-cabecalho-pagina titulo="Detalhes do Profissional" [textoAcao]="podeEditar && ativo() ? 'Editar' : ''"
+<app-cabecalho-pagina titulo="Detalhes do Profissional" [textoAcao]="podeEditar && ativo() ? 'Editar' : ''" tipoAcao="editar"
     [rotaAcao]="'/profissionais/' + id + '/editar'">
 </app-cabecalho-pagina>
 
@@ -45,9 +45,6 @@
         </div>
         @if (erroStatus()) { <p class="erro-msg">{{ erroStatus() }}</p> }
     </div>
-    <br>
-    <hr>
-    <br>
 
     @if (detalhe(); as d) {
     <div class="secao">
@@ -63,9 +60,6 @@
             <app-campo-detalhe rotulo="Cartão SUS (CNS)">{{ cns(d.profissional.pessoa.numCNS) || '—' }}</app-campo-detalhe>
         </div>
     </div>
-    <br>
-    <hr>
-    <br>
 
     <div class="secao">
         <h3>Profissional</h3>
@@ -76,9 +70,6 @@
     </div>
 
     @if (d.especialista; as esp) {
-    <br>
-    <hr>
-    <br>
     <div class="secao">
         <h3>Especialista</h3>
         <div class="info-bloco">
@@ -108,9 +99,6 @@
     }
 
     @if (d.assistenteSocial; as assistente) {
-    <br>
-    <hr>
-    <br>
     <div class="secao">
         <h3>Assistente Social</h3>
         <div class="info-bloco">
@@ -150,9 +138,6 @@
         @if (erroVinculo()) { <p class="erro-msg">{{ erroVinculo() }}</p> }
     </div>
     }
-    <br>
-    <hr>
-    <br>
 
     <div class="secao">
         <h3>Endereço</h3>

@@ -57,8 +57,7 @@
   box-shadow: 0 0 0 1px var(--cor-borda-forte);
 }
 
-.tipo-terapia .marcador { background: var(--cor-destaque); }
-.tipo-cadastro .marcador { background: var(--roxo-600); }
+.marcador { background: var(--cor-evento, var(--cinza-400)); }
 
 .cartao {
   background: var(--cor-superficie-suave);
@@ -147,4 +146,14 @@ h4 {
 
 .vazio.erro {
   color: var(--cor-perigo-forte);
+}
+
+// Cor de cada evento (ver tomEventoPaciente).
+.tom-verde { --cor-evento: var(--cor-sucesso); --cor-evento-texto: var(--cor-sucesso-forte); }
+.tom-amarelo { --cor-evento: var(--cor-alerta); --cor-evento-texto: var(--cor-alerta-forte); }
+.tom-vermelho { --cor-evento: var(--cor-perigo); --cor-evento-texto: var(--cor-perigo-forte); }
+.tom-cinza { --cor-evento: var(--cinza-400); --cor-evento-texto: var(--cor-texto-secundario); }
+
+.cartao-topo .tipo {
+  color: var(--cor-evento-texto, inherit);
 }

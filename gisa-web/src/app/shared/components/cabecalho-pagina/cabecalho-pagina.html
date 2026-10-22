@@ -18,7 +18,7 @@
 
     @if (textoAcao) {
       <button type="button" class="btn-acao" (click)="aoClicarAcao()">
-        <ng-icon [name]="icones.adicionar" />
+        <ng-icon [name]="tipoAcao === 'editar' ? icones.editar : icones.adicionar" />
         {{ textoAcao }}
       </button>
     }

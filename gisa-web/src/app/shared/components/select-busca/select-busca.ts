@@ -227,14 +227,18 @@ export class SelectBusca implements OnChanges {
 
   // ENTER com texto digitado escolhe a opção de rótulo igual ao texto ou, sem ela, a primeira da
   // lista (ex.: "8" na hora escolhe 08). Sem texto ou sem opções, não faz nada.
+  // Depois de escolher, o ENTER segue para a navegação entre campos (NavegacaoEnter). Quando não dá
+  // para escolher ainda (busca pendente ou nada encontrado), o foco fica aqui: stopPropagation.
   aoPressionarEnter(evento: Event) {
     const termo = this.normalizar(this.termo().trim());
     if (!this.aberto() || !termo) return;
     evento.preventDefault();
     // Busca remota ainda sem resposta para o texto atual: a lista seria a da busca anterior.
-    if (this.remoto && this.buscaPendente) return;
-    const opcoes = this.opcoesFiltradas;
-    if (!opcoes.length) return;
+    const opcoes = this.remoto && this.buscaPendente ? [] : this.opcoesFiltradas;
+    if (!opcoes.length) {
+      evento.stopPropagation();
+      return;
+    }
     const exata = opcoes.find((o) => this.normalizar(this.rotulo(o)) === termo);
     this.selecionar(exata ?? opcoes[0]);
   }

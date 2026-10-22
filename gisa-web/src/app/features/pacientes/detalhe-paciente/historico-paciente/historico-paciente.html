@@ -8,7 +8,7 @@
   } @else {
     <ul class="linha-tempo">
       @for (evento of eventos(); track evento.idEvento) {
-        <li>
+        <li [class]="'tom-' + tom(evento)">
           <div class="cabecalho-evento">
             <span class="tipo">{{ rotulos[evento.tipo] }}</span>
             <span class="quando">{{ dataHora(evento.dataHora) }}</span>

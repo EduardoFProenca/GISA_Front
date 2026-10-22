@@ -60,6 +60,34 @@ export const ROTULO_EVENTO_PACIENTE: Record<TipoEventoPaciente, string> = {
   PRESENCA_REGISTRADA: 'Presença registrada',
 };
 
+// Cor de cada evento do histórico do paciente: verde = algo começou ou deu certo, amarelo = mudança,
+// vermelho = cancelamento, falta ou inativação, cinza = marcação desfeita.
+export type TomEventoPaciente = 'verde' | 'amarelo' | 'vermelho' | 'cinza';
+
+const TOM_EVENTO_PACIENTE: Record<Exclude<TipoEventoPaciente, 'PRESENCA_REGISTRADA'>, TomEventoPaciente> = {
+  CADASTRO: 'verde',
+  REATIVADO: 'verde',
+  RESPONSAVEL_VINCULADO: 'verde',
+  TERAPIA_AGENDADA: 'verde',
+  DADOS_ALTERADOS: 'amarelo',
+  STATUS_PACIENTE_ALTERADO: 'amarelo',
+  RESPONSAVEL_DESVINCULADO: 'amarelo',
+  TERAPIA_ALTERADA: 'amarelo',
+  INATIVADO: 'vermelho',
+  TERAPIA_CANCELADA: 'vermelho',
+};
+
+// A presença não tem tipo próprio por resultado: a API termina a descrição com ele
+// ("...: compareceu.", "...: falta justificada.", "...: falta.", "...: marcação desfeita (pendente).").
+export function tomEventoPaciente(evento: { tipo: TipoEventoPaciente; descricao: string }): TomEventoPaciente {
+  if (evento.tipo !== 'PRESENCA_REGISTRADA') return TOM_EVENTO_PACIENTE[evento.tipo];
+  const resultado = evento.descricao.slice(evento.descricao.lastIndexOf(':') + 1).trim();
+  if (resultado.startsWith('compareceu')) return 'verde';
+  if (resultado.startsWith('falta justificada')) return 'amarelo';
+  if (resultado.startsWith('falta')) return 'vermelho';
+  return 'cinza';
+}
+
 export const ROTULO_STATUS_TERAPIA: Record<StatusTerapia, string> = {
   AGENDADA: 'Agendada',
   EM_ATENDIMENTO: 'Em atendimento',

@@ -66,6 +66,35 @@ select {
   color: var(--cor-titulo);
 }
 
+// Campo que não pode ser editado (readonly ou disabled): fundo mais escuro, borda tracejada,
+// texto acinzentado e um cadeado à direita (no select, no lugar da seta).
+input:not([type='checkbox']):not([type='radio']):is([readonly], :disabled),
+select:disabled,
+textarea:is([readonly], :disabled) {
+  background-color: var(--cinza-100);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='11' width='16' height='10' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 0 1 8 0v4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  padding-right: 2.5rem;
+  border-style: dashed;
+  border-color: var(--cor-borda-forte);
+  color: var(--cor-texto-secundario);
+  cursor: not-allowed;
+
+  &:hover,
+  &:focus {
+    border-color: var(--cor-borda-forte);
+    background-color: var(--cinza-100);
+    box-shadow: none;
+  }
+}
+
+// O campo de data já tem o ícone do calendário à direita.
+input[type='date']:is([readonly], :disabled) {
+  background-image: none;
+  padding-right: 1rem;
+}
+
 label {
   font-size: 0.85rem;
   font-weight: 600;
@@ -361,6 +390,19 @@ button {
   gap: 12px;
 }
 
+
+// Espaço entre as seções dos formulários e das telas de detalhe. Não há linha divisória: o título de
+// cada seção já tem a linha clara embaixo. Os componentes de seção viram bloco para a margem valer
+// (e colapsar com a margem do título dentro deles).
+.card-form > :is(.secao, app-dados-pessoais, app-contato, app-info-paciente, app-info-responsavel,
+  app-info-escola, app-info-prontuario, app-info-cid, app-info-profissional, app-info-usuario,
+  app-info-especialista, app-info-assistente-social, app-terapias-paciente, app-historico-paciente) {
+  display: block;
+
+  &:not(:first-child) {
+    margin-top: 2.25rem;
+  }
+}
 
 // Seções de formulário em <fieldset> (para desabilitar tudo de uma vez no modo leitura) sem mudar o visual.
 fieldset.secao {
