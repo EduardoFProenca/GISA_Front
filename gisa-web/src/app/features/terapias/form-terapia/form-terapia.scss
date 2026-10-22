@@ -144,11 +144,11 @@
   }
 }
 
+// Nome em cima e jornadas embaixo, para todos (o nome não divide a linha com os horários).
 .jornada-especialista {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.25rem 0.75rem;
+  flex-direction: column;
+  gap: 0.25rem;
 
   & + & {
     margin-top: 0.5rem;
@@ -158,7 +158,6 @@
 
   .nome {
     font-weight: 600;
-    min-width: 10rem;
   }
 
   ul {

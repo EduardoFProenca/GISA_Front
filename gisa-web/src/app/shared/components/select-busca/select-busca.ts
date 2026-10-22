@@ -9,7 +9,9 @@ import {
   SimpleChanges,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
+import { filtrarTexto } from '../../utils/filtro-texto.util';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { NgIcon } from '@ng-icons/core';
@@ -71,6 +73,11 @@ export class SelectBusca implements OnChanges {
   @Input() texto: string = '';
   // Mostra um "x" no campo para apagar o texto e a seleção de uma vez.
   @Input() limpavel: boolean = false;
+  // Campo só de números (ex.: hora e minuto): letras e símbolos são descartados ao digitar e colar.
+  @Input() somenteDigitos: boolean = false;
+  @Input() maxCaracteres: number | null = null;
+
+  private campo = viewChild.required<ElementRef<HTMLInputElement>>('campo');
 
   @Output() valueChange = new EventEmitter<number | string | null>();
   @Output() textoChange = new EventEmitter<string>();
@@ -177,6 +184,12 @@ export class SelectBusca implements OnChanges {
   }
 
   aoDigitar(texto: string) {
+    if (this.somenteDigitos) {
+      const limpo = filtrarTexto('numero', texto);
+      // O ngModel não reescreve o campo quando o valor limpo é igual ao anterior: corrige direto.
+      if (limpo !== texto) this.campo().nativeElement.value = limpo;
+      texto = limpo;
+    }
     this.termo.set(texto);
     if (this.textoLivre) {
       this.texto = texto;

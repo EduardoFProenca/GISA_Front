@@ -1,6 +1,9 @@
 <div class="select-busca" [class.disabled]="disabled">
   <input
+    #campo
     type="text"
+    [attr.inputmode]="somenteDigitos ? 'numeric' : null"
+    [attr.maxlength]="maxCaracteres"
     [ngModel]="termo()"
     (ngModelChange)="aoDigitar($event)"
     (focus)="aoFocar()"

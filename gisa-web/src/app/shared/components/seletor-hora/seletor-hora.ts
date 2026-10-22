@@ -9,7 +9,7 @@ const HORAS = opcoes(24);
 const MINUTOS = opcoes(60); // qualquer minuto: terapias podem atrasar ou se estender
 
 // Horário 'HH:mm' em dois selects (hora e minuto), no lugar do <input type="time"> do navegador.
-// Digitar filtra a lista (ex.: "3" na hora mostra 03, 13 e 23).
+// Digitar filtra a lista (ex.: "3" na hora mostra 03, 13 e 23). Só aceita dígitos (até 2).
 // Uso: <app-seletor-hora [value]="hora()" (valueChange)="hora.set($event)" [comErro]="..." />
 // Emite '' enquanto só uma das partes estiver escolhida.
 @Component({
