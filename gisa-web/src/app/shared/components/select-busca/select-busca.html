@@ -4,11 +4,18 @@
     [ngModel]="termo()"
     (ngModelChange)="aoDigitar($event)"
     (focus)="aoFocar()"
+    (keydown.enter)="aoPressionarEnter($event)"
     [placeholder]="placeholder"
     [disabled]="disabled"
     [class.input-erro]="comErro"
     autocomplete="off"
   >
+
+  @if (limpavel && !disabled && termo()) {
+    <button type="button" class="btn-limpar-campo" title="Limpar" aria-label="Limpar" (click)="limpar()">
+      <ng-icon [name]="icones.fechar" size="14" />
+    </button>
+  }
 
   @if (aberto() && !disabled) {
     <ul class="lista-opcoes" [class.acima]="abrirAcima()" [style.max-height.px]="alturaMaxima()">

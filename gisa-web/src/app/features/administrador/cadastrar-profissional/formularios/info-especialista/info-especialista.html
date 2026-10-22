@@ -62,6 +62,13 @@
             </div>
             }
             @if (erros['jornadas']) { <span class="erro-msg">{{ erros['jornadas'] }}</span> }
+            @if (terapiasForaDaJornada.length) {
+            <ul class="terapias-fora-jornada">
+                @for (t of terapiasForaDaJornada; track t.idTerapia) {
+                <li>{{ dataCurta(t.data) }}, das {{ t.horaInicio }} às {{ t.horaTermino }}</li>
+                }
+            </ul>
+            }
 
             <button type="button" class="add-item" (click)="adicionarJornada()">+ Adicionar horário</button>
         </div>

@@ -55,11 +55,21 @@ export class EmitirRecusa {
   previa = signal(false);
   folha = computed<DadosFolhaDocumento | null>(() => (this.previa() ? this.montarFolha() : null));
 
+  // Com um paciente escolhido, nome, CPF e nascimento vêm do cadastro e ficam só leitura. Apagar a
+  // busca (ou trocar o texto) desfaz a escolha e limpa esses campos para digitar outra pessoa.
   preencherComPaciente(id: number | string | null) {
+    const tinhaPaciente = this.idPaciente() !== null;
     this.idPaciente.set(id as number | null);
     this.pacienteAtivo.set(false);
     this.inativacaoOferecida = false;
-    if (id === null) return;
+    if (id === null) {
+      if (tinhaPaciente) {
+        this.nome = '';
+        this.cpf = '';
+        this.dataNascimento = '';
+      }
+      return;
+    }
     this.pacienteService.buscar(id as number).subscribe({
       next: (p) => {
         this.nome = p.pessoa.nome;

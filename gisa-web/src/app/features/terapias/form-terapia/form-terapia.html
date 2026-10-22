@@ -2,6 +2,8 @@
   [titulo]="editando ? 'Editar Terapia' : 'Nova Terapia'"
   [mostrarSalvar]="!carregando() && !erroCarregar()"
   [mostrarCancelar]="true"
+  [salvarDesabilitado]="verificacaoPendente() || salvando()"
+  [motivoSalvarDesabilitado]="salvando() ? 'Salvando...' : 'Aguarde a verificação de disponibilidade.'"
   (salvar)="salvar()"
   (cancelar)="cancelar()">
 </app-cabecalho-pagina>
@@ -38,6 +40,7 @@
               [ocultarIds]="outrosEscolhidos($any(tipo), item.uid)"
               [value]="item.id"
               (valueChange)="aoMudarPessoa($any(tipo), item.uid, $event)"
+              (opcaoEscolhida)="tipo === 'especialista' && aoEscolherEspecialista($event)"
               [placeholder]="tipo === 'paciente' ? 'Digite ou selecione o paciente' : 'Digite ou selecione o especialista'"
               [semResultados]="tipo === 'paciente' ? 'Nenhum paciente encontrado' : 'Nenhum especialista encontrado'"
               [comErro]="!!erros()[tipo + '-' + item.uid] || emConflito($any(tipo), item.id)">
@@ -86,6 +89,30 @@
       </div>
     </div>
 
+    @if (resumoJornadas().length) {
+    <div class="resumo-jornadas">
+      <strong>Jornadas de trabalho</strong>
+      @for (r of resumoJornadas(); track r.id) {
+      <div class="jornada-especialista">
+        <span class="nome">{{ r.nome }}</span>
+        @if (r.carregando) {
+        <span class="sem-jornada">Carregando...</span>
+        } @else if (r.erro) {
+        <span class="sem-jornada">Não foi possível carregar as jornadas.</span>
+        } @else if (!r.dias.length) {
+        <span class="sem-jornada">Sem jornada cadastrada.</span>
+        } @else {
+        <ul>
+          @for (d of r.dias; track d.dia) {
+          <li [class.dia-terapia]="d.diaDaTerapia"><span class="dia">{{ d.dia }}</span> {{ d.horarios }}</li>
+          }
+        </ul>
+        }
+      </div>
+      }
+    </div>
+    }
+
     <div class="linha-form">
       <div class="campo">
         <label>Início <span class="obrigatorio">*</span></label>
@@ -103,7 +130,7 @@
       </div>
     </div>
 
-    @if (verificando()) {
+    @if (verificacaoPendente()) {
     <p class="aviso-conflito verificando">Verificando disponibilidade...</p>
     } @else if (conflitos().length) {
     <div class="aviso-conflito">

@@ -28,7 +28,9 @@
     }
 
     @if (mostrarSalvar) {
-      <button type="button" class="btn-salvar" (click)="aoClicarSalvar()">Salvar</button>
+      <button type="button" class="btn-salvar" [disabled]="salvarDesabilitado"
+        [attr.title]="salvarDesabilitado ? motivoSalvarDesabilitado || null : null"
+        (click)="aoClicarSalvar()">Salvar</button>
     }
   </div>
 </header>

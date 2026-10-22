@@ -14,8 +14,6 @@ export interface ItemMenu {
   grupo?: string;
 }
 
-const LARGURA_CELULAR_PX = 768;
-
 // Menu lateral. Abre/fecha pelo Layout (botão ☰ do cabeçalho).
 // No celular vira gaveta sobre o conteúdo, com fundo escurecido.
 @Component({
@@ -50,11 +48,10 @@ export class Menu {
     this.layout.fecharMenu();
   }
 
-  // No celular o menu cobre a tela, então fecha ao escolher um item.
+  // Fecha ao escolher um item, mesmo o da tela atual (que não gera navegação; as demais
+  // trocas de tela já fecham o menu pelo Layout).
   aoNavegar() {
-    if (typeof window !== 'undefined' && window.innerWidth <= LARGURA_CELULAR_PX) {
-      this.fechar();
-    }
+    this.fechar();
   }
 
   @HostListener('document:keydown.escape')

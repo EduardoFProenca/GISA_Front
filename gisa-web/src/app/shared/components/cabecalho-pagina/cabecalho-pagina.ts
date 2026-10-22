@@ -20,6 +20,9 @@ export class CabecalhoPagina {
   @Input() titulo: string = '';
   @Input() mostrarSalvar: boolean = false;
   @Input() mostrarCancelar: boolean = false;
+  // Salvar visível, mas bloqueado (ex.: enquanto a disponibilidade é verificada), com o motivo no title.
+  @Input() salvarDesabilitado: boolean = false;
+  @Input() motivoSalvarDesabilitado: string = '';
   @Input() textoAcao: string = '';
   @Input() rotaAcao: string = '';
   // Ação secundária (botão vazado, à esquerda da principal), ex.: "Abrir prontuário".
@@ -35,6 +38,7 @@ export class CabecalhoPagina {
   }
 
   aoClicarSalvar() {
+    if (this.salvarDesabilitado) return;
     this.salvar.emit();
   }
 

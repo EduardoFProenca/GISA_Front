@@ -1,4 +1,5 @@
 import { ComErros } from '../../../../shared/components/com-erros';
+import { TerapiaForaDaJornada } from '../../../../core/models/comum.model';
 
 export interface DadosPessoaisForm extends ComErros {
   nome: string;
@@ -61,6 +62,8 @@ export interface InfoEspecialistaForm extends ComErros {
   razaoSocial: string;
   nomeFantasia: string;
   inscricaoEstadual: string;
+  // Jornada recusada pela API (409): terapias agendadas que ficariam fora dela.
+  terapiasForaDaJornada?: TerapiaForaDaJornada[];
 }
 
 export interface InfoAssistenteSocialForm extends ComErros {

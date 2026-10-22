@@ -11,6 +11,7 @@
       [dicaTermo]="dicaBuscaPaciente"
       [value]="idPaciente()"
       (valueChange)="preencherComPaciente($event)"
+      [limpavel]="true"
       placeholder="Digite o nome ou o CPF do paciente"
       semResultados="Nenhum paciente encontrado" />
 
@@ -18,7 +19,7 @@
       <div class="campo campo-largo">
         <label for="nome">Nome <span class="obrigatorio">*</span></label>
         <input id="nome" appFiltro="nome" type="text" maxlength="255" [(ngModel)]="nome" (ngModelChange)="limparErro('nome')"
-          [class.input-erro]="erros()['nome']" placeholder="Nome completo" />
+          [class.input-erro]="erros()['nome']" placeholder="Nome completo" [readonly]="idPaciente() !== null" />
         @if (erros()['nome']) { <span class="erro-msg">{{ erros()['nome'] }}</span> }
       </div>
     </div>
@@ -27,22 +28,23 @@
       <div class="campo">
         <label for="cpf">CPF</label>
         <input id="cpf" type="text" appMascara="cpf" inputmode="numeric" [(ngModel)]="cpf"
-          (ngModelChange)="limparErro('cpf')" [class.input-erro]="erros()['cpf']" placeholder="000.000.000-00" />
+          (ngModelChange)="limparErro('cpf')" [class.input-erro]="erros()['cpf']" placeholder="000.000.000-00"
+          [readonly]="idPaciente() !== null" />
         @if (erros()['cpf']) { <span class="erro-msg">{{ erros()['cpf'] }}</span> }
       </div>
       <div class="campo">
         <label for="nascimento">Data de nascimento</label>
         <input id="nascimento" type="date" [max]="hoje" [(ngModel)]="dataNascimento"
-          (ngModelChange)="limparErro('nascimento')" [class.input-erro]="erros()['nascimento']" />
+          (ngModelChange)="limparErro('nascimento')" [class.input-erro]="erros()['nascimento']"
+          [readonly]="idPaciente() !== null" />
         @if (erros()['nascimento']) { <span class="erro-msg">{{ erros()['nascimento'] }}</span> }
       </div>
     </div>
   </section>
 
   <section class="painel">
-    <h3>Motivo da recusa</h3>
-    <label for="motivo">Motivo <span class="obrigatorio">*</span></label>
-    <textarea id="motivo" rows="8" [(ngModel)]="motivo" (ngModelChange)="limparErro('motivo')"
+    <h3>Motivo da recusa <span class="obrigatorio">*</span></h3>
+    <textarea id="motivo" rows="8" aria-label="Motivo da recusa" [(ngModel)]="motivo" (ngModelChange)="limparErro('motivo')"
       [class.input-erro]="erros()['motivo']"
       placeholder="Descreva por que a APAE não pode realizar o atendimento"></textarea>
     @if (erros()['motivo']) { <span class="erro-msg">{{ erros()['motivo'] }}</span> }

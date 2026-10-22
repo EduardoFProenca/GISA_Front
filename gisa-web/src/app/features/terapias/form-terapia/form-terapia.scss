@@ -122,12 +122,76 @@
 }
 
 .aviso-data {
+  display: block;
+  margin-top: 0.35rem;
   color: var(--cor-alerta-forte);
   font-size: 0.8rem;
 }
 
+.resumo-jornadas {
+  margin: 1.25rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--raio-md);
+  background: var(--cor-superficie-suave);
+  border: 1px solid var(--cor-borda);
+  font-size: 0.88rem;
+  text-align: left;
+
+  > strong {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--cor-titulo);
+  }
+}
+
+.jornada-especialista {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+
+  & + & {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed var(--cor-borda);
+  }
+
+  .nome {
+    font-weight: 600;
+    min-width: 10rem;
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .dia {
+    font-weight: 600;
+    color: var(--cor-texto-secundario);
+  }
+
+  // Dia da semana da data escolhida.
+  .dia-terapia {
+    color: var(--cor-destaque-forte);
+    font-weight: 600;
+
+    .dia {
+      color: inherit;
+    }
+  }
+
+  .sem-jornada {
+    color: var(--cor-texto-suave);
+  }
+}
+
 .aviso-conflito {
-  margin-top: 1rem;
+  margin: 1.25rem 0 0.5rem;
   padding: 0.75rem 1rem;
   border-radius: var(--raio-md);
   background: var(--vermelho-50);

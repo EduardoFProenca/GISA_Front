@@ -32,8 +32,12 @@ export class FiltroAvancado implements OnChanges {
   @Input() valorPeriodoManual: string = 'manual';
   @Input() tituloStatus: string = 'Status';
   @Input() tituloPeriodo: string = 'Período';
+  // Filtros que ficam fora do painel (ex.: paciente e especialista): entram na contagem do
+  // "Limpar filtros", e o clique avisa o pai por (limpou) para ele apagar os seus.
+  @Input() filtrosExternos: number = 0;
 
   @Output() filtroAlterado = new EventEmitter<EstadoFiltroAvancado>();
+  @Output() limpou = new EventEmitter<void>();
 
   icones = ICONES;
 
@@ -50,7 +54,7 @@ export class FiltroAvancado implements OnChanges {
     const temPeriodo = this.periodoSelecionado() && this.periodoSelecionado() !== this.valorPeriodoManual
       ? 1
       : (this.dataInicio() && this.dataFim() ? 1 : 0);
-    return this.statusSelecionados().size + temPeriodo;
+    return this.statusSelecionados().size + temPeriodo + this.filtrosExternos;
   }
 
   statusEstaAtivo(valor: string): boolean {
@@ -75,14 +79,20 @@ export class FiltroAvancado implements OnChanges {
     this.emitir();
   }
 
+  // Enquanto o ano é digitado, o campo de data já entrega valores como "0002-10-20":
+  // só avisamos o pai quando a data está completa (ou foi apagada).
   atualizarDataInicio(valor: string) {
     this.dataInicio.set(valor);
-    this.emitir();
+    if (this.dataUtilizavel(valor)) this.emitir();
   }
 
   atualizarDataFim(valor: string) {
     this.dataFim.set(valor);
-    this.emitir();
+    if (this.dataUtilizavel(valor)) this.emitir();
+  }
+
+  private dataUtilizavel(valor: string): boolean {
+    return !valor || Number(valor.slice(0, 4)) >= 1900;
   }
 
   limparFiltros() {
@@ -90,6 +100,7 @@ export class FiltroAvancado implements OnChanges {
     this.periodoSelecionado.set('');
     this.dataInicio.set('');
     this.dataFim.set('');
+    this.limpou.emit();
     this.emitir();
   }
 

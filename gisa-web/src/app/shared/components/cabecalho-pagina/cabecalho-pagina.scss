@@ -49,6 +49,15 @@
   &:hover {
     background: var(--cor-destaque-forte);
   }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+
+    &:hover {
+      background: var(--cor-destaque);
+    }
+  }
 }
 
 

@@ -6,7 +6,7 @@ import { ICONES } from '../../../shared/icons';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, debounceTime, distinctUntilChanged, of, switchMap } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, map, of, switchMap } from 'rxjs';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { SelectBusca, OpcaoSelectBusca } from '../../../shared/components/select-busca/select-busca';
 import { buscaEspecialistas, buscaPacientes, DICA_BUSCA_PACIENTE } from '../../../shared/components/select-busca/buscas';
@@ -14,6 +14,7 @@ import { PacienteService } from '../../../core/services/paciente';
 import { ProfissionalService } from '../../../core/services/profissional';
 import { TerapiaService } from '../../../core/services/terapia';
 import { ConflitoHorario, NovaTerapiaPayload, Terapia } from '../../../core/models/terapia.model';
+import { Jornada } from '../../../core/models/profissional.model';
 import { aplicarErrosApi, campoDaChave } from '../../../core/http/erro-api';
 import { ROTULO_DIA_SEMANA, ROTULO_MODALIDADE } from '../../../shared/utils/rotulos.util';
 import { hojeIso, paraIsoMinuto } from '../../../shared/utils/data.util';
@@ -116,7 +117,13 @@ export class FormTerapia implements OnInit {
   // ---------- verificação de conflitos em tempo real ----------
 
   conflitos = signal<ConflitoHorario[]>([]);
-  verificando = signal(false);
+  // JSON do último corpo com resposta da verificação (com ou sem conflito, ou com falha).
+  private payloadVerificado = signal<string | null>(null);
+  // Da mudança nos campos até a resposta, incluindo a espera do debounce: o Salvar fica bloqueado.
+  verificacaoPendente = computed(() => {
+    const payload = this.payloadVerificacao();
+    return !!payload && JSON.stringify(payload) !== this.payloadVerificado();
+  });
 
   // Corpo da verificação, ou null enquanto o formulário não está completo.
   private payloadVerificacao = computed<NovaTerapiaPayload | null>(() => {
@@ -136,18 +143,63 @@ export class FormTerapia implements OnInit {
         debounceTime(500),
         distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
         switchMap((payload) => {
-          if (!payload) return of(null);
-          this.verificando.set(true);
+          if (!payload) return of({ payload, resultado: null });
           return this.terapiaService
             .verificarConflitos({ ...payload, idTerapiaIgnorada: this.idTerapia ?? undefined })
-            .pipe(catchError(() => of(null))); // aviso antecipado: falha aqui não bloqueia o salvar
+            .pipe(
+              catchError(() => of(null)), // aviso antecipado: falha aqui não bloqueia o salvar
+              map((resultado) => ({ payload, resultado }))
+            );
         }),
         takeUntilDestroyed()
       )
-      .subscribe((resultado) => {
-        this.verificando.set(false);
+      .subscribe(({ payload, resultado }) => {
+        this.payloadVerificado.set(payload ? JSON.stringify(payload) : null);
         this.conflitos.set(resultado?.conflitos ?? []);
       });
+  }
+
+  // ---------- resumo das jornadas dos especialistas ----------
+
+  // Jornadas já buscadas por especialista ('erro' = não foi possível buscar).
+  private jornadas = signal<Map<number, Jornada[] | 'erro'>>(new Map());
+  private nomesEspecialistas = signal<Map<number, string>>(new Map());
+
+  // Um item por especialista escolhido, com os horários agrupados por dia da semana.
+  resumoJornadas = computed(() => {
+    const diaDaData = this.data() ? new Date(this.data() + 'T00:00:00').getDay() || 7 : null; // 7 = domingo
+    return this.idsEscolhidos('especialista').map((id) => {
+      const jornadas = this.jornadas().get(id);
+      const porDia = new Map<number, string[]>();
+      if (Array.isArray(jornadas)) {
+        for (const j of jornadas) {
+          porDia.set(j.diaSemana, [...(porDia.get(j.diaSemana) ?? []), `${j.horaInicio}–${j.horaTermino}`]);
+        }
+      }
+      return {
+        id,
+        nome: this.nomesEspecialistas().get(id) ?? 'Especialista',
+        carregando: jornadas === undefined,
+        erro: jornadas === 'erro',
+        dias: [...porDia].map(([dia, horarios]) => ({
+          dia: (ROTULO_DIA_SEMANA[dia] ?? '').slice(0, 3),
+          horarios: horarios.join(' e '),
+          diaDaTerapia: dia === diaDaData,
+        })),
+      };
+    });
+  });
+
+  aoEscolherEspecialista(opcao: OpcaoSelectBusca) {
+    this.nomesEspecialistas.update((m) => new Map(m).set(Number(opcao.id), opcao.rotuloSelecionado ?? opcao.label));
+  }
+
+  private carregarJornadas(id: number | null) {
+    if (id === null || this.jornadas().has(id)) return;
+    this.profissionalService.jornadas(id).subscribe({
+      next: (lista) => this.jornadas.update((m) => new Map(m).set(id, lista)),
+      error: () => this.jornadas.update((m) => new Map(m).set(id, 'erro')),
+    });
   }
 
   emConflito(tipo: TipoPessoa, id: number | null): boolean {
@@ -195,6 +247,8 @@ export class FormTerapia implements OnInit {
   private preencher(t: Terapia) {
     this.opcoesPacientes.set(t.pacientes.map((p) => ({ id: p.idCadastro, label: p.nome })));
     this.opcoesEspecialistas.set(t.especialistas.map((e) => ({ id: e.idCadastro, label: e.nome })));
+    this.nomesEspecialistas.set(new Map(t.especialistas.map((e) => [e.idCadastro, e.nome])));
+    t.especialistas.forEach((e) => this.carregarJornadas(e.idCadastro));
     this.pacientes.set(t.pacientes.map((p) => this.novoItem(p.idCadastro)));
     this.especialistas.set(t.especialistas.map((e) => this.novoItem(e.idCadastro)));
     this.data.set(t.data);
@@ -223,6 +277,7 @@ export class FormTerapia implements OnInit {
     this.lista(tipo).update((l) => l.map((x) => (x.uid === uid ? { ...x, id: id as number | null } : x)));
     this.limparErro(`${tipo}-${uid}`);
     this.limparErro(tipo === 'paciente' ? 'pacientes' : 'especialistas');
+    if (tipo === 'especialista') this.carregarJornadas(id as number | null);
   }
 
   private idsEscolhidos(tipo: TipoPessoa, ignorarUid?: number): number[] {
@@ -281,7 +336,7 @@ export class FormTerapia implements OnInit {
   }
 
   salvar() {
-    if (this.salvando()) return;
+    if (this.salvando() || this.verificacaoPendente()) return;
 
     this.erro.set('');
     if (!this.validar()) {

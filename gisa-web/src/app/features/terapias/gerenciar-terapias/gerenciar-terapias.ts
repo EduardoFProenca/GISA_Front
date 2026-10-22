@@ -1,7 +1,8 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subject, catchError, forkJoin, of, switchMap } from 'rxjs';
 import { CardEstatistica } from '../../../shared/components/card-estatistica/card-estatistica';
 import { FiltroAvancado, EstadoFiltroAvancado, OpcaoFiltroAvancado } from '../../../shared/components/filtro-avancado/filtro-avancado';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
@@ -120,6 +121,12 @@ export class GerenciarTerapias implements OnInit {
     return t ? `${t.titulo} · ${t.data.split('-').reverse().join('/')} · ${t.horaInicio}–${t.horaTermino}` : '';
   });
 
+  private recarregar$ = new Subject<void>();
+
+  constructor() {
+    this.assinarCargas();
+  }
+
   ngOnInit() {
     this.carregar();
   }
@@ -133,34 +140,57 @@ export class GerenciarTerapias implements OnInit {
     };
   }
 
+  // Cada mudança de filtro pede uma nova carga; o switchMap descarta a resposta das anteriores,
+  // senão uma resposta atrasada (ex.: sem filtro) sobrescreveria a lista já filtrada.
   private carregar() {
-    this.carregando.set(true);
-    this.erro.set('');
+    this.recarregar$.next();
+  }
 
-    const base = this.filtroBase();
-    const status = [...(this.filtroAvancado()?.status ?? [])] as StatusTerapia[];
+  private assinarCargas() {
+    this.recarregar$
+      .pipe(
+        switchMap(() => {
+          const base = this.filtroBase();
+          const status = [...(this.filtroAvancado()?.status ?? [])] as StatusTerapia[];
+          this.carregando.set(true);
+          this.erro.set('');
 
-    this.terapiaService
-      .listar({ ...base, status, page: this.paginaAtual() - 1, size: this.itensPorPagina, sort: 'dataHoraInicio,desc' })
-      .subscribe({
-        next: (p) => {
-          this.terapias.set(p.content);
-          this.totalElementos.set(p.totalElements);
-          this.carregando.set(false);
-        },
-        error: (err) => {
-          this.carregando.set(false);
-          this.erro.set(mensagemDeErro(err, 'Não foi possível carregar as terapias.'));
-        },
+          if (base.inicio && base.fim && base.fim < base.inicio) {
+            return of({ erro: 'A data final deve ser igual ou posterior à data inicial.' });
+          }
+          // size=1: só o total de cada status interessa.
+          const contadores = forkJoin(
+            Object.fromEntries(STATUS.map((s) => [s, this.terapiaService.listar({ ...base, status: [s], size: 1 })]))
+          ).pipe(catchError(() => of(null)));
+          const lista = this.terapiaService.listar({
+            ...base,
+            status,
+            page: this.paginaAtual() - 1,
+            size: this.itensPorPagina,
+            sort: 'dataHoraInicio,desc',
+          });
+          return forkJoin({ lista, contadores }).pipe(
+            catchError((err) => of({ erro: mensagemDeErro(err, 'Não foi possível carregar as terapias.') }))
+          );
+        }),
+        takeUntilDestroyed()
+      )
+      .subscribe((r) => {
+        this.carregando.set(false);
+        if ('erro' in r) {
+          this.erro.set(r.erro);
+          this.terapias.set([]);
+          this.totalElementos.set(0);
+          return;
+        }
+        this.terapias.set(r.lista.content);
+        this.totalElementos.set(r.lista.totalElements);
+        if (r.contadores) {
+          this.contadores.set(
+            Object.fromEntries(Object.entries(r.contadores).map(([s, p]) => [s, p.totalElements]))
+          );
+        }
       });
-
-    // size=1: só o total de cada status interessa.
-    forkJoin(
-      Object.fromEntries(STATUS.map((s) => [s, this.terapiaService.listar({ ...base, status: [s], size: 1 })]))
-    ).subscribe({
-      next: (porStatus) =>
-        this.contadores.set(Object.fromEntries(Object.entries(porStatus).map(([s, p]) => [s, p.totalElements]))),
-    });
   }
 
   aplicarFiltroAvancado(estado: EstadoFiltroAvancado) {
@@ -169,17 +199,28 @@ export class GerenciarTerapias implements OnInit {
     this.carregar();
   }
 
+  // O campo de busca avisa "sem seleção" a cada tecla: só recarrega quando o filtro muda de fato.
   filtrarPaciente(id: number | string | null) {
+    if (id === this.idPaciente()) return;
     this.idPaciente.set(id as number | null);
     this.paginaAtual.set(1);
     this.carregar();
   }
 
   filtrarEspecialista(id: number | string | null) {
+    if (id === this.idEspecialista()) return;
     this.idEspecialista.set(id as number | null);
     this.paginaAtual.set(1);
     this.carregar();
   }
+
+  // "Limpar filtros" do painel: o painel recarrega a lista logo em seguida.
+  limparPessoas() {
+    this.idPaciente.set(null);
+    this.idEspecialista.set(null);
+  }
+
+  filtrosPessoas = computed(() => (this.idPaciente() !== null ? 1 : 0) + (this.idEspecialista() !== null ? 1 : 0));
 
   mudarPagina(pagina: number) {
     this.paginaAtual.set(pagina);

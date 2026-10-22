@@ -88,4 +88,13 @@ export interface ErroApi {
   message: string;
   path: string;
   fields: Record<string, string>;
+  // 409 na alteração de jornada: terapias agendadas que ficariam fora do novo horário.
+  terapias?: TerapiaForaDaJornada[];
+}
+
+export interface TerapiaForaDaJornada {
+  idTerapia: number;
+  data: string;
+  horaInicio: string;
+  horaTermino: string;
 }

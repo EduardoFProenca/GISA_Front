@@ -18,6 +18,7 @@ import {
   EspecialistaPJ,
   EspecialistaPJComUsuario,
   FiltroProfissionais,
+  Jornada,
   Profissional,
   ProfissionalComUsuario,
   ProfissionalDetalhe,
@@ -93,6 +94,12 @@ export class ProfissionalService {
         );
       })
     );
+  }
+
+  // Só as jornadas (especialista ou PJ), sem o carregamento de tela cheia: resumo no agendamento.
+  // Liberada também para quem agenda, que não costuma ter VISUALIZAR_PROFISSIONAIS.
+  jornadas(idEspecialista: number): Observable<Jornada[]> {
+    return this.http.get<Jornada[]>(`${this.url('ESPECIALISTA', idEspecialista)}/jornadas`);
   }
 
   // ---------- Assistente social ----------

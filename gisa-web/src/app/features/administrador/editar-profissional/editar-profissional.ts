@@ -160,7 +160,12 @@ export class EditarProfissional implements OnInit {
       this.nomeSalvo.set(f.dadosPessoais.nome.trim());
       this.mostrarSucesso(emailNaoEnviado);
     } catch (err) {
-      this.erroGeral.set(this.errosApi.tratar(err, f).mensagemGeral);
+      const resultado = this.errosApi.tratar(err, f);
+      this.erroGeral.set(resultado.mensagemGeral);
+      // Erro com campo (ex.: jornada recusada por terapias agendadas): leva a tela até ele.
+      if (resultado.algumCampoMarcado) {
+        setTimeout(() => document.querySelector('.erro-msg:not(.erro-geral)')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
+      }
     } finally {
       this.salvando.set(false);
     }

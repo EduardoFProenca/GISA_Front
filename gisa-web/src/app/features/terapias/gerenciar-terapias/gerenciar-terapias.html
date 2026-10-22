@@ -21,12 +21,14 @@
         [dicaTermo]="dicaBuscaPaciente"
         [value]="idPaciente()"
         (valueChange)="filtrarPaciente($event)"
+        [limpavel]="true"
         placeholder="Filtrar por paciente"
         semResultados="Nenhum paciente encontrado" />
       <app-select-busca
         [buscar]="buscarEspecialistas"
         [value]="idEspecialista()"
         (valueChange)="filtrarEspecialista($event)"
+        [limpavel]="true"
         placeholder="Filtrar por especialista"
         semResultados="Nenhum especialista encontrado" />
     </div>
@@ -34,6 +36,8 @@
     <app-filtro-avancado
       [statusDisponiveis]="statusDisponiveis"
       [periodosDisponiveis]="periodosDisponiveis"
+      [filtrosExternos]="filtrosPessoas()"
+      (limpou)="limparPessoas()"
       (filtroAlterado)="aplicarFiltroAvancado($event)" />
 
     @if (erro()) {

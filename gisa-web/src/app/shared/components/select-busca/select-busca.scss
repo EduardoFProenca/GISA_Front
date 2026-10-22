@@ -5,6 +5,33 @@
   &.disabled {
     opacity: 0.6;
   }
+
+  &:has(.btn-limpar-campo) input {
+    padding-right: 2.25rem;
+  }
+}
+
+.btn-limpar-campo {
+  position: absolute;
+  top: 50%;
+  right: 0.6rem;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--cor-perigo-suave);
+  color: var(--cor-perigo);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--cor-perigo);
+    color: white;
+  }
 }
 
 .lista-opcoes {

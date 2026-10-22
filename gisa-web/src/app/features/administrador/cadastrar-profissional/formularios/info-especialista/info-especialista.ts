@@ -6,6 +6,8 @@ import { SeletorHora } from '../../../../../shared/components/seletor-hora/selet
 import { Especialidade } from '../../../../../core/models/especialidade.model';
 import { JornadaForm, OpcaoEspecialidade } from '../../models/formularios-cadastro';
 import { Filtro } from '../../../../../shared/directives/filtro.directive';
+import { TerapiaForaDaJornada } from '../../../../../core/models/comum.model';
+import { dataCurta } from '../../../../../shared/utils/data.util';
 
 export type Jornada = JornadaForm;
 
@@ -37,6 +39,15 @@ export class InfoEspecialista extends ComErros implements OnInit {
   inscricaoEstadual: string = '';
 
   opcoesEspecialidade: OpcaoEspecialidade[] = [];
+
+  // Edição recusada (409): terapias agendadas que ficariam fora das novas jornadas.
+  terapiasForaDaJornada: TerapiaForaDaJornada[] = [];
+  readonly dataCurta = dataCurta;
+
+  override limparErro(campo: string) {
+    super.limparErro(campo);
+    if (campo === 'jornadas') this.terapiasForaDaJornada = [];
+  }
 
   // idEspecialidade (como texto, valor do select).
   especialidades: string[] = [''];

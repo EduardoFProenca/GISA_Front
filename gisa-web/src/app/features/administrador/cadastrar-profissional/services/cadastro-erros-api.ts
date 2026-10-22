@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ComErros } from '../../../../shared/components/com-erros';
-import { aplicarErrosApi, campoDaChave, ResultadoErroApi } from '../../../../core/http/erro-api';
+import { aplicarErrosApi, campoDaChave, lerErroApi, ResultadoErroApi } from '../../../../core/http/erro-api';
 import { FormulariosCadastro } from '../models/formularios-cadastro';
 
 // Mapeia os erros da API para os campos do cadastro de profissional.
@@ -8,6 +8,8 @@ import { FormulariosCadastro } from '../models/formularios-cadastro';
 export class CadastroErrosApiService {
 
   tratar(err: unknown, f: FormulariosCadastro): ResultadoErroApi {
+    // Jornada recusada (409): a lista das terapias afetadas aparece junto da jornada.
+    f.infoEspecialista.terapiasForaDaJornada = lerErroApi(err)?.terapias ?? [];
     return aplicarErrosApi(
       err,
       (chave, mensagem) => this.marcar(this.destinoCampo(campoDaChave(chave), f), mensagem),
@@ -70,6 +72,7 @@ export class CadastroErrosApiService {
     if (/^Perfil não encontrado/i.test(mensagem)) return [f.infoUsuario, 'perfil'];
     if (/especialidade/i.test(mensagem)) return [f.infoEspecialista, 'especialidades'];
     if (/^Paciente(s) não encontrado/i.test(mensagem)) return [f.infoAssistenteSocial, 'pacientes'];
+    if (/^Não é possível alterar a jornada/i.test(mensagem)) return [f.infoEspecialista, 'jornadas'];
     return null;
   }
 }

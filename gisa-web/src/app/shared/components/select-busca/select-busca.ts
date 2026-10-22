@@ -12,6 +12,8 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { NgIcon } from '@ng-icons/core';
+import { ICONES } from '../../icons';
 import { Observable, Subject, catchError, debounceTime, of, switchMap, tap } from 'rxjs';
 
 const ALTURA_LISTA_PX = 220;
@@ -41,12 +43,13 @@ export type BuscaSelect = (termo: string) => Observable<OpcaoSelectBusca[]>;
 //   <app-select-busca [buscar]="buscarPacientes" [value]="id" (valueChange)="id = $event" />
 @Component({
   selector: 'app-select-busca',
-  imports: [FormsModule],
+  imports: [FormsModule, NgIcon],
   templateUrl: './select-busca.html',
   styleUrl: './select-busca.scss',
 })
 export class SelectBusca implements OnChanges {
   private elementRef = inject(ElementRef);
+  icones = ICONES;
 
   @Input() opcoes: OpcaoSelectBusca[] = [];
   @Input() buscar: BuscaSelect | null = null;
@@ -66,6 +69,8 @@ export class SelectBusca implements OnChanges {
   // O texto não é apagado ao sair do campo e chega por (textoChange). [texto] é o valor inicial.
   @Input() textoLivre: boolean = false;
   @Input() texto: string = '';
+  // Mostra um "x" no campo para apagar o texto e a seleção de uma vez.
+  @Input() limpavel: boolean = false;
 
   @Output() valueChange = new EventEmitter<number | string | null>();
   @Output() textoChange = new EventEmitter<string>();
@@ -82,6 +87,8 @@ export class SelectBusca implements OnChanges {
   resultadosRemotos = signal<OpcaoSelectBusca[]>([]);
   buscando = signal(false);
   private busca$ = new Subject<string>();
+  // true do pedido de busca até chegar a resposta dele (inclui a espera entre as teclas).
+  private buscaPendente = false;
 
   // Nome de cada opção já vista (das [opcoes] e das buscas): mantém o texto do campo
   // mesmo quando o item escolhido não está no resultado da busca atual.
@@ -105,6 +112,7 @@ export class SelectBusca implements OnChanges {
         for (const o of lista) this.conhecidas.set(o.id, o);
         this.resultadosRemotos.set(lista);
         this.buscando.set(false);
+        this.buscaPendente = false;
       });
   }
 
@@ -175,7 +183,7 @@ export class SelectBusca implements OnChanges {
       this.textoChange.emit(texto);
     }
     this.abrir(false);
-    if (this.remoto) this.busca$.next(texto);
+    if (this.remoto) this.pedirBusca(texto);
     // Enquanto o usuário digita e o texto não bate mais com a opção escolhida, limpamos a seleção.
     const selecionada = this.value === null ? undefined : this.conhecidas.get(this.value);
     if (!selecionada || this.rotulo(selecionada) !== texto) {
@@ -189,7 +197,7 @@ export class SelectBusca implements OnChanges {
       this.posicionarLista();
       if (this.remoto && buscarAoAbrir) {
         const escolhida = this.value !== null && this.conhecidas.has(this.value);
-        this.busca$.next(escolhida ? '' : this.termo());
+        this.pedirBusca(escolhida ? '' : this.termo());
       }
     }
     this.aberto.set(true);
@@ -215,6 +223,35 @@ export class SelectBusca implements OnChanges {
     }
     this.opcaoEscolhida.emit(opcao);
     this.valueChange.emit(opcao.id);
+  }
+
+  // ENTER com texto digitado escolhe a opção de rótulo igual ao texto ou, sem ela, a primeira da
+  // lista (ex.: "8" na hora escolhe 08). Sem texto ou sem opções, não faz nada.
+  aoPressionarEnter(evento: Event) {
+    const termo = this.normalizar(this.termo().trim());
+    if (!this.aberto() || !termo) return;
+    evento.preventDefault();
+    // Busca remota ainda sem resposta para o texto atual: a lista seria a da busca anterior.
+    if (this.remoto && this.buscaPendente) return;
+    const opcoes = this.opcoesFiltradas;
+    if (!opcoes.length) return;
+    const exata = opcoes.find((o) => this.normalizar(this.rotulo(o)) === termo);
+    this.selecionar(exata ?? opcoes[0]);
+  }
+
+  private pedirBusca(termo: string) {
+    this.buscaPendente = true;
+    this.busca$.next(termo);
+  }
+
+  limpar() {
+    this.termo.set('');
+    this.aberto.set(false);
+    if (this.textoLivre) {
+      this.texto = '';
+      this.textoChange.emit('');
+    }
+    if (this.value !== null) this.valueChange.emit(null);
   }
 
   @HostListener('document:click', ['$event'])
