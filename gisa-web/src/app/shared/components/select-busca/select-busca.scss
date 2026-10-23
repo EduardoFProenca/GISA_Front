@@ -11,11 +11,13 @@
   }
 }
 
+// Centralizado sem transform: o estilo global de button usa transform (escala e hover).
 .btn-limpar-campo {
   position: absolute;
-  top: 50%;
+  top: 0;
+  bottom: 0;
   right: 0.6rem;
-  transform: translateY(-50%);
+  margin: auto 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -26,11 +28,23 @@
   border-radius: 50%;
   background: var(--cor-perigo-suave);
   color: var(--cor-perigo);
+  font-size: 0;
+  line-height: 0;
+  transform: none;
+  box-shadow: none;
   cursor: pointer;
 
-  &:hover {
+  // O ícone é inline por padrão e ficaria na linha de base do texto (deslocado para baixo).
+  ng-icon {
+    display: block;
+  }
+
+  &:hover,
+  &:active {
     background: var(--cor-perigo);
     color: white;
+    transform: none;
+    box-shadow: none;
   }
 }
 
