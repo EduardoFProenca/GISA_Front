@@ -144,3 +144,12 @@
   color: var(--ambar-800);
   font-size: 0.9rem;
 }
+
+// ---------- Celular ----------
+// Só os atalhos, para caber na tela sem rolar: os números do dia e as listas ficam no desktop.
+@media (max-width: 640px) {
+  .stats-grid,
+  .coluna-lateral {
+    display: none;
+  }
+}

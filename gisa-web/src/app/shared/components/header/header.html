@@ -1,12 +1,13 @@
 <header class="header-principal">
-  <div class="header-esquerda" style="display: flex; align-items: center; gap: 0.75rem;">
+  <div class="header-esquerda">
     @if (mostrarBotaoMenu) {
       <button type="button" class="btn-icone" (click)="layout.toggleMenu()" aria-label="Abrir ou fechar menu">
         <ng-icon [name]="icones.menu" size="20" />
       </button>
     }
     <div>
-      <strong>{{ nome }}</strong>
+      <!-- No celular vira a saudação "Olá, Nome!". -->
+      <strong><span class="so-celular">Olá, </span>{{ nome }}<span class="so-celular">!</span></strong>
       <p>{{ funcao }}</p>
     </div>
   </div>
@@ -51,15 +52,14 @@
     }
 
     @if (rotaSenha) {
-    <a class="btn-sair" [routerLink]="rotaSenha">
+    <a class="btn-sair" [routerLink]="rotaSenha" aria-label="Alterar senha">
       <span><ng-icon [name]="icones.senha" /></span>
-      Alterar senha
+      <span class="rotulo">Alterar senha</span>
     </a>
     }
 
-    <button type="button" class="btn-sair" (click)="sair()">
+    <button type="button" class="btn-sair" (click)="sair()" aria-label="Sair">
       <span><ng-icon [name]="icones.sair" /></span>
-      Sair
-    </button>
-  </div>
+      <span class="rotulo">Sair</span>
+    </button>  </div>
 </header>

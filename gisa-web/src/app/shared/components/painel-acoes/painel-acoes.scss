@@ -64,3 +64,51 @@
     color: var(--cor-texto-suave);
   }
 }
+
+// ---------- Celular ----------
+// Sem a moldura do painel: cada atalho vira um bloco na cor da marca, com o ícone grande e o
+// nome embaixo (a descrição fica de fora), em 3 colunas.
+@media (max-width: 640px) {
+  .painel {
+    background: none;
+    box-shadow: none;
+    padding: 0;
+
+    // Como na tela inicial de apps de celular, os blocos falam por si: sem o título "Gestão Rápida".
+    h3 {
+      display: none;
+    }
+  }
+
+  .grid-acoes {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  // Mesmas cores do desktop; só a disposição muda (ícone em cima, nome embaixo).
+  .card-acao {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 84px;
+    padding: 0.6rem 0.4rem;
+    background: white;
+    text-align: center;
+
+    .q-icon {
+      width: 36px;
+      height: 36px;
+      font-size: 1.15rem;
+    }
+
+    strong {
+      font-size: 0.78rem;
+      line-height: 1.25;
+    }
+
+    p {
+      display: none;
+    }
+  }
+}

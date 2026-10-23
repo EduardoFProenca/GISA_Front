@@ -10,6 +10,10 @@
 }
 
 .header-esquerda {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
   strong {
     display: block;
     font-size: 1rem;
@@ -155,5 +159,58 @@
     text-align: center;
     font-size: 0.85rem;
     color: var(--cor-texto-suave);
+  }
+}
+
+// Saudação "Olá, Nome!": só no celular.
+.so-celular {
+  display: none;
+}
+
+// ---------- Celular ----------
+// Mesmas cores do desktop. No topo, à direita, Alterar senha e Sair; abaixo, a saudação
+// com o nome e o perfil do usuário.
+@media (max-width: 640px) {
+  .header-principal {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem 1rem;
+  }
+
+  .so-celular {
+    display: inline;
+  }
+
+  .header-esquerda {
+    justify-content: center;
+    text-align: center;
+
+    strong {
+      font-size: 1.1rem;
+    }
+
+    p {
+      font-size: 0.82rem;
+    }
+  }
+
+  .header-direita {
+    justify-content: flex-end;
+    gap: 0.25rem;
+  }
+
+  // Só o ícone, com área de toque confortável.
+  .btn-icone,
+  .btn-sair {
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    font-size: 1.25rem;
+
+    .rotulo {
+      display: none;
+    }
   }
 }
