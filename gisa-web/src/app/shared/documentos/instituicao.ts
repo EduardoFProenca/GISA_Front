@@ -8,7 +8,7 @@ export const INSTITUICAO = {
   endereco: 'R. Manoel Afonso, 2 - Jardim Maria do Carmo, Sorocaba - SP, 18090-550',
   cidade: 'Sorocaba',
   // Arquivo em public/img (servido na raiz do app).
-  logo: 'img/logo-apae-documentos.webp',
+  logo: 'img/logo-apae.webp',
 };
 
 // "Sorocaba, 13 de outubro de 2026."

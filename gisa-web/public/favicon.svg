@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <g fill="#b9b6ae">
+  <path d="M37.5 60 C30 57.5 24.5 51 22.5 43 L19.6 17.5 C19.2 14 23.6 13.4 24.4 16.8 L27.4 31.5
+           C28.6 37 31.4 41.4 35.6 44.2 L39 46.5 Z"/>
+  <path d="M26.9 31.8 C27 25.5 29.2 21.6 31.9 22.1 C34 22.5 34.4 25 33.6 27.6 L31.6 35.5 Z"/>
+  <path d="M21.2 21 L23.6 20.4 M21.6 24.5 L24.1 23.9" stroke="#fff" stroke-width="0.7" fill="none"/></g>
+  <g fill="#b9b6ae" transform="translate(100 0) scale(-1 1)">
+  <path d="M37.5 60 C30 57.5 24.5 51 22.5 43 L19.6 17.5 C19.2 14 23.6 13.4 24.4 16.8 L27.4 31.5
+           C28.6 37 31.4 41.4 35.6 44.2 L39 46.5 Z"/>
+  <path d="M26.9 31.8 C27 25.5 29.2 21.6 31.9 22.1 C34 22.5 34.4 25 33.6 27.6 L31.6 35.5 Z"/>
+  <path d="M21.2 21 L23.6 20.4 M21.6 24.5 L24.1 23.9" stroke="#fff" stroke-width="0.7" fill="none"/></g>
+  <path d="M50 36 V93" stroke="#5cb45a" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+  <path d="M15,57 Q50,82 85,57" stroke="#5cb45a" stroke-width="1.9" stroke-linecap="round" fill="none"/>
+  <g fill="#5cb45a">
+    <ellipse cx="44" cy="48.5" rx="5.6" ry="2.3" transform="rotate(32 44 48.5)"/>
+    <ellipse cx="56" cy="48.5" rx="5.6" ry="2.3" transform="rotate(-32 56 48.5)"/>
+    <ellipse cx="20.45" cy="56.35" rx="3.9" ry="1.8" transform="rotate(82.74 20.45 56.35)"/>
+    <ellipse cx="16.55" cy="62.4" rx="3.9" ry="1.8" transform="rotate(-17.26 16.55 62.4)"/>
+    <ellipse cx="26.45" cy="59.82" rx="3.9" ry="1.8" transform="rotate(77.22 26.45 59.82)"/>
+    <ellipse cx="23.15" cy="66.22" rx="3.9" ry="1.8" transform="rotate(-22.78 23.15 66.22)"/>
+    <ellipse cx="32.4" cy="62.5" rx="3.9" ry="1.8" transform="rotate(71.09 32.4 62.5)"/>
+    <ellipse cx="29.8" cy="69.21" rx="3.9" ry="1.8" transform="rotate(-28.91 29.8 69.21)"/>
+    <ellipse cx="38.3" cy="64.39" rx="3.9" ry="1.8" transform="rotate(64.42 38.3 64.39)"/>
+    <ellipse cx="36.5" cy="71.37" rx="3.9" ry="1.8" transform="rotate(-35.58 36.5 71.37)"/>
+    <ellipse cx="44.16" cy="65.52" rx="3.9" ry="1.8" transform="rotate(57.33 44.16 65.52)"/>
+    <ellipse cx="43.24" cy="72.67" rx="3.9" ry="1.8" transform="rotate(-42.67 43.24 72.67)"/>
+    <ellipse cx="55.84" cy="65.52" rx="3.9" ry="1.8" transform="rotate(-57.33 55.84 65.52)"/>
+    <ellipse cx="56.76" cy="72.67" rx="3.9" ry="1.8" transform="rotate(42.67 56.76 72.67)"/>
+    <ellipse cx="61.7" cy="64.39" rx="3.9" ry="1.8" transform="rotate(-64.42 61.7 64.39)"/>
+    <ellipse cx="63.5" cy="71.37" rx="3.9" ry="1.8" transform="rotate(35.58 63.5 71.37)"/>
+    <ellipse cx="67.6" cy="62.5" rx="3.9" ry="1.8" transform="rotate(-71.09 67.6 62.5)"/>
+    <ellipse cx="70.2" cy="69.21" rx="3.9" ry="1.8" transform="rotate(28.91 70.2 69.21)"/>
+    <ellipse cx="73.55" cy="59.82" rx="3.9" ry="1.8" transform="rotate(-77.22 73.55 59.82)"/>
+    <ellipse cx="76.85" cy="66.22" rx="3.9" ry="1.8" transform="rotate(22.78 76.85 66.22)"/>
+    <ellipse cx="79.55" cy="56.35" rx="3.9" ry="1.8" transform="rotate(-82.74 79.55 56.35)"/>
+    <ellipse cx="83.45" cy="62.4" rx="3.9" ry="1.8" transform="rotate(17.26 83.45 62.4)"/>
+  </g>
+  <g fill="#ffd21f"><ellipse cx="50" cy="14" rx="3.7" ry="6.2" transform="rotate(0 50 27)"/><ellipse cx="50" cy="14" rx="3.7" ry="6.2" transform="rotate(36 50 27)"/><ellipse cx="50" cy="14" rx="3.7" ry="6.2" transform="rotate(72 50 27)"/><ellipse cx="50" cy="14" rx="3.7" ry="6.2" transform="rotate(108 50 27)"/><ellipse cx="50" cy="14" rx="3.7" ry="6.2" transform="rotate(144 50 27)"/><ellipse cx="50" cy="14" rx="3.7" ry="6.2" transform="rotate(180 50 27)"/><ellipse cx="50" cy="14" rx="3.7" ry="6.2" transform="rotate(216 50 27)"/><ellipse cx="50" cy="14" rx="3.7" ry="6.2" transform="rotate(252 50 27)"/><ellipse cx="50" cy="14" rx="3.7" ry="6.2" transform="rotate(288 50 27)"/><ellipse cx="50" cy="14" rx="3.7" ry="6.2" transform="rotate(324 50 27)"/></g>
+  <circle cx="50" cy="27" r="7" fill="#f6ac15"/>
+  <circle cx="50" cy="27" r="5.2" fill="#fbbd23"/>
+  <ellipse cx="48" cy="24.7" rx="2" ry="1.2" fill="#fff4c7" transform="rotate(-35 48 24.7)"/>
+</svg>
