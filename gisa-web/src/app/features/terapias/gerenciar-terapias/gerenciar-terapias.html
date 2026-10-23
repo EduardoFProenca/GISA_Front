@@ -40,11 +40,16 @@
       (limpou)="limparPessoas()"
       (filtroAlterado)="aplicarFiltroAvancado($event)" />
 
-    @if (erro()) {
+    @if (carregando()) {
+    <div class="carregando-lista" role="status" aria-live="polite">
+      <span class="spinner pequeno" aria-hidden="true"></span>
+      Carregando terapias...
+    </div>
+    } @else if (erro()) {
     <p class="vazio">{{ erro() }}</p>
     }
 
-    <div class="grid-profissionais">
+    <div class="grid-profissionais" [class.lista-atualizando]="carregando()">
       @for (terapia of terapias(); track terapia.idTerapia) {
       <app-card-terapia
         [terapia]="terapia"
@@ -54,9 +59,7 @@
         (editar)="editar($event)"
         (cancelar)="pedirCancelamento($event)" />
       } @empty {
-      @if (carregando()) {
-      <p class="vazio">Carregando terapias...</p>
-      } @else if (!erro()) {
+      @if (!carregando() && !erro()) {
       <p class="vazio">Nenhuma terapia encontrada.</p>
       }
       }

@@ -271,6 +271,62 @@ button.link-acao {
 }
 ///=====================================
 
+// Carregamento: o .spinner (overlay global e avisos dentro das telas) e o aviso de lista
+// recarregando. Leituras de lista não usam o overlay (ver core/http/carregamento.ts).
+///=========================================
+.spinner {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  box-sizing: border-box;
+  border: 3px solid var(--azul-100);
+  border-top-color: var(--cor-primaria);
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+
+  &.pequeno {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation-duration: 2s;
+  }
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// "Carregando..." acima de uma lista que está sendo recarregada (filtro, página etc.).
+// Aparece depois de 300 ms, como o overlay: buscas rápidas não fazem a tela piscar.
+.carregando-lista {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 1rem 0 0;
+  color: var(--cor-texto-secundario);
+  font-size: 0.9rem;
+  animation: carregando-aparecer 0.15s ease-out 0.3s both;
+}
+
+// Itens antigos ficam esmaecidos (e sem clique) até chegar o resultado novo.
+.lista-atualizando {
+  opacity: 0.45;
+  pointer-events: none;
+  transition: opacity 0.15s ease-out 0.3s;
+}
+
+@keyframes carregando-aparecer {
+  from {
+    opacity: 0;
+  }
+}
+
 // input-erro vai ser usado em inputs de qualquer tela do sistema
 ///=========================================
 @keyframes balancar {
