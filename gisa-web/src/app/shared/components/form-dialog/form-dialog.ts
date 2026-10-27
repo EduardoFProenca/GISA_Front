@@ -18,6 +18,9 @@ export class FormDialog {
   textoConfirmar = input('Salvar');
   textoCancelar = input('Cancelar');
   salvando = input(false);
+  // false: o conteúdo não rola por dentro; o diálogo cresce conforme os campos.
+  // Para formulários curtos cujas listas longas rolam por conta própria (ex.: autocomplete de CBO).
+  rolagem = input(true);
 
   confirmar = output<void>();
   cancelar = output<void>();

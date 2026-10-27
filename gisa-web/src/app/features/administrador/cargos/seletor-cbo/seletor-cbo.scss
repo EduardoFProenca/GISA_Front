@@ -1,22 +1,15 @@
-.seletor {
-  position: relative;
-}
-
+// A lista fica no fluxo (não flutua): o diálogo cresce para caber nela e só a lista rola.
 .opcoes {
-  position: absolute;
-  z-index: 10;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
-  margin: 0;
+  margin: 4px 0 0;
   padding: 0.25rem;
   list-style: none;
   background: white;
   border: 1px solid var(--cor-borda);
   border-radius: var(--raio-md);
   box-shadow: var(--sombra-flutuante);
-  max-height: 260px;
+  max-height: 220px;
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .info {

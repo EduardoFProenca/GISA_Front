@@ -4,6 +4,7 @@
   [descricao]="cargo() ? 'A mudança vale para todos os profissionais deste cargo.' : ''"
   [erro]="erro()"
   [salvando]="salvando()"
+  [rolagem]="false"
   (confirmar)="salvar()"
   (cancelar)="cancelar.emit()">
   <div>

@@ -1,5 +1,5 @@
 @if (aberto()) {
-  <div class="overlay" (click)="cancelar.emit()">
+  <div class="overlay" [class.sem-rolagem]="!rolagem()" (click)="cancelar.emit()">
     <form class="dialog" (click)="$event.stopPropagation()" (submit)="$event.preventDefault(); confirmar.emit()">
       <h3>{{ titulo() }}</h3>
       @if (descricao()) {
