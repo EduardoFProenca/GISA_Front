@@ -52,6 +52,7 @@
     <!-- Contato e Endereço -->
     <app-contato #contatoPaciente
       [dadosIniciais]="contato()"
+      [subtitulo]="paciente()!.pessoa.enderecos.length ? 'Pode ser alterado, mas não removido.' : 'Opcional. Se informar, preencha o endereço completo.'"
     ></app-contato>
 
 
@@ -67,6 +68,32 @@
     <app-info-cid [cidsIniciais]="cidsIniciais()" />
   }
 </div>
+
+<!-- Mudança de endereço: quem reside com o paciente vai junto? -->
+<app-confirm-dialog
+  [aberto]="mudancaAberta()"
+  titulo="Mudança de endereço"
+  mensagem="Marque os responsáveis que também vão para o novo endereço. Quem ficar desmarcado continua no endereço atual e passa a constar como 'não reside com o paciente'."
+  textoConfirmar="Salvar"
+  textoCancelar="Voltar"
+  (confirmar)="confirmarMudanca()"
+  (cancelar)="mudancaAberta.set(false)"
+>
+  <ul class="lista-mudanca">
+    @for (item of residentesNaMudanca(); track item.idResponsavel) {
+      <li>
+        <label>
+          <input type="checkbox" [name]="'vaiJunto' + item.idResponsavel" [(ngModel)]="item.vaiJunto">
+          {{ item.nome }}
+        </label>
+      </li>
+    }
+  </ul>
+  <p class="aviso-info">
+    Se algum deles também reside com outro paciente que fica no endereço atual, esse outro vínculo passa a
+    constar como "não reside" e pode ser ajustado depois no cadastro daquele paciente.
+  </p>
+</app-confirm-dialog>
 
 <!-- Modal de Confirmação para Descartar Alterações -->
 <app-confirm-dialog

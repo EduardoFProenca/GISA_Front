@@ -140,7 +140,7 @@ export class EditarProfissional implements OnInit {
     if (!f || this.salvando()) return;
 
     this.erroGeral.set('');
-    if (!this.validador.validar(f).valido) {
+    if (!this.validador.validar(f, !!this.detalhe()?.profissional.pessoa.enderecos?.length).valido) {
       this.erroGeral.set('Preencha os campos obrigatórios destacados em vermelho.');
       setTimeout(() => document.querySelector('.input-erro')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
       return;

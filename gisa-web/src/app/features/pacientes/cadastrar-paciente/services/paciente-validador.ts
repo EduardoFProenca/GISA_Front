@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { soDigitos, vazio, cpfValido } from '../../../../shared/utils/texto.util';
 import { ComErros } from '../../../../shared/components/com-erros';
 import { ContatoForm, FormulariosPaciente, ResponsavelItem, listaErros } from '../models/formularios-paciente';
-import { mesmoEnderecoForm } from '../../paciente-form.util';
+import { enderecoVazio, mesmoEnderecoForm } from '../../paciente-form.util';
 import { dataFutura } from '../../../../shared/utils/data.util';
 
 const OBRIGATORIO = 'Campo obrigatório.';
@@ -21,7 +21,8 @@ export interface ResultadoValidacaoResponsavel {
 @Injectable({ providedIn: 'root' })
 export class PacienteValidadorService {
 
-  validar(f: FormulariosPaciente): ResultadoValidacao {
+  // Endereço do paciente é opcional; tinhaEndereco (edição): o cadastrado não pode ser removido, só alterado.
+  validar(f: FormulariosPaciente, tinhaEndereco = false): ResultadoValidacao {
     let valido = true;
     const marcar: Marcar = (alvo, campo, mensagem = OBRIGATORIO) => {
       alvo.erros[campo] = mensagem;
@@ -31,7 +32,10 @@ export class PacienteValidadorService {
     listaErros(f).forEach((bloco) => (bloco.erros = {}));
 
     this.validarDadosPessoais(f, marcar);
-    this.validarEndereco(f.contato, marcar);
+    if (tinhaEndereco && enderecoVazio(f.contato)) {
+      marcar(f.contato, 'cep', 'O endereço não pode ser removido, apenas alterado.');
+    }
+    this.validarEnderecoOpcional(f.contato, marcar);
     this.validarEscola(f, marcar);
     this.validarResponsaveis(f, marcar);
 
@@ -73,16 +77,22 @@ export class PacienteValidadorService {
 
     if (r.naoResideComPaciente && contato) {
       contato.erros = {};
-      this.validarEndereco(contato, (alvo, campo, mensagem = OBRIGATORIO) => {
+      const marcar: Marcar = (alvo, campo, mensagem = OBRIGATORIO) => {
         alvo.erros[campo] = mensagem;
         valido = false;
-      });
+      };
+      if (r.enderecoCadastro && enderecoVazio(contato)) {
+        marcar(contato, 'cep', 'O endereço não pode ser removido, apenas alterado.');
+      }
+      this.validarEnderecoOpcional(contato, marcar);
     }
 
     return { valido, erros };
   }
 
-  validarEndereco(c: ContatoForm, marcar: Marcar) {
+  // Endereço é opcional; se começar a preencher, exige completo.
+  validarEnderecoOpcional(c: ContatoForm, marcar: Marcar) {
+    if (enderecoVazio(c)) return;
     const cep = soDigitos(c.cep);
     if (!cep) marcar(c, 'cep');
     else if (cep.length !== 8) marcar(c, 'cep', 'O CEP deve ter 8 dígitos.');
@@ -142,16 +152,16 @@ export class PacienteValidadorService {
       marcar(ir, 'responsaveis', 'O CPF do paciente não pode ser o mesmo de um responsável.');
     }
 
-    // Responsável já cadastrado que reside com o paciente precisa ter o mesmo endereço dele
-    // (o endereço do paciente pode ter sido mudado depois de o responsável ser adicionado).
+    // Quem passa a residir com o paciente e já tem endereço cadastrado precisa ter o mesmo dele (o do
+    // paciente pode ter mudado depois). Quem já residia vai junto quando o endereço muda.
     const emOutroEndereco = ir.listaResponsaveis.filter(
-      (r) => r.reaproveitado && !r.naoResideComPaciente && r.enderecoCadastro && !mesmoEnderecoForm(r.enderecoCadastro, f.contato)
+      (r) => !r.naoResideComPaciente && !r.resideAntes && r.enderecoCadastro && !mesmoEnderecoForm(r.enderecoCadastro, f.contato)
     );
     if (emOutroEndereco.length) {
       const nomes = emOutroEndereco.map((r) => r.nome.trim()).join(', ');
       marcar(ir, 'responsaveis',
-        `O endereço do paciente é diferente do de ${nomes}, que reside com ele. ` +
-        'Use o mesmo endereço ou marque que o responsável não reside com o paciente.');
+        `O endereço do paciente é diferente do já cadastrado para ${nomes}. Use o mesmo endereço ou marque que ` +
+        'o responsável não reside com o paciente (o endereço dele é alterado no cadastro do responsável).');
     }
   }
 }

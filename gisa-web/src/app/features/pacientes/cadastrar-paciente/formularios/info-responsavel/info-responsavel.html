@@ -167,7 +167,7 @@
         @if (novoResponsavel.reaproveitado && novoResponsavel.enderecoCadastro) {
           <p class="aviso-info"><strong>Endereço do responsável:</strong> {{ enderecoEmTexto(novoResponsavel.enderecoCadastro) }}</p>
         } @else {
-          <app-contato titulo="Endereço do Responsável" subtitulo=""
+          <app-contato titulo="Endereço do Responsável" subtitulo="Opcional. Se informar, preencha o endereço completo."
             [dadosIniciais]="novoResponsavel.endereco ?? undefined" />
         }
       }

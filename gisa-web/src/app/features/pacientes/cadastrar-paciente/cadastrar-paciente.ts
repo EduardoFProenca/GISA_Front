@@ -17,7 +17,6 @@ import { InfoCid } from './formularios/info-cid/info-cid';
 import { PacienteService } from '../../../core/services/paciente';
 import { EscolaService } from '../../../core/services/escola';
 import { ResponsavelService } from '../../../core/services/responsavel';
-import { Endereco } from '../../../core/models/comum.model';
 import { TipoEscola } from '../../../core/models/escola.model';
 import { CadastroPacienteResponse } from '../../../core/models/paciente.model';
 import { soDigitos, vazio } from '../../../shared/utils/texto.util';
@@ -107,7 +106,7 @@ export class CadastrarPaciente {
     }
 
     // O paciente já foi salvo: falha aqui só vira aviso.
-    const aviso = await this.atualizarReaproveitados(f, dados.enderecos[0]);
+    const aviso = await this.atualizarReaproveitados(f);
     this.salvando = false;
     this.nomeCadastrado = res?.nome || this.dadosPessoais.nome;
     this.idCadastrado = res?.idCadastro ?? null;
@@ -116,12 +115,12 @@ export class CadastrarPaciente {
     this.cdr.markForCheck();
   }
 
-  // Responsáveis já cadastrados: reativa os inativos e grava o endereço de quem não tinha.
-  // Devolve '' ou o aviso do que falhou.
-  private async atualizarReaproveitados(f: FormulariosPaciente, enderecoPaciente: Endereco): Promise<string> {
+  // Responsáveis já cadastrados: reativa os inativos e grava o endereço informado para quem não reside
+  // com o paciente e não tinha. Devolve '' ou o aviso do que falhou.
+  private async atualizarReaproveitados(f: FormulariosPaciente): Promise<string> {
     const falharam: string[] = [];
     for (const item of f.infoResponsavel.listaResponsaveis) {
-      const dados = this.payload.atualizacaoPosVinculo(item, enderecoPaciente);
+      const dados = this.payload.atualizacaoPosVinculo(item);
       if (!dados || !item.idResponsavel) continue;
       try {
         await firstValueFrom(this.responsavelService.atualizar(item.idResponsavel, dados));

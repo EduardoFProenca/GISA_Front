@@ -3,6 +3,8 @@
     <div class="dialog" (click)="$event.stopPropagation()">
       <h3>{{ titulo }}</h3>
       <p>{{ mensagem }}</p>
+      <!-- Conteúdo extra opcional (ex.: opções a marcar antes de confirmar) -->
+      <ng-content />
 
       <div class="dialog-acoes">
         <button type="button" class="btn-cancelar" (click)="aoCancelar()">{{ textoCancelar }}</button>

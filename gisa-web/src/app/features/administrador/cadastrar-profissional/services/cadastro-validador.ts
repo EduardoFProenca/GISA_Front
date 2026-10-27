@@ -13,7 +13,8 @@ export interface ResultadoValidacao {
 @Injectable({ providedIn: 'root' })
 export class CadastroValidadorService {
 
-  validar(f: FormulariosCadastro): ResultadoValidacao {
+  // tinhaEndereco (edição): endereço cadastrado não pode ser removido, só alterado.
+  validar(f: FormulariosCadastro, tinhaEndereco = false): ResultadoValidacao {
     let valido = true;
     const marcar = (alvo: ComErros, campo: string, mensagem: string = OBRIGATORIO) => {
       alvo.erros[campo] = mensagem;
@@ -23,6 +24,9 @@ export class CadastroValidadorService {
     listaErros(f).forEach((bloco) => (bloco.erros = {}));
 
     this.validarDadosPessoais(f, marcar);
+    if (tinhaEndereco && this.enderecoVazio(f)) {
+      marcar(f.contato, 'cep', 'O endereço não pode ser removido, apenas alterado.');
+    }
     this.validarContato(f, marcar);
     this.validarInfoProfissional(f, marcar);
     this.validarInfoUsuario(f, marcar);

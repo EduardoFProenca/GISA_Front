@@ -22,7 +22,7 @@ import { PacienteCadastroPayloadService } from '../cadastrar-paciente/services/p
 import { PacienteErrosApiService } from '../cadastrar-paciente/services/paciente-erros-api';
 
 import { AtualizacaoPacientePayload, AtualizacaoResponsavelPayload, GrauParentesco, Paciente, StatusPaciente } from '../../../core/models/paciente.model';
-import { EstadoCivil } from '../../../core/models/comum.model';
+import { Endereco, EstadoCivil } from '../../../core/models/comum.model';
 import { Cid } from '../../../core/models/cid.model';
 import { Escola } from '../../../core/models/escola.model';
 import { PacienteService } from '../../../core/services/paciente';
@@ -83,6 +83,10 @@ export class EditarPaciente implements OnInit {
   nomeSalvo = signal('');
   confirmarCancelamentoAberto = signal(false);
 
+  // Mudança de endereço: pergunta quais responsáveis que residem com o paciente vão junto.
+  mudancaAberta = signal(false);
+  residentesNaMudanca = signal<{ idResponsavel: number; nome: string; vaiJunto: boolean; item: ResponsavelItem }[]>([]);
+
   // ---- valores iniciais dos formulários (formatados como o usuário digitaria) ----
   dadosPessoais = computed(() => {
     const p = this.paciente();
@@ -98,7 +102,7 @@ export class EditarPaciente implements OnInit {
   escolaInicial = computed<Escola | null>(() => this.paciente()?.escola ?? null);
   responsaveisIniciais = computed<ResponsavelItem[]>(() => {
     const p = this.paciente();
-    return p ? p.responsaveis.map((v) => responsavelParaForm(v, p)) : [];
+    return p ? p.responsaveis.map((v) => responsavelParaForm(v)) : [];
   });
 
   ngOnInit(): void {
@@ -153,7 +157,7 @@ export class EditarPaciente implements OnInit {
 
     this.erroGeral.set('');
 
-    if (!this.validador.validar(f).valido) {
+    if (!this.validador.validar(f, original.pessoa.enderecos.length > 0).valido) {
       this.erroGeral.set('Preencha os campos obrigatórios destacados em vermelho.');
       setTimeout(() => {
         document.querySelector('.input-erro, .erro-msg')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -161,10 +165,49 @@ export class EditarPaciente implements OnInit {
       return;
     }
 
+    // Endereço mudou e há quem reside com o paciente: pergunta quem vai junto antes de salvar.
+    const residentes = f.infoResponsavel.listaResponsaveis.filter(
+      (r) => r.idResponsavel && r.resideAntes && !r.naoResideComPaciente
+    );
+    if (this.enderecoMuda(f, original) && residentes.length) {
+      this.residentesNaMudanca.set(residentes.map((item) => ({
+        idResponsavel: item.idResponsavel!, nome: item.nome.trim(), vaiJunto: true, item,
+      })));
+      this.mudancaAberta.set(true);
+      return;
+    }
+    await this.salvar(f, original);
+  }
+
+  // Quem ficou desmarcado continua no endereço atual e passa a constar como "não reside".
+  async confirmarMudanca() {
+    const f = this.formularios;
+    const original = this.paciente();
+    this.mudancaAberta.set(false);
+    if (!f || !original) return;
+    for (const { vaiJunto, item } of this.residentesNaMudanca()) {
+      if (vaiJunto) continue;
+      item.naoResideComPaciente = true;
+      item.endereco = item.enderecoCadastro ? { ...item.enderecoCadastro } : null;
+    }
+    await this.salvar(f, original);
+  }
+
+  // Mesma chave da API (CEP + número + complemento): fora isso, alterar o texto é só correção.
+  private enderecoMuda(f: FormulariosPaciente, original: Paciente): boolean {
+    const novo = this.payload.montarEnderecos(f.contato)[0];
+    const atual = original.pessoa.enderecos[0];
+    const chave = (e: Endereco | undefined) =>
+      e ? [soDigitos(e.cep), e.numero.trim(), (e.complemento ?? '').trim()].join('|').toLowerCase() : '';
+    return chave(novo) !== chave(atual);
+  }
+
+  private async salvar(f: FormulariosPaciente, original: Paciente) {
+    if (this.salvando()) return;
     this.salvando.set(true);
     try {
       const escola = await this.resolverEscola(f.infoEscola);
-      await this.adicionarResponsaveisNovos(f);
+      await this.adicionarResponsaveisNovos(f, this.enderecoMuda(f, original));
       await this.atualizarResponsaveisExistentes(f, original);
       const atualizado = await firstValueFrom(
         this.pacienteService.atualizar(this.id(), this.montarAtualizacao(f, original, escola))
@@ -202,21 +245,21 @@ export class EditarPaciente implements OnInit {
     }
   }
 
-  private async adicionarResponsaveisNovos(f: FormulariosPaciente) {
-    const enderecoPaciente = this.payload.montarEndereco(f.contato);
-
+  private async adicionarResponsaveisNovos(f: FormulariosPaciente, enderecoMuda: boolean) {
     for (const item of f.infoResponsavel.listaResponsaveis) {
       // Já vinculado (ou vinculado numa tentativa anterior deste salvamento).
       if (item.idResponsavel && !item.reaproveitado) continue;
       try {
-        const p = await firstValueFrom(
-          this.pacienteService.adicionarResponsavel(this.id(), this.payload.montarResponsavel(item))
-        );
+        const dados = this.payload.montarResponsavel(item);
+        // O endereço do paciente muda neste salvamento: o vínculo nasce como "não reside" e o PATCH
+        // seguinte, já com o endereço novo, marca a residência (senão a API compararia com o antigo).
+        if (enderecoMuda) dados.naoResideComPaciente = true;
+        const p = await firstValueFrom(this.pacienteService.adicionarResponsavel(this.id(), dados));
         // Guarda o id: se um passo seguinte falhar, a nova tentativa não cadastra de novo.
         const cpf = soDigitos(item.cpf);
         item.idResponsavel = p.responsaveis.find((v) => v.responsavel.cpf === cpf)?.responsavel.idCadastro;
 
-        const posVinculo = this.payload.atualizacaoPosVinculo(item, enderecoPaciente);
+        const posVinculo = this.payload.atualizacaoPosVinculo(item);
         item.reaproveitado = false;
         if (posVinculo && item.idResponsavel) {
           await firstValueFrom(this.responsavelService.atualizar(item.idResponsavel, posVinculo));
@@ -228,23 +271,21 @@ export class EditarPaciente implements OnInit {
     }
   }
 
+  // O endereço de quem reside com o paciente a API acerta no PATCH do paciente; aqui só muda o de quem
+  // não reside (correção manual no cadastro do responsável).
   private async atualizarResponsaveisExistentes(f: FormulariosPaciente, original: Paciente) {
-    const enderecoPaciente = this.payload.montarEndereco(f.contato);
-
     for (const item of f.infoResponsavel.listaResponsaveis) {
       const vinculo = original.responsaveis.find((v) => v.responsavel.idCadastro === item.idResponsavel);
       if (!vinculo) continue; // recém-cadastrado neste salvamento
 
       const r = vinculo.responsavel;
-      const endereco = item.naoResideComPaciente && item.endereco
-        ? this.payload.montarEndereco(item.endereco)
-        : enderecoPaciente;
+      const endereco = item.naoResideComPaciente && item.endereco ? this.payload.montarEndereco(item.endereco) : null;
       const dados: AtualizacaoResponsavelPayload = {};
       if (item.nome.trim() !== r.nome) dados.nome = item.nome.trim();
       if ((soDigitos(item.celular) || null) !== r.celular) dados.celular = soDigitos(item.celular) || null;
       if ((item.ocupacao.trim() || null) !== vinculo.ocupacao) dados.ocupacao = item.ocupacao.trim() || null;
       if (item.estadoCivil !== r.estadoCivil) dados.estadoCivil = item.estadoCivil as EstadoCivil;
-      if (JSON.stringify(endereco) !== JSON.stringify(this.semNulos(r.enderecos[0]))) dados.enderecos = [endereco];
+      if (endereco && JSON.stringify(endereco) !== JSON.stringify(this.semNulos(r.enderecos[0]))) dados.enderecos = [endereco];
       if (Object.keys(dados).length === 0) continue;
 
       try {
@@ -268,7 +309,7 @@ export class EditarPaciente implements OnInit {
       convenio: f.infoPaciente.convenio,
       idEscola: escola?.idEscola ?? null,
       // O formulário edita só o primeiro endereço; os demais são mantidos.
-      enderecos: [base.enderecos[0], ...original.pessoa.enderecos.slice(1)],
+      enderecos: base.enderecos.length ? [base.enderecos[0], ...original.pessoa.enderecos.slice(1)] : [],
       codigosCid: base.codigosCid,
       novosCids: base.novosCids,
       prontuario: {
@@ -276,10 +317,14 @@ export class EditarPaciente implements OnInit {
         comorbidade: pr.comorbidade.trim() || null,
         mobilidade: pr.mobilidade.trim() || null,
       },
-      // Quem saiu da lista é desvinculado pela API.
+      // Quem saiu da lista é desvinculado pela API. Quem reside fica com os endereços do paciente.
       responsaveis: f.infoResponsavel.listaResponsaveis
         .filter((r) => r.idResponsavel)
-        .map((r) => ({ idResponsavel: r.idResponsavel!, grauParentesco: r.grauParentesco as GrauParentesco })),
+        .map((r) => ({
+          idResponsavel: r.idResponsavel!,
+          grauParentesco: r.grauParentesco as GrauParentesco,
+          resideComPaciente: !r.naoResideComPaciente,
+        })),
     };
   }
 

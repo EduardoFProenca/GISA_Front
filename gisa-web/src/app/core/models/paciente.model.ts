@@ -35,6 +35,8 @@ export interface VinculoResponsavel {
   responsavel: Pessoa;
   ocupacao: string | null;
   grauParentesco: GrauParentesco;
+  // true: a API mantém os endereços do responsável iguais aos do paciente.
+  resideComPaciente: boolean;
 }
 
 // GET /pacientes/{id} (também é a resposta do PATCH e do POST .../responsaveis).
@@ -78,7 +80,8 @@ export interface CadastroPacienteResponse {
 // ---------- Cadastro (POST) ----------
 
 // Item de `responsaveis` no POST /pacientes e corpo do POST /pacientes/{id}/responsaveis.
-// naoResideComPaciente = false: recebe os endereços do paciente (enderecos é ignorado).
+// naoResideComPaciente = false: fica com os endereços do paciente (enderecos é ignorado). Um responsável
+// já cadastrado com outro endereço não pode residir (400).
 export interface ResponsavelPayload {
   idResponsavel?: number;
   nome: string;
@@ -103,6 +106,7 @@ export interface PacienteCadastroPayload {
   estadoCivil: EstadoCivil;
   celular?: string;
   numCNS?: string;
+  // Opcional (lista vazia = sem endereço).
   enderecos: Endereco[];
   idEscola?: number;
   convenio?: boolean;
@@ -128,6 +132,8 @@ export interface AtualizacaoPacientePayload {
   convenio?: boolean | null;
   // null remove a escola do paciente.
   idEscola?: number | null;
+  // Endereço cadastrado não pode ser removido ([] é recusado), só alterado. Os responsáveis com
+  // resideComPaciente = true vão junto para o novo endereço.
   enderecos?: Endereco[];
   // Substitui a lista: CIDs que já existem vão em codigosCid; os que ainda não existem, em novosCids.
   codigosCid?: string[];
@@ -135,10 +141,11 @@ export interface AtualizacaoPacientePayload {
   // Atualiza só os campos enviados; null remove o prontuário.
   prontuario?: Prontuario | null;
   // Responsável que não vier na lista é desvinculado (ao menos 1).
-  responsaveis?: { idResponsavel: number; grauParentesco: GrauParentesco }[];
+  responsaveis?: { idResponsavel: number; grauParentesco: GrauParentesco; resideComPaciente?: boolean }[];
 }
 
-// PATCH /responsaveis/{id} (vínculo e grau de parentesco mudam no PATCH do paciente).
+// PATCH /responsaveis/{id} (vínculo, grau de parentesco e residência mudam no PATCH do paciente).
+// Mudar o endereço aqui tira a residência dos pacientes que ficaram no endereço antigo.
 export interface AtualizacaoResponsavelPayload {
   nome?: string;
   celular?: string | null;

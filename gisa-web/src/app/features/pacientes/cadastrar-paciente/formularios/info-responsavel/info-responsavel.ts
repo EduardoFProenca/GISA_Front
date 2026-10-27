@@ -199,8 +199,8 @@ export class InfoResponsavel extends ComErros {
     const r = this.novoResponsavel;
     this.limparErroCard('residencia');
     if (!r.naoResideComPaciente) r.endereco = null;
-    // O endereço de um responsável já cadastrado não muda aqui: mostra o que ele tem.
-    else if (r.reaproveitado && r.enderecoCadastro) r.endereco = { ...r.enderecoCadastro };
+    // Mostra o endereço que o responsável já tem (o de quem foi reaproveitado não muda aqui).
+    else if (r.enderecoCadastro && !r.endereco) r.endereco = { ...r.enderecoCadastro };
   }
 
   salvarResponsavel() {
@@ -211,9 +211,12 @@ export class InfoResponsavel extends ComErros {
 
     const item: ResponsavelItem = { ...r, endereco: this.enderecoDoItem(r) };
 
-    // Responsável já cadastrado que reside com o paciente: o paciente passa a usar o endereço dele.
+    // Quem passa a residir com o paciente e já tem endereço cadastrado precisa ter o mesmo dele.
+    // Se o paciente ainda não tem endereço, pode usar o do responsável; se tem outro, o responsável
+    // fica como "não reside" (o endereço dele só muda no cadastro do responsável).
     const endereco = this.enderecoQueOPacienteRecebe(item);
-    if (endereco) {
+    const paciente = this.contatoPaciente;
+    if (endereco && paciente) {
       const conflito = this.outroQueResideEmOutroEndereco(endereco);
       if (conflito) {
         this.errosCard['residencia'] =
@@ -221,16 +224,20 @@ export class InfoResponsavel extends ComErros {
           'Marque qual dos dois não reside com o paciente.';
         return;
       }
-      const paciente = this.contatoPaciente;
-      if (paciente && !enderecoVazio(paciente) && !mesmoEnderecoForm(paciente, endereco)) {
+      if (enderecoVazio(paciente)) {
         this.mensagemEndereco =
-          `${item.nome.trim()} mora em ${enderecoEmTexto(endereco)}, diferente do endereço informado para o paciente. ` +
+          `O paciente ainda não tem endereço, e ${item.nome.trim()} mora em ${enderecoEmTexto(endereco)}. ` +
           'Usar este endereço também para o paciente? Se o responsável não mora com ele, volte e marque ' +
           '"Responsável não reside com o paciente".';
         this.confirmarEnderecoAberto = true;
         return;
       }
-      this.aplicarEnderecoNoPaciente(endereco);
+      if (!mesmoEnderecoForm(paciente, endereco)) {
+        this.errosCard['residencia'] =
+          `${item.nome.trim()} já tem outro endereço cadastrado (${enderecoEmTexto(endereco)}). ` +
+          'Marque "Responsável não reside com o paciente". O endereço do responsável é alterado no cadastro dele.';
+        return;
+      }
     }
 
     this.confirmarItem(item);
@@ -261,11 +268,14 @@ export class InfoResponsavel extends ComErros {
   private enderecoDoItem(r: ResponsavelItem): EnderecoForm | null {
     if (!r.naoResideComPaciente) return null;
     if (r.reaproveitado && r.enderecoCadastro) return { ...r.enderecoCadastro };
-    return this.contatoResp ? this.enderecoDe(this.contatoResp) : null;
+    const endereco = this.contatoResp ? this.enderecoDe(this.contatoResp) : null;
+    return endereco && !enderecoVazio(endereco) ? endereco : null;
   }
 
+  // Endereço já cadastrado de quem passa a residir com o paciente agora (quem já residia acompanha o
+  // paciente e não entra aqui).
   private enderecoQueOPacienteRecebe(r: ResponsavelItem): EnderecoForm | null {
-    return r.reaproveitado && !r.naoResideComPaciente && r.enderecoCadastro ? r.enderecoCadastro : null;
+    return !r.naoResideComPaciente && !r.resideAntes && r.enderecoCadastro ? r.enderecoCadastro : null;
   }
 
   private outroQueResideEmOutroEndereco(endereco: EnderecoForm): ResponsavelItem | undefined {

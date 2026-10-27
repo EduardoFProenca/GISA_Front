@@ -1,6 +1,6 @@
 // Conversões entre as respostas da API de pacientes e os valores dos formulários.
 import { Endereco, Pessoa } from '../../core/models/comum.model';
-import { Paciente, Responsavel, VinculoResponsavel } from '../../core/models/paciente.model';
+import { Responsavel, VinculoResponsavel } from '../../core/models/paciente.model';
 import { soDigitos } from '../../shared/utils/texto.util';
 import { DadosPessoaisValor } from '../../shared/components/dados-pessoais/dados-pessoais';
 import { formatarCelular, formatarCep, formatarCpf } from '../../shared/utils/formatacao.util';
@@ -29,13 +29,6 @@ export function dadosPessoaisDe(p: Pessoa): Partial<DadosPessoaisValor> {
     estadoCivil: p.estadoCivil,
     numCNS: p.numCNS ?? '',
   };
-}
-
-function mesmoEndereco(a: Endereco | undefined, b: Endereco | undefined): boolean {
-  if (!a || !b) return false;
-  const chave = (e: Endereco) =>
-    [e.cep, e.rua, e.numero, e.complemento ?? '', e.bairro, e.cidade, e.estado].join('|').toLowerCase();
-  return chave(a) === chave(b);
 }
 
 // Mesmo endereço nos formulários (ignora máscara do CEP, maiúsculas e espaços nas pontas).
@@ -78,11 +71,10 @@ export function responsavelReaproveitado(r: Responsavel, grauParentesco: Respons
   };
 }
 
-// A API não guarda "reside com o paciente": deduz pelo endereço (quem reside recebeu o do paciente).
-export function responsavelParaForm(v: VinculoResponsavel, paciente: Paciente): ResponsavelItem {
+export function responsavelParaForm(v: VinculoResponsavel): ResponsavelItem {
   const r = v.responsavel;
   const endereco = r.enderecos[0];
-  const reside = !endereco || mesmoEndereco(endereco, paciente.pessoa.enderecos[0]);
+  const reside = v.resideComPaciente;
   return {
     idResponsavel: r.idCadastro,
     nome: r.nome,
@@ -94,6 +86,8 @@ export function responsavelParaForm(v: VinculoResponsavel, paciente: Paciente): 
     ocupacao: v.ocupacao ?? '',
     grauParentesco: v.grauParentesco,
     naoResideComPaciente: !reside,
-    endereco: reside ? null : enderecoParaForm(endereco),
+    endereco: reside || !endereco ? null : enderecoParaForm(endereco),
+    enderecoCadastro: endereco ? enderecoParaForm(endereco) : null,
+    resideAntes: reside,
   };
 }

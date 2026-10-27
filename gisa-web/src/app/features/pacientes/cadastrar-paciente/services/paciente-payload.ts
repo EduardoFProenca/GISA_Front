@@ -4,6 +4,7 @@ import { GrauParentesco } from '../../../../core/models/paciente.model';
 import { Endereco, EstadoCivil, Sexo } from '../../../../core/models/comum.model';
 import { AtualizacaoResponsavelPayload, PacienteCadastroPayload, ResponsavelPayload } from '../../../../core/models/paciente.model';
 import { EnderecoForm, FormulariosPaciente, ResponsavelItem } from '../models/formularios-paciente';
+import { enderecoVazio } from '../../paciente-form.util';
 
 @Injectable({ providedIn: 'root' })
 export class PacienteCadastroPayloadService {
@@ -21,7 +22,8 @@ export class PacienteCadastroPayloadService {
       estadoCivil: dp.estadoCivil as EstadoCivil,
       celular: soDigitos(dp.celular) || undefined,
       numCNS: soDigitos(dp.numCNS) || undefined,
-      enderecos: [this.montarEndereco(f.contato)],
+      // Endereço é opcional: sem preencher, vai a lista vazia.
+      enderecos: this.montarEnderecos(f.contato),
       idEscola,
       convenio: f.infoPaciente.convenio,
       codigosCid: cids.filter((c) => !c.novo).map((c) => c.codigoCID),
@@ -49,21 +51,25 @@ export class PacienteCadastroPayloadService {
       grauParentesco: r.grauParentesco as GrauParentesco,
       naoResideComPaciente: r.naoResideComPaciente,
       // Se reside com o paciente, o back usa os endereços do paciente.
-      enderecos: r.naoResideComPaciente && r.endereco ? [this.montarEndereco(r.endereco)] : undefined,
+      enderecos: r.naoResideComPaciente && r.endereco ? this.montarEnderecos(r.endereco) : undefined,
     };
   }
 
   // PATCH /responsaveis/{id} para um responsável já cadastrado, depois de vinculado (null = nada a fazer):
-  // reativa o inativo e, se ele não tinha endereço, grava o que vale agora (a API não mexe no
-  // endereço de quem já existia).
-  atualizacaoPosVinculo(r: ResponsavelItem, enderecoPaciente: Endereco): AtualizacaoResponsavelPayload | null {
+  // reativa o inativo. O endereço de quem reside com o paciente a própria API acerta.
+  atualizacaoPosVinculo(r: ResponsavelItem): AtualizacaoResponsavelPayload | null {
     if (!r.reaproveitado) return null;
     const dados: AtualizacaoResponsavelPayload = {};
     if (r.inativo) dados.statusCadastro = 'ATIVO';
-    if (r.enderecoCadastro === null) {
-      dados.enderecos = [r.naoResideComPaciente && r.endereco ? this.montarEndereco(r.endereco) : enderecoPaciente];
+    // Não residente sem endereço cadastrado: grava o informado agora (a API não altera quem já existia).
+    if (r.naoResideComPaciente && !r.enderecoCadastro && r.endereco && !enderecoVazio(r.endereco)) {
+      dados.enderecos = [this.montarEndereco(r.endereco)];
     }
     return Object.keys(dados).length ? dados : null;
+  }
+
+  montarEnderecos(c: EnderecoForm): Endereco[] {
+    return enderecoVazio(c) ? [] : [this.montarEndereco(c)];
   }
 
   montarEndereco(c: EnderecoForm): Endereco {

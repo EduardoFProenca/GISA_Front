@@ -53,9 +53,11 @@ export interface ResponsavelItem {
   reaproveitado?: boolean;
   // Cadastro inativo: é reativado depois de vinculado.
   inativo?: boolean;
-  // Endereço que o responsável reaproveitado já tem (null = nenhum). Se ele reside com o paciente,
-  // é o paciente que passa a usar este endereço.
+  // Endereço que o responsável já tem cadastrado (null = nenhum). Quem passa a residir com o paciente
+  // precisa ter o mesmo endereço dele (ou nenhum); se o paciente ainda não tem, pode usar este.
   enderecoCadastro?: EnderecoForm | null;
+  // Edição: o vínculo já constava como "reside com o paciente" (vai junto se o endereço mudar).
+  resideAntes?: boolean;
 }
 
 export interface InfoResponsavelForm extends ComErros {
