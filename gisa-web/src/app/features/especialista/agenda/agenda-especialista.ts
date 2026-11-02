@@ -14,7 +14,6 @@ import {
   agruparPorDia,
   diasDaSemana,
   filtrarAgenda,
-  formatarMatricula,
   montarGrade,
   rotuloMes,
   statusAgenda,
@@ -41,7 +40,6 @@ export class AgendaEspecialista implements OnInit {
   readonly rotuloStatus = ROTULO_STATUS_AGENDA;
   readonly rotuloModalidade = ROTULO_MODALIDADE;
   readonly statusDe = statusAgenda;
-  readonly matricula = formatarMatricula;
   readonly dataCurta = dataCurta;
   readonly dataExtenso = dataExtenso;
 

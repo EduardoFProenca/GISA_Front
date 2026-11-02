@@ -113,7 +113,6 @@
 
       <dl class="detalhes">
         <div><dt>Paciente</dt><dd>{{ a.pacienteNome }}</dd></div>
-        <div><dt>Matrícula única</dt><dd>{{ matricula(a.idPaciente) }}</dd></div>
         <div><dt>Data</dt><dd>{{ dataCurta(a.data) }}</dd></div>
         <div><dt>Horário</dt><dd>{{ a.horaInicio }} – {{ a.horaTermino }}</dd></div>
         <div><dt>Especialidade</dt><dd>{{ especialidade() || '—' }}</dd></div>

@@ -8,7 +8,6 @@ import { imprimirDocumento } from '../../../shared/documentos/impressao';
 import { localEDataDeHoje } from '../../../shared/documentos/instituicao';
 import { dataCurta, idadeEmAnos } from '../../../shared/utils/data.util';
 import { formatarCpf } from '../../../shared/utils/formatacao.util';
-import { formatarMatricula } from '../agenda/agenda.util';
 import { MODELOS_ATESTADO, ModeloTexto, TITULO_DOCUMENTO, TipoDocumentoClinico } from './documento-clinico.util';
 
 // Emissão de atestado ou receita em drawer lateral (prontuário e telas "Emitir Atestado/Receita").
@@ -39,7 +38,6 @@ export class DocumentoClinicoDrawer {
 
   readonly cpf = formatarCpf;
   readonly dataCurta = dataCurta;
-  readonly matricula = formatarMatricula;
 
   texto = '';
   erroTexto = signal('');

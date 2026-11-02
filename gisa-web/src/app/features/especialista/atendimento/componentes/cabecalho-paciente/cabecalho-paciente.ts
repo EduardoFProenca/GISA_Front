@@ -3,7 +3,6 @@ import { Paciente } from '../../../../../core/models/paciente.model';
 import { dataCurta, idadeEmAnos } from '../../../../../shared/utils/data.util';
 import { formatarCpf } from '../../../../../shared/utils/formatacao.util';
 import { ROTULO_TIPO_ESCOLA } from '../../../../../shared/utils/rotulos.util';
-import { formatarMatricula } from '../../../agenda/agenda.util';
 
 export interface AlertaClinico {
   rotulo: string;
@@ -26,9 +25,6 @@ function relevante(texto: string | null | undefined): string | null {
 export class CabecalhoPaciente {
   @Input({ required: true }) paciente!: Paciente;
 
-  get matricula(): string {
-    return formatarMatricula(this.paciente.pessoa.idCadastro);
-  }
   get cpf(): string {
     return formatarCpf(this.paciente.pessoa.cpf);
   }

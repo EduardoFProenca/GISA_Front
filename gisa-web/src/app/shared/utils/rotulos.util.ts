@@ -34,8 +34,8 @@ export const ROTULO_TIPO_CADASTRO: Record<TipoCadastro, string> = {
 };
 
 export const ROTULO_TIPO_ESCOLA: Record<TipoEscola, string> = {
-  PUBLICA: 'Pública',
-  PARTICULAR: 'Particular',
+  REGULAR: 'Regular',
+  ESPECIAL: 'Especial',
 };
 
 export const ROTULO_ESTADO_CIVIL: Record<EstadoCivil, string> = {

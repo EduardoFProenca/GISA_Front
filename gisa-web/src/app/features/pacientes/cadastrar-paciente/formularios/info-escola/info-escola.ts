@@ -51,8 +51,8 @@ export class InfoEscola extends ComErros {
   }
 
   opcoesTipoEscola: { label: string; value: TipoEscola }[] = [
-    { label: 'Pública', value: 'PUBLICA' },
-    { label: 'Particular', value: 'PARTICULAR' },
+    { label: 'Regular', value: 'REGULAR' },
+    { label: 'Especial', value: 'ESPECIAL' },
   ];
 
   // Escola já escolhida, para o campo mostrar quem é (só muda junto com a escolha).

@@ -133,9 +133,3 @@ export function filtrarAgenda(lista: ItemAgenda[], termo: string, status: string
       (!modalidade || a.modalidade === modalidade)
   );
 }
-
-// Matrícula Única exibida nas telas. ATENÇÃO: a API não tem campo "matrícula" separado; usamos o
-// idCadastro (com zeros à esquerda só para exibir). Trocar aqui se o back criar o campo.
-export function formatarMatricula(idCadastro: number): string {
-  return String(idCadastro).padStart(6, '0');
-}

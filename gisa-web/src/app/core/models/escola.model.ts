@@ -1,7 +1,7 @@
 // Escolas (ver ESCOLAS.md).
 import { ParametrosPagina } from './comum.model';
 
-export type TipoEscola = 'PUBLICA' | 'PARTICULAR';
+export type TipoEscola = 'REGULAR' | 'ESPECIAL';
 
 // Item de GET /escolas/sugestoes e resposta do POST.
 export interface Escola {

@@ -215,7 +215,7 @@ O diagrama de casos de uso ([diagramas/casos-de-uso.drawio](diagramas/casos-de-u
 | **Ações do Ator** | **Ações do Sistema** |
 | 1. Acessa "Escolas". | |
 | | 2. Exibe a lista de escolas, com filtro por nome e tipo. |
-| 3. Clica em "Nova escola" e informa nome, tipo (pública ou particular) e telefone. | |
+| 3. Clica em "Nova escola" e informa nome, tipo (regular ou especial) e telefone. | |
 | | 4. Cadastra a escola. |
 | 5. Abre uma escola e edita ou exclui. | |
 | | 6. Exibe os pacientes da escola e grava a alteração ou exclui. |

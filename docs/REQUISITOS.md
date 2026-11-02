@@ -124,7 +124,7 @@ Permite ao usuário cadastrar, editar, consultar e excluir as especialidades de 
 
 ### RF09 – Gerenciar escolas
 
-Permite ao usuário cadastrar, editar, consultar e excluir as escolas que os pacientes frequentam, informando nome, tipo (pública ou particular) e telefone. Os detalhes da escola listam os pacientes dela.
+Permite ao usuário cadastrar, editar, consultar e excluir as escolas que os pacientes frequentam, informando nome, tipo (regular ou especial) e telefone. Os detalhes da escola listam os pacientes dela.
 
 - Uma escola só pode ser excluída se não tiver pacientes.
 - O formulário do paciente permite buscar a escola pelo nome e cadastrá-la ali mesmo, se ela ainda não existir.

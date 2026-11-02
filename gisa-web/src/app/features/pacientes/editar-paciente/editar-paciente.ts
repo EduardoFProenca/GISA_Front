@@ -233,7 +233,7 @@ export class EditarPaciente implements OnInit {
       const criada = await firstValueFrom(
         this.escolaService.cadastrar({
           nome: ie.nome.trim(),
-          tipoEscola: ie.tipoEscola as 'PUBLICA' | 'PARTICULAR',
+          tipoEscola: ie.tipoEscola as 'REGULAR' | 'ESPECIAL',
           telefone: soDigitos(ie.telefone) || undefined,
         })
       );
