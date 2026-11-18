@@ -26,6 +26,21 @@
     color: var(--cor-titulo);
   }
 
+  button {
+    transform: none;
+
+    &:hover {
+      box-shadow: none;
+      transform: none;
+    }
+
+    &:active {
+      box-shadow: none;
+      filter: none;
+      transform: none;
+    }
+  }
+
   p {
     margin: 0 0 1.5rem;
     color: var(--cinza-600);

@@ -21,20 +21,28 @@ class SelectMenuHost {
 describe('SelectMenu', () => {
   let fixture: ComponentFixture<SelectMenuHost>;
   let host: SelectMenuHost;
+  let root: HTMLElement;
+
+  function getTrigger(): HTMLButtonElement {
+    const trigger = root.querySelector<HTMLButtonElement>('[role="combobox"]');
+    if (!trigger) throw new Error('Combobox do select-menu não foi renderizado.');
+    return trigger;
+  }
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({ imports: [SelectMenuHost] }).compileComponents();
     fixture = TestBed.createComponent(SelectMenuHost);
     host = fixture.componentInstance;
+    root = fixture.nativeElement;
     fixture.detectChanges();
   });
 
   it('exibe as opções projetadas e propaga a opção escolhida ao ngModel', () => {
-    const trigger = fixture.nativeElement.querySelector<HTMLButtonElement>('[role="combobox"]');
+    const trigger = getTrigger();
     trigger.click();
     fixture.detectChanges();
 
-    const opcoes = fixture.nativeElement.querySelectorAll<HTMLElement>('[role="option"]');
+    const opcoes = root.querySelectorAll<HTMLElement>('[role="option"]');
     expect(opcoes.length).toBe(3);
     opcoes[1].click();
     fixture.detectChanges();
@@ -47,16 +55,16 @@ describe('SelectMenu', () => {
     host.disabled = true;
     fixture.detectChanges();
 
-    const trigger = fixture.nativeElement.querySelector<HTMLButtonElement>('[role="combobox"]');
+    const trigger = getTrigger();
     trigger.click();
     fixture.detectChanges();
 
     expect(trigger.disabled).toBe(true);
-    expect(fixture.nativeElement.querySelector('[role="listbox"]')).toBeNull();
+    expect(root.querySelector('[role="listbox"]')).toBeNull();
   });
 
   it('permite navegar pelas opções com o teclado', () => {
-    const trigger = fixture.nativeElement.querySelector<HTMLButtonElement>('[role="combobox"]');
+    const trigger = getTrigger();
     trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     fixture.detectChanges();
     trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
