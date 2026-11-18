@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ComErros } from '../../../../../shared/components/com-erros';
 import { PerfilResumo } from '../../../../../core/models/perfil.model';
 import { Auth } from '../../../../../core/auth/auth';
+import { SelectMenu } from '../../../../../shared/components/select-menu/select-menu';
 
 export interface InfoUsuarioValor {
   // true = o cadastro já tem usuário de acesso (só o perfil pode mudar).
@@ -16,7 +17,7 @@ export interface InfoUsuarioValor {
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-usuario',
-  imports: [FormsModule],
+  imports: [FormsModule, SelectMenu],
   templateUrl: './info-usuario.html',
   styleUrl: './info-usuario.scss',
 })

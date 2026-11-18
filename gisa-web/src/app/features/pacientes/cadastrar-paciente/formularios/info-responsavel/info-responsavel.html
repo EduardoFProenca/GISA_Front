@@ -100,19 +100,19 @@
 
         <div class="campo">
           <label for="respSexo">Sexo <span class="obrigatorio">*</span></label>
-          <select id="respSexo" name="respSexo" [(ngModel)]="novoResponsavel.sexo" [disabled]="!!novoResponsavel.idResponsavel"
+          <app-select-menu id="respSexo" name="respSexo" [(ngModel)]="novoResponsavel.sexo" [disabled]="!!novoResponsavel.idResponsavel"
             [class.input-erro]="errosCard['sexo']" (change)="limparErroCard('sexo')">
             <option value="" disabled selected>Selecione</option>
             <option value="M">Masculino</option>
             <option value="F">Feminino</option>
             <option value="O">Outro</option>
-          </select>
+          </app-select-menu>
           @if (errosCard['sexo']) { <span class="erro-msg">{{ errosCard['sexo'] }}</span> }
         </div>
 
         <div class="campo">
           <label for="respEstadoCivil">Estado Civil <span class="obrigatorio">*</span></label>
-          <select id="respEstadoCivil" name="respEstadoCivil" [(ngModel)]="novoResponsavel.estadoCivil" [disabled]="!!novoResponsavel.reaproveitado"
+          <app-select-menu id="respEstadoCivil" name="respEstadoCivil" [(ngModel)]="novoResponsavel.estadoCivil" [disabled]="!!novoResponsavel.reaproveitado"
             [class.input-erro]="errosCard['estadoCivil']" (change)="limparErroCard('estadoCivil')">
             <option value="" disabled selected>Selecione</option>
             <option value="SOLTEIRO">Solteiro(a)</option>
@@ -120,7 +120,7 @@
             <option value="VIUVO">Viúvo(a)</option>
             <option value="SEPARADO">Separado(a)</option>
             <option value="DIVORCIADO">Divorciado(a)</option>
-          </select>
+          </app-select-menu>
           @if (errosCard['estadoCivil']) { <span class="erro-msg">{{ errosCard['estadoCivil'] }}</span> }
         </div>
       </div>
@@ -142,13 +142,13 @@
 
         <div class="campo">
           <label for="respParentesco">Grau de Parentesco <span class="obrigatorio">*</span></label>
-          <select id="respParentesco" name="respParentesco" [(ngModel)]="novoResponsavel.grauParentesco"
+          <app-select-menu id="respParentesco" name="respParentesco" [(ngModel)]="novoResponsavel.grauParentesco"
             [class.input-erro]="errosCard['grauParentesco']" (change)="limparErroCard('grauParentesco')">
             <option value="" disabled selected>Selecione</option>
             @for (item of opcoesParentesco; track item.value) {
               <option [value]="item.value">{{ item.label }}</option>
             }
-          </select>
+          </app-select-menu>
           @if (errosCard['grauParentesco']) { <span class="erro-msg">{{ errosCard['grauParentesco'] }}</span> }
         </div>
       </div>
@@ -187,9 +187,26 @@
 <app-confirm-dialog
   [aberto]="confirmarEnderecoAberto"
   titulo="Endereço do paciente"
-  [mensagem]="mensagemEndereco"
+  mensagem=""
   textoConfirmar="Usar no paciente"
   textoCancelar="Voltar"
   (confirmar)="confirmarTrocaEndereco()"
   (cancelar)="cancelarTrocaEndereco()"
-/>
+>
+  <div dialog-message class="mensagem-endereco">
+    <p><strong>O paciente ainda não tem endereço!</strong></p>
+    <p><strong>{{ nomeResponsavelEndereco }}</strong> mora em:</p>
+    <p class="endereco">
+      {{ enderecoConfirmacao?.endereco }}, {{ enderecoConfirmacao?.numero }}
+      @if (enderecoConfirmacao?.complemento) { ({{ enderecoConfirmacao?.complemento }}) }
+      <br>
+      {{ enderecoConfirmacao?.bairro }}, {{ enderecoConfirmacao?.cidade }}/{{ enderecoConfirmacao?.uf }}.
+    </p>
+    <p><strong>Usar este endereço também para o paciente?</strong></p>
+    <p class="orientacao">
+      <em>Se o responsável não mora com ele, volte e marque:<br>
+        <strong>“Responsável não reside com o paciente”</strong>
+      </em>
+    </p>
+  </div>
+</app-confirm-dialog>

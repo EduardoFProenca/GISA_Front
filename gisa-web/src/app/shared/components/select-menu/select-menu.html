@@ -1,0 +1,42 @@
+<div class="select-menu">
+  <button
+    #trigger
+    type="button"
+    class="select-trigger"
+    role="combobox"
+    [id]="controlId"
+    [disabled]="isDisabled"
+    [attr.aria-label]="ariaLabel || null"
+    aria-haspopup="listbox"
+    [attr.aria-expanded]="aberto()"
+    [attr.aria-controls]="aberto() ? listboxId : null"
+    [attr.aria-activedescendant]="aberto() && indiceAtivo() >= 0 ? idOpcao(indiceAtivo()) : null"
+    (click)="alternar()"
+    (keydown)="aoPressionarTecla($event)"
+  >
+    <span class="select-value">{{ textoSelecionado }}</span>
+    <span class="select-chevron" aria-hidden="true"></span>
+  </button>
+
+  @if (aberto()) {
+    <ul class="select-options" [class.acima]="abrirAcima()" [style.max-height.px]="alturaMaxima()" [id]="listboxId" role="listbox">
+      @for (opcao of opcoes; track $index; let indice = $index) {
+        <li
+          [id]="idOpcao(indice)"
+          role="option"
+          [attr.aria-selected]="opcao.value === opcaoSelecionada?.value"
+          [attr.aria-disabled]="opcao.disabled"
+          [class.selecionada]="opcao.value === opcaoSelecionada?.value"
+          [class.ativa]="indice === indiceAtivo()"
+          [class.desabilitada]="opcao.disabled"
+          (mouseenter)="aoPassarMouseNaOpcao(indice, opcao.disabled)"
+          (click)="selecionar(opcao)"
+        >{{ opcao.label }}</li>
+      }
+    </ul>
+  }
+
+  <select #optionSource class="option-source" tabindex="-1" aria-hidden="true">
+    <ng-content></ng-content>
+  </select>
+</div>

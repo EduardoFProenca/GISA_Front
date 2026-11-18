@@ -14,13 +14,13 @@
   </div>
   <div>
     <label for="tipoEscola">Tipo <span class="obrigatorio">*</span></label>
-    <select id="tipoEscola" name="tipoEscola" [class.input-erro]="erros()['tipoEscola']"
+    <app-select-menu id="tipoEscola" name="tipoEscola" [class.input-erro]="erros()['tipoEscola']"
       [ngModel]="tipoEscola()" (ngModelChange)="tipoEscola.set($event)">
       <option value="" disabled>Selecione o tipo</option>
       @for (t of tipos; track t) {
       <option [value]="t">{{ rotuloTipo[t] }}</option>
       }
-    </select>
+    </app-select-menu>
     @if (erros()['tipoEscola']) { <span class="erro-msg">{{ erros()['tipoEscola'] }}</span> }
   </div>
   <div>

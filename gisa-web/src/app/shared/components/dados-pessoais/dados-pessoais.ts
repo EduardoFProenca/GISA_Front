@@ -4,6 +4,7 @@ import { Mascara } from '../../directives/mascara.directive';
 import { ComErros } from '../com-erros';
 import { hojeIso } from '../../utils/data.util';
 import { Filtro } from '../../directives/filtro.directive';
+import { SelectMenu } from '../select-menu/select-menu';
 
 export interface DadosPessoaisValor {
   nome: string;
@@ -20,7 +21,7 @@ export interface DadosPessoaisValor {
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-dados-pessoais',
-  imports: [FormsModule, Mascara, Filtro],
+  imports: [FormsModule, Mascara, Filtro, SelectMenu],
   templateUrl: './dados-pessoais.html',
   styleUrl: './dados-pessoais.scss',
 })

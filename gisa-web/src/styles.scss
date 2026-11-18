@@ -66,8 +66,8 @@ select {
   color: var(--cor-titulo);
 }
 
-// Campo que não pode ser editado (readonly ou disabled): fundo mais escuro, borda tracejada,
-// texto acinzentado e um cadeado à direita (no select, no lugar da seta).
+// Campo que não pode ser editado (readonly ou disabled): fundo mais escuro, borda sólida e texto
+// acinzentado, com um cadeado à direita (no select, no lugar da seta).
 input:not([type='checkbox']):not([type='radio']):is([readonly], :disabled),
 select:disabled,
 textarea:is([readonly], :disabled) {
@@ -76,7 +76,6 @@ textarea:is([readonly], :disabled) {
   background-repeat: no-repeat;
   background-position: right 0.9rem center;
   padding-right: 2.5rem;
-  border-style: dashed;
   border-color: var(--cor-borda-forte);
   color: var(--cor-texto-secundario);
   cursor: not-allowed;
@@ -353,6 +352,13 @@ button.link-acao {
   display: block;
   margin-top: 0.25rem;
   color: var(--cor-perigo);
+  font-size: 0.8rem;
+}
+
+.texto-ajuda-campo {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--cor-texto-secundario);
   font-size: 0.8rem;
 }
 

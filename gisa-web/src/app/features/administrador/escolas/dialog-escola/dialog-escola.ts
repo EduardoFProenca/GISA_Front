@@ -2,6 +2,7 @@ import { Component, effect, inject, input, output, signal, untracked } from '@an
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { FormDialog } from '../../../../shared/components/form-dialog/form-dialog';
+import { SelectMenu } from '../../../../shared/components/select-menu/select-menu';
 import { Mascara } from '../../../../shared/directives/mascara.directive';
 import { AtualizacaoEscolaPayload, Escola, TipoEscola } from '../../../../core/models/escola.model';
 import { EscolaService } from '../../../../core/services/escola';
@@ -14,7 +15,7 @@ import { Filtro } from '../../../../shared/directives/filtro.directive';
 // Criar (escola = null) ou editar escola. No PATCH só vai o que mudou (telefone vazio = null, limpa).
 @Component({
   selector: 'app-dialog-escola',
-  imports: [FormsModule, FormDialog, Mascara, Filtro],
+  imports: [FormsModule, FormDialog, Mascara, Filtro, SelectMenu],
   templateUrl: './dialog-escola.html',
 })
 export class DialogEscola {

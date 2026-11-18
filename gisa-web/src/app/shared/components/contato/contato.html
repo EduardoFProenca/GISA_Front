@@ -49,12 +49,12 @@
     </div>
     <div class="campo">
       <label for="uf">UF <span class="obrigatorio">*</span></label>
-      <select id="uf" name="uf" [(ngModel)]="uf" [class.input-erro]="erros['uf']" (change)="limparErro('uf')">
+      <app-select-menu id="uf" name="uf" [(ngModel)]="uf" [class.input-erro]="erros['uf']" (change)="limparErro('uf')">
         <option value="" disabled selected>Selecione</option>
         @for (sigla of ufs; track sigla) {
           <option [value]="sigla">{{ sigla }}</option>
         }
-      </select>
+      </app-select-menu>
       @if (erros['uf']) { <span class="erro-msg">{{ erros['uf'] }}</span> }
     </div>
   </div>

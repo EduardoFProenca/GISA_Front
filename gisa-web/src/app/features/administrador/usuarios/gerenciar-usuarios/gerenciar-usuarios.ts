@@ -6,6 +6,7 @@ import { NgIcon } from '@ng-icons/core';
 import { Subject, catchError, of, switchMap, tap, timer } from 'rxjs';
 import { ICONES } from '../../../../shared/icons';
 import { CabecalhoPagina } from '../../../../shared/components/cabecalho-pagina/cabecalho-pagina';
+import { SelectMenu } from '../../../../shared/components/select-menu/select-menu';
 import { Paginacao } from '../../../../shared/components/paginacao/paginacao';
 import { FiltroUsuarios, TipoCadastro, UsuarioResumo } from '../../../../core/models/auth.model';
 import { Pagina, StatusCadastro } from '../../../../core/models/comum.model';
@@ -22,7 +23,7 @@ const PAGINA_VAZIA: Pagina<UsuarioResumo> = { content: [], totalElements: 0, tot
 // GET /usuarios: só quem tem usuário de acesso (ativos e inativos), 9 por página.
 @Component({
   selector: 'app-gerenciar-usuarios',
-  imports: [NgIcon, FormsModule, RouterLink, CabecalhoPagina, Paginacao],
+  imports: [NgIcon, FormsModule, RouterLink, CabecalhoPagina, Paginacao, SelectMenu],
   templateUrl: './gerenciar-usuarios.html',
   styleUrl: '../../tabelas-apoio.scss',
 })

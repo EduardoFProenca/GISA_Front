@@ -9,12 +9,12 @@
     <div class="barra-busca">
       <input type="search" placeholder="Buscar escola pelo nome..." aria-label="Buscar escola pelo nome"
         [(ngModel)]="termo" (ngModelChange)="aoDigitar()" />
-      <select aria-label="Tipo da escola" [(ngModel)]="tipo" (ngModelChange)="aoFiltrar()">
+      <app-select-menu aria-label="Tipo da escola" [(ngModel)]="tipo" (ngModelChange)="aoFiltrar()">
         <option value="">Todos os tipos</option>
         @for (t of tipos; track t) {
         <option [value]="t">{{ rotuloTipo[t] }}</option>
         }
-      </select>
+      </app-select-menu>
     </div>
 
     @if (erro()) {

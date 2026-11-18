@@ -10,23 +10,23 @@
     <div class="barra-busca">
       <input type="search" placeholder="Buscar por nome ou CPF..." aria-label="Buscar usuário por nome ou CPF"
         [(ngModel)]="termo" (ngModelChange)="aoDigitar()" />
-      <select aria-label="Perfil" [(ngModel)]="idPerfil" (ngModelChange)="aoFiltrar()">
+      <app-select-menu aria-label="Perfil" [(ngModel)]="idPerfil" (ngModelChange)="aoFiltrar()">
         <option value="">Todos os perfis</option>
         @for (p of perfis(); track p.idPerfil) {
         <option [value]="'' + p.idPerfil">{{ p.nome }}</option>
         }
-      </select>
-      <select aria-label="Tipo de cadastro" [(ngModel)]="tipo" (ngModelChange)="aoFiltrar()">
+      </app-select-menu>
+      <app-select-menu aria-label="Tipo de cadastro" [(ngModel)]="tipo" (ngModelChange)="aoFiltrar()">
         <option value="">Todos os tipos</option>
         @for (t of tipos; track t) {
         <option [value]="t">{{ rotuloTipo[t] }}</option>
         }
-      </select>
-      <select aria-label="Situação" [(ngModel)]="status" (ngModelChange)="aoFiltrar()">
+      </app-select-menu>
+      <app-select-menu aria-label="Situação" [(ngModel)]="status" (ngModelChange)="aoFiltrar()">
         <option value="">Todas as situações</option>
         <option value="ATIVO">Ativos</option>
         <option value="INATIVO">Inativos</option>
-      </select>
+      </app-select-menu>
     </div>
 
     @if (erro()) {

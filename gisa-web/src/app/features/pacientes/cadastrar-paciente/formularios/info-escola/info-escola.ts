@@ -9,12 +9,13 @@ import { Escola } from '../../../../../core/models/escola.model';
 import { EscolaService } from '../../../../../core/services/escola';
 import { formatarCelular } from '../../../../../shared/utils/formatacao.util';
 import { ROTULO_TIPO_ESCOLA } from '../../../../../shared/utils/rotulos.util';
+import { SelectMenu } from '../../../../../shared/components/select-menu/select-menu';
 
 const normalizar = (nome: string) => nome.trim().toLowerCase();
 
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [FormsModule, Mascara, SelectBusca],
+  imports: [FormsModule, Mascara, SelectBusca, SelectMenu],
   selector: 'app-info-escola',
   styleUrl: './info-escola.scss',
   templateUrl: './info-escola.html',

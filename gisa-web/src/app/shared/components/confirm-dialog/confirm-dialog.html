@@ -2,7 +2,10 @@
   <div class="overlay" (click)="aoCancelar()">
     <div class="dialog" (click)="$event.stopPropagation()">
       <h3>{{ titulo }}</h3>
-      <p>{{ mensagem }}</p>
+      @if (mensagem) {
+        <p>{{ mensagem }}</p>
+      }
+      <ng-content select="[dialog-message]" />
       <!-- Conteúdo extra opcional (ex.: opções a marcar antes de confirmar) -->
       <ng-content />
 

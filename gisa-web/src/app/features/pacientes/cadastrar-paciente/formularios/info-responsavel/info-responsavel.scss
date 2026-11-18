@@ -266,6 +266,24 @@
   margin: 0.4rem 0 0;
 }
 
+.mensagem-endereco {
+  p {
+    margin: 0 0 0.75rem;
+    color: var(--cinza-600);
+    font-size: 0.95rem;
+  }
+
+  .endereco {
+    padding-left: 1rem;
+  }
+
+  .orientacao {
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+  }
+}
+
 .tags-resp {
   display: flex;
   gap: 0.4rem;

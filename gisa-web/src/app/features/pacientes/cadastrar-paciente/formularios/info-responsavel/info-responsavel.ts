@@ -6,6 +6,7 @@ import { ComErros } from '../../../../../shared/components/com-erros';
 import { Contato } from '../../../../../shared/components/contato/contato';
 import { ConfirmDialog } from '../../../../../shared/components/confirm-dialog/confirm-dialog';
 import { SelectBusca } from '../../../../../shared/components/select-busca/select-busca';
+import { SelectMenu } from '../../../../../shared/components/select-menu/select-menu';
 import { buscaResponsaveis } from '../../../../../shared/components/select-busca/buscas';
 import { GrauParentesco, ResponsavelResumo } from '../../../../../core/models/paciente.model';
 import { ResponsavelService } from '../../../../../core/services/responsavel';
@@ -30,7 +31,7 @@ export type { ResponsavelItem };
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-responsavel',
-  imports: [NgIcon, FormsModule, Mascara, Contato, ConfirmDialog, SelectBusca, Filtro],
+  imports: [NgIcon, FormsModule, Mascara, Contato, ConfirmDialog, SelectBusca, SelectMenu, Filtro],
   templateUrl: './info-responsavel.html',
   styleUrl: './info-responsavel.scss'
 })
@@ -71,7 +72,8 @@ export class InfoResponsavel extends ComErros {
 
   // Pergunta antes de trocar o endereço do paciente pelo do responsável.
   confirmarEnderecoAberto = false;
-  mensagemEndereco = '';
+  nomeResponsavelEndereco = '';
+  enderecoConfirmacao: EnderecoForm | null = null;
 
   opcoesParentesco: { label: string; value: GrauParentesco }[] = [
     { label: 'Pai', value: 'PAI' },
@@ -225,10 +227,8 @@ export class InfoResponsavel extends ComErros {
         return;
       }
       if (enderecoVazio(paciente)) {
-        this.mensagemEndereco =
-          `O paciente ainda não tem endereço, e ${item.nome.trim()} mora em ${enderecoEmTexto(endereco)}. ` +
-          'Usar este endereço também para o paciente? Se o responsável não mora com ele, volte e marque ' +
-          '"Responsável não reside com o paciente".';
+        this.nomeResponsavelEndereco = item.nome.trim();
+        this.enderecoConfirmacao = endereco;
         this.confirmarEnderecoAberto = true;
         return;
       }

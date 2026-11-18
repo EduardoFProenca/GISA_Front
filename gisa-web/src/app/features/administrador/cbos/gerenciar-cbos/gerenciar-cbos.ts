@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Subject, catchError, of, startWith, switchMap, tap, timer } from 'rxjs';
 import { CabecalhoPagina } from '../../../../shared/components/cabecalho-pagina/cabecalho-pagina';
+import { SelectMenu } from '../../../../shared/components/select-menu/select-menu';
 import { Paginacao } from '../../../../shared/components/paginacao/paginacao';
 import { Cbo } from '../../../../core/models/cargo.model';
 import { Pagina } from '../../../../core/models/comum.model';
@@ -23,7 +24,7 @@ const ORDENACOES = [
 // GET /cbos (paginado). Uma busca só: números = início do código; texto = trecho do título.
 @Component({
   selector: 'app-gerenciar-cbos',
-  imports: [NgIcon, FormsModule, RouterLink, CabecalhoPagina, Paginacao, DialogCbo],
+  imports: [NgIcon, FormsModule, RouterLink, CabecalhoPagina, Paginacao, DialogCbo, SelectMenu],
   templateUrl: './gerenciar-cbos.html',
   styleUrl: '../../tabelas-apoio.scss',
 })

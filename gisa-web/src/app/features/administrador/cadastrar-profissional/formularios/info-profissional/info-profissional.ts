@@ -3,12 +3,13 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 import { FormsModule } from '@angular/forms';
 import { ComErros } from '../../../../../shared/components/com-erros';
 import { Cargo } from '../../../../../core/models/cargo.model';
+import { SelectMenu } from '../../../../../shared/components/select-menu/select-menu';
 
 // Eager: os erros (ComErros) chegam depois da resposta da API e precisam aparecer.
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-profissional',
-  imports: [FormsModule],
+  imports: [FormsModule, SelectMenu],
   templateUrl: './info-profissional.html',
   styleUrl: './info-profissional.scss',
 })

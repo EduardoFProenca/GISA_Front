@@ -11,14 +11,15 @@
   @if (filtrosDisponiveis.length > 0) {
     <div class="filtros">
       @for (filtro of filtrosDisponiveis; track filtro.chave) {
-        <select
+        <app-select-menu
+          [aria-label]="filtro.label"
           [(ngModel)]="filtrosSelecionados[filtro.chave]"
           (ngModelChange)="emitirMudanca()">
           <option value="">{{ filtro.label }}</option>
           @for (opcao of filtro.opcoes; track opcao.valor) {
             <option [value]="opcao.valor">{{ opcao.label }}</option>
           }
-        </select>
+        </app-select-menu>
       }
     </div>
   }

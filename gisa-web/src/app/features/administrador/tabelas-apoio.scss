@@ -45,18 +45,18 @@
   margin-bottom: 1rem;
 
   input,
-  select {
+  app-select-menu {
     margin: 0;
   }
 
-  select {
+  app-select-menu {
     max-width: 200px;
   }
 
   @media (max-width: 600px) {
     flex-direction: column;
 
-    select {
+    app-select-menu {
       max-width: none;
     }
   }

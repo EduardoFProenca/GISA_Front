@@ -14,14 +14,14 @@
 
             @for (esp of especialidades; track $index) {
             <div class="linha-lista">
-                <select name="especialidade-{{ $index }}" [(ngModel)]="especialidades[$index]"
+                <app-select-menu name="especialidade-{{ $index }}" [aria-label]="'Especialidade ' + ($index + 1)" [(ngModel)]="especialidades[$index]"
                     [class.input-erro]="erros['especialidades'] && !especialidades[$index]"
                     (change)="limparErro('especialidades')">
                     <option value="" disabled>Selecione a especialidade</option>
                     @for (opcao of opcoesEspecialidade; track opcao.valor) {
                     <option [value]="opcao.valor">{{ opcao.label }}</option>
                     }
-                </select>
+                </app-select-menu>
                 <button type="button" class="remover-item" (click)="removerEspecialidade($index)"
                     title="Remover">✕</button>
             </div>
@@ -44,13 +44,13 @@
 
             @for (jornada of jornadas; track $index) {
             <div class="linha-jornada">
-                <select name="dia-{{ $index }}" [(ngModel)]="jornada.diaSemana"
+                <app-select-menu name="dia-{{ $index }}" [aria-label]="'Dia da jornada ' + ($index + 1)" [(ngModel)]="jornada.diaSemana"
                     [class.input-erro]="erros['jornadas'] && !jornada.diaSemana" (change)="limparErro('jornadas')">
                     <option value="" disabled selected>Dia</option>
                     @for (dia of diasSemana; track dia.valor) {
                     <option [value]="dia.valor">{{ dia.label }}</option>
                     }
-                </select>
+                </app-select-menu>
                 <app-seletor-hora [value]="jornada.horaInicio" [disabled]="somenteLeitura"
                     (valueChange)="jornada.horaInicio = $event; limparErro('jornadas')"
                     [comErro]="!!erros['jornadas'] && !jornada.horaInicio" />

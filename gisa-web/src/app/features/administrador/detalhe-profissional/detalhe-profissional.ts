@@ -20,6 +20,7 @@ import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 import { PacienteService } from '../../../core/services/paciente';
 import { PacienteResumo } from '../../../core/models/paciente.model';
 import { SelectBusca } from '../../../shared/components/select-busca/select-busca';
+import { SelectMenu } from '../../../shared/components/select-menu/select-menu';
 import { buscaPacientes, DICA_BUSCA_PACIENTE } from '../../../shared/components/select-busca/buscas';
 
 const ROTULO_TIPO: Record<TipoProfissional, string> = {
@@ -37,6 +38,7 @@ const ROTULO_TIPO: Record<TipoProfissional, string> = {
     ConfirmDialog,
     FormDialog,
     SelectBusca,
+    SelectMenu,
   ],
   templateUrl: './detalhe-profissional.html',
   styleUrl: './detalhe-profissional.scss',

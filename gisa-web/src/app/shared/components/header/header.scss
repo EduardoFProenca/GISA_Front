@@ -47,10 +47,19 @@
   padding: 10px 15px;
   cursor: pointer;
   text-decoration: none;
+  transform: none;
 
   &:hover,
   &:focus-visible {
     background: var(--cor-destaque-fundo);
+  }
+
+  &:hover,
+  &:focus-visible,
+  &:active {
+    transform: none;
+    box-shadow: none;
+    filter: none;
   }
 }
 

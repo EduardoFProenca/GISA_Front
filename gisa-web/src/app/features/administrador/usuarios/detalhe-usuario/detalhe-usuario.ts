@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CabecalhoPagina } from '../../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { FormDialog } from '../../../../shared/components/form-dialog/form-dialog';
+import { SelectMenu } from '../../../../shared/components/select-menu/select-menu';
 import { UsuarioDetalhe } from '../../../../core/models/auth.model';
 import { Perfil } from '../../../../core/models/perfil.model';
 import { UsuarioService } from '../../../../core/services/usuario';
@@ -19,7 +20,7 @@ import { formatarCpf } from '../../../../shared/utils/formatacao.util';
 // As travas (próprio acesso, último administrador ativo) são da API; aqui só evitamos o caso óbvio.
 @Component({
   selector: 'app-detalhe-usuario',
-  imports: [CampoDetalhe, FormsModule, RouterLink, CabecalhoPagina, ConfirmDialog, FormDialog],
+  imports: [CampoDetalhe, FormsModule, RouterLink, CabecalhoPagina, ConfirmDialog, FormDialog, SelectMenu],
   templateUrl: './detalhe-usuario.html',
   styleUrl: '../../tabelas-apoio.scss',
 })

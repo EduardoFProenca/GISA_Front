@@ -67,17 +67,6 @@ h3 {
       color: var(--cinza-600);
     }
 
-    select {
-      padding: 0.65rem;
-      border: 1px solid var(--cor-borda-forte);
-      border-radius: var(--raio-sm);
-      font-size: 0.9rem;
-      outline: none;
-
-      &:focus {
-        border-color: var(--cor-destaque);
-      }
-    }
   }
 }
 

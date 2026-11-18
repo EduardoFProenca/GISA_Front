@@ -23,11 +23,11 @@
       <h3>Situação do Paciente</h3>
       <div class="campo">
         <label for="status">Status <span class="obrigatorio">*</span></label>
-        <select id="status" name="status" [ngModel]="status()" (ngModelChange)="status.set($event)">
+        <app-select-menu id="status" name="status" [ngModel]="status()" (ngModelChange)="status.set($event)">
           <option value="MATRICULADO">Matriculado</option>
           <option value="ALTA">Alta</option>
           <option value="DESLIGADO">Desligado</option>
-        </select>
+        </app-select-menu>
       </div>
     </div>
 

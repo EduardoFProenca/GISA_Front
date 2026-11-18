@@ -5,12 +5,13 @@ import { ComErros } from '../com-erros';
 import { CepService } from '../../../core/services/cep';
 import { soDigitos } from '../../utils/texto.util';
 import { Filtro } from '../../directives/filtro.directive';
+import { SelectMenu } from '../select-menu/select-menu';
 
 // Eager: os erros (ComErros) chegam depois da resposta da API e precisam aparecer.
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-contato',
-  imports: [FormsModule, Mascara, Filtro],
+  imports: [FormsModule, Mascara, Filtro, SelectMenu],
   templateUrl: './contato.html',
   styleUrl: './contato.scss',
 })

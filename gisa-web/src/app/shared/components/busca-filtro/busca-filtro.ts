@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core
 import { NgIcon } from '@ng-icons/core';
 import { FormsModule } from '@angular/forms';
 import { ICONES } from '../../icons';
+import { SelectMenu } from '../select-menu/select-menu';
 
 export interface OpcaoFiltro {
   chave: string;
@@ -16,7 +17,7 @@ export interface EstadoBusca {
 
 @Component({
   selector: 'app-busca-filtro',
-  imports: [NgIcon, FormsModule],
+  imports: [NgIcon, FormsModule, SelectMenu],
   templateUrl: './busca-filtro.html',
   styleUrl: './busca-filtro.scss',
 })

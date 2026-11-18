@@ -175,12 +175,12 @@
     @if (dialogo() === 'acesso') {
     <div>
         <label for="perfilAcesso">Perfil</label>
-        <select id="perfilAcesso" name="perfilAcesso" [(ngModel)]="perfilAcesso">
+        <app-select-menu id="perfilAcesso" name="perfilAcesso" [(ngModel)]="perfilAcesso">
             <option value="" disabled>Selecione o perfil</option>
             @for (p of perfis(); track p.idPerfil) {
             <option [value]="'' + p.idPerfil">{{ p.nome }}</option>
             }
-        </select>
+        </app-select-menu>
     </div>
     }
 </app-form-dialog>

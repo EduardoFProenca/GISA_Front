@@ -27,13 +27,13 @@
   @if (podeGerenciarAcesso && (possuiAcesso || temAcessoSistema)) {
     <div class="campo">
       <label for="perfil">Perfil <span class="obrigatorio">*</span></label>
-      <select id="perfil" name="perfil" [(ngModel)]="perfil" [class.input-erro]="erros['perfil']"
+      <app-select-menu id="perfil" name="perfil" [(ngModel)]="perfil" [class.input-erro]="erros['perfil']"
         (change)="limparErro('perfil')">
         <option value="" disabled>Selecione o perfil</option>
         @for (p of perfis; track p.idPerfil) {
           <option [value]="'' + p.idPerfil">{{ p.nome }}</option>
         }
-      </select>
+      </app-select-menu>
       @if (erros['perfil']) { <span class="erro-msg">{{ erros['perfil'] }}</span> }
     </div>
   }

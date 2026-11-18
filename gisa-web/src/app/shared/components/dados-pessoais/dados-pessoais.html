@@ -38,18 +38,18 @@
   <div class="linha-tripla">
     <div class="campo">
       <label for="sexo">Sexo <span class="obrigatorio">*</span></label>
-      <select id="sexo" name="sexo" [(ngModel)]="sexo" [disabled]="somenteLeitura || bloquearCpfSexoNascimento"
+      <app-select-menu id="sexo" name="sexo" [(ngModel)]="sexo" [disabled]="somenteLeitura || bloquearCpfSexoNascimento"
         [class.input-erro]="erros['sexo']" (change)="limparErro('sexo')">
         <option value="" disabled selected>Selecione</option>
         <option value="M">Masculino</option>
         <option value="F">Feminino</option>
         <option value="O">Outro</option>
-      </select>
+      </app-select-menu>
       @if (erros['sexo']) { <span class="erro-msg">{{ erros['sexo'] }}</span> }
     </div>
     <div class="campo">
       <label for="estadoCivil">Estado Civil <span class="obrigatorio">*</span></label>
-      <select id="estadoCivil" name="estadoCivil" [(ngModel)]="estadoCivil" [disabled]="somenteLeitura"
+      <app-select-menu id="estadoCivil" name="estadoCivil" [(ngModel)]="estadoCivil" [disabled]="somenteLeitura"
         [class.input-erro]="erros['estadoCivil']" (change)="limparErro('estadoCivil')">
         <option value="" disabled selected>Selecione</option>
         <option value="SOLTEIRO">Solteiro(a)</option>
@@ -57,7 +57,7 @@
         <option value="VIUVO">Viúvo(a)</option>
         <option value="SEPARADO">Separado(a)</option>
         <option value="DIVORCIADO">Divorciado(a)</option>
-      </select>
+      </app-select-menu>
       @if (erros['estadoCivil']) { <span class="erro-msg">{{ erros['estadoCivil'] }}</span> }
     </div>
     <div class="campo">

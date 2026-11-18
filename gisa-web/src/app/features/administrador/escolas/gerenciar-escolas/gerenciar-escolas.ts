@@ -6,6 +6,7 @@ import { NgIcon } from '@ng-icons/core';
 import { Subject, catchError, of, switchMap, tap, timer } from 'rxjs';
 import { ICONES } from '../../../../shared/icons';
 import { CabecalhoPagina } from '../../../../shared/components/cabecalho-pagina/cabecalho-pagina';
+import { SelectMenu } from '../../../../shared/components/select-menu/select-menu';
 import { Paginacao } from '../../../../shared/components/paginacao/paginacao';
 import { Escola, EscolaDetalhe, TipoEscola } from '../../../../core/models/escola.model';
 import { Pagina } from '../../../../core/models/comum.model';
@@ -20,7 +21,7 @@ const PAGINA_VAZIA: Pagina<EscolaDetalhe> = { content: [], totalElements: 0, tot
 // GET /escolas (paginado, 9 por página, por nome), com busca por nome e filtro de tipo.
 @Component({
   selector: 'app-gerenciar-escolas',
-  imports: [NgIcon, FormsModule, RouterLink, CabecalhoPagina, Paginacao, DialogEscola],
+  imports: [NgIcon, FormsModule, RouterLink, CabecalhoPagina, Paginacao, DialogEscola, SelectMenu],
   templateUrl: './gerenciar-escolas.html',
   styleUrl: '../../tabelas-apoio.scss',
 })

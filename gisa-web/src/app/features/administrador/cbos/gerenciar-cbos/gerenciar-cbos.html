@@ -10,11 +10,11 @@
     <div class="barra-busca">
       <input type="search" placeholder="Buscar por código (ex.: 2515) ou título (ex.: psicólogo)..."
         aria-label="Buscar CBO por código ou título" [(ngModel)]="termo" (ngModelChange)="buscar()" />
-      <select aria-label="Ordenação" [(ngModel)]="ordenacao" (ngModelChange)="ordenar()">
+      <app-select-menu aria-label="Ordenação" [(ngModel)]="ordenacao" (ngModelChange)="ordenar()">
         @for (o of ordenacoes; track o.valor) {
         <option [value]="o.valor">{{ o.label }}</option>
         }
-      </select>
+      </app-select-menu>
     </div>
 
     @if (erro()) {

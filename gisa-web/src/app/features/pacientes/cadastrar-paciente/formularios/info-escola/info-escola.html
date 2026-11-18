@@ -11,9 +11,9 @@
         semResultados="Nenhuma escola encontrada: ela será cadastrada como nova"
         [comErro]="!!(erros['nome'] || erros['escola'])" />
       @if (escolaSelecionada) {
-        <span class="dica-escola">Escola já cadastrada.</span>
+        <span class="texto-ajuda-campo">Escola já cadastrada.</span>
       } @else if (escolaNova) {
-        <span class="dica-escola">Escola nova: será cadastrada junto com o paciente.</span>
+        <span class="texto-ajuda-campo">Escola nova: será cadastrada junto com o paciente.</span>
       }
       @if (erros['nome']) { <span class="erro-msg">{{ erros['nome'] }}</span> }
       @if (erros['escola']) { <span class="erro-msg">{{ erros['escola'] }}</span> }
@@ -21,13 +21,13 @@
 
     <div class="campo">
       <label for="tipoEscola">Tipo de Escola @if (escolaNova) { <span class="obrigatorio">*</span> }</label>
-      <select id="tipoEscola" name="tipoEscola" [(ngModel)]="tipoEscola" [disabled]="!!escolaSelecionada"
+      <app-select-menu id="tipoEscola" name="tipoEscola" [(ngModel)]="tipoEscola" [disabled]="!!escolaSelecionada"
         [class.input-erro]="erros['tipoEscola']" (change)="limparErro('tipoEscola')">
         <option value="" disabled selected>Selecione</option>
         @for (item of opcoesTipoEscola; track item.value) {
           <option [value]="item.value">{{ item.label }}</option>
         }
-      </select>
+      </app-select-menu>
       @if (erros['tipoEscola']) { <span class="erro-msg">{{ erros['tipoEscola'] }}</span> }
     </div>
 

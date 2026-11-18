@@ -9,6 +9,7 @@ import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cab
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
 import { Contato } from '../../../shared/components/contato/contato';
+import { SelectMenu } from '../../../shared/components/select-menu/select-menu';
 
 // Formulários reaproveitados do cadastro
 import { InfoPaciente } from '../cadastrar-paciente/formularios/info-paciente/info-paciente';
@@ -37,6 +38,7 @@ import { soDigitos, vazio } from '../../../shared/utils/texto.util';
   selector: 'app-editar-paciente',
   imports: [
     FormsModule,
+    SelectMenu,
     CabecalhoPagina,
     ConfirmDialog,
     DadosPessoais,
