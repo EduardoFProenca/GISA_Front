@@ -16,13 +16,10 @@
   font-size: 0.85rem;
   font-weight: 600;
   border-radius: var(--raio-md);
-  transform: none;
 
   &:hover:not(:disabled) {
     border-color: var(--azul-300);
     background: var(--cor-primaria-suave);
-    transform: none;
-    box-shadow: none;
   }
 
   &:disabled {
@@ -34,11 +31,5 @@
     background: var(--cor-primaria);
     border-color: var(--cor-primaria);
     color: white;
-  }
-
-  &:active {
-    transform: none;
-    filter: none;
-    box-shadow: none;
   }
 }

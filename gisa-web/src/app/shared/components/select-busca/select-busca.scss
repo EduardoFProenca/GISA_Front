@@ -11,7 +11,7 @@
   }
 }
 
-// Centralizado sem transform: o estilo global de button usa transform (escala e hover).
+// Centralizado na vertical com margin auto (top/bottom 0).
 .btn-limpar-campo {
   position: absolute;
   top: 0;
@@ -30,8 +30,6 @@
   color: var(--cor-perigo);
   font-size: 0;
   line-height: 0;
-  transform: none;
-  box-shadow: none;
   cursor: pointer;
 
   // O ícone é inline por padrão e ficaria na linha de base do texto (deslocado para baixo).
@@ -43,8 +41,6 @@
   &:active {
     background: var(--cor-perigo);
     color: white;
-    transform: none;
-    box-shadow: none;
   }
 }
 

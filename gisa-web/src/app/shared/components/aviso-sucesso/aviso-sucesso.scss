@@ -82,13 +82,10 @@
     color: var(--cor-texto-medio);
     font-size: 0.85rem;
     font-weight: 600;
-    transform: none;
 
     &:hover {
       background: var(--cor-superficie-suave);
       border-color: var(--cor-borda);
-      transform: none;
-      box-shadow: none;
     }
 
     &.primaria {

@@ -58,13 +58,9 @@
   border: none;
   color: var(--cor-texto-secundario);
   font-size: 0.85rem;
-  transform: none;
-    
-  
+
   &:hover {
     background: var(--cor-superficie-realce);
-    transform: none;
-    box-shadow: none;
   }
 }
 .status-badge {

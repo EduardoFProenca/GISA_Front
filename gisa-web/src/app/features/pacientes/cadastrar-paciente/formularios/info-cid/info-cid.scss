@@ -48,19 +48,10 @@
   width: 100%;
   font-size: 0.85rem;
   font-weight: 600;
-  transform: none;
 
   &:hover {
     background: var(--cor-primaria-suave);
-    transform: none;
-    box-shadow: none;
     border-color: var(--cor-primaria);
-  }
-
-  &:active {
-    transform: none;
-    filter: none;
-    box-shadow: none;
   }
 
   &:disabled {
@@ -81,18 +72,9 @@
   border: none;
   border-radius: var(--raio-md);
   font-size: 0.85rem;
-  transform: none;
 
   &:hover {
     background: var(--cor-perigo-suave);
-    transform: none;
-    box-shadow: none;
-  }
-
-  &:active {
-    transform: none;
-    filter: none;
-    box-shadow: none;
   }
 }
 
@@ -128,13 +110,10 @@
   font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
-  transform: none;
 
   &:hover {
     text-decoration: underline;
     background: none;
-    transform: none;
-    box-shadow: none;
   }
 }
 
@@ -192,20 +171,11 @@
     color: var(--cor-primaria-hover);
     font-size: 0.75rem;
     font-weight: bold;
-    transform: none;
 
     &:hover {
       background: var(--cor-perigo-suave);
       color: var(--vermelho-500);
-      transform: none;
-      box-shadow: none;
       border: none;
-    }
-
-    &:active {
-      transform: none;
-      filter: none;
-      box-shadow: none;
     }
   }
 }

@@ -48,19 +48,10 @@
   width: 100%;
   font-size: 0.85rem;
   font-weight: 600;
-  transform: none;
 
   &:hover {
     background: var(--cor-primaria-suave);
-    transform: none;
-    box-shadow: none;
     border-color: var(--cor-primaria);
-  }
-
-  &:active {
-    transform: none;
-    filter: none;
-    box-shadow: none;
   }
 
   &:disabled {
@@ -81,18 +72,9 @@
   border: none;
   border-radius: var(--raio-md);
   font-size: 0.85rem;
-  transform: none;
 
   &:hover {
     background: var(--cor-perigo-suave);
-    transform: none;
-    box-shadow: none;
-  }
-
-  &:active {
-    transform: none;
-    filter: none;
-    box-shadow: none;
   }
 }
 
@@ -157,20 +139,11 @@
     align-items: center;
     justify-content: center;
     color: var(--cinza-600);
-    transform: none;
     transition: background 0.2s, color 0.2s;
 
     &:hover {
       background-color: var(--celeste-100);
       color: var(--celeste-600);
-      transform: none;
-      box-shadow: none;
-    }
-
-    &:active {
-      transform: none;
-      filter: none;
-      box-shadow: none;
     }
 
     svg {
@@ -214,12 +187,9 @@
     border-radius: var(--raio-sm);
     font-size: 0.95rem;
     font-weight: 600;
-    transform: none;
 
     &:hover {
       background: var(--cor-superficie-realce);
-      transform: none;
-      box-shadow: none;
       border: 1px solid var(--cor-borda-forte);
     }
   }
@@ -232,21 +202,11 @@
     border-radius: var(--raio-sm);
     font-size: 0.95rem;
     font-weight: 600;
-    transform: none;
 
     &:hover {
       background: var(--cor-destaque-forte);
-      transform: none;
-      box-shadow: none;
       border: none;
     }
-  }
-
-  .btn-cancelar:active,
-  .btn-confirmar:active {
-    transform: none;
-    filter: none;
-    box-shadow: none;
   }
 }
 

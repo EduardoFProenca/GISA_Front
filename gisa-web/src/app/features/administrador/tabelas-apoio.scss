@@ -223,13 +223,10 @@
   border-radius: var(--raio-md);
   padding: 0.3rem 0.7rem;
   font-size: 0.8rem;
-  transform: none;
 
   &:hover {
     background: var(--cor-perigo-suave);
     border-color: var(--vermelho-200);
-    transform: none;
-    box-shadow: none;
   }
 
   &:disabled {
@@ -246,13 +243,10 @@
   padding: 0.35rem 0.8rem;
   font-size: 0.8rem;
   font-weight: 500;
-  transform: none;
 
   &:hover {
     background: var(--indigo-200);
     border: none;
-    transform: none;
-    box-shadow: none;
   }
 }
 

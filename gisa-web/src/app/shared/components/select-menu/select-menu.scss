@@ -26,26 +26,17 @@
   font-size: 0.92rem;
   text-align: left;
   cursor: pointer;
-  transform: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
   &:hover {
     border-color: #d0d5dd;
     background: white;
-    box-shadow: none;
-    transform: none;
   }
 
   &:focus-visible {
     border-color: #93c5fd;
     outline: none;
     box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.28);
-  }
-
-  &:active {
-    box-shadow: none;
-    filter: none;
-    transform: none;
   }
 
   &:disabled {

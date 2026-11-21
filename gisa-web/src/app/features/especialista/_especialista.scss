@@ -1,7 +1,7 @@
 // Pedaços de estilo compartilhados pelas telas do perfil Especialista.
 // Uso: @use '../especialista' as *;   (de features/especialista/<tela>/<tela>.scss)
 
-// O `button` global tem fundo, escala e "pulinho" no hover; para botões que são só área clicável
+// O `button` global tem fundo, borda e padding; para botões que são só área clicável
 // (chips, abas, células do calendário) é preciso limpar isso.
 // $limpar-fundo: false deixa o fundo para quem usa (ex.: chips coloridos por status).
 @mixin btn-reset($limpar-fundo: true) {
@@ -14,19 +14,12 @@
   padding: 0;
   font: inherit;
   text-align: left;
-  box-shadow: none;
-  transform: none;
-  filter: none;
 
-  &:hover,
-  &:active {
+  &:hover {
     @if $limpar-fundo {
       background: none;
     }
     border: none;
-    box-shadow: none;
-    transform: none;
-    filter: none;
   }
 }
 
@@ -48,8 +41,6 @@
   &:disabled {
     background: var(--cinza-300);
     cursor: not-allowed;
-    transform: scale(0.95);
-    box-shadow: none;
   }
 }
 
@@ -73,8 +64,6 @@
   &:disabled {
     color: var(--cor-texto-suave);
     cursor: not-allowed;
-    transform: scale(0.95);
-    box-shadow: none;
   }
 }
 

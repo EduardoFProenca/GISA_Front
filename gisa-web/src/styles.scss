@@ -242,15 +242,10 @@ button.link-acao {
   font-size: 0.85rem;
   font-weight: 600;
   text-decoration: underline;
-  transform: none;
 
-  &:hover,
-  &:active {
+  &:hover {
     background: none;
     border: none;
-    box-shadow: none;
-    transform: none;
-    filter: none;
   }
 }
 
@@ -396,44 +391,12 @@ button {
   text-align: center;
   font-size: 1.1rem;
   cursor: pointer;
-  transition: 0.3s;
-  transform: scale(0.95);
+  // Só cores animam: sem movimento, sem escala.
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     background: rgba(43, 106, 131, 0.308);
     border: 1px solid rgb(255, 255, 255);
-  }
-
-  &:active {
-    transform: scale(0.9);
-    filter: brightness(1.5);
-    box-shadow: 0 0 15px rgba(52, 152, 219, 0.7);
-  }
-}
-
-// Botões estilo "card" (quick-btn / card-acao) não devem herdar o visual de botão sólido
-.quick-btn,
-.card-acao {
-  background: transparent;
-  color: inherit;
-  box-shadow: none;
-  border: none;
-  transform: none;
-  padding: 0;
-
-  &:hover {
-    transform: none;
-    box-shadow: none;
-    background: transparent;
-    border: none;
-  }
-
-  &:active {
-    transform: none;
-    filter: none;
-    box-shadow: none;
   }
 }
 ///========================================

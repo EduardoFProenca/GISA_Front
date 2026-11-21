@@ -68,12 +68,10 @@
   color: white;
   font-size: 0.95rem;
   font-weight: 600;
-  transform: none;
 
   &:hover:not(:disabled) {
     background: var(--cor-destaque-forte);
     border: none;
-    transform: none;
   }
 
   &:disabled {

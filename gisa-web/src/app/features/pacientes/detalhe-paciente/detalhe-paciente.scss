@@ -79,12 +79,9 @@ h3 {
   border-radius: var(--raio-md);
   padding: 0.3rem 0.7rem;
   font-size: 0.8rem;
-  transform: none;
 
   &:hover {
     background: var(--cor-perigo-suave);
-    transform: none;
-    box-shadow: none;
   }
 
   &:disabled {

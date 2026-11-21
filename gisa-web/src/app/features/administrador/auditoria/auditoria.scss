@@ -33,13 +33,10 @@
   padding: 0.4rem 0.95rem;
   font-size: 0.85rem;
   font-weight: 500;
-  transform: none;
 
   &:hover {
     background: var(--cor-superficie-realce);
     border-color: var(--cor-borda);
-    transform: none;
-    box-shadow: none;
   }
 
   &.ativa {
@@ -79,13 +76,10 @@
   border-radius: var(--raio-md);
   padding: 0.7rem 1rem;
   font-size: 0.88rem;
-  transform: none;
 
   &:hover {
     background: var(--cinza-200);
     border-color: var(--cor-borda);
-    transform: none;
-    box-shadow: none;
   }
 }
 

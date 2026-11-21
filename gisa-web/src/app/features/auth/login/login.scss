@@ -113,7 +113,7 @@
     text-align: left;
   }
 
-  // Mesma largura dos campos: o estilo global de button aplica scale(0.95), que o encolhia.
+  // Mesma largura dos campos.
   .btn-entrar {
     width: 100%;
     margin-top: 2rem;
@@ -124,16 +124,10 @@
     border-radius: var(--raio-md);
     font-size: 1rem;
     font-weight: 600;
-    transform: none;
 
     &:hover:not(:disabled) {
       background-color: var(--marinho-800);
-      transform: none;
       border: none;
-    }
-
-    &:active {
-      transform: none;
     }
 
     &:disabled {
@@ -164,21 +158,12 @@
     border: none;
     border-radius: var(--raio-sm);
     color: var(--cor-texto-secundario);
-    transform: none;
     cursor: pointer;
 
     &:hover {
       color: var(--cor-titulo);
       background: var(--cor-superficie-realce);
       border: none;
-      transform: none;
-      box-shadow: none;
-    }
-
-    &:active {
-      transform: none;
-      filter: none;
-      box-shadow: none;
     }
   }
 }

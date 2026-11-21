@@ -12,18 +12,6 @@
   z-index: 10;
 }
 
-.cabecalho-pagina button {
-  transform: none;
-
-  &:hover,
-  &:focus-visible,
-  &:active {
-    transform: none;
-    box-shadow: none;
-    filter: none;
-  }
-}
-
 .cabecalho-esquerda {
   display: flex;
   align-items: center;

@@ -42,13 +42,10 @@
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--indigo-800);
-  transform: none;
 
   &:hover {
     background: var(--indigo-100);
     border: none;
-    transform: none;
-    box-shadow: none;
   }
 }
 

@@ -35,18 +35,9 @@
   font-size: 0.8rem;
   font-weight: 600;
   white-space: nowrap;
-  transform: none;
 
   &:hover {
     background: var(--azul-100);
-    transform: none;
-    box-shadow: none;
-  }
-
-  &:active {
-    transform: none;
-    filter: none;
-    box-shadow: none;
   }
 }
 
