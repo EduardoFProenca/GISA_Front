@@ -3,10 +3,11 @@ import { FormsModule } from '@angular/forms';
 import { PacienteTerapia, Presenca } from '../../../../../core/models/terapia.model';
 import { ROTULO_PRESENCA } from '../../../../../shared/utils/rotulos.util';
 import { motivoPresencaIndisponivel } from '../../presenca.util';
+import { Botao } from '../../../../../shared/components/botao/botao';
 
 @Component({
   selector: 'app-linha-paciente-presenca',
-  imports: [FormsModule],
+  imports: [Botao, FormsModule],
   templateUrl: './linha-paciente-presenca.html',
   styleUrl: './linha-paciente-presenca.scss',
 })

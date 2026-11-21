@@ -19,6 +19,7 @@ import { AbaHistorico } from './componentes/aba-historico/aba-historico';
 import { AbaTerapias } from './componentes/aba-terapias/aba-terapias';
 import { CabecalhoPaciente } from './componentes/cabecalho-paciente/cabecalho-paciente';
 import { calcularFrequenciaMes } from './frequencia.util';
+import { Botao } from '../../../shared/components/botao/botao';
 
 type Aba = 'historico' | 'terapias';
 
@@ -27,7 +28,7 @@ type Aba = 'historico' | 'terapias';
 @Component({
   selector: 'app-atendimento-especialista',
   imports: [
-    RouterLink,
+    Botao, RouterLink,
     CabecalhoPagina,
     CabecalhoPaciente,
     AbaHistorico,

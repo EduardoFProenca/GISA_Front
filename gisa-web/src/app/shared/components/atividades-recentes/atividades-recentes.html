@@ -11,10 +11,9 @@
         @if (item.acoes && item.acoes.length > 0) {
           <div class="acoes-atividade">
             @for (acao of item.acoes; track acao.label) {
-              <button (click)="acao.acao()" [title]="acao.label">
-                @if (acao.icone) {
-                  <span><ng-icon [name]="acao.icone" /></span>
-                } @else {
+              <button appBotao type="button" variante="fantasma" tamanho="sm" [icone]="acao.icone" [somenteIcone]="!!acao.icone"
+                [title]="acao.label" [attr.aria-label]="acao.label" (click)="acao.acao()">
+                @if (!acao.icone) {
                   {{ acao.label }}
                 }
               </button>

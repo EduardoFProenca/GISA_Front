@@ -9,11 +9,12 @@ import { mensagemDeErro } from '../../../../core/http/erro-api';
 import { DialogCbo } from '../dialog-cbo/dialog-cbo';
 import { formatarCbo } from '../../../../shared/utils/formatacao.util';
 import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
+import { Botao } from '../../../../shared/components/botao/botao';
 
 // GET /cbos/{codigo}: título e cargos que usam o CBO.
 @Component({
   selector: 'app-detalhe-cbo',
-  imports: [CampoDetalhe, RouterLink, CabecalhoPagina, ConfirmDialog, DialogCbo],
+  imports: [Botao, CampoDetalhe, RouterLink, CabecalhoPagina, ConfirmDialog, DialogCbo],
   templateUrl: './detalhe-cbo.html',
   styleUrl: '../../tabelas-apoio.scss',
 })

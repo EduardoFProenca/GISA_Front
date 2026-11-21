@@ -16,8 +16,8 @@
     </div>
 
     <div class="acoes-situacao">
-      <button type="button" class="btn-secundario" (click)="renomeAberto.set(true)">Renomear</button>
-      <button type="button" class="btn-inativar" [disabled]="!podeExcluir() || excluindo()"
+      <button appBotao type="button" variante="suave" (click)="renomeAberto.set(true)">Renomear</button>
+      <button appBotao type="button" variante="perigo-suave" [disabled]="!podeExcluir() || excluindo()"
         (click)="exclusaoAberta.set(true)">{{ excluindo() ? 'Excluindo...' : 'Excluir perfil' }}</button>
     </div>
     @if (!podeExcluir()) {
@@ -28,14 +28,14 @@
 
   <div class="painel">
     <h3>Permissões
-      <button type="button" class="btn-pequeno" [disabled]="!disponiveis().length" (click)="abrirAdicionar()"
+      <button appBotao type="button" variante="suave" tamanho="sm" [disabled]="!disponiveis().length" (click)="abrirAdicionar()"
         [title]="disponiveis().length ? '' : 'O perfil já tem todas as permissões'">+ Adicionar permissão</button>
     </h3>
     <ul class="vinculos">
       @for (perm of p.permissoes; track perm.idPermissao) {
       <li>
         <span class="permissao"><strong>{{ perm.nome }}</strong><small>{{ perm.descricao }}</small></span>
-        <button type="button" class="btn-remover" [disabled]="removendo() !== null"
+        <button appBotao type="button" variante="perigo-suave" tamanho="sm" [disabled]="removendo() !== null"
           [attr.aria-label]="'Remover a permissão ' + perm.nome" (click)="pedirRemocao(perm)">
           {{ removendo() === perm.idPermissao ? 'Removendo...' : 'Remover' }}
         </button>

@@ -3,6 +3,7 @@ import { Component, Input, inject } from '@angular/core';
 import { NgIcon } from '@ng-icons/core';
 import { Router } from '@angular/router';
 import { ICONES } from '../../icons';
+import { Botao } from '../botao/botao';
 
 export interface ProfissionalCard {
   id: string;
@@ -14,7 +15,7 @@ export interface ProfissionalCard {
 
 @Component({
   selector: 'app-card-profissional',
-  imports: [CampoDetalhe, NgIcon],
+  imports: [Botao, CampoDetalhe, NgIcon],
   templateUrl: './card-profissional.html',
   styleUrl: './card-profissional.scss',
 })

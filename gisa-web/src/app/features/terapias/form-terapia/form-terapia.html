@@ -46,10 +46,9 @@
               [comErro]="!!erros()[tipo + '-' + item.uid] || emConflito($any(tipo), item.id)">
             </app-select-busca>
             @if (lista($any(tipo))().length > 1) {
-            <button type="button" class="btn-remover" title="Remover" aria-label="Remover"
-              (click)="removerPessoa($any(tipo), item.uid)">
-              <ng-icon [name]="icones.fechar" />
-            </button>
+            <button appBotao type="button" variante="perigo-suave" tamanho="sm" somenteIcone [icone]="icones.fechar"
+              title="Remover" aria-label="Remover"
+              (click)="removerPessoa($any(tipo), item.uid)"></button>
             }
           </div>
           @if (erros()[tipo + '-' + item.uid]) {
@@ -61,8 +60,8 @@
         <span class="erro-msg">{{ msg }}</span>
         }
 
-        <button type="button" class="btn-adicionar-pessoa" (click)="adicionarPessoa($any(tipo))">
-          <ng-icon [name]="icones.adicionar" />
+        <button appBotao type="button" variante="contorno" tamanho="sm" class="adicionar-pessoa" [icone]="icones.adicionar"
+          (click)="adicionarPessoa($any(tipo))">
           {{ tipo === 'paciente' ? 'Adicionar paciente' : 'Adicionar especialista' }}
         </button>
       </div>

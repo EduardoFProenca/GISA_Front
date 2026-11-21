@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { NgIcon } from '@ng-icons/core';
+import { Botao } from '../botao/botao';
 
 export interface AcaoAtividade {
   label: string;
@@ -15,7 +15,7 @@ export interface Atividade {
 
 @Component({
   selector: 'app-atividades-recentes',
-  imports: [NgIcon],
+  imports: [Botao],
   templateUrl: './atividades-recentes.html',
   styleUrl: './atividades-recentes.scss'
 })

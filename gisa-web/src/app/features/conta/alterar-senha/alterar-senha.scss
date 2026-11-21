@@ -58,23 +58,8 @@
   color: var(--cinza-600);
 }
 
-.btn-salvar {
+// Só posição e largura: o visual vem do Botao.
+.salvar-senha {
   margin-top: 1.5rem;
   width: 100%;
-  border: none;
-  border-radius: var(--raio-md);
-  padding: 0.75rem;
-  background: var(--cor-destaque);
-  color: white;
-  font-size: 0.95rem;
-  font-weight: 600;
-
-  &:hover:not(:disabled) {
-    background: var(--cor-destaque-forte);
-    border: none;
-  }
-
-  &:disabled {
-    opacity: 0.7;
-  }
 }

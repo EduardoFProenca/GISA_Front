@@ -13,6 +13,7 @@ import { dataHoraLocal } from '../../../shared/utils/data.util';
 import { formatarCpf } from '../../../shared/utils/formatacao.util';
 import { soDigitos } from '../../../shared/utils/texto.util';
 import { CATEGORIAS, ROTULO_ACAO, descreverCaminho } from './auditoria.util';
+import { Botao } from '../../../shared/components/botao/botao';
 
 const POR_PAGINA = 20;
 
@@ -20,7 +21,7 @@ const POR_PAGINA = 20;
 // Categorias = valores de `acao`; filtros por início do CPF e período (dias incluídos).
 @Component({
   selector: 'app-auditoria',
-  imports: [FormsModule, Mascara, CabecalhoPagina, Paginacao],
+  imports: [Botao, FormsModule, Mascara, CabecalhoPagina, Paginacao],
   templateUrl: './auditoria.html',
   styleUrl: './auditoria.scss',
 })

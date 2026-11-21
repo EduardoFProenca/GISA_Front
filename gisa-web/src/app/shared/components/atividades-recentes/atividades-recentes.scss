@@ -46,13 +46,6 @@ li {
   display: flex;
   gap: 0.4rem;
   flex-shrink: 0;
-
-  button {
-    font-size: 0.70rem;
-    padding: 1;
-    color: black;
-
-  }
 }
 .vazio {
   color: var(--cor-texto-suave);

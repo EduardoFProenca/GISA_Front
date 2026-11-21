@@ -16,6 +16,7 @@ import { CardTerapiaPresenca, PresencaMarcada } from '../registrar-presenca/comp
 import { horarioTerapia, participaDaTerapia } from '../registrar-presenca/presenca.util';
 import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 import { AVISO_PRESENCA, AVISO_STATUS, nomePaciente } from '../registrar-presenca/presenca.util';
+import { Botao } from '../../../shared/components/botao/botao';
 
 // Próximo status pelo botão principal (transições da API; cancelar é à parte).
 const PROXIMO: Partial<Record<StatusTerapia, { status: StatusTerapia; texto: string; mensagem: string }>> = {
@@ -33,7 +34,7 @@ const PROXIMO: Partial<Record<StatusTerapia, { status: StatusTerapia; texto: str
 
 @Component({
   selector: 'app-detalhe-terapia',
-  imports: [CampoDetalhe, FormsModule, RouterLink, CabecalhoPagina, ConfirmDialog, FormDialog, CardTerapiaPresenca],
+  imports: [Botao, CampoDetalhe, FormsModule, RouterLink, CabecalhoPagina, ConfirmDialog, FormDialog, CardTerapiaPresenca],
   templateUrl: './detalhe-terapia.html',
   styleUrl: './detalhe-terapia.scss',
 })

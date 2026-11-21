@@ -81,31 +81,6 @@
     justify-content: flex-end;
     gap: 0.5rem;
   }
-
-  button {
-    border: none;
-    border-radius: var(--raio-md);
-    padding: 0.4rem 0.8rem;
-    font-size: 0.82rem;
-
-    &:hover {
-      border: none;
-    }
-  }
-
-  .btn-voltar {
-    background: var(--cinza-200);
-    color: var(--cor-texto-medio);
-  }
-
-  .btn-cadastrar {
-    background: var(--cor-primaria);
-    color: white;
-
-    &:disabled {
-      opacity: 0.6;
-    }
-  }
 }
 
 // Separa as sugestões da tabela oficial dos CBOs já cadastrados.

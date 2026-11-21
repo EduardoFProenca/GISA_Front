@@ -9,13 +9,14 @@ import { localEDataDeHoje } from '../../../shared/documentos/instituicao';
 import { dataCurta, idadeEmAnos } from '../../../shared/utils/data.util';
 import { formatarCpf } from '../../../shared/utils/formatacao.util';
 import { MODELOS_ATESTADO, ModeloTexto, TITULO_DOCUMENTO, TipoDocumentoClinico } from './documento-clinico.util';
+import { Botao } from '../../../shared/components/botao/botao';
 
 // Emissão de atestado ou receita em drawer lateral (prontuário e telas "Emitir Atestado/Receita").
 // O especialista escreve o texto livremente; no atestado pode partir de um modelo.
 // A API NÃO guarda esses documentos: a folha é montada aqui e impressa / salva em PDF pelo navegador.
 @Component({
   selector: 'app-documento-clinico-drawer',
-  imports: [FormsModule, FolhaDocumento],
+  imports: [Botao, FormsModule, FolhaDocumento],
   templateUrl: './documento-clinico-drawer.html',
   styleUrl: './documento-clinico-drawer.scss',
 })

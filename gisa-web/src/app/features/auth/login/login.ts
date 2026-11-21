@@ -10,6 +10,7 @@ import { ROTA_INICIO } from '../../../core/auth/permissoes';
 import { lerErroApi, mensagemDeErro } from '../../../core/http/erro-api';
 import { emailValido } from '../../../shared/utils/texto.util';
 import { ESTADO_PRIMEIRO_ACESSO } from '../redefinir-senha/redefinir-senha';
+import { Botao } from '../../../shared/components/botao/botao';
 
 // Render (plano gratuito) pode levar quase 1 minuto para acordar na primeira chamada.
 const TEMPO_LIMITE_MS = 60_000;
@@ -18,7 +19,7 @@ const AVISO_DEMORA_MS = 5_000;
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, NgIcon, RouterLink],
+  imports: [Botao, FormsModule, NgIcon, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })

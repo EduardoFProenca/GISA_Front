@@ -49,20 +49,6 @@
 
 
 
-.btn-editar {
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
-  padding: 0;
-  background: transparent;
-  border: none;
-  color: var(--cor-texto-secundario);
-  font-size: 0.85rem;
-
-  &:hover {
-    background: var(--cor-superficie-realce);
-  }
-}
 .status-badge {
   display: inline-block;
   font-size: 0.9rem;

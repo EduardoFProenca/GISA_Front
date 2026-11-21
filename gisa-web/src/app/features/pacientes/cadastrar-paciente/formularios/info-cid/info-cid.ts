@@ -4,11 +4,12 @@ import { ComErros } from '../../../../../shared/components/com-erros';
 import { Cid } from '../../../../../core/models/cid.model';
 import { CidSelecionado, CidService, FORMATO_CID_10 } from '../../../../../core/services/cid';
 import { OpcaoSelectBusca, SelectBusca } from '../../../../../shared/components/select-busca/select-busca';
+import { Botao } from '../../../../../shared/components/botao/botao';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-cid',
-  imports: [SelectBusca, FormsModule],
+  imports: [Botao, SelectBusca, FormsModule],
   templateUrl: './info-cid.html',
   styleUrl: './info-cid.scss',
 })

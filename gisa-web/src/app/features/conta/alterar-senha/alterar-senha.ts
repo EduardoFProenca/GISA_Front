@@ -7,6 +7,7 @@ import { UsuarioService } from '../../../core/services/usuario';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { ICONES } from '../../../shared/icons';
 import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
+import { Botao } from '../../../shared/components/botao/botao';
 
 const MIN_SENHA = 8;
 const MAX_SENHA = 30;
@@ -18,7 +19,7 @@ type Campo = 'senhaAtual' | 'novaSenha' | 'confirmacaoNovaSenha';
 // então o usuário continua logado neste navegador e é desconectado nos outros.
 @Component({
   selector: 'app-alterar-senha',
-  imports: [FormsModule, NgIcon, CabecalhoPagina],
+  imports: [Botao, FormsModule, NgIcon, CabecalhoPagina],
   templateUrl: './alterar-senha.html',
   styleUrl: './alterar-senha.scss',
 })

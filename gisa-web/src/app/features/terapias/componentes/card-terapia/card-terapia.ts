@@ -5,6 +5,7 @@ import { Terapia } from '../../../../core/models/terapia.model';
 import { ROTULO_MODALIDADE, ROTULO_STATUS_TERAPIA } from '../../../../shared/utils/rotulos.util';
 import { dataCurta } from '../../../../shared/utils/data.util';
 import { horarioTerapia } from '../../registrar-presenca/presenca.util';
+import { Botao } from '../../../../shared/components/botao/botao';
 
 export type TipoParticipante = 'PACIENTE' | 'ESPECIALISTA';
 
@@ -30,7 +31,7 @@ function nomeCurto(nome: string): string {
 
 @Component({
   selector: 'app-card-terapia',
-  imports: [NgIcon],
+  imports: [Botao, NgIcon],
   templateUrl: './card-terapia.html',
   styleUrl: './card-terapia.scss',
 })

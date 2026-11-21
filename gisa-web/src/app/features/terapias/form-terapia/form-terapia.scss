@@ -57,56 +57,10 @@
   }
 }
 
-// Base dos dois botões.
-.btn-remover,
-.btn-adicionar-pessoa {
-  font-family: inherit;
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-
-  &:focus-visible {
-    outline: 2px solid var(--cor-destaque);
-    outline-offset: 2px;
-  }
-}
-
-.btn-remover {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  border: none;
-  border-radius: var(--raio-md);
-  background: transparent;
-  color: var(--cor-texto-suave);
-
-  &:hover {
-    background: var(--cor-perigo-suave);
-    color: var(--cor-perigo);
-  }
-}
-
-.btn-adicionar-pessoa {
-  display: inline-flex;
-  align-items: center;
+// Só posição: o visual vem do Botao.
+.adicionar-pessoa {
   align-self: flex-start;
-  gap: 0.4rem;
   margin-top: 0.6rem;
-  padding: 0.38rem 0.85rem;
-  border: 1px dashed var(--ciano-300);
-  border-radius: var(--raio-md);
-  background: var(--ciano-50);
-  color: var(--cor-destaque-forte);
-  font-size: 0.82rem;
-  font-weight: 600;
-
-  &:hover {
-    background: var(--ciano-100);
-    border-style: solid;
-  }
 }
 .aviso {
   text-align: center;

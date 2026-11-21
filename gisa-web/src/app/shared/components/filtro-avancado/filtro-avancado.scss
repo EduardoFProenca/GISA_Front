@@ -151,23 +151,11 @@
 
 // --- Limpar filtros ---
 
-.btn-limpar {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
+// Botão variante "link": aqui só posição e tamanho da fonte.
+.limpar-filtros {
+  --botao-fonte: 0.82rem;
   margin-left: auto;
   align-self: center;
-  border: none;
-  background: none;
-  color: var(--vermelho-500);
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0.3rem 0.1rem;
-
-  &:hover {
-    text-decoration: underline;
-  }
 
   .contagem {
     display: inline-flex;

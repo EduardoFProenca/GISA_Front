@@ -45,7 +45,7 @@
   </button>
 
   @if (!manualAberto()) {
-    <button type="button" class="link-manual" (click)="abrirManual()">
+    <button appBotao type="button" variante="link" class="link-manual" (click)="abrirManual()">
       CID não está na lista? Cadastrar manualmente
     </button>
   } @else {
@@ -71,7 +71,7 @@
         <span class="erro-msg erro-cid">{{ erroManual() }}</span>
       }
       <div class="acoes-manual">
-        <button type="button" class="link-manual" (click)="fecharManual()">Cancelar</button>
+        <button appBotao type="button" variante="link" class="link-manual" (click)="fecharManual()">Cancelar</button>
         <button type="button" class="add-item" [disabled]="verificando()" (click)="adicionarManual()">
           {{ verificando() ? 'Verificando...' : '+ Adicionar CID não listado' }}
         </button>
@@ -84,7 +84,7 @@
       @for (cid of listaCids(); track cid.codigoCID; let i = $index) {
         <div class="tag-cid">
           <span><strong>{{ cid.codigoCID }}</strong> - {{ cid.descricao }}</span>
-          <button type="button" class="btn-remover" title="Remover" (click)="removerCid(i)">✕</button>
+          <button type="button" class="remover-tag" title="Remover" aria-label="Remover CID" (click)="removerCid(i)">✕</button>
         </div>
       }
     </div>

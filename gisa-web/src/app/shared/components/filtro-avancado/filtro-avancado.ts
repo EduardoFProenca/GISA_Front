@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, signa
 import { NgIcon } from '@ng-icons/core';
 import { FormsModule } from '@angular/forms';
 import { ICONES } from '../../icons';
+import { Botao } from '../botao/botao';
 
 export interface OpcaoFiltroAvancado {
   valor: string;
@@ -21,7 +22,7 @@ export interface EstadoFiltroAvancado {
 // Uso: <app-filtro-avancado [statusDisponiveis]="..." [periodosDisponiveis]="..." (filtroAlterado)="..." />
 @Component({
   selector: 'app-filtro-avancado',
-  imports: [NgIcon, FormsModule],
+  imports: [Botao, NgIcon, FormsModule],
   templateUrl: './filtro-avancado.html',
   styleUrl: './filtro-avancado.scss',
 })

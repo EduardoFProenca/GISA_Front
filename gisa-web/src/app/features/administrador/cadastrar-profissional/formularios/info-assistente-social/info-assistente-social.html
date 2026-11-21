@@ -29,7 +29,7 @@
             @for (p of pacientes; track p.idCadastro) {
             <li>
                 <span>{{ p.rotulo }}</span>
-                <button type="button" class="remover-item" (click)="removerPaciente(p.idCadastro)"
+                <button appBotao type="button" variante="perigo-suave" tamanho="sm" (click)="removerPaciente(p.idCadastro)"
                     [attr.aria-label]="'Remover ' + p.rotulo">Remover</button>
             </li>
             } @empty {

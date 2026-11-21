@@ -22,6 +22,7 @@ import { PacienteResumo } from '../../../core/models/paciente.model';
 import { SelectBusca } from '../../../shared/components/select-busca/select-busca';
 import { SelectMenu } from '../../../shared/components/select-menu/select-menu';
 import { buscaPacientes, DICA_BUSCA_PACIENTE } from '../../../shared/components/select-busca/buscas';
+import { Botao } from '../../../shared/components/botao/botao';
 
 const ROTULO_TIPO: Record<TipoProfissional, string> = {
   PROFISSIONAL: 'Profissional',
@@ -32,7 +33,7 @@ const ROTULO_TIPO: Record<TipoProfissional, string> = {
 
 @Component({
   selector: 'app-detalhe-profissional',
-  imports: [CampoDetalhe, 
+  imports: [Botao, CampoDetalhe, 
     FormsModule,
     CabecalhoPagina,
     ConfirmDialog,

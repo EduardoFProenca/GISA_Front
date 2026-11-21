@@ -35,18 +35,9 @@
   }
 }
 
-.btn-link {
-  background: transparent;
-  border: none;
-  padding: 0.2rem 0.4rem;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--indigo-800);
-
-  &:hover {
-    background: var(--indigo-100);
-    border: none;
-  }
+// Botão variante "link": só o tamanho da fonte.
+.alternar-grupo {
+  --botao-fonte: 0.8rem;
 }
 
 .lista-checks {

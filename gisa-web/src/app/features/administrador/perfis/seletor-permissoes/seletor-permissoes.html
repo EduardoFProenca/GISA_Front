@@ -6,7 +6,7 @@
   <section class="grupo">
     <header>
       <h4>{{ g.categoria }}</h4>
-      <button type="button" class="btn-link" (click)="alternarGrupo(g)">
+      <button appBotao type="button" variante="link" class="alternar-grupo" (click)="alternarGrupo(g)">
         {{ g.todasMarcadas ? 'Desmarcar todas' : 'Marcar todas' }}
       </button>
     </header>

@@ -59,8 +59,8 @@
     }
 
     <div class="acoes">
-      <button type="button" class="btn-limpar" (click)="novaRecusa()">Limpar</button>
-      <button type="button" class="btn-emitir" (click)="visualizar()">Visualizar recusa</button>
+      <button appBotao type="button" variante="neutro" (click)="novaRecusa()">Limpar</button>
+      <button appBotao type="button" data-concluir (click)="visualizar()">Visualizar recusa</button>
     </div>
   </section>
 </div>
@@ -70,8 +70,8 @@
   <div class="documento-previa-corpo" role="dialog" aria-modal="true" aria-label="Pré-visualização da recusa"
     (click)="$event.stopPropagation()">
     <div class="documento-previa-acoes">
-      <button type="button" class="documento-btn-voltar" (click)="previa.set(false)">Voltar e editar</button>
-      <button type="button" class="documento-btn-imprimir" (click)="imprimir()">Imprimir / Baixar PDF</button>
+      <button appBotao type="button" variante="neutro" (click)="previa.set(false)">Voltar e editar</button>
+      <button appBotao type="button" (click)="imprimir()">Imprimir / Baixar PDF</button>
     </div>
     <app-folha-documento [dados]="f" />
   </div>

@@ -4,12 +4,13 @@ import { RouterLink } from '@angular/router';
 import { Auth } from '../../../core/auth/auth';
 import { mensagemDeErro } from '../../../core/http/erro-api';
 import { emailValido } from '../../../shared/utils/texto.util';
+import { Botao } from '../../../shared/components/botao/botao';
 
 // "Esqueci minha senha": a API manda um link de redefinição (60 min) para o e-mail, se ele for de um
 // usuário ativo. A resposta é sempre a mesma, exista o e-mail ou não (não revela quem é cadastrado).
 @Component({
   selector: 'app-recuperar-senha',
-  imports: [FormsModule, RouterLink],
+  imports: [Botao, FormsModule, RouterLink],
   styleUrls: ['../login/login.scss', './recuperar-senha.scss'],
   templateUrl: './recuperar-senha.html',
 })

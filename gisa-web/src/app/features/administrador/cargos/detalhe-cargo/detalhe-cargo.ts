@@ -9,11 +9,12 @@ import { mensagemDeErro } from '../../../../core/http/erro-api';
 import { DialogCargo } from '../dialog-cargo/dialog-cargo';
 import { formatarCbo } from '../../../../shared/utils/formatacao.util';
 import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
+import { Botao } from '../../../../shared/components/botao/botao';
 
 // GET /cargos/{id}: CBO e profissionais do cargo (ativos e inativos).
 @Component({
   selector: 'app-detalhe-cargo',
-  imports: [CampoDetalhe, RouterLink, CabecalhoPagina, ConfirmDialog, DialogCargo],
+  imports: [Botao, CampoDetalhe, RouterLink, CabecalhoPagina, ConfirmDialog, DialogCargo],
   templateUrl: './detalhe-cargo.html',
   styleUrl: '../../tabelas-apoio.scss',
 })

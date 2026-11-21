@@ -72,24 +72,6 @@ h3 {
   gap: 1rem;
 }
 
-.btn-desvincular {
-  background: transparent;
-  color: var(--cor-perigo-forte);
-  border: 1px solid var(--vermelho-200);
-  border-radius: var(--raio-md);
-  padding: 0.3rem 0.7rem;
-  font-size: 0.8rem;
-
-  &:hover {
-    background: var(--cor-perigo-suave);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: default;
-  }
-}
-
 .vincular-as {
   margin-top: 1rem;
 }

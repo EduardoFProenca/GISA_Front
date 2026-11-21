@@ -6,7 +6,8 @@ const AREA_FORMULARIO = '[role="dialog"], form, .card-form, .pagina-documento';
 
 const CAMPOS = 'input, select, textarea';
 // Botão que conclui a área (destino do ENTER no último campo). Não é clicado, só recebe o foco.
-const BOTAO_CONCLUIR = '.btn-salvar, .btn-confirmar, .btn-emitir, button[type="submit"]';
+// O botão é marcado no HTML com o atributo data-concluir (não depende de classe de estilo).
+const BOTAO_CONCLUIR = '[data-concluir], button[type="submit"]';
 
 // ENTER num campo leva o foco ao próximo campo editável da mesma área (o campo destacado é o com
 // foco, e a tela rola até ele). No último campo, o foco vai para o botão de salvar/confirmar, sem
@@ -47,7 +48,7 @@ export class NavegacaoEnter {
     const candidatos = [
       ...Array.from(area.querySelectorAll<HTMLButtonElement>(BOTAO_CONCLUIR)),
       ...(area.matches('.card-form, .pagina-documento')
-        ? Array.from(document.querySelectorAll<HTMLButtonElement>('app-cabecalho-pagina .btn-salvar'))
+        ? Array.from(document.querySelectorAll<HTMLButtonElement>('app-cabecalho-pagina [data-concluir]'))
         : []),
     ];
     return candidatos.find((b) => !b.disabled && this.visivel(b)) ?? null;

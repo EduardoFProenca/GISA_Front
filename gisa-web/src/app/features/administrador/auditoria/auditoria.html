@@ -25,8 +25,8 @@
           [class.input-erro]="erroPeriodo()" />
       </div>
       <div class="botoes">
-        <button type="button" class="btn-leve" (click)="limparFiltros()">Limpar</button>
-        <button type="button" class="btn-leve" (click)="atualizar()">Atualizar</button>
+        <button appBotao type="button" variante="neutro" tamanho="sm" (click)="limparFiltros()">Limpar</button>
+        <button appBotao type="button" variante="neutro" tamanho="sm" (click)="atualizar()">Atualizar</button>
       </div>
     </div>
     @if (erroPeriodo()) { <span class="erro-msg">{{ erroPeriodo() }}</span> }

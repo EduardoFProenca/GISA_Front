@@ -61,8 +61,8 @@
       </div>
 
       <footer class="drawer-acoes">
-        <button type="button" class="btn-secundario" (click)="aoFechar()">Cancelar</button>
-        <button type="button" class="btn-primario" [disabled]="!perfil()" (click)="gerarPrevia()">
+        <button appBotao type="button" variante="neutro" (click)="aoFechar()">Cancelar</button>
+        <button appBotao type="button" data-concluir [disabled]="!perfil()" (click)="gerarPrevia()">
           Visualizar {{ titulo.toLowerCase() }}
         </button>
       </footer>
@@ -74,8 +74,8 @@
       <div class="documento-previa-corpo" role="dialog" aria-modal="true" [attr.aria-label]="'Pré-visualização: ' + titulo"
         (click)="$event.stopPropagation()">
         <div class="documento-previa-acoes">
-          <button type="button" class="documento-btn-voltar" (click)="fecharPrevia()">Voltar e editar</button>
-          <button type="button" class="documento-btn-imprimir" (click)="imprimir()">Imprimir / Baixar PDF</button>
+          <button appBotao type="button" variante="neutro" (click)="fecharPrevia()">Voltar e editar</button>
+          <button appBotao type="button" (click)="imprimir()">Imprimir / Baixar PDF</button>
         </div>
         <app-folha-documento [dados]="f" />
       </div>

@@ -63,30 +63,5 @@
   justify-content: flex-end;
   gap: 0.75rem;
   margin-top: 1.25rem;
-
-  button {
-    border: none;
-    border-radius: var(--raio-md);
-    padding: 0.65rem 1.2rem;
-    font-size: 0.95rem;
-    font-weight: 600;
-
-    &:hover {
-      border: none;
-    }
-  }
 }
 
-.btn-limpar {
-  background: var(--cinza-200);
-  color: var(--cor-texto-medio);
-}
-
-.btn-emitir {
-  background: var(--cor-destaque);
-  color: white;
-
-  &:hover {
-    background: var(--cor-destaque-forte);
-  }
-}

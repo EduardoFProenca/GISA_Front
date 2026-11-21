@@ -1,8 +1,8 @@
 // Pedaços de estilo compartilhados pelas telas do perfil Especialista.
 // Uso: @use '../especialista' as *;   (de features/especialista/<tela>/<tela>.scss)
 
-// O `button` global tem fundo, borda e padding; para botões que são só área clicável
-// (chips, abas, células do calendário) é preciso limpar isso.
+// O navegador dá fundo, borda e padding nativos ao `button`; para botões que são só área
+// clicável (chips, abas, células do calendário) é preciso limpar isso.
 // $limpar-fundo: false deixa o fundo para quem usa (ex.: chips coloridos por status).
 @mixin btn-reset($limpar-fundo: true) {
   @if $limpar-fundo {
@@ -20,50 +20,6 @@
       background: none;
     }
     border: none;
-  }
-}
-
-@mixin btn-primario {
-  background: var(--cor-destaque);
-  color: white;
-  border: none;
-  padding: 0.55rem 1.25rem;
-  border-radius: var(--raio-md);
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-
-  &:hover:not(:disabled) {
-    background: var(--cor-destaque-forte);
-    border: none;
-  }
-
-  &:disabled {
-    background: var(--cinza-300);
-    cursor: not-allowed;
-  }
-}
-
-@mixin btn-secundario {
-  background: transparent;
-  color: var(--cinza-600);
-  border: 1px solid var(--cor-borda-forte);
-  padding: 0.55rem 1.25rem;
-  border-radius: var(--raio-md);
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-
-  &:hover:not(:disabled) {
-    background: var(--cor-superficie-realce);
-    border: 1px solid var(--cor-borda-forte);
-  }
-
-  &:disabled {
-    color: var(--cor-texto-suave);
-    cursor: not-allowed;
   }
 }
 

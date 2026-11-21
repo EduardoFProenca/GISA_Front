@@ -24,7 +24,7 @@
     }
 
     @if (mostrarSalvar) {
-      <button appBotao type="button" [disabled]="salvarDesabilitado"
+      <button appBotao type="button" data-concluir [disabled]="salvarDesabilitado"
         [attr.title]="salvarDesabilitado ? motivoSalvarDesabilitado || null : null"
         (click)="aoClicarSalvar()">Salvar</button>
     }

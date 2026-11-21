@@ -1,7 +1,6 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 import { dataCurta } from '../../../shared/utils/data.util';
-import { NgIcon } from '@ng-icons/core';
 import { ICONES } from '../../../shared/icons';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -20,6 +19,7 @@ import { ROTULO_DIA_SEMANA, ROTULO_MODALIDADE } from '../../../shared/utils/rotu
 import { hojeIso, paraIsoMinuto } from '../../../shared/utils/data.util';
 import { SeletorHora } from '../../../shared/components/seletor-hora/seletor-hora';
 import { lerContextoTerapias } from '../contexto-terapias';
+import { Botao } from '../../../shared/components/botao/botao';
 
 // Chave de erro da API -> campo da tela
 const CAMPOS_API: Record<string, string> = {
@@ -43,7 +43,7 @@ interface PessoaItem {
 // Modalidade é calculada pela API: 1 paciente = individual; mais de um = coletiva.
 @Component({
   selector: 'app-form-terapia',
-  imports: [NgIcon, FormsModule, CabecalhoPagina, SelectBusca, SeletorHora],
+  imports: [Botao, FormsModule, CabecalhoPagina, SelectBusca, SeletorHora],
   templateUrl: './form-terapia.html',
   styleUrl: './form-terapia.scss',
 })

@@ -13,11 +13,12 @@ import { mensagemDeErro } from '../../../../core/http/erro-api';
 import { ROTULO_STATUS_CADASTRO, ROTULO_TIPO_ESCOLA } from '../../../../shared/utils/rotulos.util';
 import { formatarCelular } from '../../../../shared/utils/formatacao.util';
 import { DialogEscola } from '../dialog-escola/dialog-escola';
+import { Botao } from '../../../../shared/components/botao/botao';
 
 // GET /escolas/{id} + pacientes da escola (GET /pacientes?idEscola=, exige VISUALIZAR_PACIENTES; até 20, sem paginação).
 @Component({
   selector: 'app-detalhe-escola',
-  imports: [CampoDetalhe, RouterLink, CabecalhoPagina, ConfirmDialog, DialogEscola],
+  imports: [Botao, CampoDetalhe, RouterLink, CabecalhoPagina, ConfirmDialog, DialogEscola],
   templateUrl: './detalhe-escola.html',
   styleUrl: '../../tabelas-apoio.scss',
 })

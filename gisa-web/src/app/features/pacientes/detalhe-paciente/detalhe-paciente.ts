@@ -27,10 +27,11 @@ import {
   resumoInativacaoPaciente,
 } from '../../../shared/utils/rotulos.util';
 import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
+import { Botao } from '../../../shared/components/botao/botao';
 
 @Component({
   selector: 'app-detalhe-paciente',
-  imports: [CampoDetalhe, CabecalhoPagina, ConfirmDialog, HistoricoPaciente, TerapiasPaciente, SelectBusca],
+  imports: [Botao, CampoDetalhe, CabecalhoPagina, ConfirmDialog, HistoricoPaciente, TerapiasPaciente, SelectBusca],
   templateUrl: './detalhe-paciente.html',
   styleUrl: './detalhe-paciente.scss'
 })

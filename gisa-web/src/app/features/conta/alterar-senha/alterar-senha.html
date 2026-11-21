@@ -41,7 +41,7 @@
 
     @if (erro()) { <p class="erro-msg erro-geral">{{ erro() }}</p> }
 
-    <button type="submit" class="btn-salvar" [disabled]="salvando()">
+    <button appBotao type="submit" class="salvar-senha" [disabled]="salvando()">
       {{ salvando() ? 'Salvando...' : 'Alterar senha' }}
     </button>
   </form>

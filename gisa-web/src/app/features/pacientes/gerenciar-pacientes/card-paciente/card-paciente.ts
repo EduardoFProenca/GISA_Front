@@ -6,11 +6,12 @@ import { ICONES } from '../../../../shared/icons';
 import { PacienteResumo } from '../../../../core/models/paciente.model';
 import { ROTA_BASE_PACIENTES } from '../../contexto-pacientes';
 import { ROTULO_STATUS_CADASTRO } from '../../../../shared/utils/rotulos.util';
+import { Botao } from '../../../../shared/components/botao/botao';
 
 // Resultado da busca de pacientes: só nome, CPF mascarado e situação do cadastro (LGPD).
 @Component({
   selector: 'app-card-paciente',
-  imports: [CampoDetalhe, NgIcon],
+  imports: [Botao, CampoDetalhe, NgIcon],
   templateUrl: './card-paciente.html',
   styleUrl: './card-paciente.scss'
 })

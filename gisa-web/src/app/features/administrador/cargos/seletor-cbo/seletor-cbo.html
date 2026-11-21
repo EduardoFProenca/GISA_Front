@@ -59,8 +59,8 @@
     @if (msg) { <span class="erro-msg">{{ msg }}</span> }
     }
     <div class="acoes">
-      <button type="button" class="btn-voltar" (click)="cadastrando.set(false)">Voltar à busca</button>
-      <button type="button" class="btn-cadastrar" [disabled]="salvandoNovo()" (click)="cadastrarCbo()">
+      <button appBotao type="button" variante="neutro" tamanho="sm" (click)="cadastrando.set(false)">Voltar à busca</button>
+      <button appBotao type="button" tamanho="sm" data-concluir [disabled]="salvandoNovo()" (click)="cadastrarCbo()">
         {{ salvandoNovo() ? 'Cadastrando...' : 'Cadastrar e usar' }}
       </button>
     </div>

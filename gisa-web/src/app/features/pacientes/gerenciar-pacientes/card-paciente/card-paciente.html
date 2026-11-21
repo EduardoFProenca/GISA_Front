@@ -7,8 +7,8 @@
     <div class="topo-prof">
       <strong>{{ paciente.nome }}</strong>
       @if (!somenteLeitura) {
-        <button type="button" class="btn-editar" title="Editar" (click)="abrirEdicao($event)">
-          <span><ng-icon [name]="icones.editar" /></span>
+        <button appBotao type="button" variante="fantasma" somenteIcone title="Editar" aria-label="Editar" (click)="abrirEdicao($event)">
+          <ng-icon [name]="icones.editar" />
         </button>
       }
     </div>

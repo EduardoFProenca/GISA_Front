@@ -83,12 +83,9 @@
       color: var(--cor-titulo);
     }
 
+    // Botão variante "link": só ajusta o tamanho da fonte (RN09 da parte 2).
     .link {
-      border: none;
-      background: none;
-      color: var(--cor-destaque);
-      font-size: 0.75rem;
-      cursor: pointer;
+      --botao-fonte: 0.75rem;
     }
   }
 

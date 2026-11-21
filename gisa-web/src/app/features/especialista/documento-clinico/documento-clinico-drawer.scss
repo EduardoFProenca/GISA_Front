@@ -105,14 +105,6 @@
   border-top: 1px solid var(--cor-borda);
 }
 
-.btn-primario {
-  @include btn-primario;
-}
-
-.btn-secundario {
-  @include btn-secundario;
-}
-
 // Botões de modelo (atestado): preenchem o texto, que continua editável.
 .modelos {
   display: flex;

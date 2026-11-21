@@ -44,8 +44,7 @@
 }
 
 // ---------- Cores ----------
-// [data-variante] sobe a especificidade para vencer o `button:hover` global enquanto ele
-// existir (some na parte 3).
+// [data-variante] sobe a especificidade acima de estilos de `button` vindos de fora do componente.
 :host([data-variante]) {
   background: var(--_bg);
   color: var(--_cor);

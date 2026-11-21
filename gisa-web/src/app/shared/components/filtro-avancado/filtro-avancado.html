@@ -57,7 +57,7 @@
   }
 
   @if (totalFiltrosAtivos > 0) {
-    <button type="button" class="btn-limpar" (click)="limparFiltros()">
+    <button appBotao type="button" variante="link" class="limpar-filtros" (click)="limparFiltros()">
       Limpar filtros
       <span class="contagem">{{ totalFiltrosAtivos }}</span>
     </button>

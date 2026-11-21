@@ -25,9 +25,9 @@
             }
           </div>
           <div class="acoes-card">
-            <button type="button" class="btn-editar" (click)="editarResponsavel($index)" title="Editar Responsável"
+            <button appBotao type="button" variante="fantasma" tamanho="sm" somenteIcone aria-label="Editar responsável" (click)="editarResponsavel($index)" title="Editar Responsável"
              ><ng-icon [name]="icones.editar" /></button>
-            <button type="button" class="remover-item" (click)="removerResponsavel($index)"
+            <button appBotao type="button" variante="perigo-suave" tamanho="sm" somenteIcone aria-label="Remover responsável" (click)="removerResponsavel($index)"
               title="Remover Responsável">✕</button>
           </div>
         </div>
@@ -61,7 +61,7 @@
             (valem para todos os pacientes dele). Informe o parentesco e se ele reside com o paciente.
           </p>
           @if (novoResponsavel.inativo) { <p>Este cadastro está inativo e será reativado ao salvar.</p> }
-          <button type="button" class="link-acao" (click)="desfazerSelecao()">Cadastrar outro responsável</button>
+          <button appBotao type="button" variante="link" (click)="desfazerSelecao()">Cadastrar outro responsável</button>
         </div>
       } @else if (vinculadoAntes) {
         <p class="aviso-info">Alterações nos dados deste responsável valem também para outros pacientes vinculados a ele.</p>
@@ -84,7 +84,7 @@
           @if (cpfJaCadastrado) {
             <span class="aviso-info aviso-cpf">
               Este CPF já é de <strong>{{ cpfJaCadastrado.nome }}</strong>.
-              <button type="button" class="link-acao" (click)="usarExistente(cpfJaCadastrado.idCadastro)">Usar este cadastro</button>
+              <button appBotao type="button" variante="link" (click)="usarExistente(cpfJaCadastrado.idCadastro)">Usar este cadastro</button>
             </span>
           }
         </div>
@@ -173,8 +173,8 @@
       }
 
       <div class="acoes-form">
-        <button type="button" class="btn-cancelar" (click)="cancelarEdicao()">Cancelar</button>
-        <button type="button" class="btn-confirmar" (click)="salvarResponsavel()">
+        <button appBotao type="button" variante="neutro" (click)="cancelarEdicao()">Cancelar</button>
+        <button appBotao type="button" data-concluir (click)="salvarResponsavel()">
           {{ indexEdicao !== null ? 'Atualizar Responsável' : 'Confirmar Responsável' }}
         </button>
       </div>
@@ -189,6 +189,7 @@
   titulo="Endereço do paciente"
   mensagem=""
   textoConfirmar="Usar no paciente"
+  varianteConfirmar="primario"
   textoCancelar="Voltar"
   (confirmar)="confirmarTrocaEndereco()"
   (cancelar)="cancelarTrocaEndereco()"

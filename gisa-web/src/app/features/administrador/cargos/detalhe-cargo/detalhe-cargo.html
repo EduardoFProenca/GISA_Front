@@ -17,8 +17,8 @@
     </div>
 
     <div class="acoes-situacao">
-      <button type="button" class="btn-secundario" (click)="edicaoAberta.set(true)">Editar cargo</button>
-      <button type="button" class="btn-inativar" [disabled]="!podeExcluir() || excluindo()"
+      <button appBotao type="button" variante="suave" (click)="edicaoAberta.set(true)">Editar cargo</button>
+      <button appBotao type="button" variante="perigo-suave" [disabled]="!podeExcluir() || excluindo()"
         (click)="exclusaoAberta.set(true)">{{ excluindo() ? 'Excluindo...' : 'Excluir cargo' }}</button>
     </div>
     @if (!podeExcluir()) {

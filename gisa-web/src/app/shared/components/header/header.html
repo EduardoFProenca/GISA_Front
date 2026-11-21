@@ -27,7 +27,7 @@
           <div class="painel-topo">
             <strong>Notificações</strong>
             @if (notificacoes.naoLidas() > 0) {
-              <button type="button" class="link" (click)="notificacoes.marcarTodasComoLidas()">
+              <button appBotao type="button" variante="link" class="link" (click)="notificacoes.marcarTodasComoLidas()">
                 Marcar todas como lidas
               </button>
             }

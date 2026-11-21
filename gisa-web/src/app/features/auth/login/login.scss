@@ -113,27 +113,12 @@
     text-align: left;
   }
 
-  // Mesma largura dos campos.
-  .btn-entrar {
+  // Mesma largura dos campos; o visual vem do Botao (só a altura é ajustada, RN09).
+  .entrar {
+    --botao-altura: 46px;
+    --botao-fonte: 1rem;
     width: 100%;
     margin-top: 2rem;
-    padding: 0.85rem;
-    background-color: var(--marinho-900);
-    color: white;
-    border: none;
-    border-radius: var(--raio-md);
-    font-size: 1rem;
-    font-weight: 600;
-
-    &:hover:not(:disabled) {
-      background-color: var(--marinho-800);
-      border: none;
-    }
-
-    &:disabled {
-      opacity: 0.7;
-      cursor: progress;
-    }
   }
 }
 

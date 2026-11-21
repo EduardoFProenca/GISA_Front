@@ -32,9 +32,9 @@
     }
 
     <div class="acoes-situacao">
-      <button type="button" class="btn-secundario" (click)="abrirDialogo('perfil')">Trocar perfil</button>
-      <button type="button" class="btn-secundario" (click)="abrirDialogo('senha')">Enviar nova senha temporária</button>
-      <button type="button" class="btn-inativar" [disabled]="ehVoceMesmo || retirando()"
+      <button appBotao type="button" variante="suave" (click)="abrirDialogo('perfil')">Trocar perfil</button>
+      <button appBotao type="button" variante="suave" (click)="abrirDialogo('senha')">Enviar nova senha temporária</button>
+      <button appBotao type="button" variante="perigo-suave" [disabled]="ehVoceMesmo || retirando()"
         (click)="retiradaAberta.set(true)">{{ retirando() ? 'Retirando...' : 'Retirar acesso' }}</button>
     </div>
     @if (ehVoceMesmo) {

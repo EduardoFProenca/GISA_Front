@@ -31,7 +31,7 @@
         <span class="erro-msg">{{ erroLogin() }}</span>
         }
 
-        <button type="submit" class="btn-entrar" [disabled]="carregando()">{{ carregando() ? (demorando() ? 'Aguardando o servidor...' : 'Entrando...') : 'Entrar' }}</button>
+        <button appBotao type="submit" class="entrar" [disabled]="carregando()">{{ carregando() ? (demorando() ? 'Aguardando o servidor...' : 'Entrando...') : 'Entrar' }}</button>
         <a class="esqueci-senha" routerLink="/esqueci-senha">Esqueci minha senha</a>
     </form>
 </div>

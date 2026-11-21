@@ -216,40 +216,6 @@
   }
 }
 
-.btn-remover {
-  background: transparent;
-  color: var(--cor-perigo-forte);
-  border: 1px solid var(--vermelho-200);
-  border-radius: var(--raio-md);
-  padding: 0.3rem 0.7rem;
-  font-size: 0.8rem;
-
-  &:hover {
-    background: var(--cor-perigo-suave);
-    border-color: var(--vermelho-200);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: default;
-  }
-}
-
-.btn-pequeno {
-  background: var(--indigo-100);
-  color: var(--indigo-800);
-  border: none;
-  border-radius: var(--raio-md);
-  padding: 0.35rem 0.8rem;
-  font-size: 0.8rem;
-  font-weight: 500;
-
-  &:hover {
-    background: var(--indigo-200);
-    border: none;
-  }
-}
-
 // Lista de checkboxes de permissões nos diálogos.
 .lista-checks {
   display: flex;

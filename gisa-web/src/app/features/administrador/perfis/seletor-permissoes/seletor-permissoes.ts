@@ -1,6 +1,7 @@
 import { Component, computed, input, output, signal } from '@angular/core';
 import { Permissao } from '../../../../core/models/perfil.model';
 import { normalizarBusca } from '../../../../shared/utils/texto.util';
+import { Botao } from '../../../../shared/components/botao/botao';
 
 // Categoria de cada permissão enquanto GET /permissoes não traz `categoria` (ver PERFIS.md).
 // Quando o back passar a mandar, este mapa só serve de reserva.
@@ -55,6 +56,7 @@ function posicao(categoria: string): number {
 // Lista de permissões com busca por nome/descrição, agrupada por categoria, com "marcar todas" por grupo.
 @Component({
   selector: 'app-seletor-permissoes',
+  imports: [Botao],
   templateUrl: './seletor-permissoes.html',
   styleUrl: './seletor-permissoes.scss',
 })

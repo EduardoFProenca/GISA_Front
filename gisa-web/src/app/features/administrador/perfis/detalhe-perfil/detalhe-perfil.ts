@@ -11,12 +11,13 @@ import { mensagemDeErro } from '../../../../core/http/erro-api';
 import { DialogPerfil } from '../dialog-perfil/dialog-perfil';
 import { SeletorPermissoes } from '../seletor-permissoes/seletor-permissoes';
 import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
+import { Botao } from '../../../../shared/components/botao/botao';
 
 // GET /perfis/{id}: permissões e usuários do perfil. Toda alteração devolve o perfil atualizado,
 // e a tela é redesenhada direto com a resposta.
 @Component({
   selector: 'app-detalhe-perfil',
-  imports: [CampoDetalhe, CabecalhoPagina, ConfirmDialog, FormDialog, DialogPerfil, SeletorPermissoes],
+  imports: [Botao, CampoDetalhe, CabecalhoPagina, ConfirmDialog, FormDialog, DialogPerfil, SeletorPermissoes],
   templateUrl: './detalhe-perfil.html',
   styleUrl: '../../tabelas-apoio.scss',
 })

@@ -25,16 +25,6 @@
   }
 }
 
-.btn-primario {
-  @include btn-primario;
-}
-
-.btn-secundario {
-  @include btn-secundario;
-  text-decoration: none;
-  display: inline-block;
-}
-
 .painel {
   background: white;
   border-radius: var(--raio-xl);

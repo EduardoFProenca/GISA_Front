@@ -7,12 +7,12 @@
     <div class="topo-prof">
       <strong>{{ profissional.nome }}</strong>
       <div class="acoes-prof">
-        <button type="button" class="btn-editar" title="Ver histórico" (click)="abrirHistorico($event)">
+        <button appBotao type="button" variante="fantasma" somenteIcone title="Ver histórico" aria-label="Ver histórico" (click)="abrirHistorico($event)">
           <ng-icon [name]="icones.historico" />
         </button>
         @if (podeEditar) {
-          <button type="button" class="btn-editar" title="Editar" (click)="abrirEdicao($event)">
-            <span><ng-icon [name]="icones.editar" /></span>
+          <button appBotao type="button" variante="fantasma" somenteIcone title="Editar" aria-label="Editar" (click)="abrirEdicao($event)">
+            <ng-icon [name]="icones.editar" />
           </button>
         }
       </div>

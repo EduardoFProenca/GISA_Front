@@ -24,8 +24,9 @@
       @if (podeInativar) {
         <div class="acoes-situacao">
           <button
+            appBotao
             type="button"
-            [class]="ativo() ? 'btn-inativar' : 'btn-reativar'"
+            [variante]="ativo() ? 'perigo-suave' : 'sucesso-suave'"
             [disabled]="alterandoStatus()"
             (click)="pedirConfirmacao()"
           >
@@ -81,7 +82,7 @@
         <div class="info-bloco linha-vinculo">
           <app-campo-detalhe rotulo="Nome">{{ assist.nome }}</app-campo-detalhe>
           @if (podeVincular) {
-            <button type="button" class="btn-desvincular" [disabled]="vinculando()"
+            <button appBotao type="button" variante="perigo-suave" tamanho="sm" [disabled]="vinculando()"
               [attr.aria-label]="'Encerrar vínculo com ' + assist.nome" (click)="desvinculoPendente.set(assist)">
               Desvincular
             </button>
@@ -179,6 +180,7 @@
     ? 'O cadastro fica inativo e o paciente passa a Desligado (se estiver em Alta, continua em Alta). O histórico é mantido.'
     : 'O cadastro volta a ficar ativo e o paciente passa a Matriculado.'"
   [textoConfirmar]="ativo() ? 'Inativar' : 'Reativar'"
+  [varianteConfirmar]="ativo() ? 'perigo' : 'primario'"
   textoCancelar="Voltar"
   (confirmar)="confirmarAlteracaoStatus()"
   (cancelar)="confirmacaoAberta.set(false)"

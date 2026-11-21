@@ -15,12 +15,13 @@ import { Auth } from '../../../../core/auth/auth';
 import { mensagemDeErro } from '../../../../core/http/erro-api';
 import { ROTULO_TIPO_CADASTRO } from '../../../../shared/utils/rotulos.util';
 import { formatarCpf } from '../../../../shared/utils/formatacao.util';
+import { Botao } from '../../../../shared/components/botao/botao';
 
 // GET /usuarios/{idCadastro}: perfil, permissões e as ações de trocar perfil, redefinir senha e retirar acesso.
 // As travas (próprio acesso, último administrador ativo) são da API; aqui só evitamos o caso óbvio.
 @Component({
   selector: 'app-detalhe-usuario',
-  imports: [CampoDetalhe, FormsModule, RouterLink, CabecalhoPagina, ConfirmDialog, FormDialog, SelectMenu],
+  imports: [Botao, CampoDetalhe, FormsModule, RouterLink, CabecalhoPagina, ConfirmDialog, FormDialog, SelectMenu],
   templateUrl: './detalhe-usuario.html',
   styleUrl: '../../tabelas-apoio.scss',
 })

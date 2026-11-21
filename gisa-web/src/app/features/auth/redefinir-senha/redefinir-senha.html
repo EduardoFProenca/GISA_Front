@@ -41,7 +41,7 @@
 
       @if (erro()) { <span class="erro-msg">{{ erro() }}</span> }
 
-      <button type="submit" class="btn-entrar" [disabled]="salvando()">{{ salvando() ? 'Salvando...' : 'Salvar e entrar' }}</button>
+      <button appBotao type="submit" class="entrar" [disabled]="salvando()">{{ salvando() ? 'Salvando...' : 'Salvar e entrar' }}</button>
 
       @if (erroToken()) {
         <a class="esqueci-senha" [routerLink]="primeiroAcesso ? '/login' : '/esqueci-senha'">

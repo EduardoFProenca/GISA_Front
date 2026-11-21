@@ -18,6 +18,7 @@ import {
   rotuloMes,
   statusAgenda,
 } from './agenda.util';
+import { Botao } from '../../../shared/components/botao/botao';
 
 type Visao = 'dia' | 'semana';
 
@@ -26,7 +27,7 @@ const MAX_CHIPS_POR_DIA = 3;
 // Agenda do especialista logado (RF04 / CS01). Dados: GET /terapias/minhas.
 @Component({
   selector: 'app-agenda-especialista',
-  imports: [CabecalhoPagina, BuscaFiltro],
+  imports: [Botao, CabecalhoPagina, BuscaFiltro],
   templateUrl: './agenda-especialista.html',
   styleUrl: './agenda-especialista.scss',
 })

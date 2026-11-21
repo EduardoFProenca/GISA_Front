@@ -42,6 +42,7 @@
 
 .add-item {
   background: transparent;
+  border-radius: var(--raio-lg);
   color: var(--cor-primaria);
   border: 1.5px dashed var(--azul-300);
   padding: 0.6rem;

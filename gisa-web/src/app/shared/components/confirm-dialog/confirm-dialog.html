@@ -10,8 +10,10 @@
       <ng-content />
 
       <div class="dialog-acoes">
-        <button type="button" class="btn-cancelar" (click)="aoCancelar()">{{ textoCancelar }}</button>
-        <button type="button" class="btn-confirmar" (click)="aoConfirmar()">{{ textoConfirmar }}</button>
+        <button appBotao type="button" variante="neutro" (click)="aoCancelar()">{{ textoCancelar }}</button>
+        <button appBotao type="button" data-concluir [variante]="varianteConfirmar" (click)="aoConfirmar()">
+          {{ textoConfirmar }}
+        </button>
       </div>
     </div>
   </div>

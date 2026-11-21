@@ -24,7 +24,7 @@
     }
 
     @if (paciente() && !drawerAberto()) {
-    <button type="button" class="btn-emitir" (click)="drawerAberto.set(true)">
+    <button appBotao type="button" class="emitir" (click)="drawerAberto.set(true)">
       {{ titulo }} para {{ paciente()!.pessoa.nome }}
     </button>
     }

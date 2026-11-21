@@ -9,11 +9,12 @@ import { AvisoSucessoService } from '../../../../core/services/aviso-sucesso';
 import { Auth } from '../../../../core/auth/auth';
 import { mensagemDeErro } from '../../../../core/http/erro-api';
 import { DialogEspecialidade } from '../dialog-especialidade/dialog-especialidade';
+import { Botao } from '../../../../shared/components/botao/botao';
 
 // GET /especialidades/{id}: especialistas e PJ vinculados (ativos e inativos).
 @Component({
   selector: 'app-detalhe-especialidade',
-  imports: [CampoDetalhe, RouterLink, CabecalhoPagina, ConfirmDialog, DialogEspecialidade],
+  imports: [Botao, CampoDetalhe, RouterLink, CabecalhoPagina, ConfirmDialog, DialogEspecialidade],
   templateUrl: './detalhe-especialidade.html',
   styleUrl: '../../tabelas-apoio.scss',
 })

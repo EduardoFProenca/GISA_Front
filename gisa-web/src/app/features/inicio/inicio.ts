@@ -17,6 +17,7 @@ import { ROTULO_MODALIDADE } from '../../shared/utils/rotulos.util';
 import { ROTULO_STATUS_AGENDA, proximoPaciente, resumoDoDia, statusAgenda } from '../especialista/agenda/agenda.util';
 import { calcularResumo, ResumoPresenca } from '../terapias/registrar-presenca/presenca.util';
 import { terapiasDeHoje } from '../terapias/terapias-hoje';
+import { Botao } from '../../shared/components/botao/botao';
 
 // Página inicial única. Cada bloco aparece conforme as permissões do usuário (ou, nos blocos
 // "meus", conforme o tipo de cadastro), qualquer que seja o nome do perfil:
@@ -27,7 +28,7 @@ import { terapiasDeHoje } from '../terapias/terapias-hoje';
 // - meus pacientes: cadastro de assistente social (/assistentes-sociais/me/pacientes).
 @Component({
   selector: 'app-inicio',
-  imports: [CardEstatistica, Header, PainelAcoesComponent, AtividadesRecentes, RouterLink],
+  imports: [Botao, CardEstatistica, Header, PainelAcoesComponent, AtividadesRecentes, RouterLink],
   templateUrl: './inicio.html',
   styleUrl: './inicio.scss',
 })

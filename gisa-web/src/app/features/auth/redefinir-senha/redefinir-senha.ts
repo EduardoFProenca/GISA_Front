@@ -6,6 +6,7 @@ import { Auth } from '../../../core/auth/auth';
 import { ROTA_INICIO } from '../../../core/auth/permissoes';
 import { aplicarErrosApi } from '../../../core/http/erro-api';
 import { ICONES } from '../../../shared/icons';
+import { Botao } from '../../../shared/components/botao/botao';
 
 // Chave do history.state com o tokenRedefinicao do login (primeiro acesso), para não pôr o token na URL.
 export const ESTADO_PRIMEIRO_ACESSO = 'tokenPrimeiroAcesso';
@@ -16,7 +17,7 @@ export const ESTADO_PRIMEIRO_ACESSO = 'tokenPrimeiroAcesso';
 // A resposta já é o token de login: o usuário entra direto no Início.
 @Component({
   selector: 'app-redefinir-senha',
-  imports: [FormsModule, RouterLink, NgIcon],
+  imports: [Botao, FormsModule, RouterLink, NgIcon],
   styleUrls: ['../login/login.scss', '../recuperar-senha/recuperar-senha.scss'],
   templateUrl: './redefinir-senha.html',
 })

@@ -73,32 +73,6 @@
   justify-content: flex-end;
   gap: 0.5rem;
   margin-top: 0.85rem;
-
-  button {
-    border: 1px solid var(--cor-borda);
-    border-radius: var(--raio-md);
-    padding: 0.5rem 0.9rem;
-    background: white;
-    color: var(--cor-texto-medio);
-    font-size: 0.85rem;
-    font-weight: 600;
-
-    &:hover {
-      background: var(--cor-superficie-suave);
-      border-color: var(--cor-borda);
-    }
-
-    &.primaria {
-      background: var(--cor-destaque);
-      border-color: var(--cor-destaque);
-      color: white;
-
-      &:hover {
-        background: var(--cor-destaque-forte);
-        border-color: var(--cor-destaque-forte);
-      }
-    }
-  }
 }
 
 @keyframes entrar {

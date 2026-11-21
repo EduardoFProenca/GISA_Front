@@ -60,6 +60,7 @@
   flex-wrap: wrap;
 }
 
+// Botões de marcação de presença (widget, RN01): declaram o próprio visual.
 .btn {
   border: 1px solid var(--cor-borda-forte);
   background: white;
@@ -109,11 +110,6 @@
     }
   }
 
-  &.confirmar {
-    background: var(--cor-primaria);
-    border-color: var(--cor-primaria);
-    color: white;
-  }
 }
 
 .justificativa-form {

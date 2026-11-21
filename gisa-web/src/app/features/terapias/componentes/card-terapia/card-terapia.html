@@ -34,23 +34,19 @@
   }
 
   <div class="rodape">
-    <button type="button" class="btn btn-detalhes" (click)="verDetalhes.emit(terapia.idTerapia)">
+    <button appBotao type="button" variante="contorno" tamanho="sm" (click)="verDetalhes.emit(terapia.idTerapia)">
       Detalhes
     </button>
 
     <div class="acoes">
       @if (podeEditar) {
-        <button type="button" class="btn btn-icone" title="Editar terapia" aria-label="Editar terapia"
-          (click)="editar.emit(terapia.idTerapia)">
-          <span><ng-icon [name]="icones.editar" /></span>
-        </button>
+        <button appBotao type="button" variante="fantasma" tamanho="sm" somenteIcone [icone]="icones.editar"
+          title="Editar terapia" aria-label="Editar terapia" (click)="editar.emit(terapia.idTerapia)"></button>
       }
 
       @if (podeCancelar) {
-        <button type="button" class="btn btn-icone perigo" title="Cancelar terapia" aria-label="Cancelar terapia"
-          (click)="cancelar.emit(terapia.idTerapia)">
-          <ng-icon [name]="icones.cancelar" />
-        </button>
+        <button appBotao type="button" variante="perigo-suave" tamanho="sm" somenteIcone [icone]="icones.cancelar"
+          title="Cancelar terapia" aria-label="Cancelar terapia" (click)="cancelar.emit(terapia.idTerapia)"></button>
       }
     </div>
   </div>

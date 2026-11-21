@@ -9,6 +9,7 @@ import { Filtro } from '../../../../../shared/directives/filtro.directive';
 import { TerapiaForaDaJornada } from '../../../../../core/models/comum.model';
 import { dataCurta } from '../../../../../shared/utils/data.util';
 import { SelectMenu } from '../../../../../shared/components/select-menu/select-menu';
+import { Botao } from '../../../../../shared/components/botao/botao';
 
 export type Jornada = JornadaForm;
 
@@ -16,7 +17,7 @@ export type Jornada = JornadaForm;
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-especialista',
-  imports: [FormsModule, Mascara, SeletorHora, Filtro, SelectMenu],
+  imports: [Botao, FormsModule, Mascara, SeletorHora, Filtro, SelectMenu],
   templateUrl: './info-especialista.html',
   styleUrl: './info-especialista.scss',
 })

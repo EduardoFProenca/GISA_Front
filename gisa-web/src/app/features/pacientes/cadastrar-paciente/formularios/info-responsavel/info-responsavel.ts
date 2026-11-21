@@ -24,6 +24,7 @@ import {
   mesmoEnderecoForm,
   responsavelReaproveitado,
 } from '../../../paciente-form.util';
+import { Botao } from '../../../../../shared/components/botao/botao';
 
 export type { ResponsavelItem };
 
@@ -31,7 +32,7 @@ export type { ResponsavelItem };
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-responsavel',
-  imports: [NgIcon, FormsModule, Mascara, Contato, ConfirmDialog, SelectBusca, SelectMenu, Filtro],
+  imports: [Botao, NgIcon, FormsModule, Mascara, Contato, ConfirmDialog, SelectBusca, SelectMenu, Filtro],
   templateUrl: './info-responsavel.html',
   styleUrl: './info-responsavel.scss'
 })

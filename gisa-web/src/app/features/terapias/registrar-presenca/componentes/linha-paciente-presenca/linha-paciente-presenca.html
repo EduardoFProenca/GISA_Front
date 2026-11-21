@@ -28,7 +28,7 @@
       (click)="marcarFalta.emit()">Falta</button>
 
     @if (paciente().presenca !== 'PENDENTE') {
-    <button type="button" class="btn secundario"
+    <button appBotao type="button" variante="neutro" tamanho="sm"
       [title]="dica('PENDENTE', 'Voltar para pendente (desfaz a marcação)')"
       [disabled]="bloqueado() || !permitida('PENDENTE')" (click)="desfazer.emit()">Desfazer</button>
     }
@@ -40,10 +40,10 @@
     <input type="text" maxlength="255" placeholder="Motivo da falta (ex.: atestado médico)"
       [ngModel]="texto()" (ngModelChange)="texto.set($event)"
       (keyup.enter)="confirmar()" data-enter-nativo />
-    <button type="button" class="btn confirmar"
+    <button appBotao type="button" tamanho="sm"
       [disabled]="!texto().trim() || bloqueado()"
       (click)="confirmar()">Confirmar</button>
-    <button type="button" class="btn secundario" (click)="fechar()">Cancelar</button>
+    <button appBotao type="button" variante="neutro" tamanho="sm" (click)="fechar()">Cancelar</button>
   </div>
   }
 </div>

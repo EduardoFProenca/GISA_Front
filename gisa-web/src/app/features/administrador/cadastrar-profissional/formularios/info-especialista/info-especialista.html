@@ -22,7 +22,7 @@
                     <option [value]="opcao.valor">{{ opcao.label }}</option>
                     }
                 </app-select-menu>
-                <button type="button" class="remover-item" (click)="removerEspecialidade($index)"
+                <button appBotao type="button" variante="perigo-suave" tamanho="sm" somenteIcone aria-label="Remover especialidade" (click)="removerEspecialidade($index)"
                     title="Remover">✕</button>
             </div>
             }
@@ -58,7 +58,7 @@
                 <app-seletor-hora [value]="jornada.horaTermino" [disabled]="somenteLeitura"
                     (valueChange)="jornada.horaTermino = $event; limparErro('jornadas')"
                     [comErro]="!!erros['jornadas'] && !jornada.horaTermino" />
-                <button type="button" class="remover-item" (click)="removerJornada($index)" title="Remover">✕</button>
+                <button appBotao type="button" variante="perigo-suave" tamanho="sm" somenteIcone aria-label="Remover jornada" (click)="removerJornada($index)" title="Remover">✕</button>
             </div>
             }
             @if (erros['jornadas']) { <span class="erro-msg">{{ erros['jornadas'] }}</span> }

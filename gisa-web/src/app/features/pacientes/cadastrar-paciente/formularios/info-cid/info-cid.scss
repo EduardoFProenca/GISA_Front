@@ -42,6 +42,7 @@
 
 .add-item {
   background: transparent;
+  border-radius: var(--raio-lg);
   color: var(--cor-primaria);
   border: 1.5px dashed var(--azul-300);
   padding: 0.6rem;
@@ -100,21 +101,10 @@
 }
 
 // Cadastro manual de CID fora da tabela oficial.
+// Botão variante "link": aqui só posição e tamanho da fonte.
 .link-manual {
-  display: block;
   margin: 0.6rem 0 0;
-  padding: 0;
-  background: none;
-  border: none;
-  color: var(--cor-primaria);
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-    background: none;
-  }
+  --botao-fonte: 0.82rem;
 }
 
 .cid-manual {
@@ -161,7 +151,11 @@
   border-radius: var(--raio-pilula);
   font-size: 0.85rem;
 
-  .btn-remover {
+  // "✕" dentro da etiqueta do CID: parte do widget, não usa o Botao.
+  .remover-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 22px;
     height: 22px;
     padding: 0;

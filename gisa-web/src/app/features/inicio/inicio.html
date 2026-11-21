@@ -71,7 +71,7 @@
                   </div>
                 </div>
                 @if (vePacientes) {
-                  <button type="button" class="btn-primario" (click)="abrirProntuario(p.idPaciente, p.idTerapia)">
+                  <button appBotao type="button" class="abrir-prontuario" (click)="abrirProntuario(p.idPaciente, p.idTerapia)">
                     Abrir Prontuário
                   </button>
                 }

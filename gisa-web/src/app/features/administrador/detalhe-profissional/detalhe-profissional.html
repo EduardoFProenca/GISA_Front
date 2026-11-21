@@ -31,13 +31,13 @@
         <div class="acoes-situacao">
             @if (podeGerenciarUsuarios && ativo()) {
             @if (usuario()) {
-            <button type="button" class="btn-secundario" (click)="abrirDialogo('senha')">Enviar nova senha temporária</button>
+            <button appBotao type="button" variante="suave" (click)="abrirDialogo('senha')">Enviar nova senha temporária</button>
             } @else {
-            <button type="button" class="btn-secundario" (click)="abrirDialogo('acesso')">Conceder acesso ao sistema</button>
+            <button appBotao type="button" variante="suave" (click)="abrirDialogo('acesso')">Conceder acesso ao sistema</button>
             }
             }
             @if (podeInativar) {
-            <button type="button" [class]="ativo() ? 'btn-inativar' : 'btn-reativar'" [disabled]="alterandoStatus()"
+            <button appBotao type="button" [variante]="ativo() ? 'perigo-suave' : 'sucesso-suave'" [disabled]="alterandoStatus()"
                 (click)="confirmacaoAberta.set(true)">
                 {{ alterandoStatus() ? 'Salvando...' : ativo() ? 'Inativar' : 'Reativar' }}
             </button>
@@ -115,7 +115,7 @@
                     {{ pac.statusCadastro === 'ATIVO' ? 'Ativo' : 'Inativo' }}
                 </span>
                 @if (podeEditar) {
-                <button type="button" class="btn-desvincular" [disabled]="vinculando()"
+                <button appBotao type="button" variante="perigo-suave" tamanho="sm" [disabled]="vinculando()"
                     [attr.aria-label]="'Desvincular ' + pac.nome" (click)="desvinculoPendente.set(pac)">Desvincular</button>
                 }
             </li>
@@ -161,6 +161,7 @@
       ? 'O cadastro fica inativo e, se tiver acesso ao sistema, não conseguirá mais fazer login.'
       : 'O cadastro volta a ficar ativo.'"
     [textoConfirmar]="ativo() ? 'Inativar' : 'Reativar'" textoCancelar="Voltar"
+    [varianteConfirmar]="ativo() ? 'perigo' : 'primario'"
     (confirmar)="confirmarAlteracaoStatus()" (cancelar)="confirmacaoAberta.set(false)">
 </app-confirm-dialog>
 

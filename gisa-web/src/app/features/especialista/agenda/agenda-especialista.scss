@@ -52,10 +52,19 @@
   }
 }
 
+// Parte do navegador de mês (widget): declara o próprio visual.
 .btn-hoje {
-  @include btn-secundario;
+  background: transparent;
+  color: var(--cinza-600);
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: var(--raio-pilula);
   padding: 0.35rem 1rem;
   font-size: 0.85rem;
+  font-weight: 600;
+
+  &:hover {
+    background: var(--cor-superficie-realce);
+  }
 }
 
 // ---- calendário ----
@@ -351,14 +360,6 @@
   flex-wrap: wrap;
   gap: 0.6rem;
   margin-top: 1.5rem;
-}
-
-.btn-primario {
-  @include btn-primario;
-}
-
-.btn-secundario {
-  @include btn-secundario;
 }
 
 @include selos-status;

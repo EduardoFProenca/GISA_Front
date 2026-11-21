@@ -12,7 +12,8 @@
     @if (comAcoes()) {
     <div class="acoes">
       @for (acao of a.acoes; track acao.texto) {
-      <button type="button" [class.primaria]="acao.primaria" (click)="servico.executar(acao)">{{ acao.texto }}</button>
+      <button appBotao type="button" tamanho="sm" [variante]="acao.primaria ? 'primario' : 'neutro'"
+        (click)="servico.executar(acao)">{{ acao.texto }}</button>
       }
     </div>
     }

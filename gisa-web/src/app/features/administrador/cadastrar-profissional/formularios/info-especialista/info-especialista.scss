@@ -87,24 +87,9 @@
   }
 }
 
-.remover-item {
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  padding: 0;
-  background: var(--vermelho-50);
-  color: var(--vermelho-500);
-  border: none;
-  border-radius: var(--raio-md);
-  font-size: 0.85rem;
-
-  &:hover {
-    background: var(--cor-perigo-suave);
-  }
-}
-
 .add-item {
   background: transparent;
+  border-radius: var(--raio-lg);
   color: var(--cor-primaria);
   border: 1.5px dashed var(--azul-300);
   padding: 0.6rem;

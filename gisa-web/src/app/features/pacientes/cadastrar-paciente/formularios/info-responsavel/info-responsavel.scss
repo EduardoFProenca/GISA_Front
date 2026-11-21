@@ -42,6 +42,7 @@
 
 .add-item {
   background: transparent;
+  border-radius: var(--raio-lg);
   color: var(--cor-primaria);
   border: 1.5px dashed var(--azul-300);
   padding: 0.6rem;
@@ -59,22 +60,6 @@
     border-color: var(--cor-borda-forte);
     background: transparent;
     cursor: not-allowed;
-  }
-}
-
-.remover-item {
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  padding: 0;
-  background: var(--vermelho-50);
-  color: var(--vermelho-500);
-  border: none;
-  border-radius: var(--raio-md);
-  font-size: 0.85rem;
-
-  &:hover {
-    background: var(--cor-perigo-suave);
   }
 }
 
@@ -128,28 +113,6 @@
     gap: 0.5rem;
     align-items: center;
   }
-
-  .btn-editar {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.35rem 0.5rem;
-    border-radius: var(--raio-md);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--cinza-600);
-    transition: background 0.2s, color 0.2s;
-
-    &:hover {
-      background-color: var(--celeste-100);
-      color: var(--celeste-600);
-    }
-
-    svg {
-      stroke: currentColor;
-    }
-  }
 }
 
 .formulario-card {
@@ -178,36 +141,6 @@
   justify-content: flex-end;
   gap: 0.75rem;
   margin-top: 1.25rem;
-
-  .btn-cancelar {
-    background: transparent;
-    color: var(--cinza-600);
-    border: 1px solid var(--cor-borda-forte);
-    padding: 0.5rem 1.25rem;
-    border-radius: var(--raio-sm);
-    font-size: 0.95rem;
-    font-weight: 600;
-
-    &:hover {
-      background: var(--cor-superficie-realce);
-      border: 1px solid var(--cor-borda-forte);
-    }
-  }
-
-  .btn-confirmar {
-    background: var(--cor-destaque);
-    color: white;
-    border: none;
-    padding: 0.5rem 1.25rem;
-    border-radius: var(--raio-sm);
-    font-size: 0.95rem;
-    font-weight: 600;
-
-    &:hover {
-      background: var(--cor-destaque-forte);
-      border: none;
-    }
-  }
 }
 
 // Responsável já cadastrado (busca e avisos)

@@ -25,12 +25,12 @@
     @if (podeAlterarStatus && (proximo() || podeCancelar())) {
     <div class="acoes-situacao">
       @if (proximo(); as p) {
-      <button type="button" class="btn-reativar" [disabled]="salvando()" (click)="confirmacaoAberta.set(true)">
+      <button appBotao type="button" variante="sucesso-suave" [disabled]="salvando()" (click)="confirmacaoAberta.set(true)">
         {{ salvando() ? 'Salvando...' : p.texto }}
       </button>
       }
       @if (podeCancelar()) {
-      <button type="button" class="btn-inativar" [disabled]="salvando()" (click)="abrirCancelamento()">Cancelar terapia</button>
+      <button appBotao type="button" variante="perigo-suave" [disabled]="salvando()" (click)="abrirCancelamento()">Cancelar terapia</button>
       }
     </div>
     }
@@ -70,6 +70,7 @@
   [mensagem]="proximo()?.mensagem ?? ''"
   textoConfirmar="Confirmar"
   textoCancelar="Voltar"
+  varianteConfirmar="primario"
   (confirmar)="avancarStatus()"
   (cancelar)="confirmacaoAberta.set(false)" />
 

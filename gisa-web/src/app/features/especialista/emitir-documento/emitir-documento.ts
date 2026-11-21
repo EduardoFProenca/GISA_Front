@@ -8,12 +8,13 @@ import { SelectBusca } from '../../../shared/components/select-busca/select-busc
 import { buscaPacientes } from '../../../shared/components/select-busca/buscas';
 import { DocumentoClinicoDrawer } from '../documento-clinico/documento-clinico-drawer';
 import { TITULO_DOCUMENTO, TipoDocumentoClinico } from '../documento-clinico/documento-clinico.util';
+import { Botao } from '../../../shared/components/botao/botao';
 
 // Telas "Emitir Atestado" e "Emitir Receita" (rota com data.tipo): escolhe o paciente e abre o
 // mesmo drawer do prontuário.
 @Component({
   selector: 'app-emitir-documento',
-  imports: [CabecalhoPagina, SelectBusca, DocumentoClinicoDrawer],
+  imports: [Botao, CabecalhoPagina, SelectBusca, DocumentoClinicoDrawer],
   templateUrl: './emitir-documento.html',
   styleUrl: './emitir-documento.scss',
 })

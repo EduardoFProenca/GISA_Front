@@ -233,22 +233,6 @@ input[type='checkbox'] {
   }
 }
 
-// Botão com cara de link, para ações dentro de um texto.
-button.link-acao {
-  padding: 0;
-  border: none;
-  background: none;
-  color: var(--cor-primaria);
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-decoration: underline;
-
-  &:hover {
-    background: none;
-    border: none;
-  }
-}
-
 // Etiqueta curta (pílula) ao lado de um nome.
 .tag {
   border-radius: var(--raio-pilula);
@@ -381,23 +365,12 @@ button.link-acao {
 
 // botões
 ///========================================
+// Reset neutro: nenhum visual aqui. Botão de ação usa o componente Botao (appBotao);
+// botão que é parte de um widget (aba, opção, paginação...) declara o próprio visual.
 button {
-  font-family: inherit; // botões não herdam a fonte por padrão
-  color: rgb(255, 255, 255);
-  background: rgba(203, 217, 233, 0.733);
-  padding: 10px 20px;
-  border-radius: var(--raio-lg);
-  border: 1px solid rgba(161, 203, 231, 0.1);
-  text-align: center;
-  font-size: 1.1rem;
+  font: inherit; // botões não herdam a fonte por padrão
+  color: inherit;
   cursor: pointer;
-  // Só cores animam: sem movimento, sem escala.
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-
-  &:hover {
-    background: rgba(43, 106, 131, 0.308);
-    border: 1px solid rgb(255, 255, 255);
-  }
 }
 ///========================================
 
@@ -482,42 +455,14 @@ fieldset.secao {
   font-size: 0.9rem;
 }
 
-// Ações de situação do cadastro (inativar, reativar, acesso).
+// Ações de situação do cadastro (inativar, reativar, acesso): container dos botões.
 .acoes-situacao {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem;
   margin-top: 1rem;
-
-  button {
-    border: none;
-    border-radius: var(--raio-md);
-    padding: 0.6rem 1.1rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-
-    &:disabled {
-      opacity: 0.6;
-      cursor: default;
-    }
-  }
-
-  .btn-inativar {
-    background: var(--cor-perigo-suave);
-    color: var(--cor-perigo-forte);
-  }
-
-  .btn-reativar {
-    background: var(--cor-sucesso-suave);
-    color: var(--cor-sucesso-forte);
-  }
-
-  .btn-secundario {
-    background: var(--indigo-100);
-    color: var(--indigo-800);
-  }
+  // Só layout: o visual dos botões vem do componente Botao.
 }
 
 // Conteúdo dos dashboards (tela "Início" de cada painel), abaixo do app-header.

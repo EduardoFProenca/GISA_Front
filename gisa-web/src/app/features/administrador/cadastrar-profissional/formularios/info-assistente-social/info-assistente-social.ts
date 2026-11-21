@@ -5,6 +5,7 @@ import { SelectBusca, OpcaoSelectBusca } from '../../../../../shared/components/
 import { buscaPacientes, DICA_BUSCA_PACIENTE } from '../../../../../shared/components/select-busca/buscas';
 import { PacienteService } from '../../../../../core/services/paciente';
 import { Filtro } from '../../../../../shared/directives/filtro.directive';
+import { Botao } from '../../../../../shared/components/botao/botao';
 
 // Paciente escolhido para vincular (só o que a busca mostra: o CPF vem mascarado).
 export interface PacienteEscolhido {
@@ -23,7 +24,7 @@ export interface InfoAssistenteSocialValor {
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-assistente-social',
-  imports: [FormsModule, SelectBusca, Filtro],
+  imports: [Botao, FormsModule, SelectBusca, Filtro],
   templateUrl: './info-assistente-social.html',
   styleUrl: '../info-especialista/info-especialista.scss',
 })
