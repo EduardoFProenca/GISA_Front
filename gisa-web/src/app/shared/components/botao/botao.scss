@@ -1,0 +1,87 @@
+// Ajuste de medidas por quem usa o botão (RN09): defina estas variáveis no próprio botão,
+// por uma classe do container. Ex.: `.acao-topo { --botao-altura: 44px; }`.
+//   --botao-altura     altura (e largura, no somenteIcone)
+//   --botao-padding-x  padding lateral
+//   --botao-fonte      tamanho da fonte (o ícone acompanha, pois usa 1em)
+// As variáveis `--_x` são internas: ninguém de fora deve usá-las. Cores só por `variante`.
+
+// ---------- Base: medidas ----------
+:host {
+  --_altura: var(--botao-altura, 40px);
+  --_padding-x: var(--botao-padding-x, 1.25rem);
+  --_fonte: var(--botao-fonte, 0.9rem);
+  --_gap: 0.5rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--_gap);
+  box-sizing: border-box;
+  height: var(--_altura);
+  padding: 0 var(--_padding-x);
+  border-radius: var(--raio-pilula);
+  font-family: inherit;
+  font-size: var(--_fonte);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+:host([data-tamanho='sm']) {
+  --_altura: var(--botao-altura, 32px);
+  --_padding-x: var(--botao-padding-x, 0.875rem);
+  --_fonte: var(--botao-fonte, 0.8rem);
+  --_gap: 0.375rem;
+}
+
+:host([data-somente-icone]) {
+  --_fonte: var(--botao-fonte, 1.25rem); // o ng-icon usa 1em, então acompanha
+  --_padding-x: 0;
+  width: var(--_altura);
+}
+
+// ---------- Cores ----------
+// [data-variante] sobe a especificidade para vencer o `button:hover` global enquanto ele
+// existir (some na parte 3).
+:host([data-variante]) {
+  background: var(--_bg);
+  color: var(--_cor);
+  border: 1px solid var(--_borda, transparent);
+}
+
+:host([data-variante]:hover:not(:disabled):not([aria-disabled='true'])) {
+  background: var(--_bg-hover);
+  border-color: var(--_borda, transparent);
+}
+
+// Foco visível para quem navega por teclado (RN05).
+:host(:focus-visible) {
+  outline: 2px solid var(--cor-foco);
+  outline-offset: 2px;
+}
+
+:host(:disabled),
+:host([aria-disabled='true']) {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+:host([data-variante='primario'])      { --_bg: var(--cor-destaque);       --_cor: var(--branco);            --_bg-hover: var(--cor-destaque-forte); }
+:host([data-variante='contorno'])      { --_bg: var(--branco);             --_cor: var(--cor-destaque);      --_borda: var(--cor-destaque);    --_bg-hover: var(--ciano-50); }
+:host([data-variante='neutro'])        { --_bg: transparent;               --_cor: var(--cinza-600);         --_borda: var(--cor-borda-forte); --_bg-hover: var(--cor-superficie-realce); }
+:host([data-variante='suave'])         { --_bg: var(--indigo-100);         --_cor: var(--indigo-800);        --_bg-hover: var(--indigo-200); }
+:host([data-variante='perigo'])        { --_bg: var(--cor-perigo);         --_cor: var(--branco);            --_bg-hover: var(--cor-perigo-forte); }
+:host([data-variante='perigo-suave'])  { --_bg: var(--cor-perigo-suave);   --_cor: var(--cor-perigo-forte);  --_bg-hover: var(--vermelho-200); }
+:host([data-variante='sucesso-suave']) { --_bg: var(--cor-sucesso-suave);  --_cor: var(--cor-sucesso-forte); --_bg-hover: var(--verde-200); }
+:host([data-variante='fantasma'])      { --_bg: transparent;               --_cor: var(--cinza-600);         --_bg-hover: var(--cor-destaque-fundo); }
+:host([data-variante='link']) {
+  --_bg: transparent;
+  --_cor: var(--cor-destaque);
+  --_bg-hover: transparent;
+  height: auto;
+  padding: 0;
+  text-decoration: underline;
+}

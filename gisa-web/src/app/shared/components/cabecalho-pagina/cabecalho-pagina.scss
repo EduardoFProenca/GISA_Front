@@ -18,72 +18,15 @@
   gap: 0.75rem;
 }
 
-.btn-icone {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.4rem;
-  border-radius: var(--raio-sm);
-  color: var(--cinza-600);
-
-  &:hover {
-    background: var(--cor-destaque-fundo);
-  }
-}
-
 .titulo-pagina {
   font-size: 1rem;
   color: var(--cor-titulo);
   text-align: center;
 }
 
-.btn-acao , .btn-salvar {
-  background: var(--cor-destaque);
-  color: white;
-  border: none;
-  padding: 0.5rem 1.25rem;
-  border-radius: var(--raio-sm);
-  cursor: pointer;
-  font-weight: 600;
-
-  &:hover {
-    background: var(--cor-destaque-forte);
-  }
-
-  &:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-
-    &:hover {
-      background: var(--cor-destaque);
-    }
-  }
-}
-
-
-.btn-cancelar {
-  background: transparent;
-  color: var(--cinza-600);
-  border: 1px solid var(--cor-borda-forte);
-  padding: 0.5rem 1.25rem;
-  border-radius: var(--raio-sm);
-  cursor: pointer;
-  font-weight: 600;
-
-  &:hover {
-    background: var(--cor-superficie-realce);
-  }
-}
-.btn-acao-secundaria {
-  background: white;
-  color: var(--cor-destaque);
-  border: 1.5px solid var(--cor-destaque);
-  padding: 0.45rem 1.1rem;
-  border-radius: var(--raio-sm);
-  cursor: pointer;
-  font-weight: 600;
-
-  &:hover {
-    background: var(--ciano-50);
-  }
+// O espaçamento entre os botões é do container, não do botão.
+.cabecalho-direita {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }

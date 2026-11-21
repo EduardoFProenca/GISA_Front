@@ -1,13 +1,13 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { NgIcon } from '@ng-icons/core';
 import { ICONES } from '../../icons';
+import { Botao } from '../botao/botao';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { Layout } from '../../../core/layout/layout';
 
 @Component({
   selector: 'app-cabecalho-pagina',
-  imports: [NgIcon],
+  imports: [Botao],
   templateUrl: './cabecalho-pagina.html',
   styleUrl: './cabecalho-pagina.scss',
 })

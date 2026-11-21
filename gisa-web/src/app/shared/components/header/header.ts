@@ -1,14 +1,14 @@
 import { Component, ElementRef, HostListener, Input, inject, signal } from '@angular/core';
-import { NgIcon } from '@ng-icons/core';
 import { RouterLink } from '@angular/router';
 import { Auth } from '../../../core/auth/auth';
 import { Layout } from '../../../core/layout/layout';
 import { NotificacaoService, tempoDecorrido } from '../../../core/services/notificacao';
 import { ICONES } from '../../icons';
+import { Botao } from '../botao/botao';
 
 @Component({
   selector: 'app-header',
-  imports: [NgIcon, RouterLink],
+  imports: [Botao, RouterLink],
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })

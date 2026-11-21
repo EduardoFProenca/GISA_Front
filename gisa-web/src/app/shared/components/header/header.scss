@@ -33,31 +33,11 @@
   gap: 1rem;
 }
 
-.btn-icone,
-.btn-sair {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  border: none;
-  background: transparent;
-  font: inherit;
-  font-size: 0.9rem;
-  color: var(--cinza-600);
-  border-radius: var(--raio-md);
-  padding: 10px 15px;
-  cursor: pointer;
-  text-decoration: none;
-
-  &:hover,
-  &:focus-visible {
-    background: var(--cor-destaque-fundo);
-  }
-}
-
 .notificacoes {
   position: relative;
 
-  .btn-icone {
+  // O badge é conteúdo projetado no botão e se posiciona em relação a ele.
+  .btn-notificacoes {
     position: relative;
   }
 
@@ -200,14 +180,12 @@
     gap: 0.25rem;
   }
 
-  // Só o ícone, com área de toque confortável.
-  .btn-icone,
-  .btn-sair {
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    font-size: 1.25rem;
+  // Só o ícone, com área de toque confortável. Medidas pelas variáveis públicas do Botao.
+  .acao-topo {
+    --botao-altura: 44px;
+    --botao-padding-x: 0;
+    --botao-fonte: 1.25rem;
+    width: var(--botao-altura);
 
     .rotulo {
       display: none;

@@ -1,9 +1,8 @@
 <header class="header-principal">
   <div class="header-esquerda">
     @if (mostrarBotaoMenu) {
-      <button type="button" class="btn-icone" (click)="layout.toggleMenu()" aria-label="Abrir ou fechar menu">
-        <ng-icon [name]="icones.menu" size="20" />
-      </button>
+      <button appBotao type="button" variante="fantasma" somenteIcone class="acao-topo" [icone]="icones.menu"
+        (click)="layout.toggleMenu()" aria-label="Abrir ou fechar menu"></button>
     }
     <div>
       <!-- No celular vira a saudação "Olá, Nome!". -->
@@ -15,9 +14,9 @@
   <div class="header-direita">
     @if (exibirNotificacoes) {
     <div class="notificacoes">
-      <button type="button" class="btn-icone" aria-label="Notificações" aria-haspopup="true"
+      <button appBotao type="button" variante="fantasma" somenteIcone class="acao-topo btn-notificacoes"
+        [icone]="icones.sino" aria-label="Notificações" aria-haspopup="true"
         [attr.aria-expanded]="painelAberto()" (click)="alternarPainel()">
-        <span><ng-icon [name]="icones.sino" /></span>
         @if (notificacoes.naoLidas() > 0) {
           <span class="badge">{{ notificacoes.naoLidas() > 9 ? '9+' : notificacoes.naoLidas() }}</span>
         }
@@ -52,14 +51,15 @@
     }
 
     @if (rotaSenha) {
-    <a class="btn-sair" [routerLink]="rotaSenha" aria-label="Alterar senha">
-      <span><ng-icon [name]="icones.senha" /></span>
+    <a appBotao variante="fantasma" class="acao-topo" [icone]="icones.senha"
+      [routerLink]="rotaSenha" aria-label="Alterar senha">
       <span class="rotulo">Alterar senha</span>
     </a>
     }
 
-    <button type="button" class="btn-sair" (click)="sair()" aria-label="Sair">
-      <span><ng-icon [name]="icones.sair" /></span>
+    <button appBotao type="button" variante="fantasma" class="acao-topo" [icone]="icones.sair"
+      (click)="sair()" aria-label="Sair">
       <span class="rotulo">Sair</span>
-    </button>  </div>
+    </button>
+  </div>
 </header>
