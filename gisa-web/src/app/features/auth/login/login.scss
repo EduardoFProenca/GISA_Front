@@ -1,22 +1,50 @@
 .login-page {
-  min-height: 100vh;
+  // Altura do símbolo da APAE no fundo. A posição abaixo é proporcional a ela,
+  // então trocar só este valor mantém o mesmo recorte do mockup.
+  // A imagem tem 476px de altura: acima disso o navegador a amplia e ela perde nitidez.
+  //   - tamanho do mockup (padrão): min(88vh, 960px)
+  //   - nítido, sem ampliar:        min(88vh, 520px)
+  --logo-fundo-altura: min(88vh, 960px);
+
+  position: relative;      // referência para o ::before
+  isolation: isolate;      // o z-index: -1 do logo vale só aqui dentro (fica atrás do card)
+  box-sizing: border-box;  // padding dentro da altura: sem os 64px extras que geravam scroll
+  min-height: 100vh;       // fallback para navegadores sem dvh
+  min-height: 100dvh;      // altura visível real no celular; min-height deixa rolar se não couber
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background-color: var(--cor-fundo-pagina);
   padding: 2rem;
-}
 
-.q-icon {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  border: 2px solid var(--celeste-300);
-  background: white;
-  object-fit: contain;
-  padding: 8px;
-  margin-bottom: 1rem;
+  // Logo decorativo: a caixa tem o tamanho exato da página e só a imagem de fundo "vaza".
+  // Fundo é cortado na borda da caixa e não entra na área de rolagem (sem img nem overflow: hidden).
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    // Caminho relativo: funciona com qualquer base-href (o build copia para media/ com hash).
+    background-image: url('../../../../assets/img/logo-apae-simbolo.webp');
+    background-repeat: no-repeat;
+    background-size: auto var(--logo-fundo-altura);
+    background-position:
+      left calc(var(--logo-fundo-altura) * -0.09)
+      bottom calc(var(--logo-fundo-altura) * -0.2);
+    opacity: 0.4; // só no logo: no .login-page deixaria o card transparente também
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 1rem;
+
+    &::before {
+      background-size: min(85vw, 380px) auto;
+      background-position: center bottom -12vh;
+      opacity: 0.12;
+    }
+  }
 }
 
 .login-page > h1 {
@@ -39,11 +67,16 @@
   border-radius: var(--raio-xl);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   padding: 2.5rem 3rem;
+  box-sizing: border-box; // sem isso, width: 100% + padding passava da largura da tela no celular
   width: 100%;
-  max-width: 420px;
+  max-width: 516px;       // 420 + 2×48 de padding: mesma largura visual de antes no desktop
   display: flex;
   flex-direction: column;
   text-align: center;
+
+  @media (max-width: 768px) {
+    padding: 2rem 1.5rem;
+  }
 
   h3 {
     font-size: 1.4rem;
