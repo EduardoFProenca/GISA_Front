@@ -69,6 +69,21 @@
   transform: rotate(225deg);
 }
 
+// Bloqueado: o cadeado (mesmo desenho do input bloqueado) ocupa o lugar da seta.
+// Fica depois da regra [aria-expanded] (mesma especificidade) para o cadeado nunca girar.
+.select-trigger:disabled {
+  padding-right: 0.9rem; // mesma distância da borda que o cadeado do input
+
+  .select-chevron {
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    border: 0;
+    transform: none;
+    background: var(--icone-cadeado) no-repeat center;
+  }
+}
+
 .select-options {
   position: absolute;
   z-index: 1000;

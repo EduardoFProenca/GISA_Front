@@ -97,6 +97,7 @@ export class SelectMenu implements ControlValueAccessor, OnDestroy {
 
   setDisabledState(isDisabled: boolean): void {
     this.desabilitadoPeloFormulario = isDisabled;
+    if (isDisabled) this.fechar();
   }
 
   alternar(): void {
