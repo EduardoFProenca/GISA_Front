@@ -42,18 +42,6 @@
     <div class="formulario-card">
       <h4>{{ indexEdicao !== null ? 'Editar Responsável' : 'Cadastrar Novo Responsável' }}</h4>
 
-      @if (!novoResponsavel.idResponsavel) {
-        <div class="campo busca-existente">
-          <label>Já é responsável por outro paciente? Busque o cadastro</label>
-          <app-select-busca [buscar]="buscarResponsaveis" [ocultarIds]="idsNaLista" [value]="null"
-            placeholder="Digite o nome ou o CPF do responsável" semResultados="Nenhum responsável encontrado"
-            (valueChange)="usarExistente($event)" />
-          @if (carregandoExistente) { <span class="legenda-busca">Carregando o cadastro...</span> }
-          @else { <span class="legenda-busca">Ou preencha abaixo para cadastrar um novo responsável.</span> }
-          @if (errosCard['busca']) { <span class="erro-msg">{{ errosCard['busca'] }}</span> }
-        </div>
-      }
-
       @if (novoResponsavel.reaproveitado) {
         <div class="aviso-info">
           <p>
@@ -70,9 +58,24 @@
       <div class="linha-form">
         <div class="campo">
           <label for="respNome">Nome do Responsável <span class="obrigatorio">*</span></label>
-          <input type="text" id="respNome" appFiltro="nome" name="respNome" [(ngModel)]="novoResponsavel.nome" [disabled]="!!novoResponsavel.reaproveitado"
-            placeholder="Digite o nome completo" [class.input-erro]="errosCard['nome']"
-            (input)="limparErroCard('nome')">
+
+          <!-- Responsável novo: digitar busca cadastros existentes; escolher na lista só com clique (homônimos). -->
+          @if (!novoResponsavel.idResponsavel) {
+            <app-select-busca idCampo="respNome" [buscar]="buscarResponsaveis" [dicaTermo]="dicaBuscaResponsavel"
+              [ocultarIds]="idsNaLista" [value]="null" filtro="nome" [escolherComEnter]="false"
+              [textoLivre]="true" [texto]="novoResponsavel.nome" (textoChange)="aoDigitarNome($event)"
+              (valueChange)="usarExistente($event)" [disabled]="carregandoExistente"
+              placeholder="Digite o nome para buscar ou cadastrar"
+              semResultados="Nenhum responsável encontrado: será cadastrado como novo"
+              [comErro]="!!errosCard['nome']" />
+          } @else {
+            <input type="text" id="respNome" appFiltro="nome" name="respNome" [(ngModel)]="novoResponsavel.nome"
+              [disabled]="!!novoResponsavel.reaproveitado" placeholder="Digite o nome completo"
+              [class.input-erro]="errosCard['nome']" (input)="limparErroCard('nome')">
+          }
+
+          @if (carregandoExistente) { <span class="texto-ajuda-campo">Carregando o cadastro...</span> }
+          @if (errosCard['busca']) { <span class="erro-msg">{{ errosCard['busca'] }}</span> }
           @if (errosCard['nome']) { <span class="erro-msg">{{ errosCard['nome'] }}</span> }
         </div>
 

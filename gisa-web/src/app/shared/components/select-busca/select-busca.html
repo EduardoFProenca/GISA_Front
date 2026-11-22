@@ -2,6 +2,7 @@
   <input
     #campo
     type="text"
+    [attr.id]="idCampo"
     [attr.inputmode]="somenteDigitos ? 'numeric' : null"
     [attr.maxlength]="maxCaracteres"
     [ngModel]="termo()"

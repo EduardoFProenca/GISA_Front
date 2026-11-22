@@ -11,7 +11,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { filtrarTexto } from '../../utils/filtro-texto.util';
+import { TipoFiltro, filtrarTexto } from '../../utils/filtro-texto.util';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { NgIcon } from '@ng-icons/core';
@@ -75,6 +75,13 @@ export class SelectBusca implements OnChanges {
   @Input() limpavel: boolean = false;
   // Campo só de números (ex.: hora e minuto): letras e símbolos são descartados ao digitar e colar.
   @Input() somenteDigitos: boolean = false;
+  // Caracteres aceitos ao digitar e colar, como o appFiltro (ex.: 'nome' = só letras). somenteDigitos tem precedência.
+  @Input() filtro: TipoFiltro | null = null;
+  // false: o ENTER não escolhe opção; só fecha a lista e segue para o próximo campo (NavegacaoEnter).
+  // Use quando escolher a opção errada sem perceber é grave (ex.: homônimos de pessoas).
+  @Input() escolherComEnter: boolean = true;
+  // id do input interno, para um <label for> apontar para ele.
+  @Input() idCampo: string | null = null;
   @Input() maxCaracteres: number | null = null;
 
   private campo = viewChild.required<ElementRef<HTMLInputElement>>('campo');
@@ -184,8 +191,9 @@ export class SelectBusca implements OnChanges {
   }
 
   aoDigitar(texto: string) {
-    if (this.somenteDigitos) {
-      const limpo = filtrarTexto('numero', texto);
+    const tipo: TipoFiltro | null = this.somenteDigitos ? 'numero' : this.filtro;
+    if (tipo) {
+      const limpo = filtrarTexto(tipo, texto);
       // O ngModel não reescreve o campo quando o valor limpo é igual ao anterior: corrige direto.
       if (limpo !== texto) this.campo().nativeElement.value = limpo;
       texto = limpo;
@@ -243,6 +251,10 @@ export class SelectBusca implements OnChanges {
   // Depois de escolher, o ENTER segue para a navegação entre campos (NavegacaoEnter). Quando não dá
   // para escolher ainda (busca pendente ou nada encontrado), o foco fica aqui: stopPropagation.
   aoPressionarEnter(evento: Event) {
+    if (!this.escolherComEnter) {
+      this.aberto.set(false);
+      return;
+    }
     const termo = this.normalizar(this.termo().trim());
     if (!this.aberto() || !termo) return;
     evento.preventDefault();

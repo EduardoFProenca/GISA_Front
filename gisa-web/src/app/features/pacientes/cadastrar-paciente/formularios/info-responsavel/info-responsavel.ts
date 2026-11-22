@@ -7,7 +7,11 @@ import { Contato } from '../../../../../shared/components/contato/contato';
 import { ConfirmDialog } from '../../../../../shared/components/confirm-dialog/confirm-dialog';
 import { SelectBusca } from '../../../../../shared/components/select-busca/select-busca';
 import { SelectMenu } from '../../../../../shared/components/select-menu/select-menu';
-import { buscaResponsaveis } from '../../../../../shared/components/select-busca/buscas';
+import {
+  DICA_BUSCA_RESPONSAVEL,
+  MINIMO_BUSCA_RESPONSAVEL,
+  buscaResponsaveis,
+} from '../../../../../shared/components/select-busca/buscas';
 import { GrauParentesco, ResponsavelResumo } from '../../../../../core/models/paciente.model';
 import { ResponsavelService } from '../../../../../core/services/responsavel';
 import { mensagemDeErro } from '../../../../../core/http/erro-api';
@@ -50,7 +54,10 @@ export class InfoResponsavel extends ComErros {
 
   readonly icones = ICONES;
   readonly enderecoEmTexto = enderecoEmTexto;
-  readonly buscarResponsaveis = buscaResponsaveis(this.responsavelService);
+  readonly buscarResponsaveis = buscaResponsaveis(this.responsavelService, {
+    minimoCaracteres: MINIMO_BUSCA_RESPONSAVEL,
+  });
+  readonly dicaBuscaResponsavel = DICA_BUSCA_RESPONSAVEL;
 
   exibindoFormulario = false;
   indexEdicao: number | null = null; // índice do responsável em edição (null = novo)
@@ -125,6 +132,13 @@ export class InfoResponsavel extends ComErros {
 
   limparErroCard(campo: string) {
     delete this.errosCard[campo];
+  }
+
+  // O texto do campo Nome (busca) é o nome do responsável novo; escolher na lista é outro caminho (usarExistente).
+  aoDigitarNome(texto: string) {
+    this.novoResponsavel.nome = texto;
+    this.limparErroCard('nome');
+    this.limparErroCard('busca');
   }
 
   abrirFormulario() {

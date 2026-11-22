@@ -78,10 +78,22 @@ export function buscaAssistentesSociais(service: ProfissionalService): BuscaSele
       );
 }
 
-// Responsáveis já cadastrados (inclusive inativos), por nome ou CPF.
-export function buscaResponsaveis(service: ResponsavelService): BuscaSelect {
-  return (termo) =>
-    service.listar({ ...termoParaFiltro(termo), size: POR_BUSCA, sort: 'nome,asc' }).pipe(
+export const MINIMO_BUSCA_RESPONSAVEL = 3;
+
+// Use em [dicaTermo] junto com buscaResponsaveis({ minimoCaracteres }) num campo com filtro="nome".
+export const DICA_BUSCA_RESPONSAVEL = (termo: string): string | null =>
+  termo.length >= MINIMO_BUSCA_RESPONSAVEL ? null : `Digite ao menos ${MINIMO_BUSCA_RESPONSAVEL} letras do nome`;
+
+// Responsáveis já cadastrados (inclusive inativos), por nome ou CPF. A opção mostra nome + CPF.
+// minimoCaracteres: abaixo disso não chama a API (padrão 0 = busca já ao abrir).
+export function buscaResponsaveis(
+  service: ResponsavelService,
+  opcoes: { minimoCaracteres?: number } = {}
+): BuscaSelect {
+  const minimo = opcoes.minimoCaracteres ?? 0;
+  return (termo) => {
+    if (termo.length < minimo) return of([]);
+    return service.listar({ ...termoParaFiltro(termo), size: POR_BUSCA, sort: 'nome,asc' }).pipe(
       map(({ content }) =>
         content.map((r) => ({
           id: r.idCadastro,
@@ -90,4 +102,5 @@ export function buscaResponsaveis(service: ResponsavelService): BuscaSelect {
         }))
       )
     );
+  };
 }
