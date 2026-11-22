@@ -307,29 +307,7 @@
   }
 }
 
-// ---- modal de detalhes ----
-.overlay {
-  @include overlay-modal;
-}
-
-.modal {
-  background: white;
-  border-radius: var(--raio-xl);
-  padding: 1.5rem 1.75rem;
-  width: 100%;
-  box-sizing: border-box;
-  max-width: 520px;
-  max-height: 100%;
-  overflow-y: auto;
-  box-shadow: var(--sombra-dialog);
-
-  h3 {
-    margin: 0 0 1rem;
-    text-align: left;
-    font-size: 1.15rem;
-  }
-}
-
+// ---- modal de detalhes (casca em <app-dialogo>) ----
 .detalhes {
   margin: 0;
   display: grid;
@@ -352,14 +330,6 @@
   @media (max-width: 480px) {
     grid-template-columns: minmax(0, 1fr);
   }
-}
-
-.acoes-modal {
-  display: flex;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-top: 1.5rem;
 }
 
 @include selos-status;

@@ -1,5 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { Botao } from '../botao/botao';
+import { Dialogo } from '../dialogo/dialogo';
 
 // Diálogo com formulário: o conteúdo (campos) vem por <ng-content>.
 // Uso:
@@ -8,7 +9,7 @@ import { Botao } from '../botao/botao';
 //   </app-form-dialog>
 @Component({
   selector: 'app-form-dialog',
-  imports: [Botao],
+  imports: [Botao, Dialogo],
   templateUrl: './form-dialog.html',
   styleUrl: './form-dialog.scss',
 })

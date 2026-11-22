@@ -1,20 +1,15 @@
-@if (aberto) {
-  <div class="overlay" (click)="aoCancelar()">
-    <div class="dialog" (click)="$event.stopPropagation()">
-      <h3>{{ titulo }}</h3>
-      @if (mensagem) {
-        <p>{{ mensagem }}</p>
-      }
-      <ng-content select="[dialog-message]" />
-      <!-- Conteúdo extra opcional (ex.: opções a marcar antes de confirmar) -->
-      <ng-content />
+<app-dialogo [aberto]="aberto" [titulo]="titulo" largura="sm" (fechar)="aoCancelar()">
+  @if (mensagem) {
+    <p class="mensagem">{{ mensagem }}</p>
+  }
+  <ng-content select="[dialog-message]" />
+  <!-- Conteúdo extra opcional (ex.: opções a marcar antes de confirmar) -->
+  <ng-content />
 
-      <div class="dialog-acoes">
-        <button appBotao type="button" variante="neutro" (click)="aoCancelar()">{{ textoCancelar }}</button>
-        <button appBotao type="button" data-concluir [variante]="varianteConfirmar" (click)="aoConfirmar()">
-          {{ textoConfirmar }}
-        </button>
-      </div>
-    </div>
+  <div class="dialogo-acoes">
+    <button appBotao type="button" variante="neutro" (click)="aoCancelar()">{{ textoCancelar }}</button>
+    <button appBotao type="button" data-concluir [variante]="varianteConfirmar" (click)="aoConfirmar()">
+      {{ textoConfirmar }}
+    </button>
   </div>
-}
+</app-dialogo>

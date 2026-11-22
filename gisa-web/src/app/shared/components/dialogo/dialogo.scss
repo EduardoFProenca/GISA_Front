@@ -1,0 +1,58 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px); // sem suporte no navegador, só perde o desfoque
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+}
+
+.caixa {
+  --_largura: 440px;
+  background: var(--cor-superficie);
+  border-radius: var(--raio-xl);
+  padding: 1.5rem 1.75rem;
+  box-sizing: border-box; // o padding entra no max-height, senão a caixa cobre a margem do overlay
+  width: 100%;
+  max-width: var(--_largura);
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-shadow: var(--sombra-dialog);
+  text-align: left;
+
+  &[data-largura='sm'] { --_largura: 400px; }
+  &[data-largura='lg'] { --_largura: 520px; }
+}
+
+.topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  flex-shrink: 0;
+
+  // puxa o X para o canto, compensando o padding do botão
+  button { margin: -0.25rem -0.5rem 0 0; flex-shrink: 0; }
+}
+
+// Classe própria: vence o `h1, h2, h3 { text-align: center }` global, que a herança não vence.
+.titulo {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--cor-titulo);
+  text-align: left;
+}
+
+// Sem rolagem interna: a caixa cresce com o conteúdo; quem tiver lista longa rola a própria lista.
+.overlay.sem-rolagem .caixa {
+  max-height: none;
+  overflow: visible;
+}

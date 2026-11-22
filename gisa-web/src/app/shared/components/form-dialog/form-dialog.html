@@ -1,25 +1,22 @@
-@if (aberto()) {
-  <div class="overlay" [class.sem-rolagem]="!rolagem()" (click)="cancelar.emit()">
-    <form class="dialog" (click)="$event.stopPropagation()" (submit)="$event.preventDefault(); confirmar.emit()">
-      <h3>{{ titulo() }}</h3>
-      @if (descricao()) {
-        <p class="descricao">{{ descricao() }}</p>
-      }
+<app-dialogo [aberto]="aberto()" [titulo]="titulo()" [rolagem]="rolagem()" largura="md" (fechar)="cancelar.emit()">
+  <form class="form-dialogo" [class.sem-rolagem]="!rolagem()" (submit)="$event.preventDefault(); confirmar.emit()">
+    @if (descricao()) {
+      <p class="descricao">{{ descricao() }}</p>
+    }
 
-      <div class="form-dialog-conteudo">
-        <ng-content />
-      </div>
+    <div class="form-dialog-conteudo">
+      <ng-content />
+    </div>
 
-      @if (erro()) {
-        <p class="erro">{{ erro() }}</p>
-      }
+    @if (erro()) {
+      <p class="erro">{{ erro() }}</p>
+    }
 
-      <div class="dialog-acoes">
-        <button appBotao type="button" variante="neutro" (click)="cancelar.emit()">{{ textoCancelar() }}</button>
-        <button appBotao type="submit" data-concluir [disabled]="salvando()">
-          {{ salvando() ? 'Salvando...' : textoConfirmar() }}
-        </button>
-      </div>
-    </form>
-  </div>
-}
+    <div class="dialogo-acoes">
+      <button appBotao type="button" variante="neutro" (click)="cancelar.emit()">{{ textoCancelar() }}</button>
+      <button appBotao type="submit" data-concluir [disabled]="salvando()">
+        {{ salvando() ? 'Salvando...' : textoConfirmar() }}
+      </button>
+    </div>
+  </form>
+</app-dialogo>

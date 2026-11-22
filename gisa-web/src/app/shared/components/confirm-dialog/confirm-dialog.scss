@@ -1,41 +1,6 @@
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  padding: 1rem;
+// Sem margem inferior: o espaço antes do rodapé vem de .dialogo-acoes (styles.scss).
+.mensagem {
+  margin: 0;
+  color: var(--cinza-600);
+  font-size: 0.95rem;
 }
-
-.dialog {
-  background: white;
-  border-radius: var(--raio-md);
-  padding: 1.5rem;
-  box-sizing: border-box;
-  max-width: 400px;
-  width: 100%;
-  max-height: 100%;
-  overflow-y: auto;
-  box-shadow: var(--sombra-dialog);
-
-  h3 {
-    margin: 0 0 0.5rem;
-    font-size: 1.1rem;
-    color: var(--cor-titulo);
-  }
-
-  p {
-    margin: 0 0 1.5rem;
-    color: var(--cinza-600);
-    font-size: 0.95rem;
-  }
-}
-
-.dialog-acoes {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-}
-

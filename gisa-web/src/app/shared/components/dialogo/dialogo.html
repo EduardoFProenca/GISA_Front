@@ -1,0 +1,13 @@
+@if (aberto()) {
+  <div class="overlay" [class.sem-rolagem]="!rolagem()" (click)="fechar.emit()">
+    <div class="caixa" [attr.data-largura]="largura()" role="dialog" aria-modal="true"
+      [attr.aria-labelledby]="idTitulo" (click)="$event.stopPropagation()">
+      <header class="topo">
+        <h3 class="titulo" [id]="idTitulo">{{ titulo() }}</h3>
+        <button appBotao type="button" variante="fantasma" tamanho="sm" somenteIcone
+          [icone]="icones.fechar" aria-label="Fechar" (click)="fechar.emit()"></button>
+      </header>
+      <ng-content />
+    </div>
+  </div>
+}

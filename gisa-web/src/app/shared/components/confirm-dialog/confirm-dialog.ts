@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Botao, VarianteBotao } from '../botao/botao';
+import { Dialogo } from '../dialogo/dialogo';
 
 @Component({
   selector: 'app-confirm-dialog',
-  imports: [Botao],
+  imports: [Botao, Dialogo],
   templateUrl: './confirm-dialog.html',
   styleUrl: './confirm-dialog.scss',
 })

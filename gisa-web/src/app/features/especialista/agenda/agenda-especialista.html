@@ -106,30 +106,25 @@
 </div>
 
 <!-- Detalhes do agendamento -->
-@if (detalhe(); as a) {
-  <div class="overlay" (click)="fecharDetalhe()">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="titulo-detalhe" (click)="$event.stopPropagation()">
-      <h3 id="titulo-detalhe">Detalhes do agendamento</h3>
-
-      <dl class="detalhes">
-        <div><dt>Paciente</dt><dd>{{ a.pacienteNome }}</dd></div>
-        <div><dt>Data</dt><dd>{{ dataCurta(a.data) }}</dd></div>
-        <div><dt>Horário</dt><dd>{{ a.horaInicio }} – {{ a.horaTermino }}</dd></div>
-        <div><dt>Especialidade</dt><dd>{{ especialidade() || '—' }}</dd></div>
-        <div><dt>Modalidade</dt><dd>{{ rotuloModalidade[a.modalidade] }}</dd></div>
-        <div>
-          <dt>Status de presença</dt>
-          <dd><span class="selo" [class]="'selo st-' + statusDe(a)">{{ rotuloStatus[statusDe(a)] }}</span></dd>
-        </div>
-      </dl>
-
-      <div class="acoes-modal">
-        <button appBotao type="button" variante="neutro" (click)="fecharDetalhe()">Fechar</button>
-        <button appBotao type="button" [disabled]="!podeAbrirProntuario(a)" (click)="abrirProntuario(a)">
-          Iniciar Atendimento / Abrir Prontuário
-        </button>
+<app-dialogo [aberto]="!!detalhe()" titulo="Detalhes do agendamento" largura="lg" (fechar)="fecharDetalhe()">
+  @if (detalhe(); as a) {
+    <dl class="detalhes">
+      <div><dt>Paciente</dt><dd>{{ a.pacienteNome }}</dd></div>
+      <div><dt>Data</dt><dd>{{ dataCurta(a.data) }}</dd></div>
+      <div><dt>Horário</dt><dd>{{ a.horaInicio }} – {{ a.horaTermino }}</dd></div>
+      <div><dt>Especialidade</dt><dd>{{ especialidade() || '—' }}</dd></div>
+      <div><dt>Modalidade</dt><dd>{{ rotuloModalidade[a.modalidade] }}</dd></div>
+      <div>
+        <dt>Status de presença</dt>
+        <dd><span class="selo" [class]="'selo st-' + statusDe(a)">{{ rotuloStatus[statusDe(a)] }}</span></dd>
       </div>
-    </div>
-  </div>
-}
+    </dl>
 
+    <div class="dialogo-acoes">
+      <button appBotao type="button" variante="neutro" (click)="fecharDetalhe()">Fechar</button>
+      <button appBotao type="button" [disabled]="!podeAbrirProntuario(a)" (click)="abrirProntuario(a)">
+        Iniciar Atendimento / Abrir Prontuário
+      </button>
+    </div>
+  }
+</app-dialogo>
