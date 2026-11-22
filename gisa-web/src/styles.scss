@@ -33,27 +33,27 @@ select,
 textarea {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 1.5px solid var(--cor-borda);
+  border: 1.5px solid var(--campo-borda);
   border-radius: var(--raio-lg);
   font-size: 0.92rem;
   font-family: inherit;
-  background: var(--cor-superficie-suave);
+  background: var(--campo-fundo);
+  color: var(--campo-texto);
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
   box-sizing: border-box;
 
   &:hover {
-    border-color: var(--cor-borda-forte);
+    border-color: var(--campo-borda-hover);
   }
 
   &:focus {
     border-color: var(--cor-foco);
-    background: white;
     box-shadow: var(--sombra-anel-foco);
   }
 
   &::placeholder {
-    color: var(--cor-texto-suave);
+    color: var(--campo-placeholder);
   }
 }
 
@@ -63,7 +63,7 @@ select {
   background-repeat: no-repeat;
   background-position: right 1rem center;
   cursor: pointer;
-  color: var(--cor-titulo);
+  color: var(--campo-texto);
 }
 
 // Campo que não pode ser editado (readonly ou disabled): fundo mais escuro, borda sólida e texto
@@ -71,19 +71,19 @@ select {
 input:not([type='checkbox']):not([type='radio']):is([readonly], :disabled),
 select:disabled,
 textarea:is([readonly], :disabled) {
-  background-color: var(--cinza-100);
+  background-color: var(--campo-bloqueado-fundo);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='11' width='16' height='10' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 0 1 8 0v4'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.9rem center;
   padding-right: 2.5rem;
-  border-color: var(--cor-borda-forte);
-  color: var(--cor-texto-secundario);
+  border-color: var(--campo-bloqueado-borda);
+  color: var(--campo-bloqueado-texto);
   cursor: not-allowed;
 
+  // Anula o hover (borda mais escura) e o foco (anel azul) da regra global.
   &:hover,
   &:focus {
-    border-color: var(--cor-borda-forte);
-    background-color: var(--cinza-100);
+    border-color: var(--campo-bloqueado-borda);
     box-shadow: none;
   }
 }
@@ -119,9 +119,9 @@ input[type='checkbox'] {
   height: 1.15rem;
   margin: 0;
   padding: 0;
-  border: 1.5px solid var(--cor-borda-forte);
+  border: 1.5px solid var(--campo-borda);
   border-radius: 5px;
-  background: white;
+  background: var(--campo-fundo);
   cursor: pointer;
 
   // Visto (✓) desenhado com clip-path; aparece ao marcar.
@@ -129,7 +129,7 @@ input[type='checkbox'] {
     content: '';
     width: 0.7rem;
     height: 0.7rem;
-    background: white;
+    background: var(--cor-superficie);
     clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
     transform: scale(0);
     transition: transform 0.12s ease-in-out;
@@ -145,7 +145,7 @@ input[type='checkbox'] {
   }
 
   &:checked {
-    background: var(--azul-500);
+    background: var(--cor-foco);
     border-color: var(--cor-foco);
 
     &::before {
@@ -169,9 +169,9 @@ input[type='checkbox'] {
   align-items: center;
   gap: 0.6rem;
   padding: 0.65rem 1rem;
-  border: 1.5px solid var(--cor-borda);
+  border: 1.5px solid var(--campo-borda);
   border-radius: var(--raio-lg);
-  background: var(--cor-superficie-suave);
+  background: var(--campo-fundo);
   font-size: 0.88rem;
   font-weight: 500;
   color: var(--cor-titulo);
@@ -180,7 +180,7 @@ input[type='checkbox'] {
   transition: border-color 0.2s, background 0.2s;
 
   &:hover {
-    border-color: var(--cor-borda-forte);
+    border-color: var(--campo-borda-hover);
   }
 
   &:has(input:checked) {
@@ -207,7 +207,7 @@ input[type='checkbox'] {
   // Checkbox e radio ficam com o estilo próprio (acima).
   :where(input:not([type='checkbox'], [type='radio']), select, textarea) {
     padding: 0.55rem 0.75rem;
-    border: 1px solid var(--cor-borda-forte);
+    border: 1px solid var(--campo-borda);
     border-radius: var(--raio-sm);
     font-size: 0.9rem;
   }

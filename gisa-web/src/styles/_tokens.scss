@@ -100,6 +100,7 @@
   // Bordas
   --cor-borda: var(--cinza-200);
   --cor-borda-forte: var(--cinza-300);
+  --cor-borda-hover: var(--cinza-400);
 
   // Ação principal (botões, links, foco)
   --cor-primaria: var(--azul-600);
@@ -122,6 +123,17 @@
   --cor-alerta: var(--ambar-600);
   --cor-alerta-forte: var(--ambar-700);
   --cor-alerta-suave: var(--ambar-100);
+
+  // ---------- Campos de formulário ----------
+  // Input, textarea, select, select-menu, select-busca e checkbox usam só estes tokens.
+  --campo-fundo: var(--cor-superficie);
+  --campo-borda: var(--cor-borda-forte);
+  --campo-borda-hover: var(--cor-borda-hover);
+  --campo-texto: var(--cor-texto-medio);
+  --campo-placeholder: var(--cor-texto-suave);
+  --campo-bloqueado-fundo: var(--cor-superficie-realce);
+  --campo-bloqueado-borda: var(--cor-borda-forte);
+  --campo-bloqueado-texto: var(--cor-texto-secundario);
 
   // ---------- Sombras ----------
   --sombra-card: 0 2px 8px rgba(0, 0, 0, 0.05);

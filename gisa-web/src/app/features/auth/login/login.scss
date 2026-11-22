@@ -96,15 +96,11 @@
 
   input {
     padding: 0.75rem 1rem;
-    border: 1px solid var(--cor-borda-forte);
+    border: 1px solid var(--campo-borda);
     border-radius: var(--raio-md);
     font-size: 0.95rem;
     outline: none;
-    transition: border-color 0.2s;
-
-    &:focus {
-      border-color: var(--celeste-300);
-    }
+    transition: border-color 0.2s, box-shadow 0.2s; // o foco vem da regra global (borda azul + anel)
   }
 
   // Rótulos e mensagens alinhados à esquerda, como os campos; só o título fica centralizado.

@@ -52,8 +52,8 @@
   right: 0;
   max-height: 220px;
   overflow-y: auto;
-  background: white;
-  border: 1px solid var(--cor-borda);
+  background: var(--campo-fundo);
+  border: 1px solid var(--campo-borda);
   border-radius: var(--raio-md);
   box-shadow: var(--sombra-flutuante);
   margin: 0;

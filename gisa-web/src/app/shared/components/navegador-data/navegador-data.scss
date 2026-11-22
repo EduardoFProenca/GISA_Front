@@ -23,11 +23,11 @@
   input[type='date'] {
     width: auto; // o global é 100% e jogava o campo para a linha de baixo
     margin: 0;
-    border: 1px solid var(--cor-borda);
+    border: 1px solid var(--campo-borda);
     border-radius: var(--raio-md);
     padding: 0.35rem 0.6rem;
     font: inherit;
-    color: var(--cor-texto-medio);
+    color: var(--campo-texto);
   }
 }
 
