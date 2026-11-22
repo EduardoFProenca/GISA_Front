@@ -1,20 +1,23 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { NgIcon } from '@ng-icons/core';
 import { ComErros } from '../../../../../shared/components/com-erros';
 import { Cid } from '../../../../../core/models/cid.model';
 import { CidSelecionado, CidService, FORMATO_CID_10 } from '../../../../../core/services/cid';
 import { OpcaoSelectBusca, SelectBusca } from '../../../../../shared/components/select-busca/select-busca';
 import { Botao } from '../../../../../shared/components/botao/botao';
+import { ICONES } from '../../../../../shared/icons';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-cid',
-  imports: [Botao, SelectBusca, FormsModule],
+  imports: [Botao, NgIcon, SelectBusca, FormsModule],
   templateUrl: './info-cid.html',
   styleUrl: './info-cid.scss',
 })
 export class InfoCid extends ComErros {
   private cidService = inject(CidService);
+  readonly icones = ICONES;
 
   // Permite reaproveitar o componente na edição (CIDs que o paciente já tem na base).
   @Input() set cidsIniciais(valor: Cid[] | undefined) {

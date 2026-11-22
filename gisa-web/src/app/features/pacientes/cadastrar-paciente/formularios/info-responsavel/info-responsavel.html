@@ -180,7 +180,10 @@
       </div>
     </div>
   } @else {
-    <button type="button" class="add-item" (click)="abrirFormulario()">+ Adicionar responsável</button>
+    <button type="button" class="add-item" (click)="abrirFormulario()">
+      <ng-icon [name]="icones.adicionarItem" aria-hidden="true" />
+      Adicionar responsável
+    </button>
   }
 </div>
 

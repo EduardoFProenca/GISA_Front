@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { NgIcon } from '@ng-icons/core';
 import { Mascara } from '../../../../../shared/directives/mascara.directive';
 import { ComErros } from '../../../../../shared/components/com-erros';
 import { SeletorHora } from '../../../../../shared/components/seletor-hora/seletor-hora';
@@ -10,6 +11,7 @@ import { TerapiaForaDaJornada } from '../../../../../core/models/comum.model';
 import { dataCurta } from '../../../../../shared/utils/data.util';
 import { SelectMenu } from '../../../../../shared/components/select-menu/select-menu';
 import { Botao } from '../../../../../shared/components/botao/botao';
+import { ICONES } from '../../../../../shared/icons';
 
 export type Jornada = JornadaForm;
 
@@ -17,11 +19,12 @@ export type Jornada = JornadaForm;
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-especialista',
-  imports: [Botao, FormsModule, Mascara, SeletorHora, Filtro, SelectMenu],
+  imports: [Botao, NgIcon, FormsModule, Mascara, SeletorHora, Filtro, SelectMenu],
   templateUrl: './info-especialista.html',
   styleUrl: './info-especialista.scss',
 })
 export class InfoEspecialista extends ComErros implements OnInit {
+  readonly icones = ICONES;
   @Input() dadosIniciais?: Partial<InfoEspecialista>;
   @Input() somenteLeitura: boolean = false;
   // Edição: o tipo do cadastro (especialista/PJ), o registro e o CNPJ não mudam.

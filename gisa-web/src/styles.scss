@@ -193,6 +193,48 @@ input[type='checkbox'] {
     opacity: 0.8;
   }
 }
+
+// Botão "adicionar item" de listas dentro de formulários (ex.: Adicionar responsável, Adicionar CID).
+// É um widget (SPEC-botoes-3, RN01): retângulo de largura total, não usa appBotao.
+.add-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid var(--azul-200);
+  border-radius: var(--raio-lg);
+  background: var(--cor-primaria-suave);
+  color: var(--cor-primaria);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+
+  ng-icon {
+    display: block; // evita o ícone na linha de base do texto (deslocado para baixo)
+    font-size: 1.1rem;
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--azul-100);
+    border-color: var(--azul-300);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cor-foco);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    background: var(--campo-bloqueado-fundo);
+    border-color: var(--cor-borda-forte);
+    color: var(--cor-texto-suave);
+    cursor: not-allowed;
+  }
+}
+
 // Campos dentro do <app-form-dialog> (conteúdo projetado): versão mais compacta dos campos.
 // O :where() mantém a especificidade baixa, então a tela que usa o diálogo pode ajustar sem !important.
 .form-dialog-conteudo {

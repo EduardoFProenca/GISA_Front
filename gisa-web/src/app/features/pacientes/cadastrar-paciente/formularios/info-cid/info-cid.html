@@ -41,7 +41,12 @@
     [disabled]="!cidSelecionado() || verificando()"
     (click)="adicionarCid()"
   >
-    {{ verificando() ? 'Verificando...' : '+ Adicionar CID' }}
+    @if (verificando()) {
+      Verificando...
+    } @else {
+      <ng-icon [name]="icones.adicionarItem" aria-hidden="true" />
+      Adicionar CID
+    }
   </button>
 
   @if (!manualAberto()) {
@@ -73,7 +78,12 @@
       <div class="acoes-manual">
         <button appBotao type="button" variante="link" class="link-manual" (click)="fecharManual()">Cancelar</button>
         <button type="button" class="add-item" [disabled]="verificando()" (click)="adicionarManual()">
-          {{ verificando() ? 'Verificando...' : '+ Adicionar CID não listado' }}
+          @if (verificando()) {
+            Verificando...
+          } @else {
+            <ng-icon [name]="icones.adicionarItem" aria-hidden="true" />
+            Adicionar CID não listado
+          }
         </button>
       </div>
     </div>

@@ -40,29 +40,6 @@
 }
 
 
-.add-item {
-  background: transparent;
-  border-radius: var(--raio-lg);
-  color: var(--cor-primaria);
-  border: 1.5px dashed var(--azul-300);
-  padding: 0.6rem;
-  width: 100%;
-  font-size: 0.85rem;
-  font-weight: 600;
-
-  &:hover {
-    background: var(--cor-primaria-suave);
-    border-color: var(--cor-primaria);
-  }
-
-  &:disabled {
-    color: var(--cor-texto-suave);
-    border-color: var(--cor-borda-forte);
-    background: transparent;
-    cursor: not-allowed;
-  }
-}
-
 .legenda-secao {
   margin: 0 0 1rem;
   color: var(--cor-texto-secundario);

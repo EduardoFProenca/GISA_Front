@@ -28,7 +28,10 @@
             }
             @if (erros['especialidades']) { <span class="erro-msg">{{ erros['especialidades'] }}</span> }
 
-            <button type="button" class="add-item" (click)="adicionarEspecialidade()">+ Adicionar especialidade</button>
+            <button type="button" class="add-item" (click)="adicionarEspecialidade()">
+              <ng-icon [name]="icones.adicionarItem" aria-hidden="true" />
+              Adicionar especialidade
+            </button>
         </div>
 
         <div class="campo">
@@ -70,7 +73,10 @@
             </ul>
             }
 
-            <button type="button" class="add-item" (click)="adicionarJornada()">+ Adicionar horário</button>
+            <button type="button" class="add-item" (click)="adicionarJornada()">
+              <ng-icon [name]="icones.adicionarItem" aria-hidden="true" />
+              Adicionar horário
+            </button>
         </div>
         <br>
         <div class="linha-checkbox">
