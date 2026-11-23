@@ -110,6 +110,22 @@ describe('InfoResponsavel: origem do endereço do paciente', () => {
     expect(c.origemEnderecoPaciente).toBeNull();
   });
 
+  it('remover um item acima do que está em edição mantém a edição no item certo', () => {
+    c.listaResponsaveis = [
+      { ...reaproveitado(1, 'Ana', '529.982.247-25', ENDERECO_A), naoResideComPaciente: true },
+      { ...reaproveitado(2, 'Bruno', '111.444.777-35', ENDERECO_A), naoResideComPaciente: true },
+    ];
+    c.editarResponsavel(1);
+    c.removerResponsavel(0);
+    expect(c.indexEdicao).toBe(0);
+
+    c.novoResponsavel.grauParentesco = 'PAI';
+    c.salvarResponsavel();
+    expect(c.listaResponsaveis.length).toBe(1);
+    expect(c.listaResponsaveis[0].nome).toBe('Bruno');
+    expect(c.listaResponsaveis[0].grauParentesco).toBe('PAI');
+  });
+
   it('limpar() esquece a origem', () => {
     copiarDeA();
     c.limpar();

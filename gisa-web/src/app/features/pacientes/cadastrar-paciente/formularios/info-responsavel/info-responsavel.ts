@@ -405,6 +405,8 @@ export class InfoResponsavel extends ComErros {
       this.cancelarEdicao();
     }
     this.listaResponsaveis.splice(index, 1);
+    // Quem está em edição abaixo do removido sobe uma posição.
+    if (this.indexEdicao !== null && index < this.indexEdicao) this.indexEdicao--;
     this.limparErro('responsaveis');
   }
 
