@@ -5,7 +5,7 @@ import { soDigitos } from '../../shared/utils/texto.util';
 import { DadosPessoaisValor } from '../../shared/components/dados-pessoais/dados-pessoais';
 import { formatarCelular, formatarCpf } from '../../shared/utils/formatacao.util';
 import { ResponsavelItem } from './cadastrar-paciente/models/formularios-paciente';
-import { enderecoParaForm } from '../../shared/utils/endereco.util';
+import { EnderecoItem, enderecoParaForm, mesmoEnderecoForm } from '../../shared/utils/endereco.util';
 
 // Reexportadas para não quebrar quem importa daqui; a implementação mora em endereco.util.
 export {
@@ -42,6 +42,7 @@ export function responsavelReaproveitado(r: Responsavel, grauParentesco: Respons
     ocupacao: r.ocupacao ?? '',
     grauParentesco,
     naoResideComPaciente: false,
+    residencia: [],
     endereco: null,
     reaproveitado: true,
     inativo: p.statusCadastro === 'INATIVO',
@@ -65,8 +66,31 @@ export function responsavelParaForm(v: VinculoResponsavel): ResponsavelItem {
     ocupacao: v.ocupacao ?? '',
     grauParentesco: v.grauParentesco,
     naoResideComPaciente: !reside,
+    // Mesma chave que a lista de endereços dá aos itens vindos da API.
+    residencia: (v.idsEnderecoResidencia ?? []).map((id) => `id-${id}`),
     endereco: reside || !endereco ? null : enderecoParaForm(endereco),
     enderecoCadastro: endereco ? enderecoParaForm(endereco) : null,
     resideAntes: reside,
   };
+}
+
+// Acerta a residência depois de mudar a lista de endereços ou a de responsáveis. Com 2 ou mais
+// endereços não adivinha nada: quem ficou sem endereço é cobrado na validação (pais separados).
+export function ajustarResidencia(responsaveis: ResponsavelItem[], enderecos: EnderecoItem[]): void {
+  const existentes = new Set(enderecos.map((e) => e.chave));
+  for (const r of responsaveis) {
+    const restantes = (r.residencia ?? []).filter((c) => existentes.has(c));
+    if (r.naoResideComPaciente || enderecos.length === 0) r.residencia = [];
+    else if (enderecos.length === 1) r.residencia = [enderecos[0].chave];
+    else r.residencia = restantes;
+  }
+}
+
+// Pré-marcação ao confirmar um responsável com 2 ou mais endereços na lista: o endereço dele, se for um
+// do paciente; senão os endereços em que ninguém mora ainda. O usuário corrige nos checkboxes.
+export function sugerirResidencia(r: ResponsavelItem, outros: ResponsavelItem[], enderecos: EnderecoItem[]): string[] {
+  const dele = r.enderecoCadastro ? enderecos.find((e) => mesmoEnderecoForm(e, r.enderecoCadastro!)) : undefined;
+  if (dele) return [dele.chave];
+  const ocupados = new Set(outros.filter((o) => !o.naoResideComPaciente).flatMap((o) => o.residencia ?? []));
+  return enderecos.filter((e) => !ocupados.has(e.chave)).map((e) => e.chave);
 }

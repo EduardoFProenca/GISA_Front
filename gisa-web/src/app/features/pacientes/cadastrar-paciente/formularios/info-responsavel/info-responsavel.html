@@ -16,6 +16,7 @@
               • <span><strong>Parentesco:</strong> {{ rotuloParentesco(resp.grauParentesco) }}</span>
               @if (resp.ocupacao) { • <span><strong>Profissão:</strong> {{ resp.ocupacao }}</span> }
               @if (resp.naoResideComPaciente) { • <span>Não reside com o paciente</span> }
+              @if (moraEm(resp); as endereco) { • <span><strong>Mora em:</strong> {{ endereco }}</span> }
             </div>
             @if (resp.reaproveitado) {
               <div class="tags-resp">

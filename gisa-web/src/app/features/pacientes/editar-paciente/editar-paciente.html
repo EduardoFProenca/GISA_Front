@@ -46,13 +46,18 @@
 
 
     <!-- Responsáveis (adicionar, editar e remover) -->
-    <app-info-responsavel [responsaveisIniciais]="responsaveisIniciais()" [enderecosPaciente]="enderecosPaciente" />
+    <app-info-responsavel #infoResp [responsaveisIniciais]="responsaveisIniciais()" [enderecosPaciente]="enderecosPaciente" />
+    <ng-template #moradores let-e>
+      <app-quem-mora-aqui [chave]="e.chave" [residentes]="residentes(infoResp)" />
+    </ng-template>
 
 
     <!-- Endereços -->
     <app-lista-enderecos #enderecosPaciente titulo="Endereços" [obrigatorio]="true"
       subtitulo="Quem reside com o paciente acompanha as alterações. Se alguém não se mudou, marque que ele não reside."
-      [enderecosIniciais]="enderecosIniciais()" />
+      [enderecosIniciais]="enderecosIniciais()"
+      [extraCard]="mostrarMoradores(infoResp, enderecosPaciente) ? moradores : undefined"
+      (mudou)="ajustarMoradores(infoResp, enderecosPaciente)" />
 
 
     <!-- Escola -->

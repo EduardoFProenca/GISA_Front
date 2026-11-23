@@ -5,6 +5,7 @@ import { Endereco, EstadoCivil, Sexo } from '../../../../core/models/comum.model
 import { AtualizacaoResponsavelPayload, PacienteCadastroPayload, ResponsavelPayload } from '../../../../core/models/paciente.model';
 import { EnderecoForm, FormulariosPaciente, ResponsavelItem } from '../models/formularios-paciente';
 import { enderecoVazio } from '../../paciente-form.util';
+import { EnderecoItem } from '../../../../shared/utils/endereco.util';
 
 @Injectable({ providedIn: 'root' })
 export class PacienteCadastroPayloadService {
@@ -34,12 +35,12 @@ export class PacienteCadastroPayloadService {
         comorbidade: pr.comorbidade.trim() || undefined,
         mobilidade: pr.mobilidade.trim() || undefined,
       },
-      responsaveis: f.infoResponsavel.listaResponsaveis.map((r) => this.montarResponsavel(r, enderecos.length)),
+      responsaveis: f.infoResponsavel.listaResponsaveis.map((r) => this.montarResponsavel(r, f.enderecos.itens)),
     };
   }
 
-  // totalEnderecos: tamanho da lista `enderecos` do mesmo request (os índices de residência apontam para ela).
-  montarResponsavel(r: ResponsavelItem, totalEnderecos: number): ResponsavelPayload {
+  // itens: lista de endereços do mesmo request (os índices de residência apontam para ela).
+  montarResponsavel(r: ResponsavelItem, itens: EnderecoItem[]): ResponsavelPayload {
     return {
       // Já cadastrado: a API só vincula (os dados abaixo são exigidos, mas não alteram o cadastro).
       idResponsavel: r.reaproveitado ? r.idResponsavel : undefined,
@@ -51,15 +52,16 @@ export class PacienteCadastroPayloadService {
       celular: soDigitos(r.celular) || undefined,
       ocupacao: r.ocupacao.trim() || undefined,
       grauParentesco: r.grauParentesco as GrauParentesco,
-      // Até a escolha por endereço (B2), quem reside mora em todos os endereços do paciente.
-      indicesEnderecoResidencia: this.indicesResidencia(r, totalEnderecos),
+      indicesEnderecoResidencia: this.indicesResidencia(r, itens),
       // Se reside com o paciente, o back usa os endereços do paciente.
       enderecos: r.naoResideComPaciente && r.endereco ? this.montarEnderecos(r.endereco) : undefined,
     };
   }
 
-  indicesResidencia(r: ResponsavelItem, totalEnderecos: number): number[] {
-    return r.naoResideComPaciente ? [] : [...Array(totalEnderecos).keys()];
+  // Posição, na lista de endereços enviada, de cada endereço em que ele mora.
+  indicesResidencia(r: ResponsavelItem, itens: EnderecoItem[]): number[] {
+    if (r.naoResideComPaciente) return [];
+    return itens.map((e, i) => (r.residencia.includes(e.chave) ? i : -1)).filter((i) => i >= 0);
   }
 
   // PATCH /responsaveis/{id} para um responsável já cadastrado, depois de vinculado (null = nada a fazer):

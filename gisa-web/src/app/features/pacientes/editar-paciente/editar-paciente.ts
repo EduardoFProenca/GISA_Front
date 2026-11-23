@@ -21,6 +21,7 @@ import { InfoResponsavel } from '../cadastrar-paciente/formularios/info-responsa
 import { InfoEscola } from '../cadastrar-paciente/formularios/info-escola/info-escola';
 import { InfoProntuario } from '../cadastrar-paciente/formularios/info-prontuario/info-prontuario';
 import { InfoCid } from '../cadastrar-paciente/formularios/info-cid/info-cid';
+import { QuemMoraAqui } from '../cadastrar-paciente/formularios/quem-mora-aqui/quem-mora-aqui';
 import { FormulariosPaciente, InfoEscolaForm, ResponsavelItem } from '../cadastrar-paciente/models/formularios-paciente';
 import { PacienteValidadorService } from '../cadastrar-paciente/services/paciente-validador';
 import { PacienteCadastroPayloadService } from '../cadastrar-paciente/services/paciente-payload';
@@ -42,7 +43,14 @@ import { ResponsavelService } from '../../../core/services/responsavel';
 import { EscolaService } from '../../../core/services/escola';
 import { aplicarErrosApi, lerErroApi } from '../../../core/http/erro-api';
 import { lerContextoPacientes } from '../contexto-pacientes';
-import { dadosPessoaisDe, enderecoEmTexto, enderecoParaForm, mesmoEnderecoForm, responsavelParaForm } from '../paciente-form.util';
+import {
+  ajustarResidencia,
+  dadosPessoaisDe,
+  enderecoEmTexto,
+  enderecoParaForm,
+  mesmoEnderecoForm,
+  responsavelParaForm,
+} from '../paciente-form.util';
 import { soDigitos, vazio } from '../../../shared/utils/texto.util';
 
 @Component({
@@ -59,7 +67,8 @@ import { soDigitos, vazio } from '../../../shared/utils/texto.util';
     InfoResponsavel,
     InfoEscola,
     InfoProntuario,
-    InfoCid
+    InfoCid,
+    QuemMoraAqui,
   ],
   templateUrl: './editar-paciente.html',
   styleUrl: './editar-paciente.scss'
@@ -117,6 +126,24 @@ export class EditarPaciente implements OnInit {
     const p = this.paciente();
     return p ? p.responsaveis.map((v) => responsavelParaForm(v)) : [];
   });
+
+  // ---- "Quem mora aqui" nos cards de endereço ----
+  // Mesma referência enquanto os residentes não mudam: um array novo a cada verificação dispararia o NG0100.
+  private residentesAtuais: ResponsavelItem[] = [];
+  residentes(info: InfoResponsavel): ResponsavelItem[] {
+    const atual = info.listaResponsaveis.filter((r) => !r.naoResideComPaciente);
+    const igual = atual.length === this.residentesAtuais.length && atual.every((r, i) => r === this.residentesAtuais[i]);
+    if (!igual) this.residentesAtuais = atual;
+    return this.residentesAtuais;
+  }
+
+  mostrarMoradores(info: InfoResponsavel, lista: ListaEnderecos): boolean {
+    return lista.itens.length >= 2 && this.residentes(info).length > 0;
+  }
+
+  ajustarMoradores(info: InfoResponsavel, lista: ListaEnderecos) {
+    ajustarResidencia(info.listaResponsaveis, lista.itens);
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -203,7 +230,7 @@ export class EditarPaciente implements OnInit {
     this.salvando.set(true);
     try {
       const escola = await this.resolverEscola(f.infoEscola);
-      await this.adicionarResponsaveisNovos(f, original, this.enderecoMuda(f, original));
+      await this.adicionarResponsaveisNovos(f, this.enderecoMuda(f, original));
       await this.atualizarResponsaveisExistentes(f, original);
       const atualizado = await firstValueFrom(
         this.pacienteService.atualizar(this.id(), this.montarAtualizacao(f, original, escola))
@@ -250,8 +277,7 @@ export class EditarPaciente implements OnInit {
     }
   }
 
-  private async adicionarResponsaveisNovos(f: FormulariosPaciente, original: Paciente, enderecoMuda: boolean) {
-    const idsAtuais = original.pessoa.enderecos.map((e) => e.idEndereco!);
+  private async adicionarResponsaveisNovos(f: FormulariosPaciente, enderecoMuda: boolean) {
     for (const item of f.infoResponsavel.listaResponsaveis) {
       // Já vinculado (ou vinculado numa tentativa anterior deste salvamento).
       if (item.idResponsavel && !item.reaproveitado) continue;
@@ -259,10 +285,14 @@ export class EditarPaciente implements OnInit {
         // Esta rota usa os IDs dos endereços atuais do paciente, não os índices do POST /pacientes.
         // Se os endereços mudam neste salvamento, o vínculo nasce como "não reside" e o PATCH seguinte,
         // já com a lista nova, marca a residência (os IDs atuais podem deixar de existir).
+        // Lista sem mudança: todos os itens já têm idEndereco; vão os dos endereços em que ele mora.
+        const ids = f.enderecos.itens
+          .filter((e) => item.residencia.includes(e.chave) && e.idEndereco != null)
+          .map((e) => e.idEndereco!);
         const dados: ResponsavelPayload = {
-          ...this.payload.montarResponsavel(item, 0),
+          ...this.payload.montarResponsavel(item, []),
           indicesEnderecoResidencia: undefined,
-          idsEnderecoResidencia: enderecoMuda || item.naoResideComPaciente ? [] : idsAtuais,
+          idsEnderecoResidencia: enderecoMuda || item.naoResideComPaciente ? [] : ids,
         };
         const p = await firstValueFrom(this.pacienteService.adicionarResponsavel(this.id(), dados));
         // Guarda o id: se um passo seguinte falhar, a nova tentativa não cadastra de novo.
@@ -330,13 +360,13 @@ export class EditarPaciente implements OnInit {
         comorbidade: pr.comorbidade.trim() || null,
         mobilidade: pr.mobilidade.trim() || null,
       },
-      // Quem saiu da lista é desvinculado pela API. Quem reside fica com todos os endereços do paciente (até a B2).
+      // Quem saiu da lista é desvinculado pela API. Cada um mora nos endereços marcados em "Quem mora aqui".
       responsaveis: f.infoResponsavel.listaResponsaveis
         .filter((r) => r.idResponsavel)
         .map((r) => ({
           idResponsavel: r.idResponsavel!,
           grauParentesco: r.grauParentesco as GrauParentesco,
-          indicesEnderecoResidencia: this.payload.indicesResidencia(r, base.enderecos.length),
+          indicesEnderecoResidencia: this.payload.indicesResidencia(r, f.enderecos.itens),
         })),
     };
   }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { soDigitos, vazio, cpfValido } from '../../../../shared/utils/texto.util';
 import { ComErros } from '../../../../shared/components/com-erros';
-import { ContatoForm, FormulariosPaciente, ResponsavelItem, listaErros } from '../models/formularios-paciente';
+import { ContatoForm, EnderecoForm, FormulariosPaciente, ResponsavelItem, listaErros } from '../models/formularios-paciente';
 import { enderecoVazio, mesmoEnderecoForm } from '../../paciente-form.util';
 import { dataFutura } from '../../../../shared/utils/data.util';
 
@@ -36,6 +36,7 @@ export class PacienteValidadorService {
     this.validarDadosPessoais(f, marcar);
     this.validarEscola(f, marcar);
     this.validarResponsaveis(f, marcar);
+    this.validarResidencia(f, marcar);
 
     return { valido };
   }
@@ -45,7 +46,8 @@ export class PacienteValidadorService {
     r: ResponsavelItem,
     contato: ContatoForm | undefined,
     lista: ResponsavelItem[],
-    indexEdicao: number | null
+    indexEdicao: number | null,
+    enderecosPaciente: EnderecoForm[] = []
   ): ResultadoValidacaoResponsavel {
     const erros: Record<string, string> = {};
 
@@ -83,6 +85,15 @@ export class PacienteValidadorService {
         marcar(contato, 'cep', 'O endereço não pode ser removido, apenas alterado.');
       }
       this.validarEnderecoOpcional(contato, marcar);
+    }
+
+    // Dividir o endereço com o paciente é residir (D1): a API recusaria.
+    if (r.naoResideComPaciente) {
+      const proprio = r.reaproveitado && r.enderecoCadastro ? r.enderecoCadastro : contato;
+      if (proprio && !enderecoVazio(proprio) && enderecosPaciente.some((e) => mesmoEnderecoForm(e, proprio))) {
+        erros['residencia'] = "Este é um endereço do paciente. Para morar nele, desmarque 'não reside'.";
+        valido = false;
+      }
     }
 
     return { valido, erros };
@@ -131,6 +142,19 @@ export class PacienteValidadorService {
     if (!vazio(ie.nome) && !ie.escolaSelecionada && vazio(ie.tipoEscola)) {
       marcar(ie, 'tipoEscola');
     }
+  }
+
+  // Com 2 ou mais endereços, cada responsável que reside escolhe onde mora ("Quem mora aqui").
+  private validarResidencia(f: FormulariosPaciente, marcar: Marcar) {
+    const itens = f.enderecos.itens;
+    if (itens.length < 2) return;
+    const semEndereco = f.infoResponsavel.listaResponsaveis.filter(
+      (r) => !r.naoResideComPaciente && !itens.some((e) => r.residencia.includes(e.chave))
+    );
+    if (!semEndereco.length) return;
+    const texto = `Marque em qual endereço mora: ${semEndereco.map((r) => r.nome.trim()).join(', ')}.`;
+    const atual = f.enderecos.erros['enderecos'];
+    marcar(f.enderecos, 'enderecos', atual ? `${atual} ${texto}` : texto);
   }
 
   private validarResponsaveis(f: FormulariosPaciente, marcar: Marcar) {

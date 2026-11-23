@@ -42,7 +42,7 @@ function paciente(enderecos: Endereco[], extras: Paciente['responsaveis'] = []):
 
 const PAI_NOVO: ResponsavelItem = {
   nome: 'Pai Novo', cpf: '111.444.777-35', dataNascimento: '1980-01-01', sexo: 'M', estadoCivil: 'CASADO', celular: '',
-  ocupacao: '', grauParentesco: 'PAI', naoResideComPaciente: false, endereco: null,
+  ocupacao: '', grauParentesco: 'PAI', naoResideComPaciente: false, residencia: [], endereco: null,
 };
 
 const ERRO_409 = new HttpErrorResponse({
@@ -177,5 +177,31 @@ describe('EditarPaciente: endereço compartilhado (409)', () => {
     expect(enviado(0).responsaveis![0].indicesEnderecoResidencia).toEqual([0]);
     expect(fixture.nativeElement.textContent).not.toContain('Mudança de endereço');
     expect(dialogo()).toBeNull();
+  });
+
+  it('"Quem mora aqui": carrega cada responsável marcado no seu endereço', async () => {
+    await montar({
+      ...paciente([END_12, END_15]),
+      responsaveis: [
+        {
+          responsavel: pessoa(7, 'Mãe', '12345678909', [END_12]), ocupacao: null, grauParentesco: 'MAE',
+          resideComPaciente: true, idsEnderecoResidencia: [12],
+        },
+        {
+          responsavel: pessoa(8, 'Pai', '11144477735', [END_15]), ocupacao: null, grauParentesco: 'PAI',
+          resideComPaciente: true, idsEnderecoResidencia: [15],
+        },
+      ],
+    });
+    fixture.detectChanges();
+
+    const marcados = Array.from(fixture.nativeElement.querySelectorAll('app-quem-mora-aqui') as NodeListOf<HTMLElement>).map((b) =>
+      Array.from(b.querySelectorAll('label')).filter((l) => l.querySelector('input')!.checked).map((l) => l.textContent!.trim())
+    );
+    expect(marcados).toEqual([['Mãe'], ['Pai']]);
+
+    atualizar.mockReturnValueOnce(of(paciente([END_12, END_15])));
+    await c.salvarEdicao();
+    expect(enviado(0).responsaveis!.map((r) => r.indicesEnderecoResidencia)).toEqual([[0], [1]]);
   });
 });

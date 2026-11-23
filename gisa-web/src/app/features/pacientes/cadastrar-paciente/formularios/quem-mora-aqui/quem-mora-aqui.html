@@ -1,0 +1,9 @@
+<div class="quem-mora-aqui">
+  <span class="rotulo">Quem mora aqui:</span>
+  @for (r of residentes; track r.cpf) {
+    <label class="checkbox-inline">
+      <input type="checkbox" [checked]="r.residencia.includes(chave)" (change)="alternar(r, $any($event.target).checked)">
+      {{ r.nome }}
+    </label>
+  }
+</div>

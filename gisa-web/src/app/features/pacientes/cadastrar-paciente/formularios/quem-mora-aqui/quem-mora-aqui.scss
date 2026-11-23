@@ -1,0 +1,13 @@
+.quem-mora-aqui {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.88rem;
+
+  .rotulo {
+    font-weight: 600;
+    color: var(--cor-texto-medio);
+  }
+}

@@ -15,8 +15,13 @@
   @for (g of [geracaoFormulario()]; track g) {
   <app-dados-pessoais [exibirEmail]="false" [celularObrigatorio]="false" />
   <app-info-paciente />
-  <app-info-responsavel [enderecosPaciente]="enderecosPaciente" />
-  <app-lista-enderecos #enderecosPaciente titulo="Endereços" [obrigatorio]="true" />
+  <app-info-responsavel #infoResp [enderecosPaciente]="enderecosPaciente" />
+  <ng-template #moradores let-e>
+    <app-quem-mora-aqui [chave]="e.chave" [residentes]="residentes(infoResp)" />
+  </ng-template>
+  <app-lista-enderecos #enderecosPaciente titulo="Endereços" [obrigatorio]="true"
+    [extraCard]="mostrarMoradores(infoResp, enderecosPaciente) ? moradores : undefined"
+    (mudou)="ajustarMoradores(infoResp, enderecosPaciente)" />
   <app-info-escola />
   <app-info-prontuario />
   <app-info-cid />

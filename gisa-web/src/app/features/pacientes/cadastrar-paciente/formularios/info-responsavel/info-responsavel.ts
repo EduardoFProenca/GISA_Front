@@ -26,8 +26,10 @@ import { Filtro } from '../../../../../shared/directives/filtro.directive';
 import {
   enderecoEmTexto,
   enderecoVazio,
+  ajustarResidencia,
   mesmoEnderecoForm,
   responsavelReaproveitado,
+  sugerirResidencia,
 } from '../../../paciente-form.util';
 import { Botao } from '../../../../../shared/components/botao/botao';
 
@@ -109,6 +111,7 @@ export class InfoResponsavel extends ComErros {
       ocupacao: '',
       grauParentesco: '',
       naoResideComPaciente: false,
+      residencia: [],
       endereco: null,
     };
   }
@@ -116,6 +119,7 @@ export class InfoResponsavel extends ComErros {
   private clonar(r: ResponsavelItem): ResponsavelItem {
     return {
       ...r,
+      residencia: [...(r.residencia ?? [])],
       endereco: r.endereco ? { ...r.endereco } : null,
       enderecoCadastro: r.enderecoCadastro ? { ...r.enderecoCadastro } : r.enderecoCadastro,
     };
@@ -223,13 +227,18 @@ export class InfoResponsavel extends ComErros {
     const r = this.novoResponsavel;
     this.limparErroCard('residencia');
     if (!r.naoResideComPaciente) r.endereco = null;
-    // Mostra o endereço que o responsável já tem (o de quem foi reaproveitado não muda aqui).
-    else if (r.enderecoCadastro && !r.endereco) r.endereco = { ...r.enderecoCadastro };
+    // Mostra o endereço que o responsável já tem (o de quem foi reaproveitado não muda aqui), menos quando
+    // é um endereço do paciente: esse era o compartilhado, e quem não reside não fica com ele (D1).
+    else if (r.enderecoCadastro && !r.endereco && !this.ehEnderecoDoPaciente(r.enderecoCadastro)) {
+      r.endereco = { ...r.enderecoCadastro };
+    }
   }
 
   salvarResponsavel() {
     const r = this.novoResponsavel;
-    const resultado = this.validador.validarResponsavel(r, this.contatoResp, this.listaResponsaveis, this.indexEdicao);
+    const resultado = this.validador.validarResponsavel(
+      r, this.contatoResp, this.listaResponsaveis, this.indexEdicao, this.enderecosPaciente?.itens ?? []
+    );
     this.errosCard = resultado.erros;
     if (!resultado.valido) return;
 
@@ -286,14 +295,37 @@ export class InfoResponsavel extends ComErros {
     if (item.naoResideComPaciente && soDigitos(item.cpf) === this.origemEnderecoPaciente?.cpf) {
       this.origemEnderecoPaciente = null;
     }
+    const enderecos = this.enderecosPaciente?.itens ?? [];
+    if (item.naoResideComPaciente) {
+      item.residencia = [];
+    } else {
+      item.residencia = (item.residencia ?? []).filter((c) => enderecos.some((e) => e.chave === c));
+      // Só sugere para quem está sem endereço marcado: editar o telefone não apaga a escolha feita.
+      if (enderecos.length >= 2 && !item.residencia.length) {
+        const outros = this.listaResponsaveis.filter((_, i) => i !== this.indexEdicao);
+        item.residencia = sugerirResidencia(item, outros, enderecos);
+      }
+    }
     if (this.indexEdicao !== null) {
       this.listaResponsaveis[this.indexEdicao] = item;
     } else {
       this.listaResponsaveis.push(item);
     }
+    ajustarResidencia(this.listaResponsaveis, enderecos);
 
     this.limparErro('responsaveis');
     this.cancelarEdicao();
+  }
+
+  private ehEnderecoDoPaciente(e: EnderecoForm): boolean {
+    return (this.enderecosPaciente?.itens ?? []).some((i) => mesmoEnderecoForm(i, e));
+  }
+
+  // "rua, nº" dos endereços em que ele mora; vazio com menos de 2 endereços (aí todos moram no único).
+  moraEm(r: ResponsavelItem): string {
+    const itens = this.enderecosPaciente?.itens ?? [];
+    if (itens.length < 2 || r.naoResideComPaciente) return '';
+    return itens.filter((e) => r.residencia.includes(e.chave)).map((e) => `${e.endereco}, ${e.numero}`).join('; ');
   }
 
   private enderecoDoItem(r: ResponsavelItem): EnderecoForm | null {
@@ -391,6 +423,7 @@ export class InfoResponsavel extends ComErros {
     this.listaResponsaveis.splice(index, 1);
     // Quem está em edição abaixo do removido sobe uma posição.
     if (this.indexEdicao !== null && index < this.indexEdicao) this.indexEdicao--;
+    ajustarResidencia(this.listaResponsaveis, this.enderecosPaciente?.itens ?? []);
     this.limparErro('responsaveis');
   }
 

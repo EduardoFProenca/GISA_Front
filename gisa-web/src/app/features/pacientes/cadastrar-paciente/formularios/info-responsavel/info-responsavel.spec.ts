@@ -15,7 +15,7 @@ const ENDERECO_B: EnderecoForm = {
 function reaproveitado(id: number, nome: string, cpf: string, endereco: EnderecoForm): ResponsavelItem {
   return {
     idResponsavel: id, nome, cpf, dataNascimento: '1980-01-01', sexo: 'F', estadoCivil: 'CASADO', celular: '',
-    ocupacao: '', grauParentesco: 'MAE', naoResideComPaciente: false, endereco: null,
+    ocupacao: '', grauParentesco: 'MAE', naoResideComPaciente: false, residencia: [], endereco: null,
     reaproveitado: true, enderecoCadastro: { ...endereco },
   };
 }
@@ -109,14 +109,16 @@ describe('InfoResponsavel: endereços do paciente na lista', () => {
     expect(c.remocaoPendente).toBe(0);
   });
 
-  it('a origem passa a "não reside": a origem é esquecida', () => {
+  // B2, RN09: o endereço dela é o que foi copiado para o paciente; dividir o endereço é residir (D1).
+  it('a origem não pode passar a "não reside" com o endereço que deu ao paciente', () => {
     copiarDeA();
     c.editarResponsavel(0);
     c.novoResponsavel.naoResideComPaciente = true;
     c.aoMudarResidencia();
     c.salvarResponsavel();
-    expect(c.listaResponsaveis[0].naoResideComPaciente).toBe(true);
-    expect(c.origemEnderecoPaciente).toBeNull();
+    expect(c.errosCard['residencia']).toContain('Este é um endereço do paciente');
+    expect(c.listaResponsaveis[0].naoResideComPaciente).toBe(false);
+    expect(c.origemEnderecoPaciente?.nome).toBe('Ana');
   });
 
   it('responsável cadastrado que reside, paciente sem endereço: oferece copiar', () => {
@@ -167,5 +169,67 @@ describe('InfoResponsavel: endereços do paciente na lista', () => {
     copiarDeA();
     c.limpar();
     expect(c.origemEnderecoPaciente).toBeNull();
+  });
+
+  it('com 2 endereços, confirmar um responsável novo pré-marca os endereços livres', () => {
+    lista.adicionar({ ...ENDERECO_A });
+    lista.adicionar({ ...ENDERECO_B });
+    const [a, b] = lista.itens.map((i) => i.chave);
+    c.listaResponsaveis.push({ ...reaproveitado(1, 'Ana', '529.982.247-25', ENDERECO_A), residencia: [a] });
+
+    c.abrirFormulario();
+    Object.assign(c.novoResponsavel, {
+      nome: 'Bruno', cpf: '111.444.777-35', dataNascimento: '1980-01-01', sexo: 'M', estadoCivil: 'CASADO', grauParentesco: 'PAI',
+    });
+    c.salvarResponsavel();
+
+    expect(c.listaResponsaveis[1].residencia).toEqual([b]);
+  });
+
+  it('com 2 endereços, cadastro existente com endereço igual a um do paciente: marca esse', () => {
+    lista.adicionar({ ...ENDERECO_A });
+    lista.adicionar({ ...ENDERECO_B });
+    const b = lista.itens[1].chave;
+
+    c.abrirFormulario();
+    c.novoResponsavel = reaproveitado(2, 'Bruno', '111.444.777-35', ENDERECO_B);
+    c.salvarResponsavel();
+
+    expect(c.listaResponsaveis[0].residencia).toEqual([b]);
+    expect(c.moraEm(c.listaResponsaveis[0])).toBe('Rua B, 20');
+  });
+
+  it('editar quem já tem endereço marcado não refaz a sugestão', () => {
+    lista.adicionar({ ...ENDERECO_A });
+    lista.adicionar({ ...ENDERECO_B });
+    const [a, b] = lista.itens.map((i) => i.chave);
+    c.listaResponsaveis = [
+      { ...reaproveitado(1, 'Ana', '529.982.247-25', ENDERECO_A), residencia: [a, b] },
+    ];
+    c.editarResponsavel(0);
+    c.novoResponsavel.celular = '(15) 99999-0000';
+    c.salvarResponsavel();
+    expect(c.listaResponsaveis[0].residencia).toEqual([a, b]);
+  });
+
+  it('"não reside" de quem morava no endereço do paciente: o endereço próprio começa vazio', () => {
+    lista.adicionar({ ...ENDERECO_A });
+    c.listaResponsaveis = [{
+      ...reaproveitado(1, 'Ana', '529.982.247-25', ENDERECO_A), reaproveitado: false, resideAntes: true,
+      residencia: [lista.itens[0].chave],
+    }];
+    c.editarResponsavel(0);
+    c.novoResponsavel.naoResideComPaciente = true;
+    c.aoMudarResidencia();
+    expect(c.novoResponsavel.endereco).toBeNull();
+  });
+
+  it('"não reside" com endereço próprio igual a um do paciente: erro no card', () => {
+    lista.adicionar({ ...ENDERECO_A });
+    c.abrirFormulario();
+    c.novoResponsavel = { ...reaproveitado(1, 'Ana', '529.982.247-25', ENDERECO_A), naoResideComPaciente: true };
+    c.salvarResponsavel();
+    expect(c.errosCard['residencia']).toContain('Este é um endereço do paciente');
+    expect(c.listaResponsaveis.length).toBe(0);
   });
 });

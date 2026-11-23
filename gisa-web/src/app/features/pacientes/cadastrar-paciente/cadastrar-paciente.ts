@@ -13,6 +13,7 @@ import { InfoEscola } from './formularios/info-escola/info-escola';
 import { InfoResponsavel } from './formularios/info-responsavel/info-responsavel';
 import { InfoProntuario } from './formularios/info-prontuario/info-prontuario';
 import { InfoCid } from './formularios/info-cid/info-cid';
+import { QuemMoraAqui } from './formularios/quem-mora-aqui/quem-mora-aqui';
 
 import { PacienteService } from '../../../core/services/paciente';
 import { EscolaService } from '../../../core/services/escola';
@@ -20,14 +21,15 @@ import { ResponsavelService } from '../../../core/services/responsavel';
 import { TipoEscola } from '../../../core/models/escola.model';
 import { CadastroPacienteResponse } from '../../../core/models/paciente.model';
 import { soDigitos, vazio } from '../../../shared/utils/texto.util';
-import { FormulariosPaciente } from './models/formularios-paciente';
+import { FormulariosPaciente, ResponsavelItem } from './models/formularios-paciente';
+import { ajustarResidencia } from '../paciente-form.util';
 import { PacienteValidadorService } from './services/paciente-validador';
 import { PacienteCadastroPayloadService } from './services/paciente-payload';
 import { PacienteErrosApiService } from './services/paciente-erros-api';
 
 @Component({
   selector: 'app-cadastrar-paciente',
-  imports: [DadosPessoais, ListaEnderecos, CabecalhoPagina, InfoPaciente, InfoEscola, InfoResponsavel, InfoProntuario, InfoCid],
+  imports: [DadosPessoais, ListaEnderecos, CabecalhoPagina, InfoPaciente, InfoEscola, InfoResponsavel, InfoProntuario, InfoCid, QuemMoraAqui],
   styleUrl: './cadastrar-paciente.scss',
   templateUrl: './cadastrar-paciente.html',
 })
@@ -58,6 +60,24 @@ export class CadastrarPaciente {
   idCadastrado: number | null = null;
   // Muda a cada "Cadastrar outro"; o template recria os formulários quando ela muda.
   geracaoFormulario = signal(0);
+
+  // ---- "Quem mora aqui" nos cards de endereço ----
+  // Mesma referência enquanto os residentes não mudam: um array novo a cada verificação dispararia o NG0100.
+  private residentesAtuais: ResponsavelItem[] = [];
+  residentes(info: InfoResponsavel): ResponsavelItem[] {
+    const atual = info.listaResponsaveis.filter((r) => !r.naoResideComPaciente);
+    const igual = atual.length === this.residentesAtuais.length && atual.every((r, i) => r === this.residentesAtuais[i]);
+    if (!igual) this.residentesAtuais = atual;
+    return this.residentesAtuais;
+  }
+
+  mostrarMoradores(info: InfoResponsavel, lista: ListaEnderecos): boolean {
+    return lista.itens.length >= 2 && this.residentes(info).length > 0;
+  }
+
+  ajustarMoradores(info: InfoResponsavel, lista: ListaEnderecos) {
+    ajustarResidencia(info.listaResponsaveis, lista.itens);
+  }
 
   private get formularios(): FormulariosPaciente {
     return {

@@ -38,6 +38,8 @@ export interface ResponsavelItem {
   ocupacao: string;
   grauParentesco: GrauParentesco | '';
   naoResideComPaciente: boolean;
+  // Chaves (EnderecoItem.chave) dos endereços do paciente em que ele mora; [] = não reside.
+  residencia: string[];
   endereco: EnderecoForm | null; // só preenchido quando naoResideComPaciente = true
 
   // Responsável já cadastrado, escolhido na busca e ainda não vinculado a este paciente: vai com
