@@ -217,3 +217,20 @@
     </p>
   </div>
 </app-confirm-dialog>
+
+<!-- Remover o responsável de quem o endereço do paciente foi copiado. Fechar mantém o endereço. -->
+<app-confirm-dialog
+  [aberto]="remocaoPendente !== null"
+  titulo="Endereço do paciente"
+  mensagem=""
+  textoConfirmar="Remover endereço"
+  varianteConfirmar="primario"
+  textoCancelar="Manter endereço"
+  (confirmar)="confirmarRemocaoEndereco()"
+  (cancelar)="manterEnderecoNaRemocao()"
+>
+  <div dialog-message class="mensagem-endereco">
+    <p>O endereço do paciente veio do cadastro de <strong>{{ origemEnderecoPaciente?.nome }}</strong>.</p>
+    <p>Remover também do paciente?</p>
+  </div>
+</app-confirm-dialog>

@@ -32,6 +32,7 @@ import { Botao } from '../../../../../shared/components/botao/botao';
 
 export type { ResponsavelItem };
 
+const CAMPOS_ENDERECO = ['cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'uf'] as const;
 
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -82,6 +83,13 @@ export class InfoResponsavel extends ComErros {
   confirmarEnderecoAberto = false;
   nomeResponsavelEndereco = '';
   enderecoConfirmacao: EnderecoForm | null = null;
+
+  // Endereço do paciente copiado de um responsável (diálogo "Usar este endereço também para o paciente?").
+  // Serve para perguntar, ao remover esse responsável, se o endereço sai junto.
+  origemEnderecoPaciente: { cpf: string; nome: string; endereco: EnderecoForm } | null = null;
+
+  // Remoção pendente enquanto a pergunta está aberta.
+  remocaoPendente: number | null = null;
 
   opcoesParentesco: { label: string; value: GrauParentesco }[] = [
     { label: 'Pai', value: 'PAI' },
@@ -262,7 +270,12 @@ export class InfoResponsavel extends ComErros {
     this.confirmarEnderecoAberto = false;
     const item: ResponsavelItem = { ...this.novoResponsavel, endereco: null };
     this.aplicarEnderecoNoPaciente(item.enderecoCadastro!);
+    this.origemEnderecoPaciente = this.origemDe(item);
     this.confirmarItem(item);
+  }
+
+  private origemDe(r: ResponsavelItem) {
+    return { cpf: soDigitos(r.cpf), nome: r.nome.trim(), endereco: { ...r.enderecoCadastro! } };
   }
 
   cancelarTrocaEndereco() {
@@ -270,6 +283,10 @@ export class InfoResponsavel extends ComErros {
   }
 
   private confirmarItem(item: ResponsavelItem) {
+    // A origem passou a "não reside": o endereço fica com o paciente, sem perguntar ao remover.
+    if (item.naoResideComPaciente && soDigitos(item.cpf) === this.origemEnderecoPaciente?.cpf) {
+      this.origemEnderecoPaciente = null;
+    }
     if (this.indexEdicao !== null) {
       this.listaResponsaveis[this.indexEdicao] = item;
     } else {
@@ -305,7 +322,16 @@ export class InfoResponsavel extends ComErros {
     const c = this.contatoPaciente;
     if (!c) return;
     Object.assign(c, { ...e });
-    for (const campo of ['cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'uf']) delete c.erros[campo];
+    for (const campo of CAMPOS_ENDERECO) delete c.erros[campo];
+  }
+
+  private limparEnderecoDoPaciente() {
+    const c = this.contatoPaciente;
+    if (!c) return;
+    for (const campo of CAMPOS_ENDERECO) {
+      c[campo] = '';
+      delete c.erros[campo];
+    }
   }
 
   private enderecoDe(c: ContatoForm): EnderecoForm {
@@ -329,6 +355,52 @@ export class InfoResponsavel extends ComErros {
   }
 
   removerResponsavel(index: number) {
+    const r = this.listaResponsaveis[index];
+    const origem = this.origemEnderecoPaciente;
+    const paciente = this.contatoPaciente;
+    if (!origem || soDigitos(r.cpf) !== origem.cpf) {
+      this.removerDaLista(index);
+      return;
+    }
+
+    // O endereço foi alterado à mão depois da cópia: passou a ser do paciente.
+    if (!paciente || !mesmoEnderecoForm(paciente, origem.endereco)) {
+      this.origemEnderecoPaciente = null;
+      this.removerDaLista(index);
+      return;
+    }
+
+    // Outro responsável também mora nesse endereço com o paciente: o endereço continua valendo.
+    const outro = this.listaResponsaveis.find(
+      (x, i) => i !== index && !x.naoResideComPaciente && !!x.enderecoCadastro && mesmoEnderecoForm(x.enderecoCadastro, paciente)
+    );
+    if (outro) {
+      this.origemEnderecoPaciente = this.origemDe(outro);
+      this.removerDaLista(index);
+      return;
+    }
+
+    this.remocaoPendente = index; // o diálogo decide
+  }
+
+  confirmarRemocaoEndereco() {
+    this.concluirRemocao(true);
+  }
+
+  manterEnderecoNaRemocao() {
+    this.concluirRemocao(false);
+  }
+
+  private concluirRemocao(limparEndereco: boolean) {
+    const index = this.remocaoPendente;
+    this.remocaoPendente = null;
+    if (index === null) return;
+    if (limparEndereco) this.limparEnderecoDoPaciente();
+    this.origemEnderecoPaciente = null;
+    this.removerDaLista(index);
+  }
+
+  private removerDaLista(index: number) {
     if (this.indexEdicao === index) {
       this.cancelarEdicao();
     }
@@ -337,6 +409,8 @@ export class InfoResponsavel extends ComErros {
   }
 
   limpar() {
+    this.origemEnderecoPaciente = null;
+    this.remocaoPendente = null;
     this.listaResponsaveis = [];
     this.cancelarEdicao();
     this.erros = {};
