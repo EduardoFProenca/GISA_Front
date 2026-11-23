@@ -3,9 +3,10 @@ import { GrauParentesco } from '../../../../core/models/paciente.model';
 import { TipoEscola } from '../../../../core/models/escola.model';
 import { Escola } from '../../../../core/models/escola.model';
 import { CidSelecionado } from '../../../../core/services/cid';
+import type { EnderecoForm } from '../../../../shared/utils/endereco.util';
 import { ContatoForm, DadosPessoaisForm } from '../../../administrador/cadastrar-profissional/models/formularios-cadastro';
 
-export type { ContatoForm, DadosPessoaisForm };
+export type { ContatoForm, DadosPessoaisForm, EnderecoForm };
 
 export interface InfoPacienteForm extends ComErros {
   convenio: boolean;
@@ -22,16 +23,6 @@ export interface InfoProntuarioForm extends ComErros {
   alergias: string;
   comorbidade: string;
   mobilidade: string;
-}
-
-export interface EnderecoForm {
-  cep: string;
-  endereco: string;
-  numero: string;
-  complemento: string;
-  bairro: string;
-  cidade: string;
-  uf: string;
 }
 
 export interface ResponsavelItem {

@@ -5,6 +5,7 @@ export type Sexo = 'F' | 'M' | 'O';
 export type StatusCadastro = 'ATIVO' | 'INATIVO';
 
 export interface Endereco {
+  idEndereco?: number;
   cep: string;
   rua: string;
   numero: string;

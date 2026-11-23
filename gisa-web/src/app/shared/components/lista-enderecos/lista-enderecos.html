@@ -1,0 +1,57 @@
+<div class="secao">
+  <h3>
+    {{ titulo }}
+    @if (obrigatorio) { <span class="obrigatorio">*</span> }
+    @if (subtitulo) { <span class="subtitulo-secao">{{ subtitulo }}</span> }
+  </h3>
+
+  @if (itens.length > 0) {
+    <div class="container-cards">
+      @for (e of itens; track e.chave; let i = $index) {
+        <div class="card-endereco">
+          <div class="info-principal">
+            <div class="linha-1">{{ e.endereco }}, {{ e.numero }}@if (e.complemento) { ({{ e.complemento }}) }</div>
+            <div class="linha-2">{{ e.bairro }} • {{ e.cidade }}/{{ e.uf }} • CEP {{ e.cep }}</div>
+            @if (i === 0 && itens.length > 1) {
+              <div class="tags-endereco"><span class="tag">Principal</span></div>
+            }
+            @if (extraCard) {
+              <ng-container *ngTemplateOutlet="extraCard; context: { $implicit: e, index: i }" />
+            }
+          </div>
+          <div class="acoes-card">
+            <button appBotao type="button" variante="fantasma" tamanho="sm" somenteIcone aria-label="Editar endereço" title="Editar endereço"
+              (click)="editar(i)"><ng-icon [name]="icones.editar" /></button>
+            <button appBotao type="button" variante="perigo-suave" tamanho="sm" somenteIcone aria-label="Remover endereço" title="Remover endereço"
+              (click)="remover(e.chave)">✕</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (erros['enderecos']) { <span class="erro-msg erro-lista">{{ erros['enderecos'] }}</span> }
+
+  @if (exibindoFormulario) {
+    <div class="formulario-card">
+      <h4>{{ indexEdicao !== null ? 'Editar endereço' : 'Novo endereço' }}</h4>
+      @for (g of [geracaoFormulario]; track g) {
+        <app-contato titulo="" subtitulo="" [dadosIniciais]="dadosFormulario" />
+      }
+      @if (erroCard) { <span class="erro-msg">{{ erroCard }}</span> }
+      <div class="acoes-form">
+        @if (podeCancelar) {
+          <button appBotao type="button" variante="neutro" (click)="cancelarEdicao()">Cancelar</button>
+        }
+        <button appBotao type="button" data-concluir (click)="confirmar()">
+          {{ indexEdicao !== null ? 'Atualizar endereço' : 'Confirmar endereço' }}
+        </button>
+      </div>
+    </div>
+  } @else {
+    <button type="button" class="add-item" (click)="abrirFormulario()">
+      <ng-icon [name]="icones.adicionarItem" aria-hidden="true" />
+      Adicionar endereço
+    </button>
+  }
+</div>

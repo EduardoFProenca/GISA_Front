@@ -1,8 +1,10 @@
 <div class="secao">
-  <h3>
-    {{ titulo }}
-    @if (subtitulo) { <span class="subtitulo-secao">{{ subtitulo }}</span> }
-  </h3>
+  @if (titulo) {
+    <h3>
+      {{ titulo }}
+      @if (subtitulo) { <span class="subtitulo-secao">{{ subtitulo }}</span> }
+    </h3>
+  }
 
   <div class="linha-form">
     <div class="campo">

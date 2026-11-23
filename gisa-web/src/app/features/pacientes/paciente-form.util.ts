@@ -3,20 +3,17 @@ import { Endereco, Pessoa } from '../../core/models/comum.model';
 import { Responsavel, VinculoResponsavel } from '../../core/models/paciente.model';
 import { soDigitos } from '../../shared/utils/texto.util';
 import { DadosPessoaisValor } from '../../shared/components/dados-pessoais/dados-pessoais';
-import { formatarCelular, formatarCep, formatarCpf } from '../../shared/utils/formatacao.util';
-import { EnderecoForm, ResponsavelItem } from './cadastrar-paciente/models/formularios-paciente';
+import { formatarCelular, formatarCpf } from '../../shared/utils/formatacao.util';
+import { ResponsavelItem } from './cadastrar-paciente/models/formularios-paciente';
+import { enderecoParaForm } from '../../shared/utils/endereco.util';
 
-export function enderecoParaForm(e: Endereco | null | undefined): EnderecoForm {
-  return {
-    cep: formatarCep(e?.cep),
-    endereco: e?.rua ?? '',
-    numero: e?.numero ?? '',
-    complemento: e?.complemento ?? '',
-    bairro: e?.bairro ?? '',
-    cidade: e?.cidade ?? '',
-    uf: e?.estado ?? '',
-  };
-}
+// Reexportadas para não quebrar quem importa daqui; a implementação mora em endereco.util.
+export {
+  enderecoEmTexto,
+  enderecoParaForm,
+  enderecoVazio,
+  mesmoEnderecoForm,
+} from '../../shared/utils/endereco.util';
 
 export function dadosPessoaisDe(p: Pessoa): Partial<DadosPessoaisValor> {
   return {
@@ -29,25 +26,6 @@ export function dadosPessoaisDe(p: Pessoa): Partial<DadosPessoaisValor> {
     estadoCivil: p.estadoCivil,
     numCNS: p.numCNS ?? '',
   };
-}
-
-// Mesmo endereço nos formulários (ignora máscara do CEP, maiúsculas e espaços nas pontas).
-export function mesmoEnderecoForm(a: EnderecoForm, b: EnderecoForm): boolean {
-  const chave = (e: EnderecoForm) =>
-    [soDigitos(e.cep), e.endereco, e.numero, e.complemento ?? '', e.bairro, e.cidade, e.uf]
-      .map((v) => v.trim().toLowerCase())
-      .join('|');
-  return chave(a) === chave(b);
-}
-
-export function enderecoVazio(e: EnderecoForm): boolean {
-  return [e.cep, e.endereco, e.numero, e.complemento, e.bairro, e.cidade, e.uf].every((v) => !v?.trim());
-}
-
-// "Rua das Flores, 10 (apto 2) - Centro, Sorocaba/SP"
-export function enderecoEmTexto(e: EnderecoForm): string {
-  const complemento = e.complemento?.trim() ? ` (${e.complemento.trim()})` : '';
-  return `${e.endereco}, ${e.numero}${complemento} - ${e.bairro}, ${e.cidade}/${e.uf}`;
 }
 
 // Responsável já cadastrado (GET /responsaveis/{id}) escolhido para vincular ao paciente.
