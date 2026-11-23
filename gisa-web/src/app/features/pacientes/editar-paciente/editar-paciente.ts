@@ -7,6 +7,10 @@ import { firstValueFrom } from 'rxjs';
 
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
+import {
+  DialogoEnderecoCompartilhado,
+  EnderecoCompartilhadoItem,
+} from '../../../shared/components/dialogo-endereco-compartilhado/dialogo-endereco-compartilhado';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
 import { ListaEnderecos } from '../../../shared/components/lista-enderecos/lista-enderecos';
 import { SelectMenu } from '../../../shared/components/select-menu/select-menu';
@@ -36,9 +40,9 @@ import { Escola } from '../../../core/models/escola.model';
 import { PacienteService } from '../../../core/services/paciente';
 import { ResponsavelService } from '../../../core/services/responsavel';
 import { EscolaService } from '../../../core/services/escola';
-import { aplicarErrosApi, lerErroApi, mensagemDeErro } from '../../../core/http/erro-api';
+import { aplicarErrosApi, lerErroApi } from '../../../core/http/erro-api';
 import { lerContextoPacientes } from '../contexto-pacientes';
-import { dadosPessoaisDe, enderecoParaForm, mesmoEnderecoForm, responsavelParaForm } from '../paciente-form.util';
+import { dadosPessoaisDe, enderecoEmTexto, enderecoParaForm, mesmoEnderecoForm, responsavelParaForm } from '../paciente-form.util';
 import { soDigitos, vazio } from '../../../shared/utils/texto.util';
 
 @Component({
@@ -48,6 +52,7 @@ import { soDigitos, vazio } from '../../../shared/utils/texto.util';
     SelectMenu,
     CabecalhoPagina,
     ConfirmDialog,
+    DialogoEnderecoCompartilhado,
     DadosPessoais,
     ListaEnderecos,
     InfoPaciente,
@@ -92,9 +97,8 @@ export class EditarPaciente implements OnInit {
   nomeSalvo = signal('');
   confirmarCancelamentoAberto = signal(false);
 
-  // Mudança de endereço: pergunta quais responsáveis que residem com o paciente vão junto.
-  mudancaAberta = signal(false);
-  residentesNaMudanca = signal<{ idResponsavel: number; nome: string; vaiJunto: boolean; item: ResponsavelItem }[]>([]);
+  // 409 do PATCH: endereços alterados que também são de outros cadastros (o diálogo pergunta um a um).
+  enderecosCompartilhados = signal<EnderecoCompartilhadoItem[]>([]);
 
   // ---- valores iniciais dos formulários (formatados como o usuário digitaria) ----
   dadosPessoais = computed(() => {
@@ -174,32 +178,15 @@ export class EditarPaciente implements OnInit {
       return;
     }
 
-    // Endereço mudou e há quem reside com o paciente: pergunta quem vai junto antes de salvar.
-    const residentes = f.infoResponsavel.listaResponsaveis.filter(
-      (r) => r.idResponsavel && r.resideAntes && !r.naoResideComPaciente
-    );
-    if (this.enderecoMuda(f, original) && residentes.length) {
-      this.residentesNaMudanca.set(residentes.map((item) => ({
-        idResponsavel: item.idResponsavel!, nome: item.nome.trim(), vaiJunto: true, item,
-      })));
-      this.mudancaAberta.set(true);
-      return;
-    }
+    // Quem reside acompanha o paciente (D2); quem não se mudou já foi marcado como "não reside" no card.
     await this.salvar(f, original);
   }
 
-  // Quem ficou desmarcado continua no endereço atual e passa a constar como "não reside".
-  async confirmarMudanca() {
-    const f = this.formularios;
-    const original = this.paciente();
-    this.mudancaAberta.set(false);
-    if (!f || !original) return;
-    for (const { vaiJunto, item } of this.residentesNaMudanca()) {
-      if (vaiJunto) continue;
-      item.naoResideComPaciente = true;
-      item.endereco = item.enderecoCadastro ? { ...item.enderecoCadastro } : null;
-    }
-    await this.salvar(f, original);
+  // Respostas do diálogo ficam nos itens da lista; salvar de novo refaz o fluxo (sem vincular de novo).
+  async confirmarEnderecosCompartilhados(decisoes: Map<number, boolean>) {
+    this.enderecosCompartilhados.set([]);
+    this.enderecosForm?.aplicarDecisoes(decisoes);
+    await this.salvarEdicao();
   }
 
   // Qualquer diferença na lista (quantidade, IDs na mesma posição ou valores) conta como mudança.
@@ -226,12 +213,16 @@ export class EditarPaciente implements OnInit {
       this.mostrarSucesso();
     } catch (e) {
       // Os passos de escola e responsáveis já preenchem erroGeral; aqui chegam os do paciente.
-      // 409 de endereço usado por outros cadastros: por enquanto só o aviso (a A5 troca por pergunta).
-      if (!this.erroGeral()) {
-        this.erroGeral.set(lerErroApi(e)?.enderecosCompartilhados?.length
-          ? mensagemDeErro(e, 'Erro ao salvar cadastro.')
-          : this.errosApi.tratar(e, f).mensagemGeral);
+      if (this.erroGeral()) return;
+      const compartilhados = lerErroApi(e)?.enderecosCompartilhados;
+      if (compartilhados?.length) {
+        this.enderecosCompartilhados.set(compartilhados.map((c) => {
+          const item = f.enderecos.itens.find((i) => i.idEndereco === c.idEndereco);
+          return { ...c, texto: item ? enderecoEmTexto(item) : `Endereço ${c.idEndereco}` };
+        }));
+        return; // abre o diálogo
       }
+      this.erroGeral.set(this.errosApi.tratar(e, f).mensagemGeral);
     } finally {
       this.salvando.set(false);
     }

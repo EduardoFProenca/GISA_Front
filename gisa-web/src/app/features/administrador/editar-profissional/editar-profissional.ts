@@ -5,6 +5,11 @@ import { Location } from '@angular/common';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
+import {
+  DialogoEnderecoCompartilhado,
+  EnderecoCompartilhadoItem,
+} from '../../../shared/components/dialogo-endereco-compartilhado/dialogo-endereco-compartilhado';
+import { enderecoEmTexto } from '../../../shared/utils/endereco.util';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
 import { ListaEnderecos } from '../../../shared/components/lista-enderecos/lista-enderecos';
 import { InfoProfissional } from '../cadastrar-profissional/formularios/info-profissional/info-profissional';
@@ -49,6 +54,7 @@ function semEspecialista(): InfoEspecialistaForm {
   imports: [
     CabecalhoPagina,
     ConfirmDialog,
+    DialogoEnderecoCompartilhado,
     DadosPessoais,
     ListaEnderecos,
     InfoProfissional,
@@ -88,6 +94,8 @@ export class EditarProfissional implements OnInit {
   salvando = signal(false);
   confirmarCancelamentoAberto = signal(false);
   nomeSalvo = signal('');
+  // 409 do PATCH: endereços alterados que também são de outros cadastros (o diálogo pergunta um a um).
+  enderecosCompartilhados = signal<EnderecoCompartilhadoItem[]>([]);
 
   detalhe = signal<ProfissionalDetalhe | null>(null);
   formularios = signal<FormulariosDetalhe | null>(null);
@@ -162,10 +170,13 @@ export class EditarProfissional implements OnInit {
       this.nomeSalvo.set(f.dadosPessoais.nome.trim());
       this.mostrarSucesso(emailNaoEnviado);
     } catch (err) {
-      // 409 de endereço usado por outros cadastros: por enquanto só o aviso (a A5 troca por pergunta).
-      if (lerErroApi(err)?.enderecosCompartilhados?.length) {
-        this.erroGeral.set(mensagemDeErro(err, 'Erro ao salvar cadastro.'));
-        return;
+      const compartilhados = lerErroApi(err)?.enderecosCompartilhados;
+      if (compartilhados?.length) {
+        this.enderecosCompartilhados.set(compartilhados.map((c) => {
+          const item = f.enderecos.itens.find((i) => i.idEndereco === c.idEndereco);
+          return { ...c, texto: item ? enderecoEmTexto(item) : `Endereço ${c.idEndereco}` };
+        }));
+        return; // abre o diálogo
       }
       const resultado = this.errosApi.tratar(err, f);
       this.erroGeral.set(resultado.mensagemGeral);
@@ -176,6 +187,13 @@ export class EditarProfissional implements OnInit {
     } finally {
       this.salvando.set(false);
     }
+  }
+
+  // Respostas do diálogo ficam nos itens da lista; o PATCH é reenviado com elas.
+  async confirmarEnderecosCompartilhados(decisoes: Map<number, boolean>) {
+    this.enderecosCompartilhados.set([]);
+    this.enderecosForm?.aplicarDecisoes(decisoes);
+    await this.salvarEdicao();
   }
 
   irParaGerenciarProfissionais() {

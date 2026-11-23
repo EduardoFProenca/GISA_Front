@@ -116,4 +116,24 @@ describe('ListaEnderecos', () => {
     expect(api[1].complemento).toBe('apto 2');
     expect(api[2].cep).toBe('18020000');
   });
+
+  it('aplicarDecisoes marca só os endereços respondidos, e paraApi envia a resposta', () => {
+    c.enderecosIniciais = [ENDERECO_A, ENDERECO_B];
+    c.aplicarDecisoes(new Map([[1, true]]));
+
+    const api = c.paraApi() as { idEndereco?: number; alterarParaTodos?: boolean }[];
+    expect(api[0].alterarParaTodos).toBe(true);
+    expect(api[1].alterarParaTodos).toBeUndefined();
+  });
+
+  it('editar de novo o endereço respondido apaga a resposta', () => {
+    c.enderecosIniciais = [ENDERECO_A];
+    c.aplicarDecisoes(new Map([[1, false]]));
+    c.editar(0);
+    preencher(c, { cep: '18000-000', endereco: 'Rua A', numero: '11', bairro: 'Centro', cidade: 'Sorocaba', uf: 'SP' });
+    c.confirmar();
+
+    expect(c.itens[0].idEndereco).toBe(1);
+    expect(c.itens[0].alterarParaTodos).toBeUndefined();
+  });
 });

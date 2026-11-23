@@ -151,7 +151,8 @@ export class ListaEnderecos extends ComErros implements OnInit {
     }
 
     if (this.indexEdicao !== null) {
-      this.itens = this.itens.map((x, i) => (i === this.indexEdicao ? { ...x, ...form } : x));
+      // Editado de novo: a resposta ao 409 era sobre o valor anterior.
+      this.itens = this.itens.map((x, i) => (i === this.indexEdicao ? { ...x, ...form, alterarParaTodos: undefined } : x));
     } else {
       this.itens = [...this.itens, { ...form, chave: this.chaveNova() }];
     }
@@ -191,6 +192,13 @@ export class ListaEnderecos extends ComErros implements OnInit {
       this.erros['enderecos'] = 'Informe ao menos um endereço.';
     }
     return !this.erros['enderecos'];
+  }
+
+  // Respostas do diálogo de endereço compartilhado, por idEndereco.
+  aplicarDecisoes(decisoes: Map<number, boolean>) {
+    this.itens = this.itens.map((x) =>
+      x.idEndereco != null && decisoes.has(x.idEndereco) ? { ...x, alterarParaTodos: decisoes.get(x.idEndereco) } : x
+    );
   }
 
   paraApi(): Endereco[] {

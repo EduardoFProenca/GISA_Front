@@ -1,0 +1,37 @@
+<app-dialogo [aberto]="aberto" titulo="Endereço usado por outros cadastros" largura="md" (fechar)="cancelar.emit()">
+  @for (item of itens; track item.idEndereco) {
+    <fieldset class="pergunta">
+      <legend class="endereco">{{ item.texto }}</legend>
+      <p class="quantidade">
+        Também é usado por <strong>{{ item.outrosCadastros }}</strong>
+        {{ item.outrosCadastros === 1 ? 'outro cadastro' : 'outros cadastros' }}.
+      </p>
+
+      <label class="opcao">
+        <input type="radio" [name]="'alterarParaTodos-' + item.idEndereco" [checked]="decisoes.get(item.idEndereco) === true"
+          (change)="escolher(item.idEndereco, true)">
+        <span>
+          <strong>Corrigir para todos</strong>
+          <span class="descricao">Foi um erro de digitação ou o endereço mudou para todos.</span>
+        </span>
+      </label>
+      <label class="opcao">
+        <input type="radio" [name]="'alterarParaTodos-' + item.idEndereco" [checked]="decisoes.get(item.idEndereco) === false"
+          (change)="escolher(item.idEndereco, false)">
+        <span>
+          <strong>Só para este cadastro</strong>
+          <span class="descricao">Ele se mudou; os outros continuam no endereço atual.</span>
+        </span>
+      </label>
+    </fieldset>
+  }
+
+  <p class="aviso-info">
+    Se algum responsável também mora com outro paciente neste endereço, a residência com esse outro paciente pode mudar.
+  </p>
+
+  <div class="dialogo-acoes">
+    <button appBotao type="button" variante="neutro" (click)="cancelar.emit()">Voltar</button>
+    <button appBotao type="button" data-concluir [disabled]="!completo" (click)="aoConfirmar()">Salvar</button>
+  </div>
+</app-dialogo>

@@ -39,6 +39,10 @@
 </div>
 }
 
+<!-- 409: endereço alterado também é de outros cadastros. -->
+<app-dialogo-endereco-compartilhado [aberto]="enderecosCompartilhados().length > 0" [itens]="enderecosCompartilhados()"
+    (confirmar)="confirmarEnderecosCompartilhados($event)" (cancelar)="enderecosCompartilhados.set([])" />
+
 <app-confirm-dialog [aberto]="confirmarCancelamentoAberto()" titulo="Descartar alterações?"
     mensagem="As alterações feitas nesta edição serão perdidas." textoConfirmar="Descartar"
     textoCancelar="Continuar editando" (confirmar)="confirmarCancelamento()"

@@ -16,6 +16,8 @@ export interface EnderecoForm {
 export interface EnderecoItem extends EnderecoForm {
   idEndereco?: number; // vem da API (edição); ausente = endereço novo
   chave: string; // identificador local estável: `id-12` ou `novo-<contador>`
+  // Resposta ao 409 de endereço compartilhado: true = vale para todos; false = só para este cadastro.
+  alterarParaTodos?: boolean;
 }
 
 export function enderecoParaForm(e: Endereco | null | undefined): EnderecoForm {
@@ -49,9 +51,11 @@ export function enderecoEmTexto(e: EnderecoForm): string {
   return `${e.endereco}, ${e.numero}${complemento} - ${e.bairro}, ${e.cidade}/${e.uf}`;
 }
 
-export function enderecoParaApi(e: EnderecoItem): Endereco {
+export function enderecoParaApi(e: EnderecoItem): Endereco & { alterarParaTodos?: boolean } {
   return {
     idEndereco: e.idEndereco,
+    // Só vai no reenvio depois da pergunta; ausente, a API pergunta de novo (409) se a linha for compartilhada.
+    alterarParaTodos: e.alterarParaTodos,
     cep: soDigitos(e.cep),
     rua: e.endereco.trim(),
     numero: e.numero.trim(),

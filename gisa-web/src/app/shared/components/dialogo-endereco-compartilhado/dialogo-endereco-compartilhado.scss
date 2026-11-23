@@ -1,0 +1,38 @@
+.pergunta {
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-md);
+  padding: 0.9rem 1rem;
+  margin: 0 0 1rem;
+
+  .endereco {
+    font-weight: 600;
+    color: var(--cor-titulo);
+    padding: 0 0.25rem;
+  }
+
+  .quantidade {
+    margin: 0 0 0.75rem;
+    font-size: 0.9rem;
+    color: var(--cor-texto-medio);
+  }
+}
+
+.opcao {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+  cursor: pointer;
+  text-align: left;
+
+  input {
+    margin-top: 0.2rem;
+    accent-color: var(--cor-primaria);
+  }
+
+  .descricao {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--cor-texto-secundario);
+  }
+}
