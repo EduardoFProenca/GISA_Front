@@ -150,17 +150,8 @@
 
     <!-- Contato e Endereço -->
     <div class="secao">
-      <h3>Endereço</h3>
-      @if (p.pessoa.enderecos[0]; as e) {
-        <div class="info-bloco">
-          <app-campo-detalhe rotulo="Endereço">{{ e.rua }}, {{ e.numero }}{{ e.complemento ? ' (' + e.complemento + ')' : '' }}</app-campo-detalhe>
-          <app-campo-detalhe rotulo="Bairro">{{ e.bairro }}</app-campo-detalhe>
-          <app-campo-detalhe rotulo="Cidade">{{ e.cidade }}/{{ e.estado }}</app-campo-detalhe>
-          <app-campo-detalhe rotulo="CEP">{{ cep(e.cep) }}</app-campo-detalhe>
-        </div>
-      } @else {
-        <p>Sem endereço informado.</p>
-      }
+      <h3>{{ p.pessoa.enderecos.length > 1 ? 'Endereços' : 'Endereço' }}</h3>
+      <app-resumo-enderecos [enderecos]="p.pessoa.enderecos" />
     </div>
 
     @if (podeVerTerapias) {

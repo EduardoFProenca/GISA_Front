@@ -1,0 +1,22 @@
+@if (enderecos.length) {
+  @for (e of visiveis; track e.idEndereco ?? $index; let i = $index) {
+    <div class="card-endereco">
+      @if (i === 0 && enderecos.length > 1) {
+        <span class="tag">Principal</span>
+      }
+      <div class="info-bloco">
+        <app-campo-detalhe rotulo="Endereço">{{ e.rua }}, {{ e.numero }}{{ e.complemento ? ' (' + e.complemento + ')' : '' }}</app-campo-detalhe>
+        <app-campo-detalhe rotulo="Bairro">{{ e.bairro }}</app-campo-detalhe>
+        <app-campo-detalhe rotulo="Cidade">{{ e.cidade }}/{{ e.estado }}</app-campo-detalhe>
+        <app-campo-detalhe rotulo="CEP">{{ cep(e.cep) }}</app-campo-detalhe>
+      </div>
+    </div>
+  }
+  @if (restantes) {
+    <button appBotao type="button" variante="link" (click)="expandido.set(!expandido())">
+      {{ expandido() ? 'Ver menos' : 'Ver mais (+' + restantes + ')' }}
+    </button>
+  }
+} @else {
+  <p>Sem endereço informado.</p>
+}

@@ -13,7 +13,7 @@ import { UsuarioService } from '../../../core/services/usuario';
 import { ProfissionalDetalhe, TipoProfissional } from '../../../core/models/profissional.model';
 import { Auth } from '../../../core/auth/auth';
 import { mensagemDeErro } from '../../../core/http/erro-api';
-import { formatarCbo, formatarCelular, formatarCep, formatarCnpj, formatarCns, formatarCpf } from '../../../shared/utils/formatacao.util';
+import { formatarCbo, formatarCelular, formatarCnpj, formatarCns, formatarCpf } from '../../../shared/utils/formatacao.util';
 import { dataCurta, horaCurta } from '../../../shared/utils/data.util';
 import { ROTULO_DIA_SEMANA, ROTULO_ESTADO_CIVIL, ROTULO_SEXO } from '../../../shared/utils/rotulos.util';
 import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
@@ -23,6 +23,7 @@ import { SelectBusca } from '../../../shared/components/select-busca/select-busc
 import { SelectMenu } from '../../../shared/components/select-menu/select-menu';
 import { buscaPacientes, DICA_BUSCA_PACIENTE } from '../../../shared/components/select-busca/buscas';
 import { Botao } from '../../../shared/components/botao/botao';
+import { ResumoEnderecos } from '../../../shared/components/resumo-enderecos/resumo-enderecos';
 
 const ROTULO_TIPO: Record<TipoProfissional, string> = {
   PROFISSIONAL: 'Profissional',
@@ -33,7 +34,7 @@ const ROTULO_TIPO: Record<TipoProfissional, string> = {
 
 @Component({
   selector: 'app-detalhe-profissional',
-  imports: [Botao, CampoDetalhe, 
+  imports: [Botao, CampoDetalhe, ResumoEnderecos,
     FormsModule,
     CabecalhoPagina,
     ConfirmDialog,
@@ -63,7 +64,6 @@ export class DetalheProfissional implements OnInit {
   readonly cbo = formatarCbo;
   readonly cns = formatarCns;
   readonly celular = formatarCelular;
-  readonly cep = formatarCep;
   readonly data = dataCurta;
   readonly hora = horaCurta;
   readonly rotuloSexo = ROTULO_SEXO;

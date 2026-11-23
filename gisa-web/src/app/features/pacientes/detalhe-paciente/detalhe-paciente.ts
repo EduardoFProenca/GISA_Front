@@ -15,7 +15,7 @@ import { mensagemDeErro } from '../../../core/http/erro-api';
 import { lerContextoPacientes } from '../contexto-pacientes';
 import { HistoricoPaciente } from './historico-paciente/historico-paciente';
 import { TerapiasPaciente } from './terapias-paciente/terapias-paciente';
-import { formatarCelular, formatarCep, formatarCns, formatarCpf } from '../../../shared/utils/formatacao.util';
+import { formatarCelular, formatarCns, formatarCpf } from '../../../shared/utils/formatacao.util';
 import { dataCurta } from '../../../shared/utils/data.util';
 import {
   ROTULO_ESTADO_CIVIL,
@@ -28,10 +28,11 @@ import {
 } from '../../../shared/utils/rotulos.util';
 import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 import { Botao } from '../../../shared/components/botao/botao';
+import { ResumoEnderecos } from '../../../shared/components/resumo-enderecos/resumo-enderecos';
 
 @Component({
   selector: 'app-detalhe-paciente',
-  imports: [Botao, CampoDetalhe, CabecalhoPagina, ConfirmDialog, HistoricoPaciente, TerapiasPaciente, SelectBusca],
+  imports: [Botao, CampoDetalhe, CabecalhoPagina, ConfirmDialog, HistoricoPaciente, TerapiasPaciente, SelectBusca, ResumoEnderecos],
   templateUrl: './detalhe-paciente.html',
   styleUrl: './detalhe-paciente.scss'
 })
@@ -49,7 +50,6 @@ export class DetalhePaciente implements OnInit {
   readonly rotuloEscola = ROTULO_TIPO_ESCOLA;
   readonly cpf = formatarCpf;
   readonly celular = formatarCelular;
-  readonly cep = formatarCep;
   readonly cns = formatarCns;
   readonly data = dataCurta;
   readonly rotuloSexo = ROTULO_SEXO;

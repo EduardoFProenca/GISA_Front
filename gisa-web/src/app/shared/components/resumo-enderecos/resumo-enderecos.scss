@@ -1,0 +1,17 @@
+// O fundo, a borda e a grade vêm do .info-bloco global (styles.scss); aqui só o espaço entre cards
+// e a tag acima do bloco.
+.card-endereco {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+
+  & + .card-endereco,
+  & + button {
+    margin-top: 0.75rem;
+  }
+
+  .info-bloco {
+    align-self: stretch;
+  }
+}
