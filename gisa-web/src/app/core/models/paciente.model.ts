@@ -35,8 +35,10 @@ export interface VinculoResponsavel {
   responsavel: Pessoa;
   ocupacao: string | null;
   grauParentesco: GrauParentesco;
-  // true: a API mantém os endereços do responsável iguais aos do paciente.
+  // Derivado de idsEnderecoResidencia: true quando compartilha ao menos um endereço com o paciente.
   resideComPaciente: boolean;
+  // Endereços do paciente (idEndereco) em que o responsável mora; [] = não reside.
+  idsEnderecoResidencia: number[];
 }
 
 // GET /pacientes/{id} (também é a resposta do PATCH e do POST .../responsaveis).
@@ -80,7 +82,7 @@ export interface CadastroPacienteResponse {
 // ---------- Cadastro (POST) ----------
 
 // Item de `responsaveis` no POST /pacientes e corpo do POST /pacientes/{id}/responsaveis.
-// naoResideComPaciente = false: fica com os endereços do paciente (enderecos é ignorado). Um responsável
+// Quem reside fica com os endereços do paciente indicados (enderecos é ignorado). Um responsável
 // já cadastrado com outro endereço não pode residir (400).
 export interface ResponsavelPayload {
   idResponsavel?: number;
@@ -93,7 +95,10 @@ export interface ResponsavelPayload {
   numCNS?: string;
   ocupacao?: string;
   grauParentesco: GrauParentesco;
-  naoResideComPaciente: boolean;
+  // POST /pacientes: posições em `enderecos` do mesmo request ([] = não reside).
+  indicesEnderecoResidencia?: number[];
+  // POST /pacientes/{id}/responsaveis: idEndereco dos endereços atuais do paciente ([] = não reside).
+  idsEnderecoResidencia?: number[];
   enderecos?: Endereco[];
 }
 
@@ -106,7 +111,7 @@ export interface PacienteCadastroPayload {
   estadoCivil: EstadoCivil;
   celular?: string;
   numCNS?: string;
-  // Opcional (lista vazia = sem endereço).
+  // Ao menos 1 (400 em fields.enderecos).
   enderecos: Endereco[];
   idEscola?: number;
   convenio?: boolean;
@@ -132,8 +137,8 @@ export interface AtualizacaoPacientePayload {
   convenio?: boolean | null;
   // null remove a escola do paciente.
   idEscola?: number | null;
-  // Endereço cadastrado não pode ser removido ([] é recusado), só alterado. Os responsáveis com
-  // resideComPaciente = true vão junto para o novo endereço.
+  // Lista completa: com idEndereco os que vieram da API, sem ID os novos. Alterar um endereço usado
+  // por outros cadastros responde 409 com enderecosCompartilhados.
   enderecos?: Endereco[];
   // Substitui a lista: CIDs que já existem vão em codigosCid; os que ainda não existem, em novosCids.
   codigosCid?: string[];
@@ -141,7 +146,8 @@ export interface AtualizacaoPacientePayload {
   // Atualiza só os campos enviados; null remove o prontuário.
   prontuario?: Prontuario | null;
   // Responsável que não vier na lista é desvinculado (ao menos 1).
-  responsaveis?: { idResponsavel: number; grauParentesco: GrauParentesco; resideComPaciente?: boolean }[];
+  // indicesEnderecoResidencia: posições em `enderecos` deste PATCH ([] = não reside); exige `enderecos`.
+  responsaveis?: { idResponsavel: number; grauParentesco: GrauParentesco; indicesEnderecoResidencia: number[] }[];
 }
 
 // PATCH /responsaveis/{id} (vínculo, grau de parentesco e residência mudam no PATCH do paciente).

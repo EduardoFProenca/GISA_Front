@@ -19,6 +19,6 @@
     <app-info-especialista #infoEsp [especialidadesDisponiveis]="opcoes().especialidades"
       [bloquearTipo]="infoAs.ehAssistenteSocial" />
     <app-info-assistente-social #infoAs [bloquearTipo]="infoEsp.ehEspecialista" />
-    <app-contato subtitulo="Opcional. Se informar, preencha o endereço completo." />
+    <app-lista-enderecos titulo="Endereços" subtitulo="Opcional." [obrigatorio]="false" />
     }
   </div>

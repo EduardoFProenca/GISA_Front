@@ -91,6 +91,13 @@ export interface ErroApi {
   fields: Record<string, string>;
   // 409 na alteração de jornada: terapias agendadas que ficariam fora do novo horário.
   terapias?: TerapiaForaDaJornada[];
+  // 409 no PATCH: endereços alterados que também são de outros cadastros (só a quantidade, LGPD).
+  enderecosCompartilhados?: EnderecoCompartilhado[];
+}
+
+export interface EnderecoCompartilhado {
+  idEndereco: number;
+  outrosCadastros: number;
 }
 
 export interface TerapiaForaDaJornada {

@@ -3,7 +3,7 @@ import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
-import { Contato } from '../../../shared/components/contato/contato';
+import { ListaEnderecos } from '../../../shared/components/lista-enderecos/lista-enderecos';
 import { InfoEspecialista } from './formularios/info-especialista/info-especialista';
 import { InfoUsuario } from './formularios/info-usuario/info-usuario';
 import { InfoAssistenteSocial } from './formularios/info-assistente-social/info-assistente-social';
@@ -20,14 +20,14 @@ import { CadastroErrosApiService } from './services/cadastro-erros-api';
 
 @Component({
   selector: 'app-cadastrar-profissional',
-  imports: [DadosPessoais, Contato, InfoEspecialista, InfoAssistenteSocial, InfoUsuario, CabecalhoPagina, InfoProfissional],
+  imports: [DadosPessoais, ListaEnderecos, InfoEspecialista, InfoAssistenteSocial, InfoUsuario, CabecalhoPagina, InfoProfissional],
   templateUrl: './cadastrar-profissional.html',
   styleUrl: './cadastrar-profissional.scss',
 })
 export class CadastroProfissional implements OnInit {
   private avisoSucesso = inject(AvisoSucessoService);
   @ViewChild(DadosPessoais) dadosPessoais!: DadosPessoais;
-  @ViewChild(Contato) contato!: Contato;
+  @ViewChild(ListaEnderecos) enderecos!: ListaEnderecos;
   @ViewChild(InfoProfissional) infoProfissional!: InfoProfissional;
   @ViewChild(InfoUsuario) infoUsuario!: InfoUsuario;
   @ViewChild(InfoEspecialista) infoEspecialista!: InfoEspecialista;
@@ -62,7 +62,7 @@ export class CadastroProfissional implements OnInit {
   private get formularios(): FormulariosCadastro {
     return {
       dadosPessoais: this.dadosPessoais,
-      contato: this.contato,
+      enderecos: this.enderecos,
       infoProfissional: this.infoProfissional,
       infoUsuario: this.infoUsuario,
       infoEspecialista: this.infoEspecialista,

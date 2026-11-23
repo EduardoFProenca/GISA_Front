@@ -46,14 +46,12 @@
 
 
     <!-- Responsáveis (adicionar, editar e remover) -->
-    <app-info-responsavel [responsaveisIniciais]="responsaveisIniciais()" [contatoPaciente]="contatoPaciente" />
+    <app-info-responsavel [responsaveisIniciais]="responsaveisIniciais()" [enderecosPaciente]="enderecosPaciente" />
 
 
-    <!-- Contato e Endereço -->
-    <app-contato #contatoPaciente
-      [dadosIniciais]="contato()"
-      [subtitulo]="paciente()!.pessoa.enderecos.length ? 'Pode ser alterado, mas não removido.' : 'Opcional. Se informar, preencha o endereço completo.'"
-    ></app-contato>
+    <!-- Endereços -->
+    <app-lista-enderecos #enderecosPaciente titulo="Endereços" [obrigatorio]="true"
+      [enderecosIniciais]="enderecosIniciais()" />
 
 
     <!-- Escola -->

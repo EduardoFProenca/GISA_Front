@@ -6,7 +6,7 @@ import { firstValueFrom, forkJoin } from 'rxjs';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
-import { Contato } from '../../../shared/components/contato/contato';
+import { ListaEnderecos } from '../../../shared/components/lista-enderecos/lista-enderecos';
 import { InfoProfissional } from '../cadastrar-profissional/formularios/info-profissional/info-profissional';
 import { InfoUsuario } from '../cadastrar-profissional/formularios/info-usuario/info-usuario';
 import { InfoEspecialista } from '../cadastrar-profissional/formularios/info-especialista/info-especialista';
@@ -18,7 +18,7 @@ import { CadastroErrosApiService } from '../cadastrar-profissional/services/cada
 import { OpcoesProfissional, OpcoesProfissionalService } from '../cadastrar-profissional/services/opcoes-profissional';
 import { ProfissionalService, tipoDoDetalhe } from '../../../core/services/profissional';
 import { ProfissionalDetalhe } from '../../../core/models/profissional.model';
-import { mensagemDeErro } from '../../../core/http/erro-api';
+import { lerErroApi, mensagemDeErro } from '../../../core/http/erro-api';
 import { FormulariosDetalhe, paraFormularios } from '../detalhe-profissional/profissional-detalhe.util';
 
 // Formulário vazio para quem não é assistente social (o validador e o payload ignoram o bloco).
@@ -50,7 +50,7 @@ function semEspecialista(): InfoEspecialistaForm {
     CabecalhoPagina,
     ConfirmDialog,
     DadosPessoais,
-    Contato,
+    ListaEnderecos,
     InfoProfissional,
     InfoUsuario,
     InfoEspecialista,
@@ -71,7 +71,7 @@ export class EditarProfissional implements OnInit {
   private errosApi = inject(CadastroErrosApiService);
 
   @ViewChild(DadosPessoais) dadosPessoaisForm?: DadosPessoais;
-  @ViewChild(Contato) contatoForm?: Contato;
+  @ViewChild(ListaEnderecos) enderecosForm?: ListaEnderecos;
   @ViewChild(InfoProfissional) infoProfissionalForm?: InfoProfissional;
   @ViewChild(InfoUsuario) infoUsuarioForm?: InfoUsuario;
   // Só existe na tela quando o cadastro é de especialista ou PJ.
@@ -97,6 +97,8 @@ export class EditarProfissional implements OnInit {
     return d ? tipoDoDetalhe(d) : 'PROFISSIONAL';
   });
   ehEspecialista = computed(() => this.tipo() === 'ESPECIALISTA' || this.tipo() === 'ESPECIALISTA_PJ');
+  enderecosIniciais = computed(() => this.detalhe()?.profissional.pessoa.enderecos ?? []);
+  tinhaEndereco = computed(() => this.enderecosIniciais().length > 0);
 
   ngOnInit() {
     if (!Number.isInteger(this.id) || this.id <= 0) {
@@ -121,12 +123,12 @@ export class EditarProfissional implements OnInit {
   }
 
   private get formulariosAtuais(): FormulariosCadastro | null {
-    if (!this.dadosPessoaisForm || !this.contatoForm || !this.infoProfissionalForm || !this.infoUsuarioForm) {
+    if (!this.dadosPessoaisForm || !this.enderecosForm || !this.infoProfissionalForm || !this.infoUsuarioForm) {
       return null;
     }
     return {
       dadosPessoais: this.dadosPessoaisForm,
-      contato: this.contatoForm,
+      enderecos: this.enderecosForm,
       infoProfissional: this.infoProfissionalForm,
       infoUsuario: this.infoUsuarioForm,
       infoEspecialista: this.infoEspecialistaForm ?? semEspecialista(),
@@ -140,7 +142,7 @@ export class EditarProfissional implements OnInit {
     if (!f || this.salvando()) return;
 
     this.erroGeral.set('');
-    if (!this.validador.validar(f, !!this.detalhe()?.profissional.pessoa.enderecos?.length).valido) {
+    if (!this.validador.validar(f).valido) {
       this.erroGeral.set('Preencha os campos obrigatórios destacados em vermelho.');
       setTimeout(() => document.querySelector('.input-erro')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
       return;
@@ -160,6 +162,11 @@ export class EditarProfissional implements OnInit {
       this.nomeSalvo.set(f.dadosPessoais.nome.trim());
       this.mostrarSucesso(emailNaoEnviado);
     } catch (err) {
+      // 409 de endereço usado por outros cadastros: por enquanto só o aviso (a A5 troca por pergunta).
+      if (lerErroApi(err)?.enderecosCompartilhados?.length) {
+        this.erroGeral.set(mensagemDeErro(err, 'Erro ao salvar cadastro.'));
+        return;
+      }
       const resultado = this.errosApi.tratar(err, f);
       this.erroGeral.set(resultado.mensagemGeral);
       // Erro com campo (ex.: jornada recusada por terapias agendadas): leva a tela até ele.

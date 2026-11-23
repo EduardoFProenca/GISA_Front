@@ -3,15 +3,21 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { CadastroErrosApiService } from './cadastro-erros-api';
 import { FormulariosCadastro } from '../models/formularios-cadastro';
 import { comErros } from './test-helpers';
+import { Endereco } from '../../../../core/models/comum.model';
+import { ListaEnderecos } from '../../../../shared/components/lista-enderecos/lista-enderecos';
+
+// A lista real precisa de TestBed; aqui basta o que validador, payload e erros usam.
+function listaFalsa(enderecos: Endereco[] = [], valida = true): ListaEnderecos {
+  return { erros: {}, itens: [], validar: () => valida, paraApi: () => enderecos } as unknown as ListaEnderecos;
+}
+
 
 function formularioVazio(): FormulariosCadastro {
   return {
     dadosPessoais: comErros({
       nome: '', cpf: '', email: '', dataNascimento: '', sexo: '', celular: '', estadoCivil: '', numCNS: '',
     }),
-    contato: comErros({
-      cep: '', endereco: '', numero: '', complemento: '', bairro: '', cidade: '', uf: '',
-    }),
+    enderecos: listaFalsa(),
     infoProfissional: comErros({ cargo: '', codigoCBO: '' }),
     infoUsuario: comErros({ possuiAcesso: false, temAcessoSistema: false, perfil: '' }),
     infoAssistenteSocial: comErros({ ehAssistenteSocial: false, registroConselho: '', idsPacientes: [] as number[] }),
@@ -63,13 +69,14 @@ describe('CadastroErrosApiService', () => {
     expect(resultado.mensagemGeral).toContain('destacados em vermelho');
   });
 
-  it('mapeia chave aninhada "enderecos[0].cep" para contato.erros.cep', () => {
+  it('erros de endereço vão para a lista, com o número do endereço', () => {
     const f = formularioVazio();
-    const err = erroApi(400, { fields: { 'enderecos[0].cep': 'CEP inválido' } });
+    const err = erroApi(400, { fields: { 'enderecos[1].cep': 'CEP inválido', enderecos: 'Endereço repetido.' } });
 
-    service.tratar(err, f);
+    const resultado = service.tratar(err, f);
 
-    expect(f.contato.erros['cep']).toBe('CEP inválido');
+    expect(f.enderecos.erros['enderecos']).toBe('Endereço 2: CEP inválido Endereço repetido.');
+    expect(resultado.algumCampoMarcado).toBe(true);
   });
 
   it('CPF repetido (400 só com "message") marca o campo cpf', () => {

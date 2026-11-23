@@ -2,15 +2,15 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { InfoResponsavel } from './info-responsavel';
-import { ContatoForm, EnderecoForm, ResponsavelItem } from '../../models/formularios-paciente';
+import { EnderecoForm, ResponsavelItem } from '../../models/formularios-paciente';
+import { ListaEnderecos } from '../../../../../shared/components/lista-enderecos/lista-enderecos';
 
 const ENDERECO_A: EnderecoForm = {
   cep: '18000-000', endereco: 'Rua A', numero: '10', complemento: '', bairro: 'Centro', cidade: 'Sorocaba', uf: 'SP',
 };
-
-function contatoVazio(): ContatoForm {
-  return { cep: '', endereco: '', numero: '', complemento: '', bairro: '', cidade: '', uf: '', erros: {} } as unknown as ContatoForm;
-}
+const ENDERECO_B: EnderecoForm = {
+  cep: '18010-000', endereco: 'Rua B', numero: '20', complemento: '', bairro: 'Jardim', cidade: 'Sorocaba', uf: 'SP',
+};
 
 function reaproveitado(id: number, nome: string, cpf: string, endereco: EnderecoForm): ResponsavelItem {
   return {
@@ -20,9 +20,9 @@ function reaproveitado(id: number, nome: string, cpf: string, endereco: Endereco
   };
 }
 
-describe('InfoResponsavel: origem do endereço do paciente', () => {
+describe('InfoResponsavel: endereços do paciente na lista', () => {
   let c: InfoResponsavel;
-  let paciente: ContatoForm;
+  let lista: ListaEnderecos;
 
   // Vincula A e aceita usar o endereço dele no paciente.
   function copiarDeA() {
@@ -33,17 +33,19 @@ describe('InfoResponsavel: origem do endereço do paciente', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [InfoResponsavel],
+      imports: [InfoResponsavel, ListaEnderecos],
       providers: [provideHttpClient(), provideHttpClientTesting()],
     });
     c = TestBed.createComponent(InfoResponsavel).componentInstance;
-    paciente = contatoVazio();
-    c.contatoPaciente = paciente;
+    lista = TestBed.createComponent(ListaEnderecos).componentInstance;
+    lista.obrigatorio = true;
+    c.enderecosPaciente = lista;
   });
 
-  it('remover a origem e confirmar limpa o endereço do paciente', () => {
+  it('B0: vincular A (paciente sem endereço), aceitar, remover A e "Remover endereço" deixa a lista vazia', () => {
     copiarDeA();
-    expect(paciente.endereco).toBe('Rua A');
+    expect(lista.itens.map((i) => i.endereco)).toEqual(['Rua A']);
+    expect(c.origemEnderecoPaciente?.chave).toBe(lista.itens[0].chave);
 
     c.removerResponsavel(0);
     expect(c.remocaoPendente).toBe(0);
@@ -51,29 +53,36 @@ describe('InfoResponsavel: origem do endereço do paciente', () => {
 
     c.confirmarRemocaoEndereco();
     expect(c.listaResponsaveis.length).toBe(0);
-    expect(paciente.cep).toBe('');
-    expect(paciente.endereco).toBe('');
-    expect(paciente.uf).toBe('');
+    expect(lista.itens.length).toBe(0);
     expect(c.origemEnderecoPaciente).toBeNull();
     expect(c.remocaoPendente).toBeNull();
   });
 
-  it('remover a origem e manter deixa o endereço no paciente', () => {
+  it('remover a origem e manter deixa o endereço na lista', () => {
     copiarDeA();
     c.removerResponsavel(0);
     c.manterEnderecoNaRemocao();
     expect(c.listaResponsaveis.length).toBe(0);
-    expect(paciente.endereco).toBe('Rua A');
+    expect(lista.itens.map((i) => i.endereco)).toEqual(['Rua A']);
     expect(c.origemEnderecoPaciente).toBeNull();
   });
 
   it('endereço alterado à mão depois da cópia: não pergunta', () => {
     copiarDeA();
-    paciente.numero = '99';
+    lista.itens = lista.itens.map((i) => ({ ...i, numero: '99' }));
     c.removerResponsavel(0);
     expect(c.remocaoPendente).toBeNull();
     expect(c.listaResponsaveis.length).toBe(0);
-    expect(paciente.numero).toBe('99');
+    expect(lista.itens[0].numero).toBe('99');
+    expect(c.origemEnderecoPaciente).toBeNull();
+  });
+
+  it('endereço copiado já removido da lista: não pergunta', () => {
+    copiarDeA();
+    lista.remover(lista.itens[0].chave);
+    c.removerResponsavel(0);
+    expect(c.remocaoPendente).toBeNull();
+    expect(c.listaResponsaveis.length).toBe(0);
     expect(c.origemEnderecoPaciente).toBeNull();
   });
 
@@ -94,7 +103,7 @@ describe('InfoResponsavel: origem do endereço do paciente', () => {
     expect(c.remocaoPendente).toBeNull();
     expect(c.listaResponsaveis.map((r) => r.nome)).toEqual(['Bruno']);
     expect(c.origemEnderecoPaciente?.nome).toBe('Bruno');
-    expect(paciente.endereco).toBe('Rua A');
+    expect(lista.itens.length).toBe(1);
 
     c.removerResponsavel(0);
     expect(c.remocaoPendente).toBe(0);
@@ -108,6 +117,34 @@ describe('InfoResponsavel: origem do endereço do paciente', () => {
     c.salvarResponsavel();
     expect(c.listaResponsaveis[0].naoResideComPaciente).toBe(true);
     expect(c.origemEnderecoPaciente).toBeNull();
+  });
+
+  it('responsável cadastrado que reside, paciente sem endereço: oferece copiar', () => {
+    c.abrirFormulario();
+    c.novoResponsavel = reaproveitado(1, 'Ana', '529.982.247-25', ENDERECO_A);
+    c.salvarResponsavel();
+    expect(c.confirmarEnderecoAberto).toBe(true);
+    expect(c.listaResponsaveis.length).toBe(0);
+  });
+
+  it('responsável cadastrado que reside, com o mesmo endereço em qualquer posição da lista: aceita', () => {
+    lista.adicionar({ ...ENDERECO_B });
+    lista.adicionar({ ...ENDERECO_A, cep: '18000000', endereco: 'rua a' });
+    c.abrirFormulario();
+    c.novoResponsavel = reaproveitado(1, 'Ana', '529.982.247-25', ENDERECO_A);
+    c.salvarResponsavel();
+    expect(c.confirmarEnderecoAberto).toBe(false);
+    expect(c.errosCard['residencia']).toBeUndefined();
+    expect(c.listaResponsaveis.length).toBe(1);
+  });
+
+  it('responsável cadastrado que reside, com endereço fora da lista: pede para marcar "não reside"', () => {
+    lista.adicionar({ ...ENDERECO_B });
+    c.abrirFormulario();
+    c.novoResponsavel = reaproveitado(1, 'Ana', '529.982.247-25', ENDERECO_A);
+    c.salvarResponsavel();
+    expect(c.errosCard['residencia']).toContain('não reside');
+    expect(c.listaResponsaveis.length).toBe(0);
   });
 
   it('remover um item acima do que está em edição mantém a edição no item certo', () => {

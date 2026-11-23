@@ -12,12 +12,23 @@ export class CadastroErrosApiService {
     f.infoEspecialista.terapiasForaDaJornada = lerErroApi(err)?.terapias ?? [];
     return aplicarErrosApi(
       err,
-      (chave, mensagem) => this.marcar(this.destinoCampo(campoDaChave(chave), f), mensagem),
+      (chave, mensagem) =>
+        this.marcarEndereco(chave, mensagem, f) || this.marcar(this.destinoCampo(campoDaChave(chave), f), mensagem),
       {
         padrao: 'Erro ao salvar cadastro.',
         marcarPorMensagem: (mensagem) => this.marcar(this.destinoMensagem(mensagem, f), mensagem),
       }
     );
+  }
+
+  // enderecos, enderecos[0].cep ...: tudo aparece sob a lista, com o número do endereço quando houver.
+  private marcarEndereco(chave: string, mensagem: string, f: FormulariosCadastro): boolean {
+    const end = chave.match(/^enderecos(?:\[(\d+)\])?/);
+    if (!end) return false;
+    const texto = (end[1] !== undefined ? `Endereço ${Number(end[1]) + 1}: ` : '') + mensagem;
+    const atual = f.enderecos.erros['enderecos'];
+    f.enderecos.erros['enderecos'] = atual ? `${atual} ${texto}` : texto;
+    return true;
   }
 
   private marcar(destino: [ComErros, string] | null, mensagem: string): boolean {
@@ -27,7 +38,7 @@ export class CadastroErrosApiService {
   }
 
   private destinoCampo(campo: string, f: FormulariosCadastro): [ComErros, string] | null {
-    const { dadosPessoais: dp, contato: c, infoProfissional: ip, infoUsuario: iu, infoEspecialista: ie } = f;
+    const { dadosPessoais: dp, infoProfissional: ip, infoUsuario: iu, infoEspecialista: ie } = f;
     const ias = f.infoAssistenteSocial;
 
     const mapa: Record<string, [ComErros, string]> = {
@@ -39,12 +50,6 @@ export class CadastroErrosApiService {
       celular: [dp, 'celular'],
       estadoCivil: [dp, 'estadoCivil'],
       numCNS: [dp, 'numCNS'],
-      cep: [c, 'cep'],
-      rua: [c, 'endereco'],
-      numero: [c, 'numero'],
-      bairro: [c, 'bairro'],
-      cidade: [c, 'cidade'],
-      estado: [c, 'uf'],
       idCargo: [ip, 'cargo'],
       idPerfil: [iu, 'perfil'],
       // Do especialista ou do assistente social, conforme o tipo do cadastro.

@@ -1,5 +1,6 @@
 import { ComErros } from '../../../../shared/components/com-erros';
 import { TerapiaForaDaJornada } from '../../../../core/models/comum.model';
+import type { ListaEnderecos } from '../../../../shared/components/lista-enderecos/lista-enderecos';
 
 export interface DadosPessoaisForm extends ComErros {
   nome: string;
@@ -76,7 +77,7 @@ export interface InfoAssistenteSocialForm extends ComErros {
 
 export interface FormulariosCadastro {
   dadosPessoais: DadosPessoaisForm;
-  contato: ContatoForm;
+  enderecos: ListaEnderecos;
   infoProfissional: InfoProfissionalForm;
   infoUsuario: InfoUsuarioForm;
   infoEspecialista: InfoEspecialistaForm;
@@ -84,5 +85,5 @@ export interface FormulariosCadastro {
 }
 
 export function listaErros(f: FormulariosCadastro): ComErros[] {
-  return [f.dadosPessoais, f.contato, f.infoProfissional, f.infoUsuario, f.infoEspecialista, f.infoAssistenteSocial];
+  return [f.dadosPessoais, f.enderecos, f.infoProfissional, f.infoUsuario, f.infoEspecialista, f.infoAssistenteSocial];
 }

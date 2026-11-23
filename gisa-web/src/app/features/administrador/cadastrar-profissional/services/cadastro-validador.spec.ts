@@ -2,6 +2,14 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { CadastroValidadorService } from './cadastro-validador';
 import { FormulariosCadastro } from '../models/formularios-cadastro';
 import { comErros } from './test-helpers';
+import { Endereco } from '../../../../core/models/comum.model';
+import { ListaEnderecos } from '../../../../shared/components/lista-enderecos/lista-enderecos';
+
+// A lista real precisa de TestBed; aqui basta o que validador, payload e erros usam.
+function listaFalsa(enderecos: Endereco[] = [], valida = true): ListaEnderecos {
+  return { erros: {}, itens: [], validar: () => valida, paraApi: () => enderecos } as unknown as ListaEnderecos;
+}
+
 
 function formularioValido(): FormulariosCadastro {
   return {
@@ -15,15 +23,7 @@ function formularioValido(): FormulariosCadastro {
       estadoCivil: 'SOLTEIRO',
       numCNS: '',
     }),
-    contato: comErros({
-      cep: '01001000',
-      endereco: 'Praça da Sé',
-      numero: '100',
-      complemento: '',
-      bairro: 'Sé',
-      cidade: 'São Paulo',
-      uf: 'SP',
-    }),
+    enderecos: listaFalsa(),
     infoProfissional: comErros({
       cargo: 'MEDICO',
       codigoCBO: '',
@@ -59,6 +59,11 @@ describe('CadastroValidadorService', () => {
   it('aceita um formulário de profissional simples totalmente preenchido', () => {
     const resultado = service.validar(formularioValido());
     expect(resultado.valido).toBe(true);
+  });
+
+  it('lista de endereços inválida (ex.: obrigatória e vazia na edição) torna o formulário inválido', () => {
+    const f = { ...formularioValido(), enderecos: listaFalsa([], false) };
+    expect(service.validar(f).valido).toBe(false);
   });
 
   it('rejeita nome vazio', () => {

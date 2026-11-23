@@ -15,8 +15,8 @@
   @for (g of [geracaoFormulario()]; track g) {
   <app-dados-pessoais [exibirEmail]="false" [celularObrigatorio]="false" />
   <app-info-paciente />
-  <app-info-responsavel [contatoPaciente]="contatoPaciente" />
-  <app-contato #contatoPaciente subtitulo="Opcional. Se informar, preencha o endereço completo." />
+  <app-info-responsavel [enderecosPaciente]="enderecosPaciente" />
+  <app-lista-enderecos #enderecosPaciente titulo="Endereços" [obrigatorio]="true" />
   <app-info-escola />
   <app-info-prontuario />
   <app-info-cid />

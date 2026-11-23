@@ -33,7 +33,9 @@
     <app-info-assistente-social [dadosIniciais]="f.infoAssistenteSocial" [bloquearTipo]="true" [edicao]="true" />
     }
 
-    <app-contato [dadosIniciais]="f.contato" subtitulo="Opcional. Se informar, preencha o endereço completo."></app-contato>
+    <!-- Quem já tinha endereço não pode ficar sem: só alterar ou trocar. -->
+    <app-lista-enderecos titulo="Endereços" [obrigatorio]="tinhaEndereco()" [subtitulo]="tinhaEndereco() ? '' : 'Opcional.'"
+        [enderecosIniciais]="enderecosIniciais()" />
 </div>
 }
 

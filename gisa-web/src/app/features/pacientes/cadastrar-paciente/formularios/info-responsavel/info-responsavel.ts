@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Mascara } from '../../../../../shared/directives/mascara.directive';
 import { ComErros } from '../../../../../shared/components/com-erros';
 import { Contato } from '../../../../../shared/components/contato/contato';
+import type { ListaEnderecos } from '../../../../../shared/components/lista-enderecos/lista-enderecos';
 import { ConfirmDialog } from '../../../../../shared/components/confirm-dialog/confirm-dialog';
 import { SelectBusca } from '../../../../../shared/components/select-busca/select-busca';
 import { SelectMenu } from '../../../../../shared/components/select-menu/select-menu';
@@ -32,8 +33,6 @@ import { Botao } from '../../../../../shared/components/botao/botao';
 
 export type { ResponsavelItem };
 
-const CAMPOS_ENDERECO = ['cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'uf'] as const;
-
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-info-responsavel',
@@ -50,8 +49,8 @@ export class InfoResponsavel extends ComErros {
   // Endereço do responsável que não reside com o paciente (só existe enquanto o cartão está aberto).
   @ViewChild(Contato) contatoResp?: Contato;
 
-  // Endereço do paciente: recebe o do responsável já cadastrado que reside com ele.
-  @Input() contatoPaciente?: ContatoForm;
+  // Endereços do paciente: recebem o do responsável já cadastrado que reside com ele.
+  @Input() enderecosPaciente?: ListaEnderecos;
 
   readonly icones = ICONES;
   readonly enderecoEmTexto = enderecoEmTexto;
@@ -85,8 +84,8 @@ export class InfoResponsavel extends ComErros {
   enderecoConfirmacao: EnderecoForm | null = null;
 
   // Endereço do paciente copiado de um responsável (diálogo "Usar este endereço também para o paciente?").
-  // Serve para perguntar, ao remover esse responsável, se o endereço sai junto.
-  origemEnderecoPaciente: { cpf: string; nome: string; endereco: EnderecoForm } | null = null;
+  // Serve para perguntar, ao remover esse responsável, se o endereço sai junto. `chave` = item da lista.
+  origemEnderecoPaciente: { cpf: string; nome: string; endereco: EnderecoForm; chave: string } | null = null;
 
   // Remoção pendente enquanto a pergunta está aberta.
   remocaoPendente: number | null = null;
@@ -236,12 +235,12 @@ export class InfoResponsavel extends ComErros {
 
     const item: ResponsavelItem = { ...r, endereco: this.enderecoDoItem(r) };
 
-    // Quem passa a residir com o paciente e já tem endereço cadastrado precisa ter o mesmo dele.
-    // Se o paciente ainda não tem endereço, pode usar o do responsável; se tem outro, o responsável
+    // Quem passa a residir com o paciente e já tem endereço cadastrado precisa ter um dos endereços dele.
+    // Se o paciente ainda não tem endereço, pode usar o do responsável; se não tem esse, o responsável
     // fica como "não reside" (o endereço dele só muda no cadastro do responsável).
     const endereco = this.enderecoQueOPacienteRecebe(item);
-    const paciente = this.contatoPaciente;
-    if (endereco && paciente) {
+    const lista = this.enderecosPaciente;
+    if (endereco && lista) {
       const conflito = this.outroQueResideEmOutroEndereco(endereco);
       if (conflito) {
         this.errosCard['residencia'] =
@@ -249,13 +248,13 @@ export class InfoResponsavel extends ComErros {
           'Marque qual dos dois não reside com o paciente.';
         return;
       }
-      if (enderecoVazio(paciente)) {
+      if (!lista.itens.length) {
         this.nomeResponsavelEndereco = item.nome.trim();
         this.enderecoConfirmacao = endereco;
         this.confirmarEnderecoAberto = true;
         return;
       }
-      if (!mesmoEnderecoForm(paciente, endereco)) {
+      if (!lista.itens.some((i) => mesmoEnderecoForm(i, endereco))) {
         this.errosCard['residencia'] =
           `${item.nome.trim()} já tem outro endereço cadastrado (${enderecoEmTexto(endereco)}). ` +
           'Marque "Responsável não reside com o paciente". O endereço do responsável é alterado no cadastro dele.';
@@ -269,13 +268,13 @@ export class InfoResponsavel extends ComErros {
   confirmarTrocaEndereco() {
     this.confirmarEnderecoAberto = false;
     const item: ResponsavelItem = { ...this.novoResponsavel, endereco: null };
-    this.aplicarEnderecoNoPaciente(item.enderecoCadastro!);
-    this.origemEnderecoPaciente = this.origemDe(item);
+    const adicionado = this.enderecosPaciente?.adicionar({ ...item.enderecoCadastro! });
+    this.origemEnderecoPaciente = adicionado ? this.origemDe(item, adicionado.chave) : null;
     this.confirmarItem(item);
   }
 
-  private origemDe(r: ResponsavelItem) {
-    return { cpf: soDigitos(r.cpf), nome: r.nome.trim(), endereco: { ...r.enderecoCadastro! } };
+  private origemDe(r: ResponsavelItem, chave: string) {
+    return { cpf: soDigitos(r.cpf), nome: r.nome.trim(), endereco: { ...r.enderecoCadastro! }, chave };
   }
 
   cancelarTrocaEndereco() {
@@ -318,22 +317,6 @@ export class InfoResponsavel extends ComErros {
     });
   }
 
-  private aplicarEnderecoNoPaciente(e: EnderecoForm) {
-    const c = this.contatoPaciente;
-    if (!c) return;
-    Object.assign(c, { ...e });
-    for (const campo of CAMPOS_ENDERECO) delete c.erros[campo];
-  }
-
-  private limparEnderecoDoPaciente() {
-    const c = this.contatoPaciente;
-    if (!c) return;
-    for (const campo of CAMPOS_ENDERECO) {
-      c[campo] = '';
-      delete c.erros[campo];
-    }
-  }
-
   private enderecoDe(c: ContatoForm): EnderecoForm {
     return {
       cep: c.cep,
@@ -357,14 +340,14 @@ export class InfoResponsavel extends ComErros {
   removerResponsavel(index: number) {
     const r = this.listaResponsaveis[index];
     const origem = this.origemEnderecoPaciente;
-    const paciente = this.contatoPaciente;
     if (!origem || soDigitos(r.cpf) !== origem.cpf) {
       this.removerDaLista(index);
       return;
     }
 
-    // O endereço foi alterado à mão depois da cópia: passou a ser do paciente.
-    if (!paciente || !mesmoEnderecoForm(paciente, origem.endereco)) {
+    // O endereço saiu da lista ou foi alterado à mão depois da cópia: passou a ser do paciente.
+    const copiado = this.enderecosPaciente?.itens.find((i) => i.chave === origem.chave);
+    if (!copiado || !mesmoEnderecoForm(copiado, origem.endereco)) {
       this.origemEnderecoPaciente = null;
       this.removerDaLista(index);
       return;
@@ -372,10 +355,10 @@ export class InfoResponsavel extends ComErros {
 
     // Outro responsável também mora nesse endereço com o paciente: o endereço continua valendo.
     const outro = this.listaResponsaveis.find(
-      (x, i) => i !== index && !x.naoResideComPaciente && !!x.enderecoCadastro && mesmoEnderecoForm(x.enderecoCadastro, paciente)
+      (x, i) => i !== index && !x.naoResideComPaciente && !!x.enderecoCadastro && mesmoEnderecoForm(x.enderecoCadastro, copiado)
     );
     if (outro) {
-      this.origemEnderecoPaciente = this.origemDe(outro);
+      this.origemEnderecoPaciente = this.origemDe(outro, origem.chave);
       this.removerDaLista(index);
       return;
     }
@@ -395,7 +378,8 @@ export class InfoResponsavel extends ComErros {
     const index = this.remocaoPendente;
     this.remocaoPendente = null;
     if (index === null) return;
-    if (limparEndereco) this.limparEnderecoDoPaciente();
+    const origem = this.origemEnderecoPaciente;
+    if (limparEndereco && origem) this.enderecosPaciente?.remover(origem.chave);
     this.origemEnderecoPaciente = null;
     this.removerDaLista(index);
   }

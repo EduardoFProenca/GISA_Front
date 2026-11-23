@@ -13,8 +13,8 @@ export interface ResultadoValidacao {
 @Injectable({ providedIn: 'root' })
 export class CadastroValidadorService {
 
-  // tinhaEndereco (edição): endereço cadastrado não pode ser removido, só alterado.
-  validar(f: FormulariosCadastro, tinhaEndereco = false): ResultadoValidacao {
+  // Endereço é opcional para profissionais; na edição de quem já tinha, a lista é obrigatória (a tela decide).
+  validar(f: FormulariosCadastro): ResultadoValidacao {
     let valido = true;
     const marcar = (alvo: ComErros, campo: string, mensagem: string = OBRIGATORIO) => {
       alvo.erros[campo] = mensagem;
@@ -23,22 +23,15 @@ export class CadastroValidadorService {
 
     listaErros(f).forEach((bloco) => (bloco.erros = {}));
 
+    if (!f.enderecos.validar()) valido = false;
+
     this.validarDadosPessoais(f, marcar);
-    if (tinhaEndereco && this.enderecoVazio(f)) {
-      marcar(f.contato, 'cep', 'O endereço não pode ser removido, apenas alterado.');
-    }
-    this.validarContato(f, marcar);
     this.validarInfoProfissional(f, marcar);
     this.validarInfoUsuario(f, marcar);
     this.validarInfoEspecialista(f, marcar);
     this.validarInfoAssistenteSocial(f, marcar);
 
     return { valido };
-  }
-
-  enderecoVazio(f: FormulariosCadastro): boolean {
-    const c = f.contato;
-    return [c.cep, c.endereco, c.numero, c.complemento, c.bairro, c.cidade, c.uf].every((v) => vazio(v));
   }
 
   jornadasCompletas(f: FormulariosCadastro): JornadaForm[] {
@@ -86,22 +79,6 @@ export class CadastroValidadorService {
 
     if (vazio(dp.email)) marcar(dp, 'email');
     else if (!emailValido(dp.email)) marcar(dp, 'email', 'E-mail inválido.');
-  }
-
-  private validarContato(f: FormulariosCadastro, marcar: (a: ComErros, c: string, m?: string) => void) {
-    // Endereço é opcional para profissionais (PROFISSIONAIS.md); se começar a preencher, exige completo.
-    if (this.enderecoVazio(f)) return;
-    const c = f.contato;
-
-    const cep = soDigitos(c.cep);
-    if (!cep) marcar(c, 'cep');
-    else if (cep.length !== 8) marcar(c, 'cep', 'O CEP deve ter 8 dígitos.');
-
-    if (vazio(c.endereco)) marcar(c, 'endereco');
-    if (vazio(c.numero)) marcar(c, 'numero');
-    if (vazio(c.bairro)) marcar(c, 'bairro');
-    if (vazio(c.cidade)) marcar(c, 'cidade');
-    if (vazio(c.uf)) marcar(c, 'uf');
   }
 
   private validarInfoProfissional(f: FormulariosCadastro, marcar: (a: ComErros, c: string, m?: string) => void) {

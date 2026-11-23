@@ -4,6 +4,7 @@ import { TipoEscola } from '../../../../core/models/escola.model';
 import { Escola } from '../../../../core/models/escola.model';
 import { CidSelecionado } from '../../../../core/services/cid';
 import type { EnderecoForm } from '../../../../shared/utils/endereco.util';
+import type { ListaEnderecos } from '../../../../shared/components/lista-enderecos/lista-enderecos';
 import { ContatoForm, DadosPessoaisForm } from '../../../administrador/cadastrar-profissional/models/formularios-cadastro';
 
 export type { ContatoForm, DadosPessoaisForm, EnderecoForm };
@@ -62,7 +63,7 @@ export interface InfoCidForm extends ComErros {
 
 export interface FormulariosPaciente {
   dadosPessoais: DadosPessoaisForm;
-  contato: ContatoForm;
+  enderecos: ListaEnderecos;
   infoPaciente: InfoPacienteForm;
   infoResponsavel: InfoResponsavelForm;
   infoEscola: InfoEscolaForm;
@@ -71,5 +72,5 @@ export interface FormulariosPaciente {
 }
 
 export function listaErros(f: FormulariosPaciente): ComErros[] {
-  return [f.dadosPessoais, f.contato, f.infoPaciente, f.infoResponsavel, f.infoEscola, f.infoProntuario, f.infoCid];
+  return [f.dadosPessoais, f.enderecos, f.infoPaciente, f.infoResponsavel, f.infoEscola, f.infoProntuario, f.infoCid];
 }

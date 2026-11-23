@@ -9,7 +9,7 @@ import {
   DadosUsuario,
   Jornada,
 } from '../../../../core/models/profissional.model';
-import { Endereco, EstadoCivil, Sexo } from '../../../../core/models/comum.model';
+import { EstadoCivil, Sexo } from '../../../../core/models/comum.model';
 import { FormulariosCadastro } from '../models/formularios-cadastro';
 import { CadastroValidadorService } from './cadastro-validador';
 
@@ -18,24 +18,6 @@ import { CadastroValidadorService } from './cadastro-validador';
 @Injectable({ providedIn: 'root' })
 export class CadastroPayloadService {
   constructor(private validador: CadastroValidadorService) {}
-
-  montarEndereco(f: FormulariosCadastro): Endereco {
-    const c = f.contato;
-    return {
-      cep: soDigitos(c.cep),
-      rua: c.endereco.trim(),
-      numero: c.numero.trim(),
-      complemento: c.complemento?.trim() || undefined,
-      bairro: c.bairro.trim(),
-      cidade: c.cidade.trim(),
-      estado: c.uf,
-    };
-  }
-
-  // Sem endereço preenchido = lista vazia (endereço é opcional para profissionais).
-  montarEnderecos(f: FormulariosCadastro): Endereco[] {
-    return this.validador.enderecoVazio(f) ? [] : [this.montarEndereco(f)];
-  }
 
   montarDadosBase(f: FormulariosCadastro): DadosBaseProfissional {
     const dp = f.dadosPessoais;
@@ -47,7 +29,8 @@ export class CadastroPayloadService {
       celular: soDigitos(dp.celular),
       numCNS: soDigitos(dp.numCNS) || undefined,
       estadoCivil: dp.estadoCivil as EstadoCivil,
-      enderecos: this.montarEnderecos(f),
+      // Lista vazia = sem endereço (opcional para profissionais).
+      enderecos: f.enderecos.paraApi(),
       email: dp.email.trim(),
       idCargo: Number(f.infoProfissional.cargo),
     };
@@ -120,7 +103,8 @@ export class CadastroPayloadService {
       celular: soDigitos(dp.celular) || null,
       numCNS: soDigitos(dp.numCNS) || null,
       estadoCivil: dp.estadoCivil as EstadoCivil,
-      enderecos: this.montarEnderecos(f),
+      // Com idEndereco os que vieram da API; sem ID os novos.
+      enderecos: f.enderecos.paraApi(),
       email: dp.email.trim(),
       idCargo: Number(f.infoProfissional.cargo),
       // Só para quem já tem usuário (senão 409) e só se mudou: idPerfil exige GERENCIAR_USUARIOS

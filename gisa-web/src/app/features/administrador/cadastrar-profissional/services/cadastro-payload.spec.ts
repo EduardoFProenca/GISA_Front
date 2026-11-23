@@ -3,6 +3,14 @@ import { CadastroValidadorService } from './cadastro-validador';
 import { CadastroPayloadService } from './cadastro-payload';
 import { FormulariosCadastro } from '../models/formularios-cadastro';
 import { comErros } from './test-helpers';
+import { Endereco } from '../../../../core/models/comum.model';
+import { ListaEnderecos } from '../../../../shared/components/lista-enderecos/lista-enderecos';
+
+// A lista real precisa de TestBed; aqui basta o que validador, payload e erros usam.
+function listaFalsa(enderecos: Endereco[] = [], valida = true): ListaEnderecos {
+  return { erros: {}, itens: [], validar: () => valida, paraApi: () => enderecos } as unknown as ListaEnderecos;
+}
+
 
 function formularioBase(): FormulariosCadastro {
   return {
@@ -16,15 +24,7 @@ function formularioBase(): FormulariosCadastro {
       estadoCivil: 'SOLTEIRO',
       numCNS: '123 4567 8901 2345',
     }),
-    contato: comErros({
-      cep: '01001-000',
-      endereco: ' Praça da Sé ',
-      numero: '100',
-      complemento: ' Apto 12 ',
-      bairro: 'Sé',
-      cidade: 'São Paulo',
-      uf: 'SP',
-    }),
+    enderecos: listaFalsa([{ idEndereco: 4, cep: '01001000', rua: 'Praça da Sé', numero: '100', bairro: 'Sé', cidade: 'São Paulo', estado: 'SP' }]),
     infoProfissional: comErros({
       cargo: '2',
     }),
@@ -56,12 +56,17 @@ describe('CadastroPayloadService', () => {
     service = new CadastroPayloadService(new CadastroValidadorService());
   });
 
-  it('montarEndereco remove máscara do CEP e recorta os espaços', () => {
-    const endereco = service.montarEndereco(formularioBase());
+  it('montarDadosBase e montarAtualizacao enviam a lista de endereços (com os IDs da API)', () => {
+    const f = formularioBase();
 
-    expect(endereco.cep).toBe('01001000');
-    expect(endereco.rua).toBe('Praça da Sé');
-    expect(endereco.complemento).toBe('Apto 12');
+    expect(service.montarDadosBase(f).enderecos.map((e) => e.idEndereco)).toEqual([4]);
+    expect(service.montarAtualizacao(f).enderecos?.map((e) => e.idEndereco)).toEqual([4]);
+  });
+
+  it('sem endereço: envia a lista vazia', () => {
+    const f = { ...formularioBase(), enderecos: listaFalsa([]) };
+
+    expect(service.montarDadosBase(f).enderecos).toEqual([]);
   });
 
   it('montarDadosBase remove máscara de CPF, celular e CNS, e resolve o idCargo', () => {

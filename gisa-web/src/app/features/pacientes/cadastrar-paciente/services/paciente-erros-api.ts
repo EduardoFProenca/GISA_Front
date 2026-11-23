@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { ComErros } from '../../../../shared/components/com-erros';
 import {
   aplicarErrosApi,
-  campoDaChave,
   MSG_CORRIJA_CAMPOS,
   ResultadoErroApi,
 } from '../../../../core/http/erro-api';
@@ -57,11 +56,11 @@ export class PacienteErrosApiService {
       return true;
     }
 
-    if (chave.startsWith('enderecos')) {
-      const mapaEndereco: Record<string, string> = {
-        cep: 'cep', rua: 'endereco', numero: 'numero', bairro: 'bairro', cidade: 'cidade', estado: 'uf',
-      };
-      f.contato.erros[mapaEndereco[campoDaChave(chave)] ?? 'cep'] = mensagem;
+    // enderecos, enderecos[0].cep ...: tudo aparece sob a lista, com o número do endereço quando houver.
+    const end = chave.match(/^enderecos(?:\[(\d+)\])?/);
+    if (end) {
+      const prefixo = end[1] !== undefined ? `Endereço ${Number(end[1]) + 1}: ` : '';
+      this.acrescentar(f.enderecos, 'enderecos', prefixo + mensagem);
       return true;
     }
 

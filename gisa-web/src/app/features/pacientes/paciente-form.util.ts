@@ -52,7 +52,8 @@ export function responsavelReaproveitado(r: Responsavel, grauParentesco: Respons
 export function responsavelParaForm(v: VinculoResponsavel): ResponsavelItem {
   const r = v.responsavel;
   const endereco = r.enderecos[0];
-  const reside = v.resideComPaciente;
+  // Lista vazia = não reside (a escolha por endereço vem na B2).
+  const reside = (v.idsEnderecoResidencia ?? []).length > 0;
   return {
     idResponsavel: r.idCadastro,
     nome: r.nome,

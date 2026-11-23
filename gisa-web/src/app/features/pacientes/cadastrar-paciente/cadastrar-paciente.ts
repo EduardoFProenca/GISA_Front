@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { lerContextoPacientes } from '../contexto-pacientes';
 import { firstValueFrom } from 'rxjs';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
-import { Contato } from '../../../shared/components/contato/contato';
+import { ListaEnderecos } from '../../../shared/components/lista-enderecos/lista-enderecos';
 import { CabecalhoPagina } from '../../../shared/components/cabecalho-pagina/cabecalho-pagina';
 
 import { InfoPaciente } from './formularios/info-paciente/info-paciente';
@@ -27,14 +27,14 @@ import { PacienteErrosApiService } from './services/paciente-erros-api';
 
 @Component({
   selector: 'app-cadastrar-paciente',
-  imports: [DadosPessoais, Contato, CabecalhoPagina, InfoPaciente, InfoEscola, InfoResponsavel, InfoProntuario, InfoCid],
+  imports: [DadosPessoais, ListaEnderecos, CabecalhoPagina, InfoPaciente, InfoEscola, InfoResponsavel, InfoProntuario, InfoCid],
   styleUrl: './cadastrar-paciente.scss',
   templateUrl: './cadastrar-paciente.html',
 })
 export class CadastrarPaciente {
   private avisoSucesso = inject(AvisoSucessoService);
   @ViewChild(DadosPessoais) dadosPessoais!: DadosPessoais;
-  @ViewChild(Contato) contato!: Contato; // endereço do paciente (o do responsável fica dentro de InfoResponsavel)
+  @ViewChild(ListaEnderecos) enderecos!: ListaEnderecos; // endereços do paciente (o do responsável fica dentro de InfoResponsavel)
   @ViewChild(InfoPaciente) infoPaciente!: InfoPaciente;
   @ViewChild(InfoResponsavel) infoResponsavel!: InfoResponsavel;
   @ViewChild(InfoEscola) infoEscola!: InfoEscola;
@@ -62,7 +62,7 @@ export class CadastrarPaciente {
   private get formularios(): FormulariosPaciente {
     return {
       dadosPessoais: this.dadosPessoais,
-      contato: this.contato,
+      enderecos: this.enderecos,
       infoPaciente: this.infoPaciente,
       infoResponsavel: this.infoResponsavel,
       infoEscola: this.infoEscola,

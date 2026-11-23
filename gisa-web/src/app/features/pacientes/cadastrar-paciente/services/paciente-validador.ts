@@ -21,8 +21,8 @@ export interface ResultadoValidacaoResponsavel {
 @Injectable({ providedIn: 'root' })
 export class PacienteValidadorService {
 
-  // Endereço do paciente é opcional; tinhaEndereco (edição): o cadastrado não pode ser removido, só alterado.
-  validar(f: FormulariosPaciente, tinhaEndereco = false): ResultadoValidacao {
+  // Endereço do paciente é obrigatório (RF11): a lista exige ao menos um.
+  validar(f: FormulariosPaciente): ResultadoValidacao {
     let valido = true;
     const marcar: Marcar = (alvo, campo, mensagem = OBRIGATORIO) => {
       alvo.erros[campo] = mensagem;
@@ -31,11 +31,9 @@ export class PacienteValidadorService {
 
     listaErros(f).forEach((bloco) => (bloco.erros = {}));
 
+    if (!f.enderecos.validar()) valido = false;
+
     this.validarDadosPessoais(f, marcar);
-    if (tinhaEndereco && enderecoVazio(f.contato)) {
-      marcar(f.contato, 'cep', 'O endereço não pode ser removido, apenas alterado.');
-    }
-    this.validarEnderecoOpcional(f.contato, marcar);
     this.validarEscola(f, marcar);
     this.validarResponsaveis(f, marcar);
 
@@ -152,10 +150,12 @@ export class PacienteValidadorService {
       marcar(ir, 'responsaveis', 'O CPF do paciente não pode ser o mesmo de um responsável.');
     }
 
-    // Quem passa a residir com o paciente e já tem endereço cadastrado precisa ter o mesmo dele (o do
-    // paciente pode ter mudado depois). Quem já residia vai junto quando o endereço muda.
+    // Quem passa a residir com o paciente e já tem endereço cadastrado precisa ter um dos endereços dele
+    // (os do paciente podem ter mudado depois). Quem já residia vai junto quando o endereço muda.
+    const itens = f.enderecos.itens;
     const emOutroEndereco = ir.listaResponsaveis.filter(
-      (r) => !r.naoResideComPaciente && !r.resideAntes && r.enderecoCadastro && !mesmoEnderecoForm(r.enderecoCadastro, f.contato)
+      (r) => !r.naoResideComPaciente && !r.resideAntes && r.enderecoCadastro &&
+        !itens.some((i) => mesmoEnderecoForm(i, r.enderecoCadastro!))
     );
     if (emOutroEndereco.length) {
       const nomes = emOutroEndereco.map((r) => r.nome.trim()).join(', ');
