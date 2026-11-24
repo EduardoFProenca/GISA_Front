@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ComErros } from '../../../../../shared/components/com-erros';
 import { SelectBusca, OpcaoSelectBusca } from '../../../../../shared/components/select-busca/select-busca';
@@ -43,7 +43,7 @@ export class InfoAssistenteSocial extends ComErros implements OnInit, InfoAssist
   registroConselho: string = '';
   pacientes: PacienteEscolhido[] = [];
   // Valor do campo de busca: volta a vazio a cada paciente adicionado.
-  selecao: number | null = null;
+  selecao = signal<number | null>(null);
 
   get idsPacientes(): number[] {
     return this.pacientes.map((p) => p.idCadastro);
@@ -59,9 +59,10 @@ export class InfoAssistenteSocial extends ComErros implements OnInit, InfoAssist
       this.pacientes = [...this.pacientes, { idCadastro: idNum, rotulo: opcao.label }];
     }
     this.limparErro('pacientes');
-    // Zera o campo no próximo ciclo (o select acabou de emitir a escolha).
-    this.selecao = idNum;
-    setTimeout(() => (this.selecao = null));
+    // Zera o campo no próximo ciclo (o select acabou de emitir a escolha). Signal: sem zone.js, só ele
+    // agenda a nova checagem da tela.
+    this.selecao.set(idNum);
+    setTimeout(() => this.selecao.set(null));
   }
 
   removerPaciente(id: number) {

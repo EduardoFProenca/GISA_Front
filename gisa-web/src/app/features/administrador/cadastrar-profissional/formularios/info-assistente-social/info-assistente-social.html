@@ -21,7 +21,7 @@
         <label>Pacientes vinculados</label>
         <p class="dica-campo">O assistente social só vê os pacientes vinculados a ele. Os vínculos podem ser alterados depois, no detalhe do profissional.</p>
         <app-select-busca [buscar]="buscarPacientes" [dicaTermo]="dicaBuscaPaciente" [ocultarIds]="idsPacientes"
-            [value]="selecao" (opcaoEscolhida)="adicionarPaciente($event)"
+            [value]="selecao()" (opcaoEscolhida)="adicionarPaciente($event)"
             placeholder="Digite o nome ou o CPF completo do paciente" semResultados="Nenhum paciente encontrado" />
         @if (erros['pacientes']) { <span class="erro-msg">{{ erros['pacientes'] }}</span> }
 
