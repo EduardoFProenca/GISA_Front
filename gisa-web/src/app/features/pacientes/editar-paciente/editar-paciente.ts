@@ -231,11 +231,17 @@ export class EditarPaciente implements OnInit {
     try {
       const escola = await this.resolverEscola(f.infoEscola);
       await this.adicionarResponsaveisNovos(f, this.enderecoMuda(f, original));
-      await this.atualizarResponsaveisExistentes(f, original);
       const atualizado = await firstValueFrom(
         this.pacienteService.atualizar(this.id(), this.montarAtualizacao(f, original, escola))
       );
+      // Depois do paciente: quem deixou de residir só sai do endereço do paciente neste PATCH, e antes
+      // disso a API recusa o endereço próprio dele ("também é de um paciente").
+      const falhas = await this.atualizarResponsaveisExistentes(f, original);
       this.paciente.set(atualizado);
+      if (falhas) {
+        this.erroGeral.set(`Paciente salvo, mas não foi possível atualizar o responsável ${falhas}`);
+        return;
+      }
       this.nomeSalvo.set(atualizado.pessoa.nome);
       this.mostrarSucesso();
     } catch (e) {
@@ -313,7 +319,9 @@ export class EditarPaciente implements OnInit {
 
   // O endereço de quem reside com o paciente a API acerta no PATCH do paciente; aqui só muda o de quem
   // não reside (correção manual no cadastro do responsável).
-  private async atualizarResponsaveisExistentes(f: FormulariosPaciente, original: Paciente) {
+  // Devolve '' ou as falhas ("Nome: motivo"): o paciente já foi salvo, então uma falha aqui não desfaz nada.
+  private async atualizarResponsaveisExistentes(f: FormulariosPaciente, original: Paciente): Promise<string> {
+    const falhas: string[] = [];
     for (const item of f.infoResponsavel.listaResponsaveis) {
       const vinculo = original.responsaveis.find((v) => v.responsavel.idCadastro === item.idResponsavel);
       if (!vinculo) continue; // recém-cadastrado neste salvamento
@@ -325,19 +333,22 @@ export class EditarPaciente implements OnInit {
       if ((soDigitos(item.celular) || null) !== r.celular) dados.celular = soDigitos(item.celular) || null;
       if ((item.ocupacao.trim() || null) !== vinculo.ocupacao) dados.ocupacao = item.ocupacao.trim() || null;
       if (item.estadoCivil !== r.estadoCivil) dados.estadoCivil = item.estadoCivil as EstadoCivil;
-      // Compara sem o idEndereco: o endereço próprio vai sem ID (a API troca o antigo por um novo e não
-      // pergunta pelos outros cadastros daquela linha).
-      const atual = r.enderecos[0] ? { ...r.enderecos[0], idEndereco: undefined } : undefined;
-      if (endereco && JSON.stringify(endereco) !== JSON.stringify(this.semNulos(atual))) dados.enderecos = [endereco];
+      // Os dois lados passam pela mesma montagem (sem idEndereco, CEP só com dígitos, complemento vazio
+      // ausente): diferença só de formato, como complemento "" vindo da API, não conta como alteração.
+      // Enviar sem mudança faz a API procurar a linha pela chave e pode responder um 409 indevido.
+      // Compara com todos os endereços atuais dele: igual a qualquer um, nada mudou (quem deixou de residir
+      // continua no endereço antigo pelo PATCH do paciente).
+      const atuais = r.enderecos.map((e) => JSON.stringify(this.payload.montarEndereco(enderecoParaForm(e))));
+      if (endereco && !atuais.includes(JSON.stringify(endereco))) dados.enderecos = [endereco];
       if (Object.keys(dados).length === 0) continue;
 
       try {
         await firstValueFrom(this.responsavelService.atualizar(r.idCadastro, dados));
       } catch (e) {
-        this.marcarErroResponsavel(f, item, e);
-        throw e;
+        falhas.push(this.textoErroResponsavel(item, e));
       }
     }
+    return falhas.join(' ');
   }
 
   private montarAtualizacao(f: FormulariosPaciente, original: Paciente, escola: Escola | null): AtualizacaoPacientePayload {
@@ -373,16 +384,16 @@ export class EditarPaciente implements OnInit {
 
   // Erros dos responsáveis aparecem na lista de responsáveis, com o nome de quem falhou.
   private marcarErroResponsavel(f: FormulariosPaciente, item: ResponsavelItem, err: unknown) {
-    const mensagens: string[] = [];
-    const r = aplicarErrosApi(err, (_chave, mensagem) => (mensagens.push(mensagem), true));
-    const texto = `${item.nome.trim()}: ${mensagens.length ? mensagens.join(' ') : r.mensagemGeral}`;
+    const texto = this.textoErroResponsavel(item, err);
     f.infoResponsavel.erros['responsaveis'] = texto;
     this.erroGeral.set(`Não foi possível salvar o responsável ${texto}`);
   }
 
-  private semNulos<T extends object>(obj: T | undefined): Partial<T> | undefined {
-    if (!obj) return undefined;
-    return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== null && v !== undefined)) as Partial<T>;
+  // "Nome: mensagens da API".
+  private textoErroResponsavel(item: ResponsavelItem, err: unknown): string {
+    const mensagens: string[] = [];
+    const r = aplicarErrosApi(err, (_chave, mensagem) => (mensagens.push(mensagem), true));
+    return `${item.nome.trim()}: ${mensagens.length ? mensagens.join(' ') : r.mensagemGeral}`;
   }
 
   irParaGerenciarPacientes() {

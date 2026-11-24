@@ -9,10 +9,22 @@
     margin: 2rem 0 1.25rem 0;
     padding-bottom: 0.6rem;
     border-bottom: 1px solid var(--cor-borda);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
   }
 
   .obrigatorio {
     color: var(--vermelho-500);
+  }
+
+  .subtitulo-secao {
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: var(--cor-texto-suave);
+    width: 100%;
+    margin-top: -0.35rem; // cola no título (o h3 usa gap entre os itens)
   }
 }
 

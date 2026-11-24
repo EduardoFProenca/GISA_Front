@@ -205,3 +205,135 @@ describe('EditarPaciente: endereço compartilhado (409)', () => {
     expect(enviado(0).responsaveis!.map((r) => r.indicesEnderecoResidencia)).toEqual([[0], [1]]);
   });
 });
+
+describe('EditarPaciente: endereço próprio de quem não reside', () => {
+  const PROPRIO: Endereco = {
+    idEndereco: 30, cep: '77440385', rua: 'Rua Perimetral Leste Norte', numero: '45', complemento: '',
+    bairro: 'Parque Residencial São José', cidade: 'Gurupi', estado: 'TO',
+  };
+
+  async function montarCom(proprio: Endereco) {
+    const inicial: Paciente = {
+      ...paciente([END_12]),
+      responsaveis: [{
+        responsavel: pessoa(7, 'Luana', '12345678909', [proprio]), ocupacao: null, grauParentesco: 'MAE',
+        resideComPaciente: false, idsEnderecoResidencia: [],
+      }],
+    };
+    const atualizarResp = vi.fn(() => of({}));
+    TestBed.configureTestingModule({
+      imports: [EditarPaciente],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { paramMap: of(convertToParamMap({ id: '1' })), snapshot: { data: {} } } },
+        { provide: PacienteService, useValue: { buscar: () => of(inicial), atualizar: vi.fn(() => of(inicial)), adicionarResponsavel: vi.fn() } },
+        { provide: ResponsavelService, useValue: { atualizar: atualizarResp, listar: vi.fn(() => of({ content: [] })) } },
+      ],
+    });
+    const fixture = TestBed.createComponent(EditarPaciente);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    return { c: fixture.componentInstance, atualizarResp };
+  }
+
+  it('sem mudança (complemento "" vindo da API): não faz PATCH no responsável', async () => {
+    const { c, atualizarResp } = await montarCom(PROPRIO);
+    c.enderecosForm!.itens = c.enderecosForm!.itens.map((i) => ({ ...i, endereco: 'Rua Nova' }));
+
+    await c.salvarEdicao();
+
+    expect(atualizarResp).not.toHaveBeenCalled();
+  });
+
+  it('endereço próprio alterado no card: envia o PATCH, sem idEndereco', async () => {
+    const { c, atualizarResp } = await montarCom({ ...PROPRIO, complemento: null });
+    c.infoResponsavelForm!.listaResponsaveis[0].endereco!.numero = '46';
+
+    await c.salvarEdicao();
+
+    expect(atualizarResp).toHaveBeenCalledTimes(1);
+    const dados = (atualizarResp.mock.calls[0] as unknown[])[1] as { enderecos: Endereco[] };
+    expect(dados.enderecos[0].numero).toBe('46');
+    expect(dados.enderecos[0].idEndereco).toBeUndefined();
+  });
+});
+
+describe('EditarPaciente: ordem dos PATCHs do paciente e do responsável', () => {
+  const JOINVILLE: Endereco = {
+    idEndereco: 40, cep: '89231485', rua: 'Rua Erwin Retzlaff', numero: '12121', complemento: null,
+    bairro: 'Paranaguamirim', cidade: 'Joinville', estado: 'SC',
+  };
+  const OUTRO: Endereco = { ...JOINVILLE, idEndereco: 41, rua: 'Rua Outra', numero: '1' };
+
+  async function montarCom(enderecosLuana: Endereco[], atualizarResp = vi.fn(() => of({}))) {
+    const inicial: Paciente = {
+      ...paciente([JOINVILLE]),
+      responsaveis: [{
+        responsavel: pessoa(7, 'Luana', '12345678909', enderecosLuana), ocupacao: null, grauParentesco: 'MAE',
+        resideComPaciente: true, idsEnderecoResidencia: [40],
+      }],
+    };
+    const atualizarPac = vi.fn(() => of(inicial));
+    TestBed.configureTestingModule({
+      imports: [EditarPaciente],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { paramMap: of(convertToParamMap({ id: '1' })), snapshot: { data: {} } } },
+        { provide: PacienteService, useValue: { buscar: () => of(inicial), atualizar: atualizarPac, adicionarResponsavel: vi.fn() } },
+        { provide: ResponsavelService, useValue: { atualizar: atualizarResp, listar: vi.fn(() => of({ content: [] })) } },
+      ],
+    });
+    const fixture = TestBed.createComponent(EditarPaciente);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    return { c: fixture.componentInstance, atualizarPac, atualizarResp };
+  }
+
+  // A5, item 5: o paciente muda e a Luana deixa de residir, ficando no endereço de antes.
+  function luanaNaoResideEPacienteMuda(c: EditarPaciente) {
+    const luana = c.infoResponsavelForm!.listaResponsaveis[0];
+    luana.naoResideComPaciente = true;
+    luana.residencia = [];
+    luana.endereco = { cep: '89231-485', endereco: 'Rua Erwin Retzlaff', numero: '12121', complemento: '', bairro: 'Paranaguamirim', cidade: 'Joinville', uf: 'SC' };
+    c.enderecosForm!.itens = c.enderecosForm!.itens.map((i) => ({ ...i, cep: '89000-000', numero: '7' }));
+  }
+
+  it('endereço próprio igual a um dos atuais (não o primeiro): não faz PATCH no responsável', async () => {
+    const { c, atualizarPac, atualizarResp } = await montarCom([OUTRO, JOINVILLE]);
+    luanaNaoResideEPacienteMuda(c);
+
+    await c.salvarEdicao();
+
+    expect(atualizarPac).toHaveBeenCalledTimes(1);
+    expect(atualizarResp).not.toHaveBeenCalled();
+    expect(c.erroGeral()).toBe('');
+  });
+
+  it('endereço próprio novo: o PATCH do responsável vai depois do PATCH do paciente', async () => {
+    const { c, atualizarPac, atualizarResp } = await montarCom([JOINVILLE]);
+    luanaNaoResideEPacienteMuda(c);
+    c.infoResponsavelForm!.listaResponsaveis[0].endereco!.numero = '500';
+
+    await c.salvarEdicao();
+
+    expect(atualizarResp).toHaveBeenCalledTimes(1);
+    expect(atualizarPac.mock.invocationCallOrder[0]).toBeLessThan(atualizarResp.mock.invocationCallOrder[0]);
+  });
+
+  it('falha no responsável depois do paciente salvo: avisa que o paciente foi salvo', async () => {
+    const erro = new HttpErrorResponse({ status: 400, error: { message: 'Recusado.', fields: {} } });
+    const { c } = await montarCom([JOINVILLE], vi.fn(() => throwError(() => erro)));
+    luanaNaoResideEPacienteMuda(c);
+    c.infoResponsavelForm!.listaResponsaveis[0].endereco!.numero = '500';
+
+    await c.salvarEdicao();
+
+    expect(c.erroGeral()).toBe('Paciente salvo, mas não foi possível atualizar o responsável Luana: Recusado.');
+  });
+});

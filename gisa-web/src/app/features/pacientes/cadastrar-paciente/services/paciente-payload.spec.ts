@@ -131,15 +131,15 @@ describe('PacienteValidadorService: endereço obrigatório', () => {
     expect(validador.validar(f).valido).toBe(true);
   });
 
-  it('responsável que passa a residir com endereço fora da lista: erro nos responsáveis', () => {
+  it('responsável que passa a residir com endereço fora da lista: aceito (B3: sem a trava emOutroEndereco)', () => {
     lista.enderecosIniciais = [ENDERECO_1];
     const r = {
       ...responsavel('Ana', '111.444.777-35', false), idResponsavel: 3, reaproveitado: true,
       enderecoCadastro: { cep: '18010-000', endereco: 'Rua B', numero: '20', complemento: '', bairro: 'Jardim', cidade: 'Sorocaba', uf: 'SP' },
     };
     const f = formulariosPaciente(lista, [r]);
-    expect(validador.validar(f).valido).toBe(false);
-    expect(f.infoResponsavel.erros['responsaveis']).toContain('Ana');
+    expect(validador.validar(f).valido).toBe(true);
+    expect(f.infoResponsavel.erros['responsaveis']).toBeUndefined();
   });
 });
 

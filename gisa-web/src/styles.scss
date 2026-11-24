@@ -159,6 +159,55 @@ input[type='checkbox'] {
   }
 }
 
+// Radio do sistema: círculo no mesmo tom dos campos, com ponto azul quando marcado.
+// (Vem depois de `input` para não herdar largura, padding e fundo dos campos de texto.)
+input[type='radio'] {
+  appearance: none;
+  flex-shrink: 0;
+  display: inline-grid;
+  place-content: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: 0;
+  padding: 0;
+  border: 1.5px solid var(--campo-borda);
+  border-radius: 50%;
+  background: var(--campo-fundo);
+  cursor: pointer;
+
+  &::before {
+    content: '';
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--cor-foco);
+    transform: scale(0);
+    transition: transform 0.12s ease-in-out;
+  }
+
+  &:hover {
+    border-color: var(--cor-foco);
+  }
+
+  &:focus-visible {
+    border-color: var(--cor-foco);
+    box-shadow: var(--sombra-anel-foco);
+  }
+
+  &:checked {
+    border-color: var(--cor-foco);
+
+    &::before {
+      transform: scale(1);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
 // Opção com checkbox (ex.: "Paciente possui convênio"): bloco com a mesma moldura dos campos,
 // destacado quando marcado.
 .checkbox-inline {

@@ -173,19 +173,5 @@ export class PacienteValidadorService {
     if (cpfPaciente.length === 11 && ir.listaResponsaveis.some((r) => soDigitos(r.cpf) === cpfPaciente)) {
       marcar(ir, 'responsaveis', 'O CPF do paciente não pode ser o mesmo de um responsável.');
     }
-
-    // Quem passa a residir com o paciente e já tem endereço cadastrado precisa ter um dos endereços dele
-    // (os do paciente podem ter mudado depois). Quem já residia vai junto quando o endereço muda.
-    const itens = f.enderecos.itens;
-    const emOutroEndereco = ir.listaResponsaveis.filter(
-      (r) => !r.naoResideComPaciente && !r.resideAntes && r.enderecoCadastro &&
-        !itens.some((i) => mesmoEnderecoForm(i, r.enderecoCadastro!))
-    );
-    if (emOutroEndereco.length) {
-      const nomes = emOutroEndereco.map((r) => r.nome.trim()).join(', ');
-      marcar(ir, 'responsaveis',
-        `O endereço do paciente é diferente do já cadastrado para ${nomes}. Use o mesmo endereço ou marque que ` +
-        'o responsável não reside com o paciente (o endereço dele é alterado no cadastro do responsável).');
-    }
   }
 }

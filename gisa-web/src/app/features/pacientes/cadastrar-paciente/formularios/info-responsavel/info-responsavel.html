@@ -219,7 +219,25 @@
   </div>
 </app-confirm-dialog>
 
-<!-- Remover o responsável de quem o endereço do paciente foi copiado. Fechar mantém o endereço. -->
+<!-- Responsável que reside, com endereço cadastrado fora da lista do paciente. Fechar mantém o card aberto. -->
+<app-dialogo [aberto]="enderecoDiferenteAberto" titulo="Endereço diferente" largura="sm" (fechar)="fecharEnderecoDiferente()">
+  <div class="mensagem-endereco">
+    @if (enderecoConfirmacao; as e) {
+      <p><strong>{{ nomeResponsavelEndereco }}</strong> mora em {{ enderecoEmTexto(e) }}, que não é um endereço do paciente.</p>
+    }
+    <p class="orientacao">
+      <em>Se escolher "Morar no endereço do paciente": o endereço atual de {{ nomeResponsavelEndereco }} será substituído
+        pelo do paciente. Se esse endereço também for de outro paciente dele, continua cadastrado.</em>
+    </p>
+  </div>
+  <div class="dialogo-acoes">
+    <button appBotao type="button" variante="fantasma" (click)="marcarQueNaoReside()">Não reside</button>
+    <button appBotao type="button" variante="contorno" (click)="morarNoEnderecoDoPaciente()">Morar no endereço do paciente</button>
+    <button appBotao type="button" data-concluir (click)="adicionarComoEnderecoDoPaciente()">Adicionar como endereço do paciente</button>
+  </div>
+</app-dialogo>
+
+<!-- Remover o responsável de quem endereços do paciente foram copiados. Fechar mantém os endereços. -->
 <app-confirm-dialog
   [aberto]="remocaoPendente !== null"
   titulo="Endereço do paciente"
@@ -231,7 +249,10 @@
   (cancelar)="manterEnderecoNaRemocao()"
 >
   <div dialog-message class="mensagem-endereco">
-    <p>O endereço do paciente veio do cadastro de <strong>{{ origemEnderecoPaciente?.nome }}</strong>.</p>
+    <p>
+      {{ enderecosDaRemocao.length > 1 ? 'Os endereços' : 'O endereço' }} {{ textoEnderecosDaRemocao }}
+      {{ enderecosDaRemocao.length > 1 ? 'vieram' : 'veio' }} do cadastro de <strong>{{ enderecosDaRemocao[0]?.nome }}</strong>.
+    </p>
     <p>Remover também do paciente?</p>
   </div>
 </app-confirm-dialog>
