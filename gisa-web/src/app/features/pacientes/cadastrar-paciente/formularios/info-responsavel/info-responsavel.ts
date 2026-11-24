@@ -254,7 +254,7 @@ export class InfoResponsavel extends ComErros {
     this.errosCard = resultado.erros;
     if (!resultado.valido) return;
 
-    const item: ResponsavelItem = { ...r, endereco: this.enderecoDoItem(r) };
+    const item: ResponsavelItem = { ...r, endereco: this.enderecoDoItem(r), continuaComOutrosPacientes: undefined };
 
     // Quem passa a residir com o paciente e já tem endereço cadastrado fora da lista dele: o usuário
     // escolhe o que fazer (lista vazia: usar o endereço dele; senão: adicionar, morar no do paciente ou

@@ -93,11 +93,18 @@ export interface ErroApi {
   terapias?: TerapiaForaDaJornada[];
   // 409 no PATCH: endereços alterados que também são de outros cadastros (só a quantidade, LGPD).
   enderecosCompartilhados?: EnderecoCompartilhado[];
+  // 409 no salvamento do paciente: responsável que passa a residir e ainda mora com outros pacientes (só a quantidade, LGPD).
+  residenciasEmOutrosPacientes?: ResidenciaEmOutrosPacientes[];
 }
 
 export interface EnderecoCompartilhado {
   idEndereco: number;
   outrosCadastros: number;
+}
+
+export interface ResidenciaEmOutrosPacientes {
+  idResponsavel: number;
+  outrosPacientes: number;
 }
 
 export interface TerapiaForaDaJornada {

@@ -52,6 +52,8 @@ export interface ResponsavelItem {
   enderecoCadastro?: EnderecoForm | null;
   // Edição: o vínculo já constava como "reside com o paciente" (vai junto se o endereço mudar).
   resideAntes?: boolean;
+  // Resposta ao 409 "também mora com outros pacientes" (true = continua lá; false = saiu). Some ao confirmar o card de novo.
+  continuaComOutrosPacientes?: boolean;
 }
 
 export interface InfoResponsavelForm extends ComErros {

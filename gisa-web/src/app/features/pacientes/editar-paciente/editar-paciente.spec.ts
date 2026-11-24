@@ -337,3 +337,107 @@ describe('EditarPaciente: ordem dos PATCHs do paciente e do responsável', () =>
     expect(c.erroGeral()).toBe('Paciente salvo, mas não foi possível atualizar o responsável Luana: Recusado.');
   });
 });
+
+describe('EditarPaciente: responsável que mora com outros pacientes (409)', () => {
+  let fixture: ComponentFixture<EditarPaciente>;
+  let c: EditarPaciente;
+  let atualizar: ReturnType<typeof vi.fn>;
+  let adicionarResponsavel: ReturnType<typeof vi.fn>;
+
+  const ERRO_RESIDENCIA = new HttpErrorResponse({
+    status: 409,
+    error: {
+      status: 409, message: 'Também reside com outros pacientes.', fields: {},
+      residenciasEmOutrosPacientes: [{ idResponsavel: 31, outrosPacientes: 1 }],
+    },
+  });
+
+  // Luana (31) já vinculada (CPF diferente do paciente: a validação barraria o salvamento) como "não reside", com endereço próprio em outro lugar.
+  const OUTRO_LUGAR: Endereco = { ...END_15, idEndereco: 50, rua: 'Rua Longe', numero: '9' };
+  function inicial(): Paciente {
+    return paciente([END_12], [{
+      responsavel: pessoa(31, 'Luana Gomes', '98765432100', [OUTRO_LUGAR]), ocupacao: null, grauParentesco: 'MAE',
+      resideComPaciente: false, idsEnderecoResidencia: [],
+    }]);
+  }
+
+  async function montar(p: Paciente) {
+    atualizar = vi.fn();
+    adicionarResponsavel = vi.fn();
+    TestBed.configureTestingModule({
+      imports: [EditarPaciente],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { paramMap: of(convertToParamMap({ id: '1' })), snapshot: { data: {} } } },
+        { provide: PacienteService, useValue: { buscar: () => of(p), atualizar, adicionarResponsavel } },
+        { provide: ResponsavelService, useValue: { atualizar: vi.fn(() => of({})), listar: vi.fn(() => of({ content: [] })) } },
+      ],
+    });
+    fixture = TestBed.createComponent(EditarPaciente);
+    c = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+  }
+
+  const dialogo = () => (fixture.nativeElement as HTMLElement).querySelector('app-dialogo-residencia-outros-pacientes .caixa');
+
+  // Luana passa a residir no endereço do paciente.
+  function luanaPassaAResidir() {
+    const luana = c.infoResponsavelForm!.listaResponsaveis.find((r) => r.idResponsavel === 31)!;
+    luana.naoResideComPaciente = false;
+    luana.endereco = null;
+    luana.residencia = [c.enderecosForm!.itens[0].chave];
+  }
+
+  it('409 do PATCH abre o diálogo; "Continua morando com eles" reenvia com true no responsável 31', async () => {
+    await montar(inicial());
+    atualizar.mockReturnValueOnce(throwError(() => ERRO_RESIDENCIA)).mockReturnValueOnce(of(inicial()));
+    luanaPassaAResidir();
+
+    await c.salvarEdicao();
+    fixture.detectChanges();
+    expect(dialogo()).not.toBeNull();
+    expect(dialogo()!.textContent).toContain('Luana Gomes');
+    expect(c.erroGeral()).toBe('');
+
+    await c.confirmarResidenciasOutros(new Map([[31, true]]));
+
+    expect(atualizar).toHaveBeenCalledTimes(2);
+    const reenvio = atualizar.mock.calls[1][1] as AtualizacaoPacientePayload;
+    const item = reenvio.responsaveis!.find((r) => r.idResponsavel === 31)!;
+    expect(item.continuaComOutrosPacientes).toBe(true);
+    expect((atualizar.mock.calls[0][1] as AtualizacaoPacientePayload).responsaveis![0].continuaComOutrosPacientes).toBeUndefined();
+  });
+
+  it('409 do vínculo novo abre o diálogo, sem "Não foi possível salvar o responsável"', async () => {
+    await montar(paciente([END_12], []));
+    adicionarResponsavel.mockReturnValueOnce(throwError(() => ERRO_RESIDENCIA));
+    c.infoResponsavelForm!.listaResponsaveis.push({
+      ...PAI_NOVO, idResponsavel: 31, reaproveitado: true, nome: 'Luana Gomes', cpf: '987.654.321-00',
+      residencia: [c.enderecosForm!.itens[0].chave],
+    });
+
+    await c.salvarEdicao();
+    fixture.detectChanges();
+
+    expect(dialogo()).not.toBeNull();
+    expect(c.erroGeral()).toBe('');
+    expect(c.infoResponsavelForm!.erros['responsaveis']).toBeUndefined();
+    expect(atualizar).not.toHaveBeenCalled();
+  });
+
+  it('confirmar o card do responsável de novo apaga a resposta', async () => {
+    await montar(inicial());
+    const ir = c.infoResponsavelForm!;
+    ir.listaResponsaveis[0].continuaComOutrosPacientes = false;
+
+    ir.editarResponsavel(0);
+    ir.salvarResponsavel();
+
+    expect(ir.errosCard).toEqual({});
+    expect(ir.listaResponsaveis[0].continuaComOutrosPacientes).toBeUndefined();
+  });
+});

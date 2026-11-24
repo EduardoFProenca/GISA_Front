@@ -53,6 +53,7 @@ export class PacienteCadastroPayloadService {
       ocupacao: r.ocupacao.trim() || undefined,
       grauParentesco: r.grauParentesco as GrauParentesco,
       indicesEnderecoResidencia: this.indicesResidencia(r, itens),
+      continuaComOutrosPacientes: r.continuaComOutrosPacientes,
       // Se reside com o paciente, o back usa os endereços do paciente.
       enderecos: r.naoResideComPaciente && r.endereco ? this.montarEnderecos(r.endereco) : undefined,
     };

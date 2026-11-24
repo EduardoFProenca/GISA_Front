@@ -1,0 +1,38 @@
+<app-dialogo [aberto]="aberto" titulo="Responsável que mora com outros pacientes" largura="md" (fechar)="cancelar.emit()">
+  @for (item of itens; track item.idResponsavel) {
+    <fieldset class="pergunta">
+      <legend class="endereco">{{ item.nome }}</legend>
+      <p class="quantidade">
+        Também mora com <strong>{{ item.outrosPacientes }}</strong>
+        {{ item.outrosPacientes === 1 ? 'outro paciente' : 'outros pacientes' }}.
+      </p>
+
+      <label class="opcao">
+        <input type="radio" [name]="'continuaComOutrosPacientes-' + item.idResponsavel"
+          [checked]="decisoes.get(item.idResponsavel) === true" (change)="escolher(item.idResponsavel, true)">
+        <span>
+          <strong>Continua morando com eles</strong>
+          <span class="descricao">Ele mora nos dois lugares.</span>
+        </span>
+      </label>
+      <label class="opcao">
+        <input type="radio" [name]="'continuaComOutrosPacientes-' + item.idResponsavel"
+          [checked]="decisoes.get(item.idResponsavel) === false" (change)="escolher(item.idResponsavel, false)">
+        <span>
+          <strong>Saiu de lá</strong>
+          <span class="descricao">Lá ele passa a não residir. O endereço desses pacientes não muda.</span>
+        </span>
+      </label>
+    </fieldset>
+  }
+
+  <p class="aviso-info">
+    Se a família toda se mudou, escolha "Continua morando com eles" e depois altere o endereço desses pacientes
+    para este mesmo endereço.
+  </p>
+
+  <div class="dialogo-acoes">
+    <button appBotao type="button" variante="neutro" (click)="cancelar.emit()">Voltar</button>
+    <button appBotao type="button" data-concluir [disabled]="!completo" (click)="aoConfirmar()">Salvar</button>
+  </div>
+</app-dialogo>

@@ -3,6 +3,11 @@ import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { lerContextoPacientes } from '../contexto-pacientes';
+import { lerErroApi } from '../../../core/http/erro-api';
+import {
+  DialogoResidenciaOutrosPacientes,
+  ResidenciaOutrosPacientesItem,
+} from '../../../shared/components/dialogo-residencia-outros-pacientes/dialogo-residencia-outros-pacientes';
 import { firstValueFrom } from 'rxjs';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
 import { ListaEnderecos } from '../../../shared/components/lista-enderecos/lista-enderecos';
@@ -29,7 +34,7 @@ import { PacienteErrosApiService } from './services/paciente-erros-api';
 
 @Component({
   selector: 'app-cadastrar-paciente',
-  imports: [DadosPessoais, ListaEnderecos, CabecalhoPagina, InfoPaciente, InfoEscola, InfoResponsavel, InfoProntuario, InfoCid, QuemMoraAqui],
+  imports: [DadosPessoais, ListaEnderecos, CabecalhoPagina, InfoPaciente, InfoEscola, InfoResponsavel, InfoProntuario, InfoCid, QuemMoraAqui, DialogoResidenciaOutrosPacientes],
   styleUrl: './cadastrar-paciente.scss',
   templateUrl: './cadastrar-paciente.html',
 })
@@ -60,6 +65,8 @@ export class CadastrarPaciente {
   idCadastrado: number | null = null;
   // Muda a cada "Cadastrar outro"; o template recria os formulários quando ela muda.
   geracaoFormulario = signal(0);
+  // 409: responsável que passa a residir e ainda mora com outros pacientes (o diálogo pergunta um a um).
+  residenciasOutros: ResidenciaOutrosPacientesItem[] = [];
 
   // ---- "Quem mora aqui" nos cards de endereço ----
   // Mesma referência enquanto os residentes não mudam: um array novo a cada verificação dispararia o NG0100.
@@ -120,6 +127,17 @@ export class CadastrarPaciente {
     try {
       res = await firstValueFrom(this.pacienteService.cadastrar(dados));
     } catch (e) {
+      const residencias = lerErroApi(e)?.residenciasEmOutrosPacientes;
+      if (residencias?.length) {
+        this.residenciasOutros = residencias.map((r) => ({
+          ...r,
+          nome: f.infoResponsavel.listaResponsaveis.find((i) => i.idResponsavel === r.idResponsavel)?.nome.trim()
+            ?? `Responsável ${r.idResponsavel}`,
+        }));
+        this.salvando = false;
+        this.cdr.markForCheck();
+        return; // abre o diálogo
+      }
       const resultado = this.errosApi.tratar(e as HttpErrorResponse, this.formularios);
       this.finalizarComErro(resultado.mensagemGeral);
       return;
@@ -132,6 +150,22 @@ export class CadastrarPaciente {
     this.idCadastrado = res?.idCadastro ?? null;
     this.erro = aviso;
     this.mostrarSucesso();
+    this.cdr.markForCheck();
+  }
+
+  // Respostas do diálogo ficam nos itens; salvar de novo refaz o fluxo (nada foi gravado no 409).
+  async confirmarResidenciasOutros(decisoes: Map<number, boolean>) {
+    this.residenciasOutros = [];
+    for (const item of this.infoResponsavel.listaResponsaveis) {
+      if (item.idResponsavel != null && decisoes.has(item.idResponsavel)) {
+        item.continuaComOutrosPacientes = decisoes.get(item.idResponsavel);
+      }
+    }
+    await this.salvarCadastro();
+  }
+
+  cancelarResidenciasOutros() {
+    this.residenciasOutros = [];
     this.cdr.markForCheck();
   }
 

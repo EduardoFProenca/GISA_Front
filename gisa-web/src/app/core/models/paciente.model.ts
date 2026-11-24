@@ -99,6 +99,8 @@ export interface ResponsavelPayload {
   indicesEnderecoResidencia?: number[];
   // POST /pacientes/{id}/responsaveis: idEndereco dos endereços atuais do paciente ([] = não reside).
   idsEnderecoResidencia?: number[];
+  // Resposta ao 409 residenciasEmOutrosPacientes: true = continua morando com os outros pacientes; false = saiu de lá.
+  continuaComOutrosPacientes?: boolean;
   enderecos?: Endereco[];
 }
 
@@ -147,7 +149,7 @@ export interface AtualizacaoPacientePayload {
   prontuario?: Prontuario | null;
   // Responsável que não vier na lista é desvinculado (ao menos 1).
   // indicesEnderecoResidencia: posições em `enderecos` deste PATCH ([] = não reside); exige `enderecos`.
-  responsaveis?: { idResponsavel: number; grauParentesco: GrauParentesco; indicesEnderecoResidencia: number[] }[];
+  responsaveis?: { idResponsavel: number; grauParentesco: GrauParentesco; indicesEnderecoResidencia: number[]; continuaComOutrosPacientes?: boolean }[];
 }
 
 // PATCH /responsaveis/{id} (vínculo, grau de parentesco e residência mudam no PATCH do paciente).

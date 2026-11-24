@@ -1,0 +1,70 @@
+.pergunta {
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-md);
+  padding: 0.9rem 1rem;
+  margin: 0 0 1rem;
+
+  .endereco {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--cor-titulo);
+    padding: 0 0.25rem;
+  }
+
+  .quantidade {
+    margin: 0 0 0.75rem;
+    font-size: 0.9rem;
+    color: var(--cor-texto-medio);
+  }
+}
+
+// Opção de resposta: cartão de largura total, destacado quando marcado (mesmo visual do .checkbox-inline).
+// Widget: não usa appBotao. Os margin/font abaixo anulam a regra global de `label`.
+.opcao {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid var(--campo-borda);
+  border-radius: var(--raio-lg);
+  background: var(--campo-fundo);
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--cor-titulo);
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.2s, background 0.2s;
+
+  & + .opcao {
+    margin-top: 0.5rem;
+  }
+
+  &:hover {
+    border-color: var(--campo-borda-hover);
+  }
+
+  &:has(input:checked) {
+    border-color: var(--azul-300);
+    background: var(--cor-primaria-suave);
+  }
+
+  input {
+    margin-top: 0.1rem; // alinha o círculo com a primeira linha do texto
+  }
+
+  strong {
+    display: block;
+    font-weight: 600;
+  }
+
+  .descricao {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.85rem;
+    color: var(--cor-texto-secundario);
+  }
+}

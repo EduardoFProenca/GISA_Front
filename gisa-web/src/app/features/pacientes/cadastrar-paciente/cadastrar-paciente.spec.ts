@@ -1,7 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, provideRouter } from '@angular/router';
+import { of, throwError } from 'rxjs';
+import { vi } from 'vitest';
+import { PacienteService } from '../../../core/services/paciente';
+import { PacienteCadastroPayload } from '../../../core/models/paciente.model';
+import { ResponsavelItem } from './models/formularios-paciente';
 import { CadastrarPaciente } from './cadastrar-paciente';
 import { EnderecoForm, FormulariosPaciente } from './models/formularios-paciente';
 import { PacienteCadastroPayloadService } from './services/paciente-payload';
@@ -106,5 +112,77 @@ describe('CadastrarPaciente: "Quem mora aqui"', () => {
     fixture.detectChanges();
     expect(residencias()).toEqual([[a1], [a1]]);
     expect(el().querySelectorAll('app-quem-mora-aqui').length).toBe(0);
+  });
+});
+
+describe('CadastrarPaciente: responsável que mora com outros pacientes (409)', () => {
+  let fixture: ComponentFixture<CadastrarPaciente>;
+  let c: CadastrarPaciente;
+  let cadastrar: ReturnType<typeof vi.fn>;
+
+  const ERRO_RESIDENCIA = new HttpErrorResponse({
+    status: 409,
+    error: {
+      status: 409, message: 'Também reside com outros pacientes.', fields: {},
+      residenciasEmOutrosPacientes: [{ idResponsavel: 31, outrosPacientes: 2 }],
+    },
+  });
+
+  // Luana: cadastro existente (31) que passa a residir; Bruno: responsável novo.
+  const LUANA: ResponsavelItem = {
+    idResponsavel: 31, reaproveitado: true, nome: 'Luana Gomes', cpf: '529.982.247-25', dataNascimento: '1980-01-01',
+    sexo: 'F', estadoCivil: 'CASADO', celular: '', ocupacao: '', grauParentesco: 'MAE', naoResideComPaciente: false,
+    residencia: [], endereco: null, enderecoCadastro: null,
+  };
+  const BRUNO: ResponsavelItem = { ...LUANA, idResponsavel: undefined, reaproveitado: false, nome: 'Bruno', cpf: '111.444.777-35' };
+
+  const dialogo = () => (fixture.nativeElement as HTMLElement).querySelector('app-dialogo-residencia-outros-pacientes .caixa');
+
+  beforeEach(() => {
+    cadastrar = vi.fn();
+    TestBed.configureTestingModule({
+      imports: [CadastrarPaciente],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { snapshot: { data: {} } } },
+        { provide: PacienteService, useValue: { cadastrar } },
+      ],
+    });
+    // A validação do formulário inteiro já tem testes próprios; aqui só interessa o salvamento.
+    vi.spyOn(TestBed.inject(PacienteValidadorService), 'validar').mockReturnValue({ valido: true });
+    fixture = TestBed.createComponent(CadastrarPaciente);
+    c = fixture.componentInstance;
+    fixture.detectChanges();
+    c.enderecos.adicionar({ ...A1 });
+    c.infoResponsavel.listaResponsaveis.push({ ...LUANA }, { ...BRUNO });
+    fixture.detectChanges();
+  });
+
+  it('409 abre o diálogo com o nome do responsável e "2 outros pacientes", sem erro na tela', async () => {
+    cadastrar.mockReturnValueOnce(throwError(() => ERRO_RESIDENCIA));
+
+    await c.salvarCadastro();
+    fixture.detectChanges();
+
+    expect(c.erro).toBe('');
+    expect(dialogo()).not.toBeNull();
+    expect(dialogo()!.textContent).toContain('Luana Gomes');
+    expect(dialogo()!.textContent).toMatch(/2\s*outros pacientes/);
+  });
+
+  it('"Saiu de lá" refaz o POST com continuaComOutrosPacientes: false só nesse responsável', async () => {
+    cadastrar
+      .mockReturnValueOnce(throwError(() => ERRO_RESIDENCIA))
+      .mockReturnValueOnce(of({ idCadastro: 99, nome: 'Paciente', cpf: '', statusPaciente: 'MATRICULADO', dataCadastro: '' }));
+
+    await c.salvarCadastro();
+    await c.confirmarResidenciasOutros(new Map([[31, false]]));
+
+    expect(cadastrar).toHaveBeenCalledTimes(2);
+    const reenvio = cadastrar.mock.calls[1][0] as PacienteCadastroPayload;
+    expect(reenvio.responsaveis.map((r) => r.continuaComOutrosPacientes)).toEqual([false, undefined]);
+    expect(c.residenciasOutros).toEqual([]);
   });
 });

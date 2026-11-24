@@ -81,6 +81,14 @@
   (cancelar)="enderecosCompartilhados.set([])"
 />
 
+<!-- 409: responsável que passa a residir e ainda mora com outros pacientes. -->
+<app-dialogo-residencia-outros-pacientes
+  [aberto]="residenciasOutros().length > 0"
+  [itens]="residenciasOutros()"
+  (confirmar)="confirmarResidenciasOutros($event)"
+  (cancelar)="residenciasOutros.set([])"
+/>
+
 <!-- Modal de Confirmação para Descartar Alterações -->
 <app-confirm-dialog
   [aberto]="confirmarCancelamentoAberto()"

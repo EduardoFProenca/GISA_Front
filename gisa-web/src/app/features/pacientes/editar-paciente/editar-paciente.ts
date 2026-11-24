@@ -11,6 +11,10 @@ import {
   DialogoEnderecoCompartilhado,
   EnderecoCompartilhadoItem,
 } from '../../../shared/components/dialogo-endereco-compartilhado/dialogo-endereco-compartilhado';
+import {
+  DialogoResidenciaOutrosPacientes,
+  ResidenciaOutrosPacientesItem,
+} from '../../../shared/components/dialogo-residencia-outros-pacientes/dialogo-residencia-outros-pacientes';
 import { DadosPessoais } from '../../../shared/components/dados-pessoais/dados-pessoais';
 import { ListaEnderecos } from '../../../shared/components/lista-enderecos/lista-enderecos';
 import { SelectMenu } from '../../../shared/components/select-menu/select-menu';
@@ -61,6 +65,7 @@ import { soDigitos, vazio } from '../../../shared/utils/texto.util';
     CabecalhoPagina,
     ConfirmDialog,
     DialogoEnderecoCompartilhado,
+    DialogoResidenciaOutrosPacientes,
     DadosPessoais,
     ListaEnderecos,
     InfoPaciente,
@@ -108,6 +113,8 @@ export class EditarPaciente implements OnInit {
 
   // 409 do PATCH: endereços alterados que também são de outros cadastros (o diálogo pergunta um a um).
   enderecosCompartilhados = signal<EnderecoCompartilhadoItem[]>([]);
+  // 409: responsável que passa a residir e ainda mora com outros pacientes (o diálogo pergunta um a um).
+  residenciasOutros = signal<ResidenciaOutrosPacientesItem[]>([]);
 
   // ---- valores iniciais dos formulários (formatados como o usuário digitaria) ----
   dadosPessoais = computed(() => {
@@ -209,6 +216,17 @@ export class EditarPaciente implements OnInit {
     await this.salvar(f, original);
   }
 
+  // Respostas do diálogo da residência ficam nos itens dos responsáveis; salvar de novo refaz o fluxo.
+  async confirmarResidenciasOutros(decisoes: Map<number, boolean>) {
+    this.residenciasOutros.set([]);
+    for (const item of this.infoResponsavelForm?.listaResponsaveis ?? []) {
+      if (item.idResponsavel != null && decisoes.has(item.idResponsavel)) {
+        item.continuaComOutrosPacientes = decisoes.get(item.idResponsavel);
+      }
+    }
+    await this.salvarEdicao();
+  }
+
   // Respostas do diálogo ficam nos itens da lista; salvar de novo refaz o fluxo (sem vincular de novo).
   async confirmarEnderecosCompartilhados(decisoes: Map<number, boolean>) {
     this.enderecosCompartilhados.set([]);
@@ -245,6 +263,15 @@ export class EditarPaciente implements OnInit {
       this.nomeSalvo.set(atualizado.pessoa.nome);
       this.mostrarSucesso();
     } catch (e) {
+      const residencias = lerErroApi(e)?.residenciasEmOutrosPacientes;
+      if (residencias?.length) {
+        this.residenciasOutros.set(residencias.map((r) => ({
+          ...r,
+          nome: f.infoResponsavel.listaResponsaveis.find((i) => i.idResponsavel === r.idResponsavel)?.nome.trim()
+            ?? `Responsável ${r.idResponsavel}`,
+        })));
+        return; // abre o diálogo
+      }
       // Os passos de escola e responsáveis já preenchem erroGeral; aqui chegam os do paciente.
       if (this.erroGeral()) return;
       const compartilhados = lerErroApi(e)?.enderecosCompartilhados;
@@ -311,6 +338,8 @@ export class EditarPaciente implements OnInit {
           await firstValueFrom(this.responsavelService.atualizar(item.idResponsavel, posVinculo));
         }
       } catch (e) {
+        // A pergunta da residência não é erro do responsável: o diálogo abre e o salvamento é refeito.
+        if (lerErroApi(e)?.residenciasEmOutrosPacientes?.length) throw e;
         this.marcarErroResponsavel(f, item, e);
         throw e;
       }
@@ -378,6 +407,7 @@ export class EditarPaciente implements OnInit {
           idResponsavel: r.idResponsavel!,
           grauParentesco: r.grauParentesco as GrauParentesco,
           indicesEnderecoResidencia: this.payload.indicesResidencia(r, f.enderecos.itens),
+          continuaComOutrosPacientes: r.continuaComOutrosPacientes,
         })),
     };
   }
