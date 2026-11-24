@@ -33,4 +33,28 @@ describe('InfoAssistenteSocial', () => {
     const input = (fixture.nativeElement as HTMLElement).querySelector('app-select-busca input') as HTMLInputElement;
     expect(input.value).toBe('');
   });
+
+  it('na edição, novos() e removidos() comparam a lista com os pacientes iniciais', () => {
+    const fixture = TestBed.createComponent(InfoAssistenteSocial);
+    const component = fixture.componentInstance;
+    component.edicao = true;
+    component.dadosIniciais = {
+      ehAssistenteSocial: true,
+      registroConselho: 'CRESS-9/1',
+      pacientes: [
+        { idCadastro: 1, rotulo: 'Ana · CPF ***' },
+        { idCadastro: 2, rotulo: 'Bia · CPF ***' },
+      ],
+    };
+    fixture.detectChanges();
+
+    component.removerPaciente(1);
+    component.adicionarPaciente({ id: 3, label: 'Cris · CPF ***', rotuloSelecionado: 'Cris' });
+
+    expect(component.novos()).toEqual([3]);
+    expect(component.removidos()).toEqual([1]);
+    expect(component.rotulo(1)).toBe('Ana · CPF ***');
+    component.marcarSalvo(3, true);
+    expect(component.novos()).toEqual([]);
+  });
 });

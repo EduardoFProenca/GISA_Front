@@ -7,6 +7,8 @@ import { vi } from 'vitest';
 import { EditarPaciente } from './editar-paciente';
 import { PacienteService } from '../../../core/services/paciente';
 import { ResponsavelService } from '../../../core/services/responsavel';
+import { ProfissionalService } from '../../../core/services/profissional';
+import { Auth } from '../../../core/auth/auth';
 import { Endereco, Pessoa } from '../../../core/models/comum.model';
 import { AtualizacaoPacientePayload, Paciente } from '../../../core/models/paciente.model';
 import { ResponsavelItem } from '../cadastrar-paciente/models/formularios-paciente';
@@ -439,5 +441,105 @@ describe('EditarPaciente: responsável que mora com outros pacientes (409)', () 
 
     expect(ir.errosCard).toEqual({});
     expect(ir.listaResponsaveis[0].continuaComOutrosPacientes).toBeUndefined();
+  });
+});
+
+describe('EditarPaciente: vínculos com assistentes sociais (gravados ao salvar)', () => {
+  const AS_10 = { idCadastro: 10, nome: 'Ana Assistente' };
+
+  async function montarAs(podeEditarProfissional: boolean) {
+    const inicial: Paciente = { ...paciente([END_12]), assistentesSociais: [AS_10] };
+    const atualizar = vi.fn(() => of(inicial));
+    const vincularPaciente = vi.fn((_idAs: number, _idPac: number) => of({}));
+    const desvincularPaciente = vi.fn((_idAs: number, _idPac: number) => of(undefined));
+    TestBed.configureTestingModule({
+      imports: [EditarPaciente],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { paramMap: of(convertToParamMap({ id: '1' })), snapshot: { data: {} } } },
+        { provide: PacienteService, useValue: { buscar: () => of(inicial), atualizar, adicionarResponsavel: vi.fn() } },
+        { provide: ResponsavelService, useValue: { atualizar: vi.fn(() => of({})), listar: vi.fn(() => of({ content: [] })) } },
+        {
+          provide: ProfissionalService,
+          useValue: { vincularPaciente, desvincularPaciente, listar: vi.fn(() => of({ content: [] })) },
+        },
+        { provide: Auth, useValue: { temPermissao: (f: string) => f !== 'EDITAR_PROFISSIONAL' || podeEditarProfissional } },
+      ],
+    });
+    const fixture = TestBed.createComponent(EditarPaciente);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const c = fixture.componentInstance;
+    return { fixture, c, atualizar, vincularPaciente, desvincularPaciente };
+  }
+
+  // Remove a Ana (10) e adiciona a Bia (11).
+  function trocar(c: EditarPaciente) {
+    c.assistentesForm!.remover(10);
+    c.assistentesForm!.adicionar({ id: 11, label: 'Bia Assistente', rotuloSelecionado: 'Bia Assistente' });
+  }
+
+  it('com EDITAR_PROFISSIONAL: vincula e desvincula só ao salvar, depois do PATCH do paciente', async () => {
+    const { c, atualizar, vincularPaciente, desvincularPaciente } = await montarAs(true);
+    trocar(c);
+    expect(vincularPaciente).not.toHaveBeenCalled();
+    expect(desvincularPaciente).not.toHaveBeenCalled();
+
+    await c.salvarEdicao();
+
+    expect(vincularPaciente).toHaveBeenCalledTimes(1);
+    expect(vincularPaciente).toHaveBeenCalledWith(11, 1);
+    expect(desvincularPaciente).toHaveBeenCalledTimes(1);
+    expect(desvincularPaciente).toHaveBeenCalledWith(10, 1);
+    expect(atualizar.mock.invocationCallOrder[0]).toBeLessThan(vincularPaciente.mock.invocationCallOrder[0]);
+    expect(vincularPaciente.mock.invocationCallOrder[0]).toBeLessThan(desvincularPaciente.mock.invocationCallOrder[0]);
+    expect(c.erroGeral()).toBe('');
+  });
+
+  it('PATCH com 409: nenhuma chamada de vínculo', async () => {
+    const { c, atualizar, vincularPaciente, desvincularPaciente } = await montarAs(true);
+    atualizar.mockReturnValueOnce(throwError(() => ERRO_409));
+    trocar(c);
+
+    await c.salvarEdicao();
+
+    expect(vincularPaciente).not.toHaveBeenCalled();
+    expect(desvincularPaciente).not.toHaveBeenCalled();
+  });
+
+  it('sem EDITAR_PROFISSIONAL: lista sem ações e nenhuma chamada de vínculo', async () => {
+    const { fixture, c, vincularPaciente, desvincularPaciente } = await montarAs(false);
+    const secao = fixture.nativeElement.querySelector('app-assistentes-sociais-edicao') as HTMLElement;
+    expect(secao.textContent).toContain('Ana Assistente');
+    expect(secao.querySelector('button')).toBeNull();
+    expect(secao.querySelector('app-select-busca')).toBeNull();
+
+    await c.salvarEdicao();
+
+    expect(vincularPaciente).not.toHaveBeenCalled();
+    expect(desvincularPaciente).not.toHaveBeenCalled();
+  });
+
+  it('falha ao vincular: avisa que o paciente foi salvo e, ao salvar de novo, reenvia só o que falhou', async () => {
+    const { c, vincularPaciente, desvincularPaciente } = await montarAs(true);
+    const erro = new HttpErrorResponse({ status: 400, error: { message: 'Recusado.', fields: {} } });
+    vincularPaciente.mockReturnValueOnce(throwError(() => erro));
+    trocar(c);
+
+    await c.salvarEdicao();
+
+    expect(c.erroGeral()).toContain('não foi possível atualizar o vínculo com');
+    expect(c.erroGeral()).toContain('Bia Assistente (vincular): Recusado.');
+    expect(desvincularPaciente).toHaveBeenCalledTimes(1);
+
+    await c.salvarEdicao();
+
+    expect(vincularPaciente).toHaveBeenCalledTimes(2);
+    expect(vincularPaciente).toHaveBeenLastCalledWith(11, 1);
+    expect(desvincularPaciente).toHaveBeenCalledTimes(1);
+    expect(c.erroGeral()).toBe('');
   });
 });

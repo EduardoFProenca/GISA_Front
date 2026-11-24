@@ -72,7 +72,14 @@ export function paraFormularios(detalhe: ProfissionalDetalhe): FormulariosDetalh
     },
     infoEspecialista,
     infoAssistenteSocial: detalhe.assistenteSocial
-      ? { ehAssistenteSocial: true, registroConselho: detalhe.assistenteSocial.registroConselho ?? '' }
+      ? {
+          ehAssistenteSocial: true,
+          registroConselho: detalhe.assistenteSocial.registroConselho ?? '',
+          pacientes: detalhe.assistenteSocial.pacientes.map((p) => ({
+            idCadastro: p.idCadastro,
+            rotulo: `${p.nome} · CPF ${p.cpfMascarado}${p.statusCadastro === 'INATIVO' ? ' · inativo' : ''}`,
+          })),
+        }
       : null,
   };
 }

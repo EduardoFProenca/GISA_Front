@@ -1,0 +1,26 @@
+<div class="secao">
+  <h3>Assistentes Sociais</h3>
+  @if (podeAlterar) {
+    <p class="dica-campo">O assistente social só vê os pacientes vinculados a ele. As mudanças valem ao salvar.</p>
+  }
+  <ul class="lista-vinculos">
+    @for (a of lista(); track a.idCadastro) {
+      <li>
+        <span>{{ a.nome }}</span>
+        @if (podeAlterar) {
+          <button appBotao type="button" variante="perigo-suave" tamanho="sm" (click)="remover(a.idCadastro)"
+            [attr.aria-label]="'Remover ' + a.nome">Remover</button>
+        }
+      </li>
+    } @empty {
+      <li class="vazio">Nenhum assistente social vinculado.</li>
+    }
+  </ul>
+  @if (podeAlterar) {
+    <div class="campo">
+      <label>Vincular assistente social</label>
+      <app-select-busca [buscar]="buscar" [ocultarIds]="ids()" [value]="selecao()" (opcaoEscolhida)="adicionar($event)"
+        placeholder="Digite o nome ou o CPF do assistente social" semResultados="Nenhum assistente social encontrado" />
+    </div>
+  }
+</div>

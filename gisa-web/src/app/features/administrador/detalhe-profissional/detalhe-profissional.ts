@@ -17,11 +17,7 @@ import { formatarCbo, formatarCelular, formatarCnpj, formatarCns, formatarCpf } 
 import { dataCurta, horaCurta } from '../../../shared/utils/data.util';
 import { ROTULO_DIA_SEMANA, ROTULO_ESTADO_CIVIL, ROTULO_SEXO } from '../../../shared/utils/rotulos.util';
 import { AvisoSucessoService } from '../../../core/services/aviso-sucesso';
-import { PacienteService } from '../../../core/services/paciente';
-import { PacienteResumo } from '../../../core/models/paciente.model';
-import { SelectBusca } from '../../../shared/components/select-busca/select-busca';
 import { SelectMenu } from '../../../shared/components/select-menu/select-menu';
-import { buscaPacientes, DICA_BUSCA_PACIENTE } from '../../../shared/components/select-busca/buscas';
 import { Botao } from '../../../shared/components/botao/botao';
 import { ResumoEnderecos } from '../../../shared/components/resumo-enderecos/resumo-enderecos';
 
@@ -39,7 +35,6 @@ const ROTULO_TIPO: Record<TipoProfissional, string> = {
     CabecalhoPagina,
     ConfirmDialog,
     FormDialog,
-    SelectBusca,
     SelectMenu,
   ],
   templateUrl: './detalhe-profissional.html',
@@ -88,16 +83,6 @@ export class DetalheProfissional implements OnInit {
   confirmacaoAberta = signal(false);
   alterandoStatus = signal(false);
   erroStatus = signal('');
-
-  // Pacientes vinculados (só assistente social; EDITAR_PROFISSIONAL).
-  readonly buscarPacientes = buscaPacientes(inject(PacienteService));
-  readonly dicaBuscaPaciente = DICA_BUSCA_PACIENTE;
-  vinculando = signal(false);
-  erroVinculo = signal('');
-  // Escolha no campo de busca; volta a vazio depois de vincular.
-  selecaoPaciente = signal<number | null>(null);
-  desvinculoPendente = signal<PacienteResumo | null>(null);
-  idsPacientesVinculados = computed(() => this.detalhe()?.assistenteSocial?.pacientes.map((p) => p.idCadastro) ?? []);
 
   // Conceder acesso / nova senha temporária
   dialogo = signal<'acesso' | 'senha' | null>(null);
@@ -154,53 +139,6 @@ export class DetalheProfissional implements OnInit {
       error: (err) => {
         this.alterandoStatus.set(false);
         this.erroStatus.set(mensagemDeErro(err, 'Não foi possível alterar a situação do profissional.'));
-      },
-    });
-  }
-
-  // ---------- Pacientes vinculados (assistente social) ----------
-  // As rotas de vínculo devolvem o assistente social atualizado (vincular) ou 204 (desvincular).
-
-  vincularPaciente(idPaciente: number | string | null) {
-    if (idPaciente === null || this.vinculando()) return;
-    this.selecaoPaciente.set(Number(idPaciente));
-    this.vinculando.set(true);
-    this.erroVinculo.set('');
-    this.profissionalService.vincularPaciente(this.id, Number(idPaciente)).subscribe({
-      next: (assistenteSocial) => {
-        this.vinculando.set(false);
-        this.selecaoPaciente.set(null);
-        this.detalhe.update((d) => (d ? { ...d, assistenteSocial } : d));
-        const nome = assistenteSocial.pacientes.find((p) => p.idCadastro === Number(idPaciente))?.nome;
-        this.avisoSucesso.mostrar({ titulo: 'Paciente vinculado', detalhe: nome });
-      },
-      error: (err) => {
-        this.vinculando.set(false);
-        this.selecaoPaciente.set(null);
-        this.erroVinculo.set(mensagemDeErro(err, 'Não foi possível vincular o paciente.'));
-      },
-    });
-  }
-
-  confirmarDesvinculo() {
-    const paciente = this.desvinculoPendente();
-    this.desvinculoPendente.set(null);
-    if (!paciente) return;
-    this.vinculando.set(true);
-    this.erroVinculo.set('');
-    this.profissionalService.desvincularPaciente(this.id, paciente.idCadastro).subscribe({
-      next: () => {
-        this.vinculando.set(false);
-        this.detalhe.update((d) =>
-          d?.assistenteSocial
-            ? { ...d, assistenteSocial: { ...d.assistenteSocial, pacientes: d.assistenteSocial.pacientes.filter((p) => p.idCadastro !== paciente.idCadastro) } }
-            : d
-        );
-        this.avisoSucesso.mostrar({ titulo: 'Vínculo encerrado', detalhe: paciente.nome });
-      },
-      error: (err) => {
-        this.vinculando.set(false);
-        this.erroVinculo.set(mensagemDeErro(err, 'Não foi possível encerrar o vínculo.'));
       },
     });
   }

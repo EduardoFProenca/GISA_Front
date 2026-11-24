@@ -45,7 +45,9 @@ import { Escola } from '../../../core/models/escola.model';
 import { PacienteService } from '../../../core/services/paciente';
 import { ResponsavelService } from '../../../core/services/responsavel';
 import { EscolaService } from '../../../core/services/escola';
-import { aplicarErrosApi, lerErroApi } from '../../../core/http/erro-api';
+import { ProfissionalService } from '../../../core/services/profissional';
+import { Auth } from '../../../core/auth/auth';
+import { aplicarErrosApi, lerErroApi, mensagemDeErro } from '../../../core/http/erro-api';
 import { lerContextoPacientes } from '../contexto-pacientes';
 import {
   ajustarResidencia,
@@ -56,6 +58,7 @@ import {
   responsavelParaForm,
 } from '../paciente-form.util';
 import { soDigitos, vazio } from '../../../shared/utils/texto.util';
+import { AssistentesSociaisEdicao } from './assistentes-sociais-edicao/assistentes-sociais-edicao';
 
 @Component({
   selector: 'app-editar-paciente',
@@ -74,6 +77,7 @@ import { soDigitos, vazio } from '../../../shared/utils/texto.util';
     InfoProntuario,
     InfoCid,
     QuemMoraAqui,
+    AssistentesSociaisEdicao,
   ],
   templateUrl: './editar-paciente.html',
   styleUrl: './editar-paciente.scss'
@@ -86,6 +90,8 @@ export class EditarPaciente implements OnInit {
   private pacienteService = inject(PacienteService);
   private responsavelService = inject(ResponsavelService);
   private escolaService = inject(EscolaService);
+  private profissionalService = inject(ProfissionalService);
+  private auth = inject(Auth);
   private validador = inject(PacienteValidadorService);
   private payload = inject(PacienteCadastroPayloadService);
   private errosApi = inject(PacienteErrosApiService);
@@ -98,6 +104,7 @@ export class EditarPaciente implements OnInit {
   @ViewChild(InfoEscola) infoEscolaForm?: InfoEscola;
   @ViewChild(InfoProntuario) infoProntuarioForm?: InfoProntuario;
   @ViewChild(InfoCid) infoCidForm?: InfoCid;
+  @ViewChild(AssistentesSociaisEdicao) assistentesForm?: AssistentesSociaisEdicao;
 
   rotaBase = lerContextoPacientes(this.route).rotaBase;
   id = signal(0);
@@ -110,6 +117,8 @@ export class EditarPaciente implements OnInit {
   salvando = signal(false);
   nomeSalvo = signal('');
   confirmarCancelamentoAberto = signal(false);
+  // Vínculos com assistentes sociais: as rotas são do assistente social (EDITAR_PROFISSIONAL).
+  podeVincular = this.auth.temPermissao('EDITAR_PROFISSIONAL');
 
   // 409 do PATCH: endereços alterados que também são de outros cadastros (o diálogo pergunta um a um).
   enderecosCompartilhados = signal<EnderecoCompartilhadoItem[]>([]);
@@ -127,6 +136,7 @@ export class EditarPaciente implements OnInit {
     const pr = this.paciente()?.prontuario;
     return { alergias: pr?.alergias ?? '', comorbidade: pr?.comorbidade ?? '', mobilidade: pr?.mobilidade ?? '' };
   });
+  assistentesIniciais = computed(() => this.paciente()?.assistentesSociais ?? []);
   cidsIniciais = computed<Cid[]>(() => this.paciente()?.cids ?? []);
   escolaInicial = computed<Escola | null>(() => this.paciente()?.escola ?? null);
   responsaveisIniciais = computed<ResponsavelItem[]>(() => {
@@ -255,9 +265,14 @@ export class EditarPaciente implements OnInit {
       // Depois do paciente: quem deixou de residir só sai do endereço do paciente neste PATCH, e antes
       // disso a API recusa o endereço próprio dele ("também é de um paciente").
       const falhas = await this.atualizarResponsaveisExistentes(f, original);
+      const falhasVinculos = await this.sincronizarAssistentesSociais();
       this.paciente.set(atualizado);
-      if (falhas) {
-        this.erroGeral.set(`Paciente salvo, mas não foi possível atualizar o responsável ${falhas}`);
+      const avisos = [
+        falhas ? `não foi possível atualizar o responsável ${falhas}` : '',
+        falhasVinculos ? `não foi possível atualizar o vínculo com ${falhasVinculos}` : '',
+      ].filter(Boolean);
+      if (avisos.length) {
+        this.erroGeral.set(`Paciente salvo, mas ${avisos.join('; ')}`);
         return;
       }
       this.nomeSalvo.set(atualizado.pessoa.nome);
@@ -375,6 +390,31 @@ export class EditarPaciente implements OnInit {
         await firstValueFrom(this.responsavelService.atualizar(r.idCadastro, dados));
       } catch (e) {
         falhas.push(this.textoErroResponsavel(item, e));
+      }
+    }
+    return falhas.join(' ');
+  }
+
+  // Vínculos com assistentes sociais: depois do PATCH (Cancelar descarta tudo). Rotas do assistente social
+  // (EDITAR_PROFISSIONAL). Devolve '' ou as falhas ("Nome (vincular): motivo"); o que deu certo fica gravado.
+  private async sincronizarAssistentesSociais(): Promise<string> {
+    const form = this.assistentesForm;
+    if (!form || !this.podeVincular) return '';
+    const falhas: string[] = [];
+    for (const id of form.novos()) {
+      try {
+        await firstValueFrom(this.profissionalService.vincularPaciente(id, this.id()));
+        form.marcarSalvo(id, true);
+      } catch (e) {
+        falhas.push(`${form.nome(id)} (vincular): ${mensagemDeErro(e, 'erro ao vincular')}`);
+      }
+    }
+    for (const id of form.removidos()) {
+      try {
+        await firstValueFrom(this.profissionalService.desvincularPaciente(id, this.id()));
+        form.marcarSalvo(id, false);
+      } catch (e) {
+        falhas.push(`${form.nome(id)} (desvincular): ${mensagemDeErro(e, 'erro ao desvincular')}`);
       }
     }
     return falhas.join(' ');

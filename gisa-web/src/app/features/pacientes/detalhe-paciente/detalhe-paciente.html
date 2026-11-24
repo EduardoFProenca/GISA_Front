@@ -79,32 +79,12 @@
     <div class="secao">
       <h3>Assistentes Sociais</h3>
       @for (assist of p.assistentesSociais; track assist.idCadastro) {
-        <div class="info-bloco linha-vinculo">
+        <div class="info-bloco">
           <app-campo-detalhe rotulo="Nome">{{ assist.nome }}</app-campo-detalhe>
-          @if (podeVincular) {
-            <button appBotao type="button" variante="perigo-suave" tamanho="sm" [disabled]="vinculando()"
-              [attr.aria-label]="'Encerrar vínculo com ' + assist.nome" (click)="desvinculoPendente.set(assist)">
-              Desvincular
-            </button>
-          }
         </div>
       } @empty {
         <p>Nenhum assistente social vinculado.</p>
       }
-      @if (podeVincular) {
-        <div class="vincular-as">
-          <label>Vincular assistente social</label>
-          <app-select-busca
-            [buscar]="buscarAssistentesSociais"
-            [ocultarIds]="idsVinculados()"
-            [value]="selecaoAs()"
-            [disabled]="vinculando()"
-            (valueChange)="vincular($event)"
-            placeholder="Digite o nome ou o CPF do assistente social"
-            semResultados="Nenhum assistente social encontrado" />
-        </div>
-      }
-      @if (erroVinculo()) { <p class="erro-msg">{{ erroVinculo() }}</p> }
     </div>
 
 
@@ -175,14 +155,4 @@
   textoCancelar="Voltar"
   (confirmar)="confirmarAlteracaoStatus()"
   (cancelar)="confirmacaoAberta.set(false)"
-></app-confirm-dialog>
-
-<app-confirm-dialog
-  [aberto]="desvinculoPendente() !== null"
-  titulo="Desvincular assistente social?"
-  [mensagem]="(desvinculoPendente()?.nome ?? '') + ' deixa de ver este paciente. O histórico do vínculo é mantido.'"
-  textoConfirmar="Desvincular"
-  textoCancelar="Voltar"
-  (confirmar)="confirmarDesvinculo()"
-  (cancelar)="desvinculoPendente.set(null)"
 ></app-confirm-dialog>

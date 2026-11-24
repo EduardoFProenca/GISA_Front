@@ -493,7 +493,7 @@ button {
 // Espaço entre as seções dos formulários e das telas de detalhe. Não há linha divisória: o título de
 // cada seção já tem a linha clara embaixo. Os componentes de seção viram bloco para a margem valer
 // (e colapsar com a margem do título dentro deles).
-.card-form > :is(.secao, app-dados-pessoais, app-contato, app-info-paciente, app-info-responsavel,
+.card-form > :is(.secao, app-dados-pessoais, app-contato, app-info-paciente, app-info-responsavel, app-assistentes-sociais-edicao,
   app-info-escola, app-info-prontuario, app-info-cid, app-info-profissional, app-info-usuario,
   app-info-especialista, app-info-assistente-social, app-terapias-paciente, app-historico-paciente) {
   display: block;

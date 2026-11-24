@@ -167,6 +167,11 @@ export class EditarProfissional implements OnInit {
         // Evita conceder de novo se o usuário salvar outra vez nesta tela.
         f.infoUsuario.possuiAcesso = true;
       }
+      const falhasVinculos = await this.sincronizarPacientesVinculados();
+      if (falhasVinculos) {
+        this.erroGeral.set(`Alterações salvas, mas não foi possível atualizar o vínculo com ${falhasVinculos}`);
+        return;
+      }
       this.nomeSalvo.set(f.dadosPessoais.nome.trim());
       this.mostrarSucesso(emailNaoEnviado);
     } catch (err) {
@@ -187,6 +192,30 @@ export class EditarProfissional implements OnInit {
     } finally {
       this.salvando.set(false);
     }
+  }
+
+  // Pacientes vinculados (assistente social): depois do PATCH e do acesso. Devolve '' ou as falhas.
+  private async sincronizarPacientesVinculados(): Promise<string> {
+    const form = this.infoAssistenteSocialForm;
+    if (!form) return '';
+    const falhas: string[] = [];
+    for (const idPaciente of form.novos()) {
+      try {
+        await firstValueFrom(this.profissionalService.vincularPaciente(this.id, idPaciente));
+        form.marcarSalvo(idPaciente, true);
+      } catch (e) {
+        falhas.push(`${form.rotulo(idPaciente)} (vincular): ${mensagemDeErro(e, 'erro ao vincular')}`);
+      }
+    }
+    for (const idPaciente of form.removidos()) {
+      try {
+        await firstValueFrom(this.profissionalService.desvincularPaciente(this.id, idPaciente));
+        form.marcarSalvo(idPaciente, false);
+      } catch (e) {
+        falhas.push(`${form.rotulo(idPaciente)} (desvincular): ${mensagemDeErro(e, 'erro ao desvincular')}`);
+      }
+    }
+    return falhas.join(' ');
   }
 
   // Respostas do diálogo ficam nos itens da lista; o PATCH é reenviado com elas.

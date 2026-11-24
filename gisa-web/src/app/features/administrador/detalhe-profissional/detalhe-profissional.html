@@ -114,28 +114,11 @@
                 <span class="etiqueta-status" [class.inativo]="pac.statusCadastro === 'INATIVO'">
                     {{ pac.statusCadastro === 'ATIVO' ? 'Ativo' : 'Inativo' }}
                 </span>
-                @if (podeEditar) {
-                <button appBotao type="button" variante="perigo-suave" tamanho="sm" [disabled]="vinculando()"
-                    [attr.aria-label]="'Desvincular ' + pac.nome" (click)="desvinculoPendente.set(pac)">Desvincular</button>
-                }
             </li>
             } @empty {
             <li class="vazio">Nenhum paciente vinculado.</li>
             }
         </ul>
-
-        @if (podeEditar && ativo()) {
-        <div class="vincular-paciente">
-            <label>Vincular paciente</label>
-            <app-select-busca [buscar]="buscarPacientes" [dicaTermo]="dicaBuscaPaciente"
-                [ocultarIds]="idsPacientesVinculados()" [value]="selecaoPaciente()" [disabled]="vinculando()"
-                (valueChange)="vincularPaciente($event)" placeholder="Digite o nome ou o CPF completo do paciente"
-                semResultados="Nenhum paciente encontrado" />
-        </div>
-        } @else if (!ativo()) {
-        <p class="dica">Assistente social inativo: reative o cadastro para vincular pacientes.</p>
-        }
-        @if (erroVinculo()) { <p class="erro-msg">{{ erroVinculo() }}</p> }
     </div>
     }
 
@@ -176,9 +159,3 @@
     </div>
     }
 </app-form-dialog>
-
-<app-confirm-dialog [aberto]="desvinculoPendente() !== null" titulo="Desvincular paciente?"
-    [mensagem]="'O assistente social deixa de ver ' + (desvinculoPendente()?.nome ?? '') + '. O histórico do vínculo é mantido.'"
-    textoConfirmar="Desvincular" textoCancelar="Voltar"
-    (confirmar)="confirmarDesvinculo()" (cancelar)="desvinculoPendente.set(null)">
-</app-confirm-dialog>

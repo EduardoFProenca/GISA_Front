@@ -16,10 +16,10 @@
         @if (erros['registroConselho']) { <span class="erro-msg">{{ erros['registroConselho'] }}</span> }
     </div>
 
-    @if (!edicao) {
     <div class="campo">
         <label>Pacientes vinculados</label>
-        <p class="dica-campo">O assistente social só vê os pacientes vinculados a ele. Os vínculos podem ser alterados depois, no detalhe do profissional.</p>
+        <p class="dica-campo">O assistente social só vê os pacientes vinculados a ele.
+          @if (edicao) { As mudanças nos vínculos valem ao salvar. } @else { Os vínculos podem ser alterados depois, na edição do profissional. }</p>
         <app-select-busca [buscar]="buscarPacientes" [dicaTermo]="dicaBuscaPaciente" [ocultarIds]="idsPacientes"
             [value]="selecao()" (opcaoEscolhida)="adicionarPaciente($event)"
             placeholder="Digite o nome ou o CPF completo do paciente" semResultados="Nenhum paciente encontrado" />
@@ -37,6 +37,5 @@
             }
         </ul>
     </div>
-    }
     }
 </fieldset>

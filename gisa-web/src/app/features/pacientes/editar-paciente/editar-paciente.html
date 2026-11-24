@@ -60,6 +60,9 @@
       (mudou)="ajustarMoradores(infoResp, enderecosPaciente)" />
 
 
+    <!-- Assistentes sociais (gravados ao salvar) -->
+    <app-assistentes-sociais-edicao [iniciais]="assistentesIniciais()" [podeAlterar]="podeVincular" />
+
     <!-- Escola -->
     <app-info-escola [escolaInicial]="escolaInicial()" />
 

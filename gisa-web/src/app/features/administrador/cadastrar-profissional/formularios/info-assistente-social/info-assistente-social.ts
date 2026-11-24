@@ -16,10 +16,10 @@ export interface PacienteEscolhido {
 export interface InfoAssistenteSocialValor {
   ehAssistenteSocial: boolean;
   registroConselho: string;
+  pacientes?: PacienteEscolhido[];
 }
 
-// Assistente social: registro no CRESS e os pacientes já vinculados no cadastro. Na edição só aparece
-// o registro (somente leitura); os vínculos passam a ser geridos no detalhe do profissional.
+// Assistente social: registro no CRESS e os pacientes vinculados. No cadastro, os pacientes vão no POST; na edição, o registro é somente leitura e os vínculos são gravados pela tela ao salvar (novos() e removidos()).
 // Eager: os erros (ComErros) chegam depois da resposta da API e precisam aparecer.
 @Component({
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -44,6 +44,10 @@ export class InfoAssistenteSocial extends ComErros implements OnInit, InfoAssist
   pacientes: PacienteEscolhido[] = [];
   // Valor do campo de busca: volta a vazio a cada paciente adicionado.
   selecao = signal<number | null>(null);
+  // Edição: pacientes vinculados na API hoje (o que a tela compara ao salvar).
+  private salvos = new Set<number>();
+  // Rótulos para as mensagens de falha (inclusive de quem foi removido da lista).
+  private rotulos = new Map<number, string>();
 
   get idsPacientes(): number[] {
     return this.pacientes.map((p) => p.idCadastro);
@@ -51,10 +55,13 @@ export class InfoAssistenteSocial extends ComErros implements OnInit, InfoAssist
 
   ngOnInit() {
     if (this.dadosIniciais) Object.assign(this, this.dadosIniciais);
+    for (const p of this.pacientes) this.rotulos.set(p.idCadastro, p.rotulo);
+    if (this.edicao) this.salvos = new Set(this.pacientes.map((p) => p.idCadastro));
   }
 
   adicionarPaciente(opcao: OpcaoSelectBusca) {
     const idNum = Number(opcao.id);
+    this.rotulos.set(idNum, opcao.label);
     if (!this.pacientes.some((p) => p.idCadastro === idNum)) {
       this.pacientes = [...this.pacientes, { idCadastro: idNum, rotulo: opcao.label }];
     }
@@ -67,5 +74,25 @@ export class InfoAssistenteSocial extends ComErros implements OnInit, InfoAssist
 
   removerPaciente(id: number) {
     this.pacientes = this.pacientes.filter((p) => p.idCadastro !== id);
+  }
+
+  // Edição: ids da lista que ainda não estão vinculados na API.
+  novos(): number[] {
+    return this.idsPacientes.filter((id) => !this.salvos.has(id));
+  }
+
+  // Edição: ids vinculados na API que saíram da lista.
+  removidos(): number[] {
+    const ids = new Set(this.idsPacientes);
+    return [...this.salvos].filter((id) => !ids.has(id));
+  }
+
+  marcarSalvo(id: number, vinculado: boolean) {
+    if (vinculado) this.salvos.add(id);
+    else this.salvos.delete(id);
+  }
+
+  rotulo(id: number): string {
+    return this.rotulos.get(id) ?? `Paciente ${id}`;
   }
 }
